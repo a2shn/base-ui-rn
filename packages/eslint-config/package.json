@@ -1,0 +1,22 @@
+{
+  "name": "@base-ui-rn/eslint-config",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-jsonc": "^2.21.1",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-react-native-a11y": "^3.5.1",
+    "jsonc-eslint-parser": "^2.4.2",
+    "typescript-eslint": "^8.55.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "eslint-plugin-package-json": "^0.88.2",
+    "eslint-plugin-yml": "^3.1.2"
+  }
+}

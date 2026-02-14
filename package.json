@@ -1,0 +1,19 @@
+{
+  "name": "base-ui-rn",
+  "type": "module",
+  "scripts": {
+    "lint": "pnpm -r lint",
+    "dev": "pnpm -r dev",
+    "test": "jest",
+    "manage": "tsx scripts/manage.ts"
+  },
+  "devDependencies": {
+    "@testing-library/react-native": "^13.3.3",
+    "eslint": "^10.0.0",
+    "jest-expo": "~54.0.17",
+    "prettier": "^3.8.1",
+    "react-test-renderer": "19.1.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

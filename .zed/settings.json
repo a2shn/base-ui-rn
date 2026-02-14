@@ -1,0 +1,17 @@
+{
+  "format_on_save": "on",
+  "languages": {
+    "TypeScript": {
+      "language_servers": ["prettier", "typescript-language-server"],
+      "formatter": "prettier"
+    },
+    "TSX": {
+      "language_servers": ["prettier", "typescript-language-server"],
+      "formatter": "prettier"
+    },
+    "JavaScript": {
+      "language_servers": ["prettier", "typescript-language-server"],
+      "formatter": "prettier"
+    }
+  }
+}
