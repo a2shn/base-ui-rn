@@ -1,12 +1,11 @@
 import { mergeHandlers } from './merge-handlers';
 
 /**
- * A set of props that are considered critical for accessibility and semantics.
- *
- * For these props, injected values always take precedence over child values
- * to avoid breaking accessibility guarantees.
+ * Set of prop names that must always be injected to preserve
+ * accessibility, semantics, and interaction behavior.
  */
 const CRITICAL = new Set<string>([
+  'accessible',
   'accessibilityRole',
   'accessibilityHint',
   'accessibilityElementsHidden',
@@ -23,33 +22,41 @@ const CRITICAL = new Set<string>([
   'aria-controls',
   'aria-labelledby',
   'aria-describedby',
+  'onStartShouldSetResponder',
+  'onMoveShouldSetResponder',
+  'onResponderGrant',
+  'onResponderMove',
+  'onResponderRelease',
+  'onResponderTerminate',
+  'onResponderTerminationRequest',
 ]);
 
 /**
- * Utility type that flattens intersections for better IntelliSense output.
+ * Flattens an inferred type for cleaner public signatures.
  */
 type Simplify<T> = { [K in keyof T]: T[K] } & {};
 
 /**
- * Resulting props type when injected props override child props.
+ * Resulting prop type after injected props override child props.
  */
 type MergedProps<Injected, Child> = Omit<Child, keyof Injected> & Injected;
 
 /**
- * Shallowly merges two objects, avoiding allocation when no changes are needed.
+ * Shallowly merges two objects while preserving reference identity
+ * if no injected values differ from the child values.
  *
- * - If either value is not an object, the injected value wins.
- * - If all injected keys match the child values, the child object is returned
- *   unchanged to preserve referential equality.
+ * @param childObj - Original object from the child
+ * @param injectedObj - Injected object values
+ * @returns The merged object or the original reference if unchanged
  */
 function mergeObjectsShallow(childObj: unknown, injectedObj: unknown): unknown {
   if (!childObj || typeof childObj !== 'object') return injectedObj;
   if (!injectedObj || typeof injectedObj !== 'object') return childObj;
 
-  let hasChanges = false;
   const childRecord = childObj as Record<string, unknown>;
   const injectedRecord = injectedObj as Record<string, unknown>;
 
+  let hasChanges = false;
   for (const key in injectedRecord) {
     if (childRecord[key] !== injectedRecord[key]) {
       hasChanges = true;
@@ -58,32 +65,27 @@ function mergeObjectsShallow(childObj: unknown, injectedObj: unknown): unknown {
   }
 
   if (!hasChanges) return childObj;
-
   return { ...childRecord, ...injectedRecord };
 }
 
 /**
- * Merges injected props into child props with special handling for
- * accessibility, event handlers, and styles.
+ * Merges injected props into child props with predictable precedence.
  *
- * Merge rules:
- * - `undefined` injected values are ignored.
- * - Accessibility state/value objects are shallow-merged.
- * - Critical accessibility props always override child values.
- * - Event handlers (`on*`) are composed so both handlers run.
- * - Styles are combined into an array to preserve order.
- * - For all other props, injected values are only applied if the child
- *   does not already define them.
+ * Injected props always win. Event handlers are merged into stable
+ * composite handlers. Accessibility-related objects are shallow-merged
+ * to preserve referential stability when possible.
  *
- * The function avoids cloning the child props object unless a change
- * is actually required, preserving referential equality where possible.
+ * @typeParam Injected - Props provided by the primitive
+ * @typeParam Child - Props provided by the consumer
+ * @param injected - Props injected by the primitive
+ * @param child - Props provided by the child element
+ * @returns A merged props object with stable references
  */
 export function mergeProps<
   Injected extends Record<string, unknown>,
   Child extends Record<string, unknown>,
 >(injected: Injected, child: Child): Simplify<MergedProps<Injected, Child>> {
-  let result: Record<string, unknown> = child;
-  let cloned = false;
+  const result: Record<string, unknown> = { ...child };
 
   for (const key in injected) {
     const injectedValue = injected[key];
@@ -92,67 +94,33 @@ export function mergeProps<
     if (injectedValue === undefined) continue;
 
     if (key === 'accessibilityState' || key === 'accessibilityValue') {
-      const mergedObject = mergeObjectsShallow(childValue, injectedValue);
-      if (mergedObject !== childValue) {
-        if (!cloned) {
-          result = { ...child };
-          cloned = true;
-        }
-        result[key] = mergedObject;
-      }
+      result[key] = mergeObjectsShallow(childValue, injectedValue);
       continue;
     }
 
-    if (CRITICAL.has(key)) {
-      if (childValue !== injectedValue) {
-        if (!cloned) {
-          result = { ...child };
-          cloned = true;
-        }
-        result[key] = injectedValue;
-      }
-      continue;
-    }
-
-    if (key.startsWith('on') && typeof injectedValue === 'function') {
-      const mergedFn = mergeHandlers(
+    if (
+      typeof injectedValue === 'function' &&
+      (key.startsWith('on') || CRITICAL.has(key))
+    ) {
+      result[key] = mergeHandlers(
         injectedValue as (e: unknown) => void,
-        childValue as ((e: unknown) => void) | undefined,
+        typeof childValue === 'function'
+          ? (childValue as (e: unknown) => void)
+          : undefined,
       );
-
-      if (mergedFn !== childValue) {
-        if (!cloned) {
-          result = { ...child };
-          cloned = true;
-        }
-        result[key] = mergedFn;
-      }
       continue;
     }
 
     if (key === 'style') {
-      if (!cloned) {
-        result = { ...child };
-        cloned = true;
-      }
-
-      if (!childValue) {
-        result[key] = injectedValue;
-      } else {
-        result[key] = Array.isArray(childValue)
+      result[key] = childValue
+        ? Array.isArray(childValue)
           ? [injectedValue, ...childValue]
-          : [injectedValue, childValue];
-      }
+          : [injectedValue, childValue]
+        : injectedValue;
       continue;
     }
 
-    if (childValue === undefined && injectedValue !== undefined) {
-      if (!cloned) {
-        result = { ...child };
-        cloned = true;
-      }
-      result[key] = injectedValue;
-    }
+    result[key] = injectedValue;
   }
 
   return result as Simplify<MergedProps<Injected, Child>>;

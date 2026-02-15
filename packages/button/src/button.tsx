@@ -58,7 +58,7 @@ export const Root = React.memo(
     {
       asChild = false,
       disabled,
-      accessibilityState,
+      onPress,
       accessibilityHint,
       children,
       ...props
@@ -67,22 +67,29 @@ export const Root = React.memo(
   ) {
     const isDisabled = disabled === true;
 
-    const mergedAccessibilityState = React.useMemo(
+    // Convert onPress into the Native Responder System
+    const responderProps = React.useMemo(
       () => ({
-        ...accessibilityState,
-        disabled: isDisabled,
+        onStartShouldSetResponder: () => !isDisabled,
+        onResponderRelease: (e: any) => {
+          if (!isDisabled) {
+            onPress?.(e);
+          }
+        },
+        // Ensures the view can capture the touch even if children are present
+        onTerminationRequest: () => true,
       }),
-      [accessibilityState, isDisabled],
+      [isDisabled, onPress],
     );
 
     const commonProps = {
+      ...responderProps,
+      accessible: true,
       accessibilityRole: 'button' as const,
-      role: 'button' as const,
-      accessibilityState: mergedAccessibilityState,
       accessibilityHint,
-      'aria-disabled': isDisabled,
+      accessibilityState: { disabled: isDisabled },
       focusable: !isDisabled,
-      disabled: isDisabled,
+      importantForAccessibility: 'yes' as const,
       ...props,
     };
 
@@ -95,7 +102,12 @@ export const Root = React.memo(
     }
 
     return (
-      <Pressable ref={forwardedRef} {...commonProps}>
+      <Pressable
+        ref={forwardedRef}
+        disabled={isDisabled}
+        {...commonProps}
+        onPress={onPress}
+      >
         {children}
       </Pressable>
     );

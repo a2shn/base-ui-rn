@@ -1,42 +1,30 @@
-/**
- * Event handler function type.
- */
-type Handler = (event: unknown) => void;
+type Handler = (event: any) => void;
 
 /**
- * Cache of merged handlers.
- *
- * Structure:
- * primitive handler
- *   → consumer handler
- *       → merged handler
- *
- * WeakMaps are used to avoid memory leaks when handlers are garbage-collected.
+ * Weakly cached merged handlers keyed by primitive and consumer handlers.
  */
 const handlerCache = new WeakMap<object, WeakMap<object, Handler>>();
 
 /**
- * Merges two event handlers into a single stable function.
+ * Returns a stable event handler that invokes both the consumer and primitive handlers.
  *
- * Execution order:
- * 1. The `primitive` handler is called first.
- * 2. If it does not call `event.preventDefault()`, the `consumer` handler runs.
+ * If either handler is undefined, the other is returned directly to preserve
+ * referential stability.
  *
- * Behavior:
- * - If either handler is missing, the other is returned directly.
- * - Merged handlers are memoized so the same pair always produces
- *   the same function reference.
- * - WeakMaps are used to ensure cached handlers do not prevent
- *   garbage collection.
+ * When both handlers are present, the returned function is cached so the same
+ * `(primitive, consumer)` pair always yields the same reference.
  *
- * This pattern is commonly used in component libraries where internal
- * behavior must run before user-provided handlers, while still allowing
- * consumers to opt out by preventing default behavior.
+ * The consumer handler is invoked before the primitive handler.
+ *
+ * @typeParam E - Event type
+ * @param primitive - Internal primitive handler
+ * @param consumer - External consumer handler
+ * @returns A stable merged handler or one of the inputs
  */
 export function mergeHandlers<E>(
   primitive?: (event: E) => void,
   consumer?: (event: E) => void,
-) {
+): ((event: E) => void) | undefined {
   if (!primitive) return consumer;
   if (!consumer) return primitive;
 
@@ -48,15 +36,12 @@ export function mergeHandlers<E>(
 
   let merged = consumerCache.get(consumer);
   if (!merged) {
-    merged = function mergedHandler(event: unknown) {
-      const e = event as E & { defaultPrevented?: boolean };
-      primitive(e);
-      if (!e?.defaultPrevented) {
-        consumer(e);
-      }
+    merged = function mergedHandler(event: E) {
+      consumer(event);
+      primitive(event);
     };
     consumerCache.set(consumer, merged);
   }
 
-  return merged as unknown as (event: E) => void;
+  return merged as (event: E) => void;
 }
