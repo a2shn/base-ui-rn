@@ -5,9 +5,7 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "jsx": "react-native",
-    "lib": [
-      "ESNext"
-    ],
+    "lib": ["ESNext"],
     "declaration": true,
     "declarationMap": true,
     "rootDir": "src",
@@ -18,22 +16,10 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "src/*"
-      ]
+      "@/*": ["src/*"]
     },
-    "types": [
-      "node",
-      "jest"
-    ]
+    "types": ["node", "jest"]
   },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/__tests__",
-    "**/*.test.tsx"
-  ],
-  "include": [
-    "src"
-  ]
+  "exclude": ["node_modules", "dist", "**/__tests__", "**/*.test.tsx"],
+  "include": ["src"]
 }

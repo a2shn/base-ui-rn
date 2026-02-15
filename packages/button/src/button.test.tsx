@@ -105,8 +105,14 @@ describe('Button.Root', () => {
       const onPressMock = jest.fn();
 
       const { getByTestId } = render(
-        <Button asChild onPress={onPressMock} accessibilityHint={defaultHint}>
-          <View testID='view-child'>
+        // Pass testID to the Root
+        <Button
+          asChild
+          testID='view-child'
+          onPress={onPressMock}
+          accessibilityHint={defaultHint}
+        >
+          <View>
             <Text>Interaction Test</Text>
           </View>
         </Button>,
@@ -114,28 +120,27 @@ describe('Button.Root', () => {
 
       const child = getByTestId('view-child');
 
-      // Verify it didn't crash and applied the responder system
       fireEvent.press(child);
       expect(onPressMock).toHaveBeenCalledTimes(1);
 
-      // Verify the Dev-only warning was triggered
+      // Expect the NEW contextual DX string
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining(
-          '[Base UI RN] <Button.Root asChild> was used with a non-Pressable child. While we inject touch support, generic components may not provide a full native keyboard focus experience. Consider using <Pressable> as the direct child.',
+          '[Base UI RN] <Button.Root asChild> was used with a non-Pressable child: <View> (Identifier: "view-child").',
         ),
       );
     });
 
     it('warns when using asChild with a Text component', () => {
       render(
-        <Button asChild accessibilityHint={defaultHint}>
+        <Button asChild testID='text-child' accessibilityHint={defaultHint}>
           <Text>Warning Test</Text>
         </Button>,
       );
 
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining(
-          '[Base UI RN] <Button.Root asChild> was used with a non-Pressable child. While we inject touch support, generic components may not provide a full native keyboard focus experience. Consider using <Pressable> as the direct child.',
+          '[Base UI RN] <Button.Root asChild> was used with a non-Pressable child: <Text> (Identifier: "text-child").',
         ),
       );
     });

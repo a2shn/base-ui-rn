@@ -1,1 +1,1 @@
-export const toggle = "todo";
+export const toggle = 'todo';
