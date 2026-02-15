@@ -1,5 +1,11 @@
 import { mergeHandlers } from './merge-handlers';
 
+/**
+ * A set of props that are considered critical for accessibility and semantics.
+ *
+ * For these props, injected values always take precedence over child values
+ * to avoid breaking accessibility guarantees.
+ */
 const CRITICAL = new Set<string>([
   'accessibilityRole',
   'accessibilityHint',
@@ -19,9 +25,23 @@ const CRITICAL = new Set<string>([
   'aria-describedby',
 ]);
 
+/**
+ * Utility type that flattens intersections for better IntelliSense output.
+ */
 type Simplify<T> = { [K in keyof T]: T[K] } & {};
+
+/**
+ * Resulting props type when injected props override child props.
+ */
 type MergedProps<Injected, Child> = Omit<Child, keyof Injected> & Injected;
 
+/**
+ * Shallowly merges two objects, avoiding allocation when no changes are needed.
+ *
+ * - If either value is not an object, the injected value wins.
+ * - If all injected keys match the child values, the child object is returned
+ *   unchanged to preserve referential equality.
+ */
 function mergeObjectsShallow(childObj: unknown, injectedObj: unknown): unknown {
   if (!childObj || typeof childObj !== 'object') return injectedObj;
   if (!injectedObj || typeof injectedObj !== 'object') return childObj;
@@ -42,6 +62,22 @@ function mergeObjectsShallow(childObj: unknown, injectedObj: unknown): unknown {
   return { ...childRecord, ...injectedRecord };
 }
 
+/**
+ * Merges injected props into child props with special handling for
+ * accessibility, event handlers, and styles.
+ *
+ * Merge rules:
+ * - `undefined` injected values are ignored.
+ * - Accessibility state/value objects are shallow-merged.
+ * - Critical accessibility props always override child values.
+ * - Event handlers (`on*`) are composed so both handlers run.
+ * - Styles are combined into an array to preserve order.
+ * - For all other props, injected values are only applied if the child
+ *   does not already define them.
+ *
+ * The function avoids cloning the child props object unless a change
+ * is actually required, preserving referential equality where possible.
+ */
 export function mergeProps<
   Injected extends Record<string, unknown>,
   Child extends Record<string, unknown>,
