@@ -71,9 +71,10 @@ function mergeObjectsShallow(childObj: unknown, injectedObj: unknown): unknown {
 /**
  * Merges injected props into child props with predictable precedence.
  *
- * Injected props always win. Event handlers are merged into stable
- * composite handlers. Accessibility-related objects are shallow-merged
- * to preserve referential stability when possible.
+ * For critical accessibility and interaction props, injected values win.
+ * For standard props (e.g., testID), child values take precedence.
+ * Event handlers are merged into stable composite handlers.
+ * Accessibility-related objects are shallow-merged to preserve referential stability.
  *
  * @typeParam Injected - Props provided by the primitive
  * @typeParam Child - Props provided by the consumer
@@ -120,7 +121,9 @@ export function mergeProps<
       continue;
     }
 
-    result[key] = injectedValue;
+    if (CRITICAL.has(key) || childValue === undefined) {
+      result[key] = injectedValue;
+    }
   }
 
   return result as Simplify<MergedProps<Injected, Child>>;

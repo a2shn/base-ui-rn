@@ -1,4 +1,4 @@
-type Handler = (event: any) => void;
+type Handler = (event: unknown) => void;
 
 /**
  * Weakly cached merged handlers keyed by primitive and consumer handlers.
@@ -14,7 +14,7 @@ const handlerCache = new WeakMap<object, WeakMap<object, Handler>>();
  * When both handlers are present, the returned function is cached so the same
  * `(primitive, consumer)` pair always yields the same reference.
  *
- * The consumer handler is invoked before the primitive handler.
+ * The primitive handler is invoked before the consumer handler.
  *
  * @typeParam E - Event type
  * @param primitive - Internal primitive handler
@@ -34,14 +34,21 @@ export function mergeHandlers<E>(
     handlerCache.set(primitive, consumerCache);
   }
 
-  let merged = consumerCache.get(consumer);
-  if (!merged) {
-    merged = function mergedHandler(event: E) {
-      consumer(event);
-      primitive(event);
-    };
-    consumerCache.set(consumer, merged);
+  const cachedHandler = consumerCache.get(consumer);
+  if (cachedHandler) {
+    return cachedHandler as (event: E) => void;
   }
 
+  const merged: Handler = function mergedHandler(event: unknown) {
+    const e = event as E;
+    primitive(e);
+
+    const eventWithPrevention = event as { defaultPrevented?: boolean };
+    if (!eventWithPrevention?.defaultPrevented) {
+      consumer(e);
+    }
+  };
+
+  consumerCache.set(consumer, merged);
   return merged as (event: E) => void;
 }

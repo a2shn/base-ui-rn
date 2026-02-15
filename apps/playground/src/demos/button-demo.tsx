@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 import { Button } from '@base-ui-rn/button';
 
 export function ButtonDemo() {
@@ -20,12 +20,13 @@ export function ButtonDemo() {
         asChild
         accessibilityHint='Increments the counter via slotted view'
         onPress={() => {
-          setCount((c) => c + 1)
+          setCount((c) => c + 1);
         }}
       >
-        <View>
+        {/* Using Pressable here avoids the __DEV__ warning and ensures optimal keyboard focus */}
+        <Pressable accessibilityRole='button'>
           <Text>Slotted Button</Text>
-        </View>
+        </Pressable>
       </Button.Root>
 
       <Button.Root

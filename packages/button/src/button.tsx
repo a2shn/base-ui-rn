@@ -1,57 +1,36 @@
 import * as React from 'react';
-import { Pressable, type PressableProps, type View } from 'react-native';
+import {
+  Pressable,
+  type PressableProps,
+  type View,
+  type NativeSyntheticEvent,
+  type TextInputKeyPressEventData,
+  type GestureResponderEvent,
+} from 'react-native';
 import { Slot } from '@base-ui-rn/slot';
 
-/**
- * Props for the Button Root component.
- *
- * Extends React Native's PressableProps and adds support for rendering
- * as a child component via Slot.
- */
 export interface ButtonProps extends PressableProps {
   /**
-   * When true, Button.Root will not render a Pressable.
-   * Instead, it will pass all button props and accessibility attributes
-   * to its single child via Slot.
-   *
-   * The child must be a single valid React element.
+   * When true, Button.Root delegates rendering to its child via Slot.
    */
   asChild?: boolean;
 
   /**
    * Accessibility hint describing the result of pressing the button.
-   *
-   * This value is required to encourage consistent, explicit accessibility
-   * descriptions across the app.
+   * Required to encourage consistent accessibility descriptions.
    */
   accessibilityHint: string;
 }
 
 /**
- * This component is exported as `Button.Root` and is intended to be used
- * as a low-level button primitive.
- *
- * @example
- * ```tsx
- * import { Button } from '@/components/button';
- *
- * <Button.Root accessibilityHint="Submits the form">
- *   Submit
- * </Button.Root>
- * ```
- *
- * @example
- * ```tsx
- * <Button.Root asChild accessibilityHint="Navigates to settings">
- *   <Link href="/settings">Settings</Link>
- * </Button.Root>
- * ```
+ * Low-level button primitive.
  *
  * Behavior:
  * - Renders a native Pressable by default.
  * - When `asChild` is true, delegates rendering to its child via Slot.
  * - Normalizes disabled state across accessibility and focus props.
- * - Always applies button roles and accessibility attributes.
+ * - Injects the Responder System to ensure generic children (like View)
+ * becoming interactive.
  */
 export const Root = React.memo(
   React.forwardRef<View, ButtonProps>(function Root(
@@ -67,18 +46,54 @@ export const Root = React.memo(
   ) {
     const isDisabled = disabled === true;
 
-    // Convert onPress into the Native Responder System
+    if (__DEV__ && asChild && React.isValidElement(children)) {
+      const childType = (children as React.ReactElement).type;
+      const isPressable = childType === Pressable;
+
+      if (!isPressable) {
+        const childName =
+          typeof childType === 'string'
+            ? childType
+            : (childType as { displayName?: string; name?: string })
+                .displayName ||
+              (childType as { displayName?: string; name?: string }).name ||
+              'Unknown';
+
+        const identifier =
+          props.testID || props.accessibilityLabel || accessibilityHint;
+
+        const locationHint = identifier ? ` (Identifier: "${identifier}")` : '';
+
+        console.warn(
+          `[Base UI RN] <Button.Root asChild> was used with a non-Pressable child: <${childName}>${locationHint}.\n` +
+            `While we inject touch support, generic components may not provide a full ` +
+            `native keyboard focus experience. Consider using <Pressable> as the direct child.`,
+        );
+      }
+    }
+
     const responderProps = React.useMemo(
       () => ({
         onStartShouldSetResponder: () => !isDisabled,
-        onResponderRelease: (e: any) => {
+        onResponderRelease: (e: GestureResponderEvent) => {
           if (!isDisabled) {
             onPress?.(e);
           }
         },
-        // Ensures the view can capture the touch even if children are present
         onTerminationRequest: () => true,
       }),
+      [isDisabled, onPress],
+    );
+
+    const handleKeyPress = React.useCallback(
+      (e: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
+        if (isDisabled) return;
+
+        const key = e.nativeEvent.key;
+        if (key === 'Enter' || key === ' ') {
+          onPress?.(e as unknown as GestureResponderEvent);
+        }
+      },
       [isDisabled, onPress],
     );
 
@@ -90,12 +105,13 @@ export const Root = React.memo(
       accessibilityState: { disabled: isDisabled },
       focusable: !isDisabled,
       importantForAccessibility: 'yes' as const,
+      onKeyPress: handleKeyPress,
       ...props,
     };
 
     if (asChild) {
       return (
-        <Slot ref={forwardedRef} {...commonProps}>
+        <Slot ref={forwardedRef} {...commonProps} onPress={onPress}>
           {children as React.ReactElement}
         </Slot>
       );
