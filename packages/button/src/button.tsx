@@ -9,6 +9,13 @@ import {
 } from 'react-native';
 import { Slot } from '@base-ui-rn/slot';
 
+/**
+ * Recommended minimum touch target size is 44-48dp.
+ * We apply a default slop of 10 to help smaller visual elements meet this requirement
+ * without affecting the layout flow.
+ */
+const DEFAULT_HIT_SLOP = { top: 10, bottom: 10, left: 10, right: 10 };
+
 export interface ButtonProps extends PressableProps {
   /**
    * When true, Button.Root delegates rendering to its child via Slot.
@@ -31,6 +38,7 @@ export interface ButtonProps extends PressableProps {
  * - Normalizes disabled state across accessibility and focus props.
  * - Injects the Responder System to ensure generic children (like View)
  * becoming interactive.
+ * - Applies a default hitSlop to ensure touch target compliance.
  */
 export const Root = React.memo(
   React.forwardRef<View, ButtonProps>(function Root(
@@ -39,6 +47,7 @@ export const Root = React.memo(
       disabled,
       onPress,
       accessibilityHint,
+      hitSlop = DEFAULT_HIT_SLOP,
       children,
       ...props
     },
@@ -106,6 +115,7 @@ export const Root = React.memo(
       focusable: !isDisabled,
       importantForAccessibility: 'yes' as const,
       onKeyPress: handleKeyPress,
+      hitSlop,
       ...props,
     };
 
