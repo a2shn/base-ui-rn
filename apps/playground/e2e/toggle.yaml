@@ -1,0 +1,29 @@
+appId: com.baseuirn.playground
+---
+- launchApp
+- tapOn: 'Toggle'
+
+- tapOn: '🔔 Notifications'
+- assertVisible:
+    text: '🔔 Notifications'
+    checked: true
+
+- tapOn: '☀️ Light Mode: OFF'
+- assertVisible: '🌙 Dark Mode: ON'
+- assertVisible:
+    text: '🌙 Dark Mode: ON'
+    checked: true
+
+- tapOn:
+    id: 'slotted-toggle'
+
+- assertVisible:
+    id: 'slotted-toggle'
+- assertVisible:
+    id: 'slotted-toggle'
+    checked: true
+
+- tapOn: '🔒 Locked (Cannot click)'
+- assertVisible:
+    id: 'disabled-toggle'
+    enabled: false

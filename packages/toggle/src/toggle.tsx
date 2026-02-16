@@ -7,67 +7,106 @@ import {
   type TextInputKeyPressEventData,
   type GestureResponderEvent,
 } from 'react-native';
-import { Slot } from '@base-ui-rn/slot';
 
 /**
- * Recommended minimum touch target size is 44-48dp.
- * We apply a default slop of 10 to help smaller visual elements meet this requirement
- * without affecting the layout flow.
+ * Default hit slop applied to the toggle.
+ *
+ * @default
+ * { top: 14, bottom: 14, left: 14, right: 14 }
  */
-const DEFAULT_HIT_SLOP = { top: 10, bottom: 10, left: 10, right: 10 };
+const DEFAULT_HIT_SLOP = { top: 14, bottom: 14, left: 14, right: 14 };
 
-export interface ToggleRootProps extends Omit<PressableProps, 'role'> {
+/**
+ * Props for `Toggle.Root`.
+ */
+export interface ToggleProps extends Omit<PressableProps, 'role'> {
   /**
-   * The controlled state of the toggle.
+   * Controlled checked state.
    */
   checked?: boolean;
 
   /**
-   * The uncontrolled default state of the toggle.
+   * Uncontrolled initial checked state.
+   *
+   * @default false
    */
   defaultChecked?: boolean;
 
   /**
-   * Callback fired when the state of the toggle changes.
+   * Called when the checked state changes.
+   *
+   * @param checked The next checked state.
    */
   onCheckedChange?: (checked: boolean) => void;
 
   /**
-   * When true, Toggle.Root delegates rendering to its child via Slot.
-   */
-  asChild?: boolean;
-
-  /**
-   * Defines whether the component acts as a checkbox or a switch for screen readers.
+   * Accessibility role used by screen readers.
+   *
    * @default 'checkbox'
    */
   role?: 'checkbox' | 'switch';
 
   /**
-   * Accessibility hint describing the result of toggling the component.
-   * Required to encourage consistent accessibility descriptions.
+   * Describes the result of toggling the control.
    */
   accessibilityHint: string;
+
+  /**
+   * Called when a hardware keyboard key is pressed.
+   */
+  onKeyPress?: (e: NativeSyntheticEvent<TextInputKeyPressEventData>) => void;
+
+  /**
+   * Expands the interactive touch area.
+   *
+   * @default
+   * { top: 14, bottom: 14, left: 14, right: 14 }
+   */
+  hitSlop?: PressableProps['hitSlop'];
 }
 
 /**
- * Low-level toggle primitive.
+ * Headless toggle primitive built on top of React Native `Pressable`.
  *
- * Behavior:
- * - Manages controlled and uncontrolled checked state.
- * - Renders a native Pressable by default.
- * - When `asChild` is true, delegates rendering to its child via Slot.
- * - Automatically syncs `checked` state to the native `accessibilityState`.
- * - Injects the Responder System for generic slotted children.
- * - Applies a default hitSlop of 14 to ensure touch target compliance.
+ * @param checked
+ * Controlled checked state.
+ *
+ * @param defaultChecked
+ * Initial unchecked state when uncontrolled.
+ *
+ * @param onCheckedChange
+ * Callback fired when the checked state changes.
+ *
+ * @param role
+ * Accessibility role exposed to assistive technologies.
+ *
+ * @param accessibilityHint
+ * Describes the result of toggling the control.
+ *
+ * @param hitSlop
+ * Expands the interactive touch area.
+ *
+ * @default role 'checkbox'
+ * @default hitSlop { top: 14, bottom: 14, left: 14, right: 14 }
+ *
+ * @example
+ * ```tsx
+ * <Toggle.Root
+ *   accessibilityHint="Enables notifications"
+ *   onCheckedChange={setEnabled}
+ * >
+ *   {({ pressed }) => (
+ *     <View style={{ opacity: pressed ? 0.6 : 1 }} />
+ *   )}
+ * </Toggle.Root>
+ * ```
  */
 export const Root = React.memo(
-  React.forwardRef<View, ToggleRootProps>(function Root(
+  React.forwardRef<View, ToggleProps>(function Root(
     {
       checked,
       defaultChecked = false,
       onCheckedChange,
-      asChild = false,
       role = 'checkbox',
       disabled,
       onPress,
@@ -83,39 +122,15 @@ export const Root = React.memo(
 
     const [uncontrolledChecked, setUncontrolledChecked] =
       React.useState(defaultChecked);
+
     const isChecked = checked !== undefined ? checked : uncontrolledChecked;
-
-    if (__DEV__ && asChild && React.isValidElement(children)) {
-      const childType = (children as React.ReactElement).type;
-      const isPressable = childType === Pressable;
-
-      if (!isPressable) {
-        const childName =
-          typeof childType === 'string'
-            ? childType
-            : (childType as { displayName?: string; name?: string })
-                .displayName ||
-              (childType as { displayName?: string; name?: string }).name ||
-              'Unknown';
-
-        const identifier =
-          props.testID || props.accessibilityLabel || accessibilityHint;
-
-        const locationHint = identifier ? ` (Identifier: "${identifier}")` : '';
-
-        console.warn(
-          `[Base UI RN] <Toggle.Root asChild> was used with a non-Pressable child: <${childName}>${locationHint}.\n` +
-            `While we inject touch support, generic components may not provide a full ` +
-            `native keyboard focus experience. Consider using <Pressable> as the direct child.`,
-        );
-      }
-    }
 
     const handleToggle = React.useCallback(
       (event: GestureResponderEvent) => {
         if (isDisabled) return;
 
         const nextChecked = !isChecked;
+
         if (checked === undefined) {
           setUncontrolledChecked(nextChecked);
         }
@@ -126,15 +141,6 @@ export const Root = React.memo(
       [isDisabled, isChecked, checked, onCheckedChange, onPress],
     );
 
-    const responderProps = React.useMemo(
-      () => ({
-        onStartShouldSetResponder: () => !isDisabled,
-        onResponderRelease: handleToggle,
-        onTerminationRequest: () => true,
-      }),
-      [isDisabled, handleToggle],
-    );
-
     const handleKeyPress = React.useCallback(
       (e: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
         if (isDisabled) return;
@@ -143,8 +149,10 @@ export const Root = React.memo(
         if (key === 'Enter' || key === ' ') {
           handleToggle(e as unknown as GestureResponderEvent);
         }
+
+        props.onKeyPress?.(e);
       },
-      [isDisabled, handleToggle],
+      [isDisabled, handleToggle, props],
     );
 
     const mergedAccessibilityState = React.useMemo(
@@ -156,33 +164,20 @@ export const Root = React.memo(
       [accessibilityState, isDisabled, isChecked],
     );
 
-    const commonProps = {
-      ...responderProps,
-      accessible: true,
-      accessibilityRole: role,
-      accessibilityHint,
-      accessibilityState: mergedAccessibilityState,
-      focusable: !isDisabled,
-      importantForAccessibility: 'yes' as const,
-      onKeyPress: handleKeyPress,
-      hitSlop,
-      ...props,
-    };
-
-    if (asChild) {
-      return (
-        <Slot ref={forwardedRef} {...commonProps} onPress={handleToggle}>
-          {children as React.ReactElement}
-        </Slot>
-      );
-    }
-
     return (
       <Pressable
         ref={forwardedRef}
         disabled={isDisabled}
-        {...commonProps}
+        accessible
+        accessibilityRole={role}
+        accessibilityHint={accessibilityHint}
+        accessibilityState={mergedAccessibilityState}
+        focusable={!isDisabled}
+        importantForAccessibility='yes'
+        hitSlop={hitSlop}
         onPress={handleToggle}
+        onKeyPress={handleKeyPress}
+        {...props}
       >
         {children}
       </Pressable>

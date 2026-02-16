@@ -1,17 +1,10 @@
 import * as React from 'react';
-import { Text, View, Pressable } from 'react-native';
+import { Text, View } from 'react-native';
 import { render, fireEvent } from '@testing-library/react-native';
 import { Root as Button } from './button';
 
 describe('Button.Root', () => {
   const defaultHint = 'Triggers an action';
-
-  // Suppress and track console warnings for specific tests
-  const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-
-  afterEach(() => {
-    consoleSpy.mockClear();
-  });
 
   describe('Standard Rendering', () => {
     it('renders as a Pressable by default with base accessibility', () => {
@@ -57,97 +50,58 @@ describe('Button.Root', () => {
     });
   });
 
-  describe('asChild Polymorphism', () => {
-    it('merges button accessibility props onto the child Pressable component', () => {
-      const { getByTestId } = render(
-        <Button asChild disabled accessibilityHint='Custom Hint'>
-          <Pressable
-            testID='custom-child'
-            accessibilityLabel='Custom Label'
-            accessibilityHint='Custom Hint'
-          />
+  describe('Native Render Props (children as function)', () => {
+    it('supports React Native press state via render props', () => {
+      const { getByText } = render(
+        <Button accessibilityHint={defaultHint}>
+          {({ pressed }) => (
+            <Text>{pressed ? 'Pressed State' : 'Normal State'}</Text>
+          )}
         </Button>,
       );
 
-      const child = getByTestId('custom-child');
-
-      expect(child.props.accessibilityRole).toBe('button');
-      expect(child.props.accessibilityLabel).toBe('Custom Label');
-      expect(child.props.accessibilityHint).toBe('Custom Hint');
-      expect(child.props.focusable).toBe(false);
-      expect(child.props.accessibilityState).toEqual({ disabled: true });
-      expect(consoleSpy).not.toHaveBeenCalled();
+      // Verifies the function is executed and renders the correct initial state
+      expect(getByText('Normal State')).toBeDefined();
     });
+  });
 
-    it('chains event handlers between Button and the child component', () => {
-      const rootPress = jest.fn();
-      const childPress = jest.fn();
-
-      const { getByTestId } = render(
-        <Button asChild onPress={rootPress} accessibilityHint={defaultHint}>
-          <Pressable
-            accessibilityRole='button'
-            testID='pressable-child'
-            onPress={childPress}
-          >
-            <Text>Click Me</Text>
-          </Pressable>
-        </Button>,
-      );
-
-      fireEvent.press(getByTestId('pressable-child'));
-
-      expect(rootPress).toHaveBeenCalledTimes(1);
-      expect(childPress).toHaveBeenCalledTimes(1);
-    });
-
-    it('warns but functions when using asChild with a View component', () => {
+  describe('Hardware Keyboard Accessibility', () => {
+    it('triggers onPress when Enter or Space is pressed', () => {
       const onPressMock = jest.fn();
-
-      const { getByTestId } = render(
-        // Pass testID to the Root
-        <Button
-          asChild
-          testID='view-child'
-          onPress={onPressMock}
-          accessibilityHint={defaultHint}
-        >
-          <View>
-            <Text>Interaction Test</Text>
-          </View>
+      const { getByRole } = render(
+        <Button onPress={onPressMock} accessibilityHint={defaultHint}>
+          <Text>Keyboard Button</Text>
         </Button>,
       );
 
-      const child = getByTestId('view-child');
+      const button = getByRole('button');
 
-      fireEvent.press(child);
+      // Simulate Space key
+      fireEvent(button, 'keyPress', { nativeEvent: { key: ' ' } });
       expect(onPressMock).toHaveBeenCalledTimes(1);
 
-      // Expect the NEW contextual DX string
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining(
-          '[Base UI RN] <Button.Root asChild> was used with a non-Pressable child: <View> (Identifier: "view-child").',
-        ),
-      );
+      // Simulate Enter key
+      fireEvent(button, 'keyPress', { nativeEvent: { key: 'Enter' } });
+      expect(onPressMock).toHaveBeenCalledTimes(2);
     });
 
-    it('warns when using asChild with a Text component', () => {
-      render(
-        <Button asChild testID='text-child' accessibilityHint={defaultHint}>
-          <Text>Warning Test</Text>
+    it('ignores hardware keyboard events when disabled', () => {
+      const onPressMock = jest.fn();
+      const { getByRole } = render(
+        <Button disabled onPress={onPressMock} accessibilityHint={defaultHint}>
+          <Text>Keyboard Button</Text>
         </Button>,
       );
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining(
-          '[Base UI RN] <Button.Root asChild> was used with a non-Pressable child: <Text> (Identifier: "text-child").',
-        ),
-      );
+      const button = getByRole('button');
+
+      fireEvent(button, 'keyPress', { nativeEvent: { key: 'Enter' } });
+      expect(onPressMock).not.toHaveBeenCalled();
     });
   });
 
   describe('Ref Forwarding', () => {
-    it('forwards ref to the standard Pressable wrapper', () => {
+    it('forwards ref to the native Pressable wrapper', () => {
       const ref = React.createRef<View>();
 
       render(
@@ -156,20 +110,8 @@ describe('Button.Root', () => {
         </Button>,
       );
 
+      // In React Native testing library, refs point to the native host component
       expect(ref.current).toBeDefined();
-    });
-
-    it('forwards ref to the underlying child component when using asChild', () => {
-      const ref = React.createRef<View>();
-
-      render(
-        <Button asChild ref={ref} accessibilityHint={defaultHint}>
-          <Pressable accessibilityRole='button' testID='child-pressable' />
-        </Button>,
-      );
-
-      expect(ref.current).toBeDefined();
-      expect(ref.current?.props.testID).toBe('child-pressable');
     });
   });
 });

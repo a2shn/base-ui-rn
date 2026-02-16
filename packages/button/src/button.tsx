@@ -7,43 +7,83 @@ import {
   type TextInputKeyPressEventData,
   type GestureResponderEvent,
 } from 'react-native';
-import { Slot } from '@base-ui-rn/slot';
 
 /**
- * Recommended minimum touch target size is 44-48dp.
- * We apply a default slop of 10 to help smaller visual elements meet this requirement
- * without affecting the layout flow.
+ * Default hit slop applied to the button.
+ *
+ * @default
+ * { top: 10, bottom: 10, left: 10, right: 10 }
  */
 const DEFAULT_HIT_SLOP = { top: 10, bottom: 10, left: 10, right: 10 };
 
+/**
+ * Props for `Button.Root`.
+ */
 export interface ButtonProps extends PressableProps {
   /**
-   * When true, Button.Root delegates rendering to its child via Slot.
+   * Disables press, focus, and keyboard interaction.
+   *
+   * @default false
    */
-  asChild?: boolean;
+  disabled?: boolean;
 
   /**
-   * Accessibility hint describing the result of pressing the button.
-   * Required to encourage consistent accessibility descriptions.
+   * Describes the result of activating the button.
+   *
+   * This is required for accessibility.
    */
   accessibilityHint: string;
+
+  /**
+   * Called when a hardware keyboard key is pressed while the button is focused.
+   *
+   * Useful for Web and TV platforms where keyboard interaction is expected.
+   */
+  onKeyPress?: (e: NativeSyntheticEvent<TextInputKeyPressEventData>) => void;
+
+  /**
+   * Expands the interactive touch area beyond the visual bounds.
+   *
+   * @default
+   * { top: 10, bottom: 10, left: 10, right: 10 }
+   */
+  hitSlop?: PressableProps['hitSlop'];
 }
 
 /**
- * Low-level button primitive.
+ * Headless button primitive built on top of React Native `Pressable`.
  *
- * Behavior:
- * - Renders a native Pressable by default.
- * - When `asChild` is true, delegates rendering to its child via Slot.
- * - Normalizes disabled state across accessibility and focus props.
- * - Injects the Responder System to ensure generic children (like View)
- * becoming interactive.
- * - Applies a default hitSlop to ensure touch target compliance.
+ * @param disabled
+ * Controls whether the button can be pressed or focused.
+ *
+ * @param onPress
+ * Callback fired when the button is activated.
+ *
+ * @param accessibilityHint
+ * Describes the result of activating the button.
+ *
+ * @param hitSlop
+ * Expands the interactive touch area.
+ *
+ * @default hitSlop { top: 10, bottom: 10, left: 10, right: 10 }
+ *
+ * @example
+ * ```tsx
+ * <Button.Root
+ *   accessibilityHint="Submits the form"
+ *   onPress={handleSubmit}
+ * >
+ *   {({ pressed }) => (
+ *     <Text style={{ opacity: pressed ? 0.6 : 1 }}>
+ *       Submit
+ *     </Text>
+ *   )}
+ * </Button.Root>
+ * ```
  */
 export const Root = React.memo(
   React.forwardRef<View, ButtonProps>(function Root(
     {
-      asChild = false,
       disabled,
       onPress,
       accessibilityHint,
@@ -55,45 +95,6 @@ export const Root = React.memo(
   ) {
     const isDisabled = disabled === true;
 
-    if (__DEV__ && asChild && React.isValidElement(children)) {
-      const childType = (children as React.ReactElement).type;
-      const isPressable = childType === Pressable;
-
-      if (!isPressable) {
-        const childName =
-          typeof childType === 'string'
-            ? childType
-            : (childType as { displayName?: string; name?: string })
-                .displayName ||
-              (childType as { displayName?: string; name?: string }).name ||
-              'Unknown';
-
-        const identifier =
-          props.testID || props.accessibilityLabel || accessibilityHint;
-
-        const locationHint = identifier ? ` (Identifier: "${identifier}")` : '';
-
-        console.warn(
-          `[Base UI RN] <Button.Root asChild> was used with a non-Pressable child: <${childName}>${locationHint}.\n` +
-            `While we inject touch support, generic components may not provide a full ` +
-            `native keyboard focus experience. Consider using <Pressable> as the direct child.`,
-        );
-      }
-    }
-
-    const responderProps = React.useMemo(
-      () => ({
-        onStartShouldSetResponder: () => !isDisabled,
-        onResponderRelease: (e: GestureResponderEvent) => {
-          if (!isDisabled) {
-            onPress?.(e);
-          }
-        },
-        onTerminationRequest: () => true,
-      }),
-      [isDisabled, onPress],
-    );
-
     const handleKeyPress = React.useCallback(
       (e: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
         if (isDisabled) return;
@@ -102,37 +103,26 @@ export const Root = React.memo(
         if (key === 'Enter' || key === ' ') {
           onPress?.(e as unknown as GestureResponderEvent);
         }
+
+        props.onKeyPress?.(e);
       },
-      [isDisabled, onPress],
+      [isDisabled, onPress, props],
     );
-
-    const commonProps = {
-      ...responderProps,
-      accessible: true,
-      accessibilityRole: 'button' as const,
-      accessibilityHint,
-      accessibilityState: { disabled: isDisabled },
-      focusable: !isDisabled,
-      importantForAccessibility: 'yes' as const,
-      onKeyPress: handleKeyPress,
-      hitSlop,
-      ...props,
-    };
-
-    if (asChild) {
-      return (
-        <Slot ref={forwardedRef} {...commonProps} onPress={onPress}>
-          {children as React.ReactElement}
-        </Slot>
-      );
-    }
 
     return (
       <Pressable
         ref={forwardedRef}
         disabled={isDisabled}
-        {...commonProps}
+        accessible
+        accessibilityRole='button'
+        accessibilityHint={accessibilityHint}
+        accessibilityState={{ disabled: isDisabled }}
+        focusable={!isDisabled}
+        importantForAccessibility='yes'
+        hitSlop={hitSlop}
         onPress={onPress}
+        onKeyPress={handleKeyPress}
+        {...props}
       >
         {children}
       </Pressable>

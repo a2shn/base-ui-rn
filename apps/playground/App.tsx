@@ -5,9 +5,11 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import { ButtonDemo } from './src/demos/button-demo';
+import { ToggleDemo } from '@/demos/toggle-demo';
 
 const DEMOS = {
   Button: ButtonDemo,
+  Toggle: ToggleDemo,
 } as const;
 
 type DemoKey = keyof typeof DEMOS;

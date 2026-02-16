@@ -10,9 +10,6 @@
   "scripts": {
     "lint": "eslint . --fix && tsc --noEmit"
   },
-  "dependencies": {
-    "@base-ui-rn/slot": "workspace:*"
-  },
   "peerDependencies": {
     "react": ">=19.1.0",
     "react-native": ">=0.81.5"
