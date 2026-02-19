@@ -1,0 +1,36 @@
+appId: com.baseuirn.playground
+---
+- launchApp
+- tapOn:
+    id: 'button'
+
+- assertVisible: 'Button'
+
+- assertVisible: '0'
+- assertVisible:
+    id: 'button-counter'
+- assertVisible:
+    id: 'button-counter'
+    enabled: true
+- tapOn:
+    id: 'button-counter'
+- assertVisible: '1'
+- tapOn:
+    id: 'button-counter'
+- assertVisible: '2'
+- tapOn:
+    id: 'button-counter'
+- assertVisible: '3'
+
+- assertVisible: 'Disabled Button'
+- assertVisible:
+    id: 'button-disabled'
+- assertVisible:
+    id: 'button-disabled'
+    enabled: false
+- tapOn:
+    id: 'button-disabled'
+- assertVisible:
+    id: 'button-disabled'
+    enabled: false
+- assertVisible: '3'

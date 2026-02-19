@@ -5,7 +5,8 @@
     "lint": "pnpm -r lint",
     "dev": "pnpm -r dev",
     "test": "jest",
-    "test:e2e": "maestro test apps/playground/e2e",
+    "test:e2e": "tsx scripts/manage.ts e2e",
+    "test:e2e:all": "maestro test apps/playground/e2e/",
     "studio": "maestro studio",
     "manage": "tsx scripts/manage.ts"
   },
