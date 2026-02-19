@@ -16,17 +16,17 @@ export function TogglePlaybook() {
   return (
     <Gallery title='Toggle'>
       <Section title='Uncontrolled State' showAllProps={true}>
-        <Toggle.Root
+        <Toggle
           defaultChecked={false}
           accessibilityHint='Toggles notifications'
           testID='toggle-uncontrolled'
         >
           <Text>Notifications</Text>
-        </Toggle.Root>
+        </Toggle>
       </Section>
 
       <Section title='Controlled State'>
-        <Toggle.Root
+        <Toggle
           role='switch'
           checked={darkMode.value}
           onCheckedChange={darkMode.setValue}
@@ -34,19 +34,19 @@ export function TogglePlaybook() {
           testID='toggle-dark-mode'
         >
           <Text>{darkMode.value ? 'ON' : 'OFF'}</Text>
-        </Toggle.Root>
+        </Toggle>
 
         <LiveConsole title='darkMode' state={darkMode} />
       </Section>
 
       <Section title='Disabled State'>
-        <Toggle.Root
+        <Toggle
           disabled
           accessibilityHint='Locked setting'
           testID='toggle-disabled'
         >
           <Text>Disabled</Text>
-        </Toggle.Root>
+        </Toggle>
       </Section>
     </Gallery>
   );

@@ -81,7 +81,7 @@ export interface ButtonProps extends PressableProps {
  * </Button.Root>
  * ```
  */
-export const Root = React.memo(
+export const Button = React.memo(
   React.forwardRef<View, ButtonProps>(function Root(
     {
       disabled,
@@ -129,5 +129,3 @@ export const Root = React.memo(
     );
   }),
 );
-
-Root.displayName = 'Button.Root';

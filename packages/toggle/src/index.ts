@@ -1,6 +1,2 @@
-import { Root } from './toggle';
-export const Toggle = {
-  Root,
-};
-
+export { Toggle } from './toggle';
 export type { ToggleProps } from './toggle';

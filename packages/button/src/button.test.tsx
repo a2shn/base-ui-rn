@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Text, View } from 'react-native';
 import { render, fireEvent } from '@testing-library/react-native';
-import { Root as Button } from './button';
+import { Button } from './button';
 
-describe('Button.Root', () => {
+describe('Button', () => {
   const defaultHint = 'Triggers an action';
 
   describe('Standard Rendering', () => {

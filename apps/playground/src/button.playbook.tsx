@@ -16,26 +16,26 @@ export function ButtonPlaybook() {
   return (
     <Gallery title='Button'>
       <Section title='Counter Button'>
-        <Button.Root
+        <Button
           onPress={() => count.setValue(count.value + 1)}
           accessibilityHint='Increments the counter'
           testID='button-counter'
         >
           <Text>{count.value}</Text>
-        </Button.Root>
+        </Button>
 
         <LiveConsole title='count' state={count} />
       </Section>
 
       <Section title='Disabled State'>
-        <Button.Root
+        <Button
           disabled
           accessibilityHint='Locked button'
           testID='button-disabled'
           accessibilityLabel='Disabled Button'
         >
           <Text>Disabled Button</Text>
-        </Button.Root>
+        </Button>
       </Section>
     </Gallery>
   );

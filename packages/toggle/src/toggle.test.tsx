@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Text, View } from 'react-native';
 import { render, fireEvent } from '@testing-library/react-native';
-import { Root as Toggle } from './toggle';
+import { Toggle } from './toggle';
 
-describe('Toggle.Root', () => {
+describe('Toggle', () => {
   const defaultHint = 'Toggles the setting';
 
   afterEach(() => {

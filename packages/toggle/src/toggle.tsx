@@ -101,7 +101,7 @@ export interface ToggleProps extends Omit<PressableProps, 'role'> {
  * </Toggle.Root>
  * ```
  */
-export const Root = React.memo(
+export const Toggle = React.memo(
   React.forwardRef<View, ToggleProps>(function Root(
     {
       checked,
@@ -184,5 +184,3 @@ export const Root = React.memo(
     );
   }),
 );
-
-Root.displayName = 'Toggle.Root';
