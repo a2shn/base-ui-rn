@@ -21,6 +21,21 @@ describe('Button', () => {
       expect(button.props.accessibilityHint).toBe(defaultHint);
       expect(button.props.focusable).toBe(true);
       expect(button.props.accessibilityState).toEqual({ disabled: false });
+      expect(button.props.accessibilityActions).toEqual(
+        expect.arrayContaining([{ name: 'activate' }]),
+      );
+    });
+
+    it('defaults accessibilityHint when none is provided', () => {
+      const { getByRole } = render(
+        <Button>
+          <Text>Default Hint</Text>
+        </Button>,
+      );
+
+      const button = getByRole('button');
+
+      expect(button.props.accessibilityHint).toBe('Activates the button');
     });
 
     it('triggers onPress when interacted with', () => {
@@ -48,6 +63,70 @@ describe('Button', () => {
       expect(button.props.focusable).toBe(false);
       expect(button.props.accessibilityState).toEqual({ disabled: true });
     });
+
+    it('keeps focusable when focusableWhenDisabled is true', () => {
+      const onPressMock = jest.fn();
+      const { getByRole } = render(
+        <Button
+          disabled
+          focusableWhenDisabled
+          onPress={onPressMock}
+          accessibilityHint={defaultHint}
+        >
+          <Text>Loading</Text>
+        </Button>,
+      );
+
+      const button = getByRole('button');
+
+      expect(button.props.focusable).toBe(true);
+      expect(button.props.accessibilityState).toEqual({ disabled: true });
+
+      fireEvent.press(button);
+      expect(onPressMock).not.toHaveBeenCalled();
+    });
+
+    it('sets default tabIndex based on focusability', () => {
+      const { getByRole, rerender } = render(
+        <Button accessibilityHint={defaultHint}>
+          <Text>Focusable</Text>
+        </Button>,
+      );
+
+      const button = getByRole('button');
+      expect(button.props.tabIndex).toBe(0);
+
+      rerender(
+        <Button disabled accessibilityHint={defaultHint}>
+          <Text>Not Focusable</Text>
+        </Button>,
+      );
+
+      const disabledButton = getByRole('button');
+      expect(disabledButton.props.tabIndex).toBe(-1);
+    });
+
+    it('allows overriding tabIndex and aria-disabled', () => {
+      const webOverrides = {
+        tabIndex: -1 as const,
+        'aria-disabled': false,
+      };
+
+      const { getByRole } = render(
+        <Button
+          disabled
+          accessibilityHint={defaultHint}
+          {...(webOverrides as any)}
+        >
+          <Text>Overrides</Text>
+        </Button>,
+      );
+
+      const button = getByRole('button');
+
+      expect(button.props.tabIndex).toBe(-1);
+      expect(button.props['aria-disabled']).toBeUndefined();
+    });
   });
 
   describe('Native Render Props (children as function)', () => {
@@ -66,7 +145,7 @@ describe('Button', () => {
   });
 
   describe('Hardware Keyboard Accessibility', () => {
-    it('triggers onPress when Enter or Space is pressed', () => {
+    it('triggers onPress for keyboard/gamepad/TV select keys', () => {
       const onPressMock = jest.fn();
       const { getByRole } = render(
         <Button onPress={onPressMock} accessibilityHint={defaultHint}>
@@ -76,13 +155,22 @@ describe('Button', () => {
 
       const button = getByRole('button');
 
-      // Simulate Space key
-      fireEvent(button, 'keyPress', { nativeEvent: { key: ' ' } });
-      expect(onPressMock).toHaveBeenCalledTimes(1);
+      const activationKeys = [
+        ' ',
+        'Enter',
+        'Spacebar',
+        'Space',
+        'Select',
+        'Return',
+        'OK',
+        'Accept',
+      ];
 
-      // Simulate Enter key
-      fireEvent(button, 'keyPress', { nativeEvent: { key: 'Enter' } });
-      expect(onPressMock).toHaveBeenCalledTimes(2);
+      activationKeys.forEach((key) => {
+        fireEvent(button, 'keyPress', { nativeEvent: { key } });
+      });
+
+      expect(onPressMock).toHaveBeenCalledTimes(activationKeys.length);
     });
 
     it('ignores hardware keyboard events when disabled', () => {
@@ -96,6 +184,49 @@ describe('Button', () => {
       const button = getByRole('button');
 
       fireEvent(button, 'keyPress', { nativeEvent: { key: 'Enter' } });
+      expect(onPressMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Accessibility Actions', () => {
+    it('triggers onPress when activate accessibility action is fired', () => {
+      const onPressMock = jest.fn();
+      const onAccessibilityActionMock = jest.fn();
+
+      const { getByRole } = render(
+        <Button
+          onPress={onPressMock}
+          onAccessibilityAction={onAccessibilityActionMock}
+          accessibilityHint={defaultHint}
+        >
+          <Text>Action Button</Text>
+        </Button>,
+      );
+
+      const button = getByRole('button');
+
+      fireEvent(button, 'accessibilityAction', {
+        nativeEvent: { actionName: 'activate' },
+      });
+
+      expect(onPressMock).toHaveBeenCalledTimes(1);
+      expect(onAccessibilityActionMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('ignores accessibility actions when disabled', () => {
+      const onPressMock = jest.fn();
+      const { getByRole } = render(
+        <Button disabled onPress={onPressMock} accessibilityHint={defaultHint}>
+          <Text>Disabled Action</Text>
+        </Button>,
+      );
+
+      const button = getByRole('button');
+
+      fireEvent(button, 'accessibilityAction', {
+        nativeEvent: { actionName: 'activate' },
+      });
+
       expect(onPressMock).not.toHaveBeenCalled();
     });
   });
