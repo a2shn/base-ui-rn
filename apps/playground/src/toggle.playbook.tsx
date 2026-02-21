@@ -9,15 +9,20 @@ import {
 } from '@base-ui-rn/playbook';
 
 export function TogglePlaybook() {
-  const { darkMode } = usePlaybookToggles({
+  const { darkMode, loading } = usePlaybookToggles({
     darkMode: false,
+    loading: false,
   });
+  const handleLoadingPress = React.useCallback(() => {
+    loading.setValue(true);
+    setTimeout(() => loading.setValue(false), 2000);
+  }, [loading]);
 
   return (
     <Gallery title='Toggle'>
       <Section title='Uncontrolled State' showAllProps={true}>
         <Toggle
-          defaultChecked={false}
+          defaultPressed={false}
           accessibilityHint='Toggles notifications'
           testID='toggle-uncontrolled'
         >
@@ -28,8 +33,8 @@ export function TogglePlaybook() {
       <Section title='Controlled State'>
         <Toggle
           role='switch'
-          checked={darkMode.value}
-          onCheckedChange={darkMode.setValue}
+          pressed={darkMode.value}
+          onPressedChange={darkMode.setValue}
           accessibilityHint='Toggles dark mode'
           testID='toggle-dark-mode'
         >
@@ -47,6 +52,23 @@ export function TogglePlaybook() {
         >
           <Text>Disabled</Text>
         </Toggle>
+      </Section>
+
+      <Section title='Agree / Processing State'>
+        <Toggle
+          disabled={loading.value as boolean}
+          focusableWhenDisabled
+          onPress={handleLoadingPress}
+          accessibilityHint={
+            loading.value ? 'Applying changes, please wait' : 'Press to agree'
+          }
+          testID='toggle-disabled-focusable'
+          accessibilityLabel='Agree Toggle'
+        >
+          <Text>{loading.value ? 'Applying...' : 'Agree'}</Text>
+        </Toggle>
+
+        <LiveConsole title='loading' state={loading} />
       </Section>
     </Gallery>
   );

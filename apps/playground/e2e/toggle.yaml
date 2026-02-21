@@ -40,9 +40,44 @@ appId: com.baseuirn.playground
 - assertVisible: 'Disabled'
 - assertVisible:
     id: 'toggle-disabled'
+- assertVisible:
+    id: 'toggle-disabled'
     enabled: false
 - tapOn:
     id: 'toggle-disabled'
 - assertVisible:
     id: 'toggle-disabled'
     enabled: false
+
+- assertVisible: 'Agree Toggle'
+- assertVisible: 'Agree'
+- assertVisible:
+    id: 'toggle-disabled-focusable'
+    enabled: true
+
+- tapOn:
+    id: 'toggle-disabled-focusable'
+
+- assertVisible: 'Applying...'
+- assertVisible:
+    id: 'toggle-disabled-focusable'
+    enabled: false
+
+- tapOn:
+    id: 'toggle-disabled-focusable'
+- assertVisible:
+    id: 'toggle-disabled-focusable'
+    enabled: false
+
+- extendedWaitUntil:
+    visible:
+      id: 'toggle-disabled-focusable'
+      enabled: true
+    timeout: 3000
+
+- assertVisible: 'Agree'
+- assertVisible:
+    id: 'toggle-disabled-focusable'
+    enabled: true
+
+- assertVisible: 'OFF'
