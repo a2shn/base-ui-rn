@@ -33,4 +33,37 @@ appId: com.baseuirn.playground
 - assertVisible:
     id: 'button-disabled'
     enabled: false
+
+- assertVisible: 'Loading Button'
+- assertVisible: 'Load'
+- assertVisible:
+    id: 'button-disabled-focusable'
+    enabled: true
+
+- tapOn:
+    id: 'button-disabled-focusable'
+
+- assertVisible: 'Loading...'
+- assertVisible:
+    id: 'button-disabled-focusable'
+    enabled: false
+
+- tapOn:
+    id: 'button-disabled-focusable'
+- assertVisible: 'Loading...'
+- assertVisible:
+    id: 'button-disabled-focusable'
+    enabled: false
+
+- extendedWaitUntil:
+    visible:
+      id: 'button-disabled-focusable'
+      enabled: true
+    timeout: 3000
+
+- assertVisible: 'Load'
+- assertVisible:
+    id: 'button-disabled-focusable'
+    enabled: true
+
 - assertVisible: '3'

@@ -9,9 +9,15 @@ import {
 } from '@base-ui-rn/playbook';
 
 export function ButtonPlaybook() {
-  const { count } = usePlaybookToggles({
+  const { count, loading } = usePlaybookToggles({
     count: 0,
+    loading: false,
   });
+
+  const handleLoadingPress = React.useCallback(() => {
+    loading.setValue(true);
+    setTimeout(() => loading.setValue(false), 2000);
+  }, [loading]);
 
   return (
     <Gallery title='Button'>
@@ -36,6 +42,23 @@ export function ButtonPlaybook() {
         >
           <Text>Disabled Button</Text>
         </Button>
+      </Section>
+
+      <Section title='Loading State'>
+        <Button
+          disabled={loading.value as boolean}
+          focusableWhenDisabled
+          onPress={handleLoadingPress}
+          accessibilityHint={
+            loading.value ? 'Loading, please wait' : 'Press to start loading'
+          }
+          testID='button-disabled-focusable'
+          accessibilityLabel='Loading Button'
+        >
+          <Text>{loading.value ? 'Loading...' : 'Load'}</Text>
+        </Button>
+
+        <LiveConsole title='loading' state={loading} />
       </Section>
     </Gallery>
   );
