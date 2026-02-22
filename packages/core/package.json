@@ -1,8 +1,7 @@
 {
-  "name": "@base-ui-rn/test-utils",
+  "name": "@base-ui-rn/core",
   "version": "0.0.0",
-  "private": true,
-  "description": "Test utils",
+  "description": "Core package for base-ui-rn",
   "license": "MIT",
   "author": "Abdelrahman",
   "type": "module",
@@ -12,13 +11,11 @@
     "lint": "eslint . --fix && tsc --noEmit"
   },
   "peerDependencies": {
-    "@testing-library/react-native": "^13.3.3",
     "react": ">=19.1.0",
     "react-native": ">=0.81.5"
   },
   "devDependencies": {
     "@base-ui-rn/eslint-config": "workspace:*",
-    "@testing-library/react-native": "^13.3.3",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",

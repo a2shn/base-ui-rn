@@ -83,11 +83,7 @@ describe('Button - Rendering & Accessibility', () => {
       };
 
       const { getByRole } = render(
-        <Button
-          disabled
-          accessibilityHint={DEFAULT_HINT}
-          {...(webOverrides as any)}
-        >
+        <Button disabled accessibilityHint={DEFAULT_HINT} {...webOverrides}>
           <Text>Overrides</Text>
         </Button>,
       );

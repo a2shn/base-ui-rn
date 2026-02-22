@@ -6,7 +6,6 @@ import {
   type NativeSyntheticEvent,
   type GestureResponderEvent,
   type AccessibilityActionEvent,
-  type AccessibilityActionInfo,
 } from 'react-native';
 import {
   type ButtonPressedChangeDetails,
@@ -14,14 +13,15 @@ import {
   type KeyPressEventData,
   type WebAccessibilityProps,
 } from './types';
-
-/**
- * Default hit slop applied to the button.
- *
- * @default
- * { top: 10, bottom: 10, left: 10, right: 10 }
- */
-const DEFAULT_HIT_SLOP = { top: 10, bottom: 10, left: 10, right: 10 };
+import {
+  DEFAULT_HIT_SLOP,
+  isActivationKey,
+  mergeAccessibilityActions,
+  isActivationAction,
+  mergeAccessibilityState,
+  resolveTabIndex,
+  resolveAriaDisabled,
+} from '@base-ui-rn/core';
 
 const PressableWithKeyPress =
   Pressable as unknown as React.ForwardRefExoticComponent<
@@ -85,26 +85,27 @@ export const Button = React.memo(
     const isFocusable = !isDisabled || focusableWhenDisabled === true;
 
     const mergedAccessibilityState = React.useMemo(
-      () => ({
-        ...accessibilityState,
-        disabled: isDisabled,
-      }),
+      () =>
+        mergeAccessibilityState(
+          accessibilityState as Record<string, unknown> | undefined,
+          isDisabled,
+        ),
       [accessibilityState, isDisabled],
     );
 
-    const resolvedTabIndex =
-      (props as WebAccessibilityProps).tabIndex ?? (isFocusable ? 0 : -1);
-    const resolvedAriaDisabled =
-      (props as WebAccessibilityProps)['aria-disabled'] ?? isDisabled;
+    const resolvedTabIndex = resolveTabIndex(
+      isFocusable,
+      (props as WebAccessibilityProps).tabIndex,
+    );
+    const resolvedAriaDisabled = resolveAriaDisabled(
+      isDisabled,
+      (props as WebAccessibilityProps)['aria-disabled'],
+    );
 
-    const mergedAccessibilityActions = React.useMemo<
-      ReadonlyArray<AccessibilityActionInfo>
-    >(() => {
-      const actions = accessibilityActions ?? [];
-      const hasActivate = actions.some((action) => action.name === 'activate');
-
-      return hasActivate ? actions : [...actions, { name: 'activate' }];
-    }, [accessibilityActions]);
+    const mergedAccessibilityActions = React.useMemo(
+      () => mergeAccessibilityActions(accessibilityActions),
+      [accessibilityActions],
+    );
 
     const activateButton = React.useCallback(
       (
@@ -115,10 +116,10 @@ export const Button = React.memo(
         // For 'press' source, always call onPress
         // For other sources, only call onPress if onPressedChange is not provided
         if (source === 'press') {
-          onPress?.(nativeEvent as any);
+          onPress?.(nativeEvent as GestureResponderEvent);
         } else if (!onPressedChange) {
           // If onPressedChange is not provided, call onPress for all sources
-          onPress?.(nativeEvent as any);
+          onPress?.(nativeEvent as GestureResponderEvent);
         }
       },
       [onPressedChange, onPress],
@@ -127,14 +128,8 @@ export const Button = React.memo(
     const handleAccessibilityAction = React.useCallback(
       (event: AccessibilityActionEvent) => {
         const actionName = event.nativeEvent.actionName;
-        if (
-          actionName === 'activate' ||
-          actionName === 'click' ||
-          actionName === 'magicTap'
-        ) {
-          if (!isDisabled) {
-            activateButton('accessibilityAction');
-          }
+        if (isActivationAction(actionName) && !isDisabled) {
+          activateButton('accessibilityAction');
         }
 
         onAccessibilityAction?.(event);
@@ -145,15 +140,7 @@ export const Button = React.memo(
     const handleKeyPress = React.useCallback(
       (e: NativeSyntheticEvent<KeyPressEventData>) => {
         const key = e.nativeEvent.key;
-        const shouldActivate =
-          key === 'Enter' ||
-          key === ' ' ||
-          key === 'Spacebar' ||
-          key === 'Space' ||
-          key === 'Select' ||
-          key === 'Return' ||
-          key === 'OK' ||
-          key === 'Accept';
+        const shouldActivate = isActivationKey(key);
 
         if (shouldActivate && !isDisabled) {
           activateButton('keyboard');

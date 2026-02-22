@@ -63,7 +63,6 @@ describe('Button - onPressDetails', () => {
     it('calls onPressedChange with source "accessibilityAction" when accessibility action is triggered', () => {
       const onPressedChangeMock = jest.fn();
       const { getByRole } = render(
-        //eslint-disable-next-line react-native-a11y/has-valid-accessibility-actions
         <Button
           onPressedChange={onPressedChangeMock}
           accessibilityHint={DEFAULT_HINT}
@@ -205,7 +204,6 @@ describe('Button - onPressDetails', () => {
       const onPressedChangeMock = jest.fn();
       const onPressMock = jest.fn();
       const { getByRole } = render(
-        //eslint-disable-next-line react-native-a11y/has-valid-accessibility-actions
         <Button
           onPressedChange={onPressedChangeMock}
           onPress={onPressMock}

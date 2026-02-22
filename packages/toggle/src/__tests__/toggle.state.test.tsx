@@ -136,7 +136,6 @@ describe('Toggle - State Management', () => {
     it('reports source as "accessibilityAction" for screen reader actions', () => {
       const onChangeMock = jest.fn();
       const { getByRole } = render(
-        //eslint-disable-next-line react-native-a11y/has-valid-accessibility-actions
         <Toggle
           defaultPressed={false}
           onPressedChange={onChangeMock}

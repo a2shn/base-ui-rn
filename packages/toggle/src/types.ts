@@ -1,39 +1,14 @@
 import { type PressableProps, type NativeSyntheticEvent } from 'react-native';
-
-export type KeyPressEventData = { key: string };
-
-export type WebToggleProps = {
-  tabIndex?: 0 | -1;
-  'aria-disabled'?: boolean;
-  /**
-   * Reflects pressed state for the ARIA button-toggle pattern on web.
-   * Automatically set when the toggle uses role="button".
-   */
-  'aria-pressed'?: boolean;
-  /**
-   * Custom data attribute applied on web for CSS selectors and testing.
-   * Reflects the current pressed state as a boolean string.
-   *
-   * @example
-   * [data-pressed="true"] { background: blue; }
-   */
-  'data-pressed'?: boolean;
-};
+import {
+  type PressedChangeDetails,
+  type KeyPressEventData,
+} from '@base-ui-rn/core';
 
 /**
  * Details passed as the second argument to `onPressedChange`.
  * Describes how the toggle was activated.
  */
-export interface TogglePressedChangeDetails {
-  /**
-   * How the toggle was activated.
-   *
-   * - `'press'`               — touch or mouse press
-   * - `'keyboard'`            — hardware keyboard key (Enter / Space / Select / OK …)
-   * - `'accessibilityAction'` — screen reader action (activate / click / magicTap)
-   */
-  source: 'press' | 'keyboard' | 'accessibilityAction';
-}
+export type TogglePressedChangeDetails = PressedChangeDetails;
 
 export interface ToggleProps extends Omit<PressableProps, 'role'> {
   /**
@@ -101,3 +76,9 @@ export interface ToggleProps extends Omit<PressableProps, 'role'> {
    */
   hitSlop?: PressableProps['hitSlop'];
 }
+
+// Re-export commonly used types from core
+export type {
+  KeyPressEventData,
+  WebToggleAccessibilityProps,
+} from '@base-ui-rn/core';

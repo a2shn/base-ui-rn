@@ -1,28 +1,14 @@
 import { type PressableProps, type NativeSyntheticEvent } from 'react-native';
-
-export type WebAccessibilityProps = {
-  tabIndex?: 0 | -1;
-  'aria-disabled'?: boolean;
-};
-
-export type KeyPressEventData = {
-  key: string;
-};
+import {
+  type PressedChangeDetails,
+  type KeyPressEventData,
+} from '@base-ui-rn/core';
 
 /**
- * Details passed as the second argument to `onPressedChange`.
+ * Details passed to `onPressedChange` callback.
  * Describes how the button was activated.
  */
-export interface ButtonPressedChangeDetails {
-  /**
-   * How the button was activated.
-   *
-   * - `'press'`               — touch or mouse press
-   * - `'keyboard'`            — hardware keyboard key (Enter / Space / Select / OK …)
-   * - `'accessibilityAction'` — screen reader action (activate / click / magicTap)
-   */
-  source: 'press' | 'keyboard' | 'accessibilityAction';
-}
+export type ButtonPressedChangeDetails = PressedChangeDetails;
 
 export interface ButtonProps extends PressableProps {
   /**
@@ -70,3 +56,8 @@ export interface ButtonProps extends PressableProps {
    */
   hitSlop?: PressableProps['hitSlop'];
 }
+
+export type {
+  KeyPressEventData,
+  WebAccessibilityProps,
+} from '@base-ui-rn/core';

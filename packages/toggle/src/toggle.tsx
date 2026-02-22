@@ -6,27 +6,27 @@ import {
   type NativeSyntheticEvent,
   type GestureResponderEvent,
   type AccessibilityActionEvent,
-  type AccessibilityActionInfo,
 } from 'react-native';
 import {
+  DEFAULT_HIT_SLOP,
+  isActivationKey,
+  mergeAccessibilityActions,
+  isActivationAction,
+  mergeAccessibilityState,
+  resolveTabIndex,
+  resolveAriaDisabled,
+  resolveAriaPressed,
+  resolveDataPressed,
   type KeyPressEventData,
-  type TogglePressedChangeDetails,
-  type ToggleProps,
-  type WebToggleProps,
-} from './types';
-
-/**
- * Default hit slop applied to the toggle.
- *
- * @default
- * { top: 14, bottom: 14, left: 14, right: 14 }
- */
-const DEFAULT_HIT_SLOP = { top: 14, bottom: 14, left: 14, right: 14 };
+  type WebToggleAccessibilityProps,
+  type PressedChangeDetails,
+} from '@base-ui-rn/core';
+import { type TogglePressedChangeDetails, type ToggleProps } from './types';
 
 const PressableWithKeyPress =
   Pressable as unknown as React.ForwardRefExoticComponent<
     PressableProps &
-      WebToggleProps & {
+      WebToggleAccessibilityProps & {
         onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
       } & React.RefAttributes<View>
   >;
@@ -67,7 +67,7 @@ export const Toggle = React.memo(
       disabled,
       onPress,
       onKeyPress,
-      accessibilityHint = 'Toggles the state',
+      accessibilityHint = 'Toggles the value',
       accessibilityState,
       accessibilityActions,
       onAccessibilityAction,
@@ -104,7 +104,7 @@ export const Toggle = React.memo(
 
     const activateToggle = React.useCallback(
       (
-        source: TogglePressedChangeDetails['source'],
+        source: PressedChangeDetails['source'],
         nativeEvent: GestureResponderEvent | null = null,
       ) => {
         dispatchChange(!isPressed, { source });
@@ -126,17 +126,7 @@ export const Toggle = React.memo(
       (e: NativeSyntheticEvent<KeyPressEventData>) => {
         const key = e.nativeEvent.key;
 
-        const isActivationKey =
-          key === 'Enter' ||
-          key === ' ' ||
-          key === 'Spacebar' ||
-          key === 'Space' ||
-          key === 'Select' ||
-          key === 'Return' ||
-          key === 'OK' ||
-          key === 'Accept';
-
-        if (isActivationKey) {
+        if (isActivationKey(key)) {
           activateToggle('keyboard');
         }
 
@@ -149,11 +139,7 @@ export const Toggle = React.memo(
       (event: AccessibilityActionEvent) => {
         const { actionName } = event.nativeEvent;
 
-        if (
-          actionName === 'activate' ||
-          actionName === 'click' ||
-          actionName === 'magicTap'
-        ) {
+        if (isActivationAction(actionName)) {
           activateToggle('accessibilityAction');
         }
 
@@ -163,36 +149,42 @@ export const Toggle = React.memo(
     );
 
     const mergedAccessibilityState = React.useMemo(
-      () => ({
-        ...accessibilityState,
-        disabled: isDisabled,
-        checked: isPressed,
-      }),
+      () =>
+        mergeAccessibilityState(
+          accessibilityState as Record<string, unknown> | undefined,
+          isDisabled,
+          isPressed,
+        ),
       [accessibilityState, isDisabled, isPressed],
     );
 
-    const mergedAccessibilityActions = React.useMemo<
-      ReadonlyArray<AccessibilityActionInfo>
-    >(() => {
-      const actions = accessibilityActions ?? [];
-      const hasActivate = actions.some((a) => a.name === 'activate');
-      return hasActivate ? actions : [...actions, { name: 'activate' }];
-    }, [accessibilityActions]);
+    const mergedAccessibilityActions = React.useMemo(
+      () => mergeAccessibilityActions(accessibilityActions),
+      [accessibilityActions],
+    );
 
-    const resolvedTabIndex =
-      (props as WebToggleProps).tabIndex ?? (isFocusable ? 0 : -1);
+    const resolvedTabIndex = resolveTabIndex(
+      isFocusable,
+      (props as WebToggleAccessibilityProps).tabIndex,
+    );
 
-    const resolvedAriaDisabled =
-      (props as WebToggleProps)['aria-disabled'] ?? isDisabled;
+    const resolvedAriaDisabled = resolveAriaDisabled(
+      isDisabled,
+      (props as WebToggleAccessibilityProps)['aria-disabled'],
+    );
 
     // aria-pressed is relevant when the consumer overrides role to 'button'.
     // For checkbox / switch roles, accessibilityState.checked maps to aria-checked.
-    const resolvedAriaPressed =
-      (props as WebToggleProps)['aria-pressed'] ?? isPressed;
+    const resolvedAriaPressed = resolveAriaPressed(
+      isPressed,
+      (props as WebToggleAccessibilityProps)['aria-pressed'],
+    );
 
     // data-pressed enables CSS selectors such as [data-pressed="true"] { … }
-    const resolvedDataPressed =
-      (props as WebToggleProps)['data-pressed'] ?? isPressed;
+    const resolvedDataPressed = resolveDataPressed(
+      isPressed,
+      (props as WebToggleAccessibilityProps)['data-pressed'],
+    );
 
     return (
       <PressableWithKeyPress

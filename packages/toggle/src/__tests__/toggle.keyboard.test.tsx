@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+import { render } from '@testing-library/react-native';
 import { Toggle } from '../toggle';
 import {
   DEFAULT_HINT,
   fireKeyPress,
-  fireMultipleKeyPresses,
   ACTIVATION_KEYS,
   NON_ACTIVATION_KEYS,
   DPAD_KEYS,
