@@ -1,7 +1,8 @@
 {
-  "name": "@base-ui-rn/toggle",
+  "name": "@base-ui-rn/test-utils",
+  "private": "true",
   "version": "0.0.0",
-  "description": "Headless toggle primitive for React Native",
+  "description": "Test utils",
   "license": "MIT",
   "author": "Abdelrahman",
   "type": "module",
@@ -11,12 +12,12 @@
     "lint": "eslint . --fix && tsc --noEmit"
   },
   "peerDependencies": {
+    "@testing-library/react-native": "^13.3.3",
     "react": ">=19.1.0",
     "react-native": ">=0.81.5"
   },
   "devDependencies": {
     "@base-ui-rn/eslint-config": "workspace:*",
-    "@base-ui-rn/test-utils": "workspace:*",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",

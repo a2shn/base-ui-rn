@@ -8,6 +8,12 @@ import {
   type AccessibilityActionEvent,
   type AccessibilityActionInfo,
 } from 'react-native';
+import {
+  type ButtonPressedChangeDetails,
+  type ButtonProps,
+  type KeyPressEventData,
+  type WebAccessibilityProps,
+} from './types';
 
 /**
  * Default hit slop applied to the button.
@@ -17,15 +23,6 @@ import {
  */
 const DEFAULT_HIT_SLOP = { top: 10, bottom: 10, left: 10, right: 10 };
 
-type WebAccessibilityProps = {
-  tabIndex?: 0 | -1;
-  'aria-disabled'?: boolean;
-};
-
-type KeyPressEventData = {
-  key: string;
-};
-
 const PressableWithKeyPress =
   Pressable as unknown as React.ForwardRefExoticComponent<
     PressableProps &
@@ -33,49 +30,6 @@ const PressableWithKeyPress =
         onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
       } & React.RefAttributes<View>
   >;
-
-/**
- * Props for `Button.Root`.
- */
-export interface ButtonProps extends PressableProps {
-  /**
-   * Disables press, focus, and keyboard interaction.
-   *
-   * @default false
-   */
-  disabled?: boolean;
-
-  /**
-   * Keeps the button focusable even when disabled.
-   *
-   * Useful for loading states where focus should not be lost.
-   *
-   * @default false
-   */
-  focusableWhenDisabled?: boolean;
-
-  /**
-   * Describes the result of activating the button.
-   *
-   * @default 'Activates the button'
-   */
-  accessibilityHint?: string;
-
-  /**
-   * Called when a hardware keyboard key is pressed while the button is focused.
-   *
-   * Useful for Web and TV platforms where keyboard interaction is expected.
-   */
-  onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
-
-  /**
-   * Expands the interactive touch area beyond the visual bounds.
-   *
-   * @default
-   * { top: 10, bottom: 10, left: 10, right: 10 }
-   */
-  hitSlop?: PressableProps['hitSlop'];
-}
 
 /**
  * Headless button primitive built on top of React Native `Pressable`.
@@ -113,6 +67,7 @@ export const Button = React.memo(
     {
       disabled,
       onPress,
+      onPressedChange,
       onKeyPress,
       accessibilityHint = 'Activates the button',
       accessibilityState,
@@ -151,6 +106,24 @@ export const Button = React.memo(
       return hasActivate ? actions : [...actions, { name: 'activate' }];
     }, [accessibilityActions]);
 
+    const activateButton = React.useCallback(
+      (
+        source: ButtonPressedChangeDetails['source'],
+        nativeEvent: GestureResponderEvent | null = null,
+      ) => {
+        onPressedChange?.({ source });
+        // For 'press' source, always call onPress
+        // For other sources, only call onPress if onPressedChange is not provided
+        if (source === 'press') {
+          onPress?.(nativeEvent as any);
+        } else if (!onPressedChange) {
+          // If onPressedChange is not provided, call onPress for all sources
+          onPress?.(nativeEvent as any);
+        }
+      },
+      [onPressedChange, onPress],
+    );
+
     const handleAccessibilityAction = React.useCallback(
       (event: AccessibilityActionEvent) => {
         const actionName = event.nativeEvent.actionName;
@@ -160,13 +133,13 @@ export const Button = React.memo(
           actionName === 'magicTap'
         ) {
           if (!isDisabled) {
-            onPress?.(event as unknown as GestureResponderEvent);
+            activateButton('accessibilityAction');
           }
         }
 
         onAccessibilityAction?.(event);
       },
-      [isDisabled, onPress, onAccessibilityAction],
+      [isDisabled, activateButton, onAccessibilityAction],
     );
 
     const handleKeyPress = React.useCallback(
@@ -183,19 +156,27 @@ export const Button = React.memo(
           key === 'Accept';
 
         if (shouldActivate && !isDisabled) {
-          onPress?.(e as unknown as GestureResponderEvent);
+          activateButton('keyboard');
         }
 
         onKeyPress?.(e);
       },
-      [isDisabled, onPress, onKeyPress],
+      [isDisabled, activateButton, onKeyPress],
+    );
+
+    const handlePress = React.useCallback(
+      (event: GestureResponderEvent) => {
+        if (!isDisabled) {
+          activateButton('press', event);
+        }
+      },
+      [activateButton, isDisabled],
     );
 
     return (
       <PressableWithKeyPress
         {...props}
         ref={forwardedRef}
-        disabled={isDisabled}
         accessible
         accessibilityRole={accessibilityRole ?? 'button'}
         accessibilityHint={accessibilityHint}
@@ -207,7 +188,7 @@ export const Button = React.memo(
         aria-disabled={resolvedAriaDisabled}
         importantForAccessibility='yes'
         hitSlop={hitSlop}
-        onPress={onPress}
+        onPress={handlePress}
         onKeyPress={handleKeyPress}
       >
         {children}
