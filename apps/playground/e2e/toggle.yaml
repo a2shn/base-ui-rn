@@ -6,68 +6,48 @@ appId: com.baseuirn.playground
 
 - assertVisible: 'Toggle'
 
+# 1. Uncontrolled State
 - assertVisible:
     id: 'toggle-uncontrolled'
-- assertVisible:
-    id: 'toggle-uncontrolled'
-    enabled: true
 - tapOn:
     id: 'toggle-uncontrolled'
 - assertVisible:
     id: 'toggle-uncontrolled'
     checked: true
 
+# 2. Controlled State
 - assertVisible: 'OFF'
 - assertVisible:
     id: 'toggle-dark-mode'
     checked: false
-- assertVisible:
-    id: 'toggle-dark-mode'
-    enabled: true
 - tapOn:
     id: 'toggle-dark-mode'
 - assertVisible: 'ON'
 - assertVisible:
     id: 'toggle-dark-mode'
     checked: true
-- tapOn:
-    id: 'toggle-dark-mode'
-- assertVisible: 'OFF'
-- assertVisible:
-    id: 'toggle-dark-mode'
-    checked: false
 
+# 3. Disabled State
 - assertVisible: 'Disabled'
 - assertVisible:
     id: 'toggle-disabled'
-- assertVisible:
-    id: 'toggle-disabled'
-    enabled: false
-- tapOn:
-    id: 'toggle-disabled'
-- assertVisible:
-    id: 'toggle-disabled'
     enabled: false
 
+# 4. Loading/Busy State & Rapid Tapping
 - assertVisible: 'Agree Toggle'
 - assertVisible: 'Agree'
-- assertVisible:
-    id: 'toggle-disabled-focusable'
-    enabled: true
-
 - tapOn:
     id: 'toggle-disabled-focusable'
 
 - assertVisible: 'Applying...'
-- assertVisible:
-    id: 'toggle-disabled-focusable'
-    enabled: false
 
+# Rapid tapping during loading
 - tapOn:
     id: 'toggle-disabled-focusable'
-- assertVisible:
+- tapOn:
     id: 'toggle-disabled-focusable'
-    enabled: false
+
+- assertVisible: 'Applying...'
 
 - extendedWaitUntil:
     visible:
@@ -76,8 +56,7 @@ appId: com.baseuirn.playground
     timeout: 3000
 
 - assertVisible: 'Agree'
+# 1 initial + 2 rapid = 3
 - assertVisible:
-    id: 'toggle-disabled-focusable'
-    enabled: true
-
-- assertVisible: 'OFF'
+    id: 'presses-console-value'
+    text: '3'

@@ -1,0 +1,38 @@
+appId: com.baseuirn.playground
+---
+- launchApp
+
+# 1. Start loading in Button playbook
+- tapOn:
+    id: 'button'
+- assertVisible: 'Button'
+- tapOn:
+    id: 'button-disabled-focusable'
+- assertVisible: 'Loading...'
+
+# 2. Interrupt by navigating back
+- tapOn:
+    id: 'back-button'
+- assertVisible: 'Base UI RN'
+
+# 3. Return to Button playbook and verify state is reset
+- tapOn:
+    id: 'button'
+- assertVisible: 'Button'
+# State should be 'Load' again because component remounted
+- assertVisible: 'Load'
+- assertNotVisible: 'Loading...'
+
+# 4. Search functionality
+- tapOn:
+    id: 'back-button'
+- tapOn:
+    id: 'search-input'
+- inputText: 'tog'
+- assertVisible: 'Toggle'
+- assertNotVisible: 'Button'
+
+- tapOn:
+    id: 'search-clear'
+- assertVisible: 'Button'
+- assertVisible: 'Toggle'

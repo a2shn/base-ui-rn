@@ -55,14 +55,21 @@ export function usePlaybookToggles<T extends Record<string, unknown>>(
   });
 
   const setters = React.useMemo(() => {
-    const callbacks = {} as Record<keyof T, (next: T[keyof T]) => void>;
+    const callbacks = {} as Record<
+      keyof T,
+      (next: T[keyof T] | ((prev: T[keyof T]) => T[keyof T])) => void
+    >;
 
     for (const key in initialMap) {
-      callbacks[key] = (nextValue: T[keyof T]) => {
+      callbacks[key] = (nextValue) => {
         setStates((prev) => {
           const previousValue = prev[key];
+          const resolvedNextValue =
+            typeof nextValue === 'function'
+              ? (nextValue as (prev: T[keyof T]) => T[keyof T])(previousValue)
+              : nextValue;
 
-          if (previousValue === nextValue) return prev;
+          if (previousValue === resolvedNextValue) return prev;
 
           const time = new Date().toISOString().split('T')[1].slice(0, 8);
 
@@ -71,11 +78,11 @@ export function usePlaybookToggles<T extends Record<string, unknown>>(
             [key]: {
               timestamp: time,
               from: previousValue,
-              to: nextValue,
+              to: resolvedNextValue,
             },
           }));
 
-          return { ...prev, [key]: nextValue };
+          return { ...prev, [key]: resolvedNextValue };
         });
       };
     }
@@ -98,7 +105,7 @@ export function usePlaybookToggles<T extends Record<string, unknown>>(
       [K in keyof T]: {
         value: T[K];
         log: ActionLog<T[K]> | null;
-        setValue: (v: T[K]) => void;
+        setValue: (v: T[K] | ((prev: T[K]) => T[K])) => void;
       };
     };
   }, [states, logs, setters]);
@@ -156,19 +163,24 @@ function getValueColor(value: unknown): string {
 export const LiveConsole = <V,>({
   title,
   state,
+  testID,
 }: {
   title: string;
   state: { value: V; log: ActionLog<V> | null };
+  testID?: string;
 }) => {
   const styles = useStyles();
   const valueColor = getValueColor(state.value);
   const formattedValue = formatValue(state.value);
 
   return (
-    <View style={styles.stateIndicator}>
+    <View style={styles.stateIndicator} testID={testID}>
       <Text style={styles.stateIndicatorLabel}>{title}:</Text>
 
-      <Text style={[styles.stateIndicatorValue, { color: valueColor }]}>
+      <Text
+        style={[styles.stateIndicatorValue, { color: valueColor }]}
+        testID={testID ? `${testID}-value` : undefined}
+      >
         {formattedValue}
       </Text>
 

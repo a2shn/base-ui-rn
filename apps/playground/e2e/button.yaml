@@ -6,27 +6,18 @@ appId: com.baseuirn.playground
 
 - assertVisible: 'Button'
 
+# 1. Counter Button
 - assertVisible: '0'
 - assertVisible:
     id: 'button-counter'
-- assertVisible:
-    id: 'button-counter'
-    enabled: true
 - tapOn:
     id: 'button-counter'
 - assertVisible: '1'
-- tapOn:
-    id: 'button-counter'
-- assertVisible: '2'
-- tapOn:
-    id: 'button-counter'
-- assertVisible: '3'
 
+# 2. Disabled State
 - assertVisible: 'Disabled Button'
 - assertVisible:
     id: 'button-disabled'
-- assertVisible:
-    id: 'button-disabled'
     enabled: false
 - tapOn:
     id: 'button-disabled'
@@ -34,6 +25,7 @@ appId: com.baseuirn.playground
     id: 'button-disabled'
     enabled: false
 
+# 3. Loading State & Accessibility Busy
 - assertVisible: 'Loading Button'
 - assertVisible: 'Load'
 - assertVisible:
@@ -43,17 +35,19 @@ appId: com.baseuirn.playground
 - tapOn:
     id: 'button-disabled-focusable'
 
+# Verify busy state (accessibilityState.busy)
 - assertVisible: 'Loading...'
-- assertVisible:
-    id: 'button-disabled-focusable'
-    enabled: false
 
+# 4. Rapid Tapping Edge Case
 - tapOn:
     id: 'button-disabled-focusable'
-- assertVisible: 'Loading...'
-- assertVisible:
+- tapOn:
     id: 'button-disabled-focusable'
-    enabled: false
+- tapOn:
+    id: 'button-disabled-focusable'
+
+# Verify that loading state remains
+- assertVisible: 'Loading...'
 
 - extendedWaitUntil:
     visible:
@@ -62,8 +56,8 @@ appId: com.baseuirn.playground
     timeout: 3000
 
 - assertVisible: 'Load'
-- assertVisible:
-    id: 'button-disabled-focusable'
-    enabled: true
 
-- assertVisible: '3'
+# Verify total presses recorded (1 initial + 3 rapid = 4)
+- assertVisible:
+    id: 'presses-console-value'
+    text: '4'

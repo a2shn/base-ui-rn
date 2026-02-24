@@ -9,14 +9,17 @@ import {
 } from '@base-ui-rn/playbook';
 
 export function TogglePlaybook() {
-  const { darkMode, loading } = usePlaybookToggles({
+  const { darkMode, loading, loadingPressCount } = usePlaybookToggles({
     darkMode: false,
     loading: false,
+    loadingPressCount: 0,
   });
   const handleLoadingPress = React.useCallback(() => {
+    loadingPressCount.setValue((prev: number) => prev + 1);
+    if (loading.value) return;
     loading.setValue(true);
     setTimeout(() => loading.setValue(false), 2000);
-  }, [loading]);
+  }, [loading, loadingPressCount]);
 
   return (
     <Gallery title='Toggle'>
@@ -62,13 +65,19 @@ export function TogglePlaybook() {
           accessibilityHint={
             loading.value ? 'Applying changes, please wait' : 'Press to agree'
           }
+          accessibilityState={{ busy: loading.value as boolean }}
           testID='toggle-disabled-focusable'
           accessibilityLabel='Agree Toggle'
         >
           <Text>{loading.value ? 'Applying...' : 'Agree'}</Text>
         </Toggle>
 
-        <LiveConsole title='loading' state={loading} />
+        <LiveConsole title='loading' state={loading} testID='loading-console' />
+        <LiveConsole
+          title='presses'
+          state={loadingPressCount}
+          testID='presses-console'
+        />
       </Section>
     </Gallery>
   );
