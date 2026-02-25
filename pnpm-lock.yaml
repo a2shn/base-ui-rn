@@ -250,6 +250,9 @@ importers:
       '@base-ui-rn/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@base-ui-rn/test-utils':
+        specifier: workspace:*
+        version: link:../test-utils
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0

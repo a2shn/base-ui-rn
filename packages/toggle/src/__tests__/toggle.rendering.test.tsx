@@ -47,7 +47,7 @@ describe('Toggle - Rendering & Accessibility', () => {
       );
 
       const toggle = getByRole('checkbox');
-      expect(toggle.props.accessibilityHint).toBe('Toggles the state');
+      expect(toggle.props.accessibilityHint).toBe('Toggles the value');
     });
 
     it('adds activate accessibility action by default', () => {
