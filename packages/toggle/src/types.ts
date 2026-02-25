@@ -12,6 +12,12 @@ export type TogglePressedChangeDetails = PressedChangeDetails;
 
 export interface ToggleProps extends Omit<PressableProps, 'role'> {
   /**
+   * The value of the toggle.
+   * Used when the toggle is part of a `ToggleGroup`.
+   */
+  value?: string;
+
+  /**
    * Controlled pressed state.
    */
   pressed?: boolean;

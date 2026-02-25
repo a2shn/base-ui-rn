@@ -19,9 +19,9 @@ import {
   resolveDataPressed,
   type KeyPressEventData,
   type WebToggleAccessibilityProps,
-  type PressedChangeDetails,
 } from '@base-ui-rn/core';
 import { type TogglePressedChangeDetails, type ToggleProps } from './types';
+import { useToggleGroupContext } from './group-context';
 
 const PressableWithKeyPress =
   Pressable as unknown as React.ForwardRefExoticComponent<
@@ -35,6 +35,31 @@ const PressableWithKeyPress =
  * Headless toggle primitive built on top of React Native `Pressable`.
  *
  * Supports a primary `pressed` / `onPressedChange` API.
+ *
+ * @param value
+ * The value of the toggle, used when it is part of a `ToggleGroup`.
+ *
+ * @param pressed
+ * Controlled pressed state.
+ *
+ * @param defaultPressed
+ * Uncontrolled initial pressed state.
+ *
+ * @param onPressedChange
+ * Called when the pressed state changes.
+ *
+ * @param role
+ * Accessibility role exposed to assistive technologies.
+ *
+ * @param disabled
+ * Whether the toggle should ignore user interaction.
+ *
+ * @param hitSlop
+ * Expands the interactive touch area beyond the visual bounds.
+ *
+ * @default role 'checkbox'
+ * @default defaultPressed false
+ * @default hitSlop { top: 14, bottom: 14, left: 14, right: 14 }
  *
  * @example
  * ```tsx
@@ -50,7 +75,7 @@ const PressableWithKeyPress =
  * // Controlled
  * <Toggle
  *   pressed={enabled}
- *   onPressedChange={({ pressed }) => setEnabled(pressed)}
+ *   onPressedChange={(pressed) => setEnabled(pressed)}
  *   accessibilityHint="Enables dark mode"
  * >
  *   <Text>Toggle</Text>
@@ -60,6 +85,7 @@ const PressableWithKeyPress =
 export const Toggle = React.memo(
   React.forwardRef<View, ToggleProps>(function Root(
     {
+      value,
       pressed: controlledPressed,
       defaultPressed = false,
       onPressedChange,
@@ -79,32 +105,56 @@ export const Toggle = React.memo(
     },
     forwardedRef,
   ) {
-    const isDisabled = disabled === true;
-    const isFocusable = !isDisabled || focusableWhenDisabled === true;
+    const groupContext = useToggleGroupContext();
+    const isInGroup = groupContext !== null;
 
-    const controlledState = controlledPressed;
+    if (process.env.NODE_ENV !== 'production') {
+      if (isInGroup && value === undefined) {
+        console.warn(
+          'Toggle: A Toggle used within a ToggleGroup must have a "value" prop.',
+        );
+      }
+    }
+
+    React.useEffect(() => {
+      if (isInGroup && value !== undefined) {
+        return groupContext.registerValue(value);
+      }
+      return undefined;
+    }, [isInGroup, value, groupContext]);
+
+    const isDisabled =
+      disabled === true || (isInGroup && groupContext.disabled);
+    const isFocusable = !isDisabled || focusableWhenDisabled === true;
 
     const [uncontrolledState, setUncontrolledState] =
       React.useState(defaultPressed);
 
-    const isPressed =
-      controlledState !== undefined ? controlledState : uncontrolledState;
-
-    // Fires both the new and legacy callbacks so consumers can use either.
+    let isPressed: boolean;
+    if (isInGroup && value !== undefined) {
+      isPressed = groupContext.valueSet.has(value);
+    } else {
+      isPressed =
+        controlledPressed !== undefined ? controlledPressed : uncontrolledState;
+    }
 
     const dispatchChange = React.useCallback(
       (next: boolean, details: TogglePressedChangeDetails) => {
-        if (controlledState === undefined) {
-          setUncontrolledState(next);
+        if (isInGroup && value !== undefined) {
+          groupContext.toggleValue(value, { ...details, value });
+        } else {
+          if (controlledPressed === undefined) {
+            setUncontrolledState(next);
+          }
+          onPressedChange?.(next, details);
         }
-        onPressedChange?.(next, details);
       },
-      [controlledState, onPressedChange],
+      [isInGroup, value, groupContext, controlledPressed, onPressedChange],
     );
 
     const activateToggle = React.useCallback(
       (
-        source: PressedChangeDetails['source'],
+        source: TogglePressedChangeDetails['source'],
         nativeEvent: GestureResponderEvent | null = null,
       ) => {
         dispatchChange(!isPressed, { source });
@@ -173,18 +223,20 @@ export const Toggle = React.memo(
       (props as WebToggleAccessibilityProps)['aria-disabled'],
     );
 
-    // aria-pressed is relevant when the consumer overrides role to 'button'.
-    // For checkbox / switch roles, accessibilityState.checked maps to aria-checked.
     const resolvedAriaPressed = resolveAriaPressed(
       isPressed,
       (props as WebToggleAccessibilityProps)['aria-pressed'],
     );
 
-    // data-pressed enables CSS selectors such as [data-pressed="true"] { … }
     const resolvedDataPressed = resolveDataPressed(
       isPressed,
       (props as WebToggleAccessibilityProps)['data-pressed'],
     );
+
+    const resolvedChildren =
+      typeof children === 'function'
+        ? children({ pressed: isPressed })
+        : children;
 
     return (
       <PressableWithKeyPress
@@ -207,7 +259,7 @@ export const Toggle = React.memo(
         onPress={handlePress}
         onKeyPress={handleKeyPress}
       >
-        {children}
+        {resolvedChildren}
       </PressableWithKeyPress>
     );
   }),
