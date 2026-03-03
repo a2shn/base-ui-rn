@@ -1,0 +1,108 @@
+appId: com.baseuirn.playground
+---
+- launchApp
+- tapOn:
+    id: 'toggle-group'
+
+- assertVisible: 'Toggle Group'
+
+# 1. Uncontrolled (Single Selection)
+- scrollUntilVisible:
+    element:
+      id: 'toggle-center'
+    direction: DOWN
+- assertVisible:
+    id: 'toggle-center'
+    checked: true
+- tapOn:
+    id: 'toggle-left'
+- assertVisible:
+    id: 'toggle-left'
+    checked: true
+- assertVisible:
+    id: 'toggle-center'
+    checked: false
+
+# 2. Controlled (Single Selection)
+- scrollUntilVisible:
+    element:
+      id: 'toggle-right-controlled'
+    direction: DOWN
+- tapOn:
+    id: 'toggle-right-controlled'
+- assertVisible:
+    id: 'alignment-console-value'
+    text: '["right"]'
+- assertVisible:
+    id: 'toggle-right-controlled'
+    checked: true
+
+# 3. Multiple Selection
+- scrollUntilVisible:
+    element:
+      id: 'toggle-underline'
+    direction: DOWN
+- assertVisible:
+    id: 'formats-console-value'
+    text: '["bold", "italic"]'
+- tapOn:
+    id: 'toggle-underline'
+- assertVisible:
+    id: 'formats-console-value'
+    text: '["bold", "italic", "underline"]'
+- tapOn:
+    id: 'toggle-bold'
+- assertVisible:
+    id: 'formats-console-value'
+    text: '["italic", "underline"]'
+
+# 4. Disabled State
+- scrollUntilVisible:
+    element:
+      id: 'is-disabled-label'
+    direction: DOWN
+- assertVisible:
+    id: 'is-disabled-label'
+    text: 'Disable Group'
+- tapOn:
+    id: 'toggle-group-disabled-switch'
+- assertVisible:
+    id: 'is-disabled-label'
+    text: 'Enable Group'
+- assertVisible:
+    id: 'disabled-console-value'
+    text: 'true'
+- assertVisible:
+    id: 'toggle-disabled-bold'
+    enabled: false
+- tapOn:
+    id: 'toggle-disabled-bold'
+# Value should not change
+- assertVisible:
+    id: 'toggle-disabled-bold'
+    checked: true
+- tapOn:
+    id: 'toggle-group-disabled-switch'
+- assertVisible:
+    id: 'is-disabled-label'
+    text: 'Disable Group'
+- assertVisible:
+    id: 'toggle-disabled-bold'
+    enabled: true
+
+# 5. Vertical Orientation
+- scrollUntilVisible:
+    element:
+      id: 'toggle-v1'
+    direction: DOWN
+- assertVisible:
+    id: 'toggle-v1'
+    checked: true
+- tapOn:
+    id: 'toggle-v2'
+- assertVisible:
+    id: 'toggle-v2'
+    checked: true
+- assertVisible:
+    id: 'toggle-v1'
+    checked: false

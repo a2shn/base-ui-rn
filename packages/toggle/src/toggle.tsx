@@ -66,7 +66,7 @@ const PressableWithKeyPress =
  * // Uncontrolled
  * <Toggle
  *   defaultPressed={false}
- *   onPressedChange={(pressed, { source }) => console.log(pressed, source)}
+ *   onPressedChange={(pressed, { source }) => {}}
  *   accessibilityHint="Enables dark mode"
  * >
  *   {({ pressed }) => <View style={{ opacity: pressed ? 0.6 : 1 }} />}
@@ -115,6 +115,20 @@ export const Toggle = React.memo(
         );
       }
     }
+
+    const internalRef = React.useRef<View>(null);
+    const resolvedRef = forwardedRef || internalRef;
+
+    React.useEffect(() => {
+      if (isInGroup && value !== undefined) {
+        // We use a ref object to store the current element for focus management
+        return groupContext.registerItem(
+          value,
+          resolvedRef as React.RefObject<unknown>,
+        );
+      }
+      return undefined;
+    }, [isInGroup, value, groupContext, resolvedRef]);
 
     React.useEffect(() => {
       if (isInGroup && value !== undefined) {
@@ -180,9 +194,13 @@ export const Toggle = React.memo(
           activateToggle('keyboard');
         }
 
+        if (isInGroup && value !== undefined) {
+          groupContext.onToggleKeyPress(value, e);
+        }
+
         onKeyPress?.(e);
       },
-      [activateToggle, onKeyPress],
+      [activateToggle, onKeyPress, isInGroup, value, groupContext],
     );
 
     const handleAccessibilityAction = React.useCallback(
@@ -241,7 +259,7 @@ export const Toggle = React.memo(
     return (
       <PressableWithKeyPress
         {...props}
-        ref={forwardedRef}
+        ref={resolvedRef}
         disabled={isDisabled}
         accessible
         accessibilityRole={accessibilityRole ?? role}

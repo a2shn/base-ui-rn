@@ -21,13 +21,19 @@ describe('ToggleGroup - Accessibility & Dev Mode', () => {
 
     render(
       <ToggleGroup>
-        <Toggle value="duplicate"><Text>A</Text></Toggle>
-        <Toggle value="duplicate"><Text>B</Text></Toggle>
+        <Toggle value='duplicate'>
+          <Text>A</Text>
+        </Toggle>
+        <Toggle value='duplicate'>
+          <Text>B</Text>
+        </Toggle>
       </ToggleGroup>,
     );
 
     expect(console.warn).toHaveBeenCalledWith(
-      expect.stringContaining('ToggleGroup: Duplicate value "duplicate" detected'),
+      expect.stringContaining(
+        'ToggleGroup: Duplicate value "duplicate" detected',
+      ),
     );
   });
 
@@ -36,8 +42,12 @@ describe('ToggleGroup - Accessibility & Dev Mode', () => {
 
     render(
       <ToggleGroup>
-        <Toggle value="duplicate"><Text>A</Text></Toggle>
-        <Toggle value="duplicate"><Text>B</Text></Toggle>
+        <Toggle value='duplicate'>
+          <Text>A</Text>
+        </Toggle>
+        <Toggle value='duplicate'>
+          <Text>B</Text>
+        </Toggle>
       </ToggleGroup>,
     );
 
@@ -50,13 +60,43 @@ describe('ToggleGroup - Accessibility & Dev Mode', () => {
     // Toggle itself throws this warning
     render(
       <ToggleGroup>
-        {/* @ts-ignore */}
-        <Toggle><Text>No Value</Text></Toggle>
+        <Toggle value=''>
+          <Text>No Value</Text>
+        </Toggle>
       </ToggleGroup>,
     );
 
     expect(console.warn).toHaveBeenCalledWith(
-      expect.stringContaining('Toggle: A Toggle used within a ToggleGroup must have a "value" prop.'),
+      expect.stringContaining(
+        'Toggle: A Toggle used within a ToggleGroup must have a "value" prop.',
+      ),
     );
+  });
+
+  it('sets accessibilityRole="group" and aria-orientation on the container', () => {
+    const { getByTestId } = render(
+      <ToggleGroup testID='group' orientation='vertical'>
+        <Toggle value='a'>
+          <Text>A</Text>
+        </Toggle>
+      </ToggleGroup>,
+    );
+
+    const group = getByTestId('group');
+    expect(group.props.accessibilityRole).toBe('group');
+    expect(group.props['aria-orientation']).toBe('vertical');
+  });
+
+  it('allows overriding accessibilityRole on the container', () => {
+    const { getByTestId } = render(
+      <ToggleGroup testID='group' accessibilityRole='radiogroup'>
+        <Toggle value='a'>
+          <Text>A</Text>
+        </Toggle>
+      </ToggleGroup>,
+    );
+
+    const group = getByTestId('group');
+    expect(group.props.accessibilityRole).toBe('radiogroup');
   });
 });

@@ -7,8 +7,10 @@ import { Toggle } from '@base-ui-rn/toggle';
 describe('ToggleGroup - Rendering & Props', () => {
   it('renders a View as the container', () => {
     const { getByTestId } = render(
-      <ToggleGroup testID="group">
-        <Toggle value="a"><Text>A</Text></Toggle>
+      <ToggleGroup testID='group'>
+        <Toggle value='a'>
+          <Text>A</Text>
+        </Toggle>
       </ToggleGroup>,
     );
 
@@ -22,7 +24,9 @@ describe('ToggleGroup - Rendering & Props', () => {
 
     render(
       <ToggleGroup ref={ref}>
-        <Toggle value="a"><Text>A</Text></Toggle>
+        <Toggle value='a'>
+          <Text>A</Text>
+        </Toggle>
       </ToggleGroup>,
     );
 
@@ -32,13 +36,15 @@ describe('ToggleGroup - Rendering & Props', () => {
   it('supports style as a function of state', () => {
     const { getByTestId } = render(
       <ToggleGroup
-        testID="group"
+        testID='group'
         value={['a']}
         style={({ value }) => ({
           backgroundColor: value.includes('a') ? 'red' : 'blue',
         })}
       >
-        <Toggle value="a"><Text>A</Text></Toggle>
+        <Toggle value='a'>
+          <Text>A</Text>
+        </Toggle>
       </ToggleGroup>,
     );
 
@@ -60,8 +66,14 @@ describe('ToggleGroup - Rendering & Props', () => {
 
   it('forwards other ViewProps to the container', () => {
     const { getByTestId } = render(
-      <ToggleGroup testID="group" accessibilityLabel="My Group">
-        <Toggle value="a"><Text>A</Text></Toggle>
+      <ToggleGroup
+        testID='group'
+        accessibilityLabel='My Group'
+        accessibilityHint='Groups toggles'
+      >
+        <Toggle value='a'>
+          <Text>A</Text>
+        </Toggle>
       </ToggleGroup>,
     );
 

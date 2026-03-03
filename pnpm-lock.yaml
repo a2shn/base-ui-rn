@@ -243,6 +243,9 @@ importers:
 
   packages/toggle-group:
     dependencies:
+      '@base-ui-rn/core':
+        specifier: workspace:*
+        version: link:../core
       '@base-ui-rn/toggle':
         specifier: workspace:*
         version: link:../toggle

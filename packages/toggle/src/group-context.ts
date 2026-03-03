@@ -41,9 +41,21 @@ export interface ToggleGroupContextValue {
    */
   valueSet: Set<string>;
   /**
+   * Register a toggle within the group for keyboard navigation.
+   * Returns an unregister function.
+   */
+  registerItem: (value: string, ref: React.RefObject<unknown>) => () => void;
+  /**
    * Register a toggle value within the group to check for duplicates in dev mode.
    */
   registerValue: (value: string) => () => void;
+  /**
+   * Callback for when a toggle within the group receives a key press.
+   */
+  onToggleKeyPress: (
+    value: string,
+    event: unknown, // Using unknown for event as NativeSyntheticEvent<KeyPressEventData> is not available here
+  ) => void;
 }
 
 export const ToggleGroupContext =

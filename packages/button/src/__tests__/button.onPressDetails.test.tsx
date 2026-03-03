@@ -307,10 +307,10 @@ describe('Button - onPressDetails', () => {
       const onPressedChangeMock = jest.fn();
       const onAccessibilityActionMock = jest.fn();
       const { getByRole } = render(
-        //eslint-disable-next-line react-native-a11y/has-valid-accessibility-actions
         <Button
           onPressedChange={onPressedChangeMock}
           onAccessibilityAction={onAccessibilityActionMock}
+          accessibilityActions={[{ name: 'activate' }]}
           accessibilityHint={DEFAULT_HINT}
         >
           <Text>Action Button</Text>

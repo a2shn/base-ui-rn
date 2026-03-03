@@ -121,7 +121,15 @@ function formatValue(value: unknown): string {
   if (typeof value === 'boolean') return String(value);
   if (typeof value === 'number') return String(value);
   if (typeof value === 'string') return `"${value}"`;
-  if (Array.isArray(value)) return `[${value.length} items]`;
+  if (Array.isArray(value)) {
+    if (
+      value.length <= 5 &&
+      value.every((i) => typeof i === 'string' || typeof i === 'number')
+    ) {
+      return `[${value.map((i) => (typeof i === 'string' ? `"${i}"` : i)).join(', ')}]`;
+    }
+    return `[${value.length} items]`;
+  }
   if (typeof value === 'object') return `{${Object.keys(value).length} keys}`;
   return String(value);
 }

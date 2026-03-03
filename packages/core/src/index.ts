@@ -24,3 +24,6 @@ export {
   resolveAriaPressed,
   resolveDataPressed,
 } from './accessibility';
+
+// Utils
+export { mergeRefs } from './utils';

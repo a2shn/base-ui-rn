@@ -1,7 +1,9 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
+import { getDefaultConfig } from 'expo/metro-config';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const { getDefaultConfig } = require('expo/metro-config');
-const path = require('path');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const projectRoot = __dirname;
 const workspaceRoot = path.resolve(projectRoot, '../..');
@@ -17,4 +19,4 @@ config.resolver.nodeModulesPaths = [
 
 config.resolver.disableHierarchicalLookup = true;
 
-module.exports = config;
+export default config;

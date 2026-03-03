@@ -9,17 +9,15 @@ import {
 
 export const Toggle = ToggleComponent;
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace Toggle {
-  export type Props = ToggleProps;
-  export type PressedChangeDetails = TogglePressedChangeDetails;
+export type {
+  ToggleProps as Props,
+  TogglePressedChangeDetails as PressedChangeDetails,
+};
 
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  export namespace Group {
-    export type ContextValue = ToggleGroupContextValue;
-    export type ChangeEventDetails = ToggleGroupChangeEventDetails;
-  }
-}
+export type {
+  ToggleGroupContextValue as GroupContextValue,
+  ToggleGroupChangeEventDetails as GroupChangeEventDetails,
+};
 
 export type { ToggleProps, TogglePressedChangeDetails };
 export { useToggleGroupContext, ToggleGroupContext };
