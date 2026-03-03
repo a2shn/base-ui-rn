@@ -3,6 +3,7 @@ export type {
   KeyPressEventData,
   WebAccessibilityProps,
   WebToggleAccessibilityProps,
+  WebToggleGroupAccessibilityProps,
   PressedChangeDetails,
 } from './types';
 

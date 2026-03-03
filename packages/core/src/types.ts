@@ -32,6 +32,24 @@ export type WebToggleAccessibilityProps = WebAccessibilityProps & {
 };
 
 /**
+ * Web-specific accessibility props for ToggleGroup.
+ */
+export type WebToggleGroupAccessibilityProps = WebAccessibilityProps & {
+  /**
+   * Indicates the orientation of the toggle group.
+   */
+  'data-orientation'?: 'horizontal' | 'vertical';
+  /**
+   * Present when the toggle group is disabled.
+   */
+  'data-disabled'?: boolean;
+  /**
+   * Present when the toggle group allows multiple buttons to be in the pressed state at the same time.
+   */
+  'data-multiple'?: boolean;
+};
+
+/**
  * Base type for press/toggle activation details.
  * Describes how a component was activated.
  */

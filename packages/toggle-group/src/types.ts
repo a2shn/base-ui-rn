@@ -3,6 +3,7 @@ import {
   type ToggleGroupChangeEventDetails,
   type Orientation,
 } from '@base-ui-rn/toggle';
+import { type WebToggleGroupAccessibilityProps } from '@base-ui-rn/core';
 
 export type { Orientation, ToggleGroupChangeEventDetails };
 
@@ -29,10 +30,10 @@ export interface ToggleGroupState {
   loopFocus: boolean;
 }
 
-export interface ToggleGroupProps extends Omit<
-  ViewProps,
-  'style' | 'children'
-> {
+export interface ToggleGroupProps
+  extends
+    Omit<ViewProps, 'style' | 'children'>,
+    WebToggleGroupAccessibilityProps {
   /**
    * The open state of the toggle group represented by an array of the values of all pressed toggle buttons.
    * This is the uncontrolled counterpart of value.

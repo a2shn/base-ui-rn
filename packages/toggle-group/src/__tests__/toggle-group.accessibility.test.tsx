@@ -85,6 +85,51 @@ describe('ToggleGroup - Accessibility & Dev Mode', () => {
     const group = getByTestId('group');
     expect(group.props.accessibilityRole).toBe('group');
     expect(group.props['aria-orientation']).toBe('vertical');
+    expect(group.props['data-orientation']).toBe('vertical');
+  });
+
+  it('sets data-disabled and data-multiple attributes', () => {
+    const { getByTestId, rerender } = render(
+      <ToggleGroup testID='group' disabled multiple>
+        <Toggle value='a'>
+          <Text>A</Text>
+        </Toggle>
+      </ToggleGroup>,
+    );
+
+    let group = getByTestId('group');
+    expect(group.props['data-disabled']).toBe(true);
+    expect(group.props['data-multiple']).toBe(true);
+
+    rerender(
+      <ToggleGroup testID='group' disabled={false} multiple={false}>
+        <Toggle value='a'>
+          <Text>A</Text>
+        </Toggle>
+      </ToggleGroup>,
+    );
+
+    group = getByTestId('group');
+    expect(group.props['data-disabled']).toBe(false);
+    expect(group.props['data-multiple']).toBe(false);
+  });
+
+  it('allows overriding data attributes', () => {
+    const { getByTestId } = render(
+      <ToggleGroup
+        testID='group'
+        data-orientation='vertical'
+        orientation='horizontal'
+      >
+        <Toggle value='a'>
+          <Text>A</Text>
+        </Toggle>
+      </ToggleGroup>,
+    );
+
+    const group = getByTestId('group');
+    expect(group.props['data-orientation']).toBe('vertical');
+    expect(group.props['aria-orientation']).toBe('horizontal');
   });
 
   it('allows overriding accessibilityRole on the container', () => {

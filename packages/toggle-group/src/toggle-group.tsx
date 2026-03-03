@@ -5,7 +5,10 @@ import {
   ToggleGroupContext,
   type ToggleGroupChangeEventDetails,
 } from '@base-ui-rn/toggle';
-import { type KeyPressEventData } from '@base-ui-rn/core';
+import {
+  type KeyPressEventData,
+  type WebToggleGroupAccessibilityProps,
+} from '@base-ui-rn/core';
 import { type ToggleGroupProps, type ToggleGroupState } from './types';
 
 /**
@@ -230,6 +233,14 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
     const resolvedChildren =
       typeof children === 'function' ? children(state) : children;
 
+    const resolvedDataOrientation =
+      (props as WebToggleGroupAccessibilityProps)['data-orientation'] ??
+      orientation;
+    const resolvedDataDisabled =
+      (props as WebToggleGroupAccessibilityProps)['data-disabled'] ?? disabled;
+    const resolvedDataMultiple =
+      (props as WebToggleGroupAccessibilityProps)['data-multiple'] ?? multiple;
+
     return (
       <ToggleGroupContext.Provider value={contextValue}>
         <View
@@ -240,6 +251,11 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
             (other.accessibilityRole ?? 'group') as unknown as 'checkbox'
           }
           aria-orientation={orientation}
+          {...({
+            'data-orientation': resolvedDataOrientation,
+            'data-disabled': resolvedDataDisabled,
+            'data-multiple': resolvedDataMultiple,
+          } as any)}
         >
           {resolvedChildren}
         </View>
