@@ -33,54 +33,6 @@ const PressableWithKeyPress =
 
 /**
  * Headless toggle primitive built on top of React Native `Pressable`.
- *
- * Supports a primary `pressed` / `onPressedChange` API.
- *
- * @param value
- * The value of the toggle, used when it is part of a `ToggleGroup`.
- *
- * @param pressed
- * Controlled pressed state.
- *
- * @param defaultPressed
- * Uncontrolled initial pressed state.
- *
- * @param onPressedChange
- * Called when the pressed state changes.
- *
- * @param role
- * Accessibility role exposed to assistive technologies.
- *
- * @param disabled
- * Whether the toggle should ignore user interaction.
- *
- * @param hitSlop
- * Expands the interactive touch area beyond the visual bounds.
- *
- * @default role 'checkbox'
- * @default defaultPressed false
- * @default hitSlop { top: 14, bottom: 14, left: 14, right: 14 }
- *
- * @example
- * ```tsx
- * // Uncontrolled
- * <Toggle
- *   defaultPressed={false}
- *   onPressedChange={(pressed, { source }) => {}}
- *   accessibilityHint="Enables dark mode"
- * >
- *   {({ pressed }) => <View style={{ opacity: pressed ? 0.6 : 1 }} />}
- * </Toggle>
- *
- * // Controlled
- * <Toggle
- *   pressed={enabled}
- *   onPressedChange={(pressed) => setEnabled(pressed)}
- *   accessibilityHint="Enables dark mode"
- * >
- *   <Text>Toggle</Text>
- * </Toggle>
- * ```
  */
 export const Toggle = React.memo(
   React.forwardRef<View, ToggleProps>(function Root(
@@ -101,6 +53,7 @@ export const Toggle = React.memo(
       focusableWhenDisabled = false,
       hitSlop = DEFAULT_HIT_SLOP,
       children,
+      style,
       ...props
     },
     forwardedRef,
@@ -251,6 +204,9 @@ export const Toggle = React.memo(
       (props as WebToggleAccessibilityProps)['data-pressed'],
     );
 
+    const resolvedStyle =
+      typeof style === 'function' ? style({ pressed: isPressed }) : style;
+
     const resolvedChildren =
       typeof children === 'function'
         ? children({ pressed: isPressed })
@@ -260,6 +216,7 @@ export const Toggle = React.memo(
       <PressableWithKeyPress
         {...props}
         ref={resolvedRef}
+        style={resolvedStyle}
         disabled={isDisabled}
         accessible
         accessibilityRole={accessibilityRole ?? role}

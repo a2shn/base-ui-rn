@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { Text } from 'react-native';
 import { render } from '@testing-library/react-native';
 import { ToggleGroup } from '../toggle-group';
