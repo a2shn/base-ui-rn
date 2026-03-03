@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { mkdir, readdir, rm, writeFile, access } from 'node:fs/promises';
-import { join, basename } from 'node:path';
+import { join } from 'node:path';
 import { createInterface } from 'node:readline';
 import { spawn } from 'node:child_process';
 
@@ -40,6 +40,18 @@ async function getE2EFiles(): Promise<string[]> {
   } catch {
     return [];
   }
+}
+
+async function runTests(packageName?: string) {
+  let exitCode: number;
+  if (packageName) {
+    console.log(`\n🧪 Running tests for ${packageName}...\n`);
+    exitCode = await runCommand('jest', [`packages/${packageName}`]);
+  } else {
+    console.log('\n🧪 Running all unit tests...\n');
+    exitCode = await runCommand('jest', []);
+  }
+  process.exit(exitCode);
 }
 
 async function runE2ETests(testName?: string) {
@@ -144,13 +156,16 @@ async function createNewPackage() {
       scripts: {
         lint: 'eslint . --fix && tsc --noEmit',
       },
-      dependencies: {},
+      dependencies: {
+        [`${scope}/core`]: 'workspace:*',
+      },
       peerDependencies: {
         react: '>=19.1.0',
         'react-native': '>=0.81.5',
       },
       devDependencies: {
         [`${scope}/eslint-config`]: 'workspace:*',
+        [`${scope}/test-utils`]: 'workspace:*',
         '@types/jest': '^30.0.0',
         '@types/node': '^22.0.0',
         '@types/react': '^19.0.0',
@@ -242,9 +257,10 @@ async function recursiveDelete(dir: string, targetNames: string[]) {
 async function showMenu() {
   console.log('\n🛠️  Monorepo Manager\n');
   console.log('1. 📦 Create a new package');
-  console.log('2. 🧹 Clean Build Artifacts');
-  console.log('3. 🧨 Hard Clean');
-  console.log('4. 🧪 Run E2E Tests');
+  console.log('2. 🧪 Run Unit Tests');
+  console.log('3. 📱 Run E2E Tests');
+  console.log('4. 🧹 Clean Build Artifacts');
+  console.log('5. 🧨 Hard Clean');
   console.log('0. ❌ Exit\n');
 
   const answer = await ask('Choose an option: ');
@@ -254,13 +270,16 @@ async function showMenu() {
       await createNewPackage();
       break;
     case '2':
-      await cleanCodebase(false);
+      await runTests();
       break;
     case '3':
-      await cleanCodebase(true);
+      await runE2ETests();
       break;
     case '4':
-      await runE2ETests();
+      await cleanCodebase(false);
+      break;
+    case '5':
+      await cleanCodebase(true);
       break;
     case '0':
       rl.close();
@@ -284,6 +303,9 @@ async function main() {
   const command = args[0];
 
   switch (command) {
+    case 'test':
+      await runTests(args[1]);
+      break;
     case 'e2e':
       await runE2ETests(args[1]);
       break;
@@ -304,6 +326,7 @@ async function main() {
       console.log('\n🛠️  Monorepo Manager - CLI\n');
       console.log('Usage:');
       console.log('  pnpm manage                    - Show interactive menu');
+      console.log('  pnpm manage test [pkg-name]    - Run unit tests');
       console.log('  pnpm manage e2e [test-name]    - Run e2e test');
       console.log('  pnpm manage create             - Create new package');
       console.log('  pnpm manage clean              - Clean build artifacts');
@@ -311,11 +334,8 @@ async function main() {
         '  pnpm manage clean:hard         - Hard clean (includes node_modules)',
       );
       console.log('\nExamples:');
-      console.log('  pnpm manage e2e toggle         - Run toggle test');
-      console.log('  pnpm manage e2e button         - Run button test');
-      console.log(
-        '  pnpm manage e2e                - Show test selection menu\n',
-      );
+      console.log('  pnpm manage test toggle        - Test toggle package');
+      console.log('  pnpm manage e2e toggle         - Run toggle e2e');
       rl.close();
       break;
     default:
