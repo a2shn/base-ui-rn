@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from 'react';
 import { View, type NativeSyntheticEvent } from 'react-native';
 import {
@@ -31,6 +32,9 @@ import { type ToggleGroupProps, type ToggleGroupState } from './types';
  * @param loopFocus
  * Whether keyboard focus should loop back to the start/end.
  *
+ * @param onFocusChange
+ * Callback fired when the focused item in the group changes.
+ *
  * @default orientation 'horizontal'
  * @default loopFocus true
  * @default multiple false
@@ -59,6 +63,7 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
       disabled = false,
       orientation = 'horizontal',
       loopFocus = true,
+      onFocusChange,
       style,
       ...other
     } = props;
@@ -151,15 +156,11 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
 
           if (nextIndex !== currentIndex) {
             const nextValue = orderedValues[nextIndex];
+            onFocusChange?.(nextValue);
+
             const nextRef = registeredItems.current.get(nextValue);
             if (nextRef?.current) {
-              const element = nextRef.current as {
-                focus?: () => void;
-                current?: { focus?: () => void };
-              };
-              // Handle different ref structures:
-              // 1. Direct focus method on the ref's current (mocked refs in tests)
-              // 2. Nested ref.current.focus (React component instances)
+              const element = nextRef.current as any;
               if (typeof element.focus === 'function') {
                 element.focus();
               } else if (
@@ -172,7 +173,7 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
           }
         }
       },
-      [disabled, orientation, loopFocus],
+      [disabled, orientation, loopFocus, onFocusChange],
     );
 
     const registeredValues = React.useRef<Set<string>>(new Set());

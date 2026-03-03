@@ -72,6 +72,11 @@ export interface ToggleGroupProps extends Omit<
    */
   orientation?: Orientation;
   /**
+   * Callback fired when the focused item in the group changes.
+   * Useful for testing keyboard navigation.
+   */
+  onFocusChange?: (value: string | null) => void;
+  /**
    * Style applied to the element, or a function that returns a style based on the component’s state.
    */
   style?:
