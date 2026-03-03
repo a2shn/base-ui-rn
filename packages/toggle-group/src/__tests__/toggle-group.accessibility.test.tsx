@@ -60,7 +60,7 @@ describe('ToggleGroup - Accessibility & Dev Mode', () => {
     // Toggle itself throws this warning
     render(
       <ToggleGroup>
-        <Toggle value=''>
+        <Toggle value={undefined as unknown as string}>
           <Text>No Value</Text>
         </Toggle>
       </ToggleGroup>,
