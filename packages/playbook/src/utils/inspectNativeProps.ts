@@ -185,6 +185,7 @@ function findNearestCompositeFiber(fiber: Fiber): Fiber | null {
  * returned object so Maestro tests can assert on them directly.
  */
 const HEADLESS_UI_PROP_KEYS = new Set([
+  'role',
   'accessibilityRole',
   'accessibilityState',
   'accessibilityLabel',

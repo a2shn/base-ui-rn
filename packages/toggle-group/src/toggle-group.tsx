@@ -247,7 +247,7 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
           {...other}
           ref={ref}
           style={resolvedStyle}
-          accessibilityRole={
+          role={
             (other.accessibilityRole ?? 'group') as unknown as 'checkbox'
           }
           aria-orientation={orientation}

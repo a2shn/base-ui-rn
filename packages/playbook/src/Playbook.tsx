@@ -81,7 +81,7 @@ const MenuCard = ({ title, description, testID, onPress }: MenuCardProps) => {
 
   return (
     <Pressable
-      accessibilityRole='button'
+      role='button'
       onPress={onPress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
@@ -162,7 +162,7 @@ export const PlaybookApp = ({ registry }: { registry: PlaybookConfig }) => {
 
       {!isHome && (
         <Pressable
-          accessibilityRole='button'
+          role='button'
           onPress={() => setScreen('Home')}
           style={styles.backButton}
           testID='back-button'
@@ -212,7 +212,7 @@ export const PlaybookApp = ({ registry }: { registry: PlaybookConfig }) => {
             />
             {searchQuery.length > 0 && (
               <Pressable
-                accessibilityRole='button'
+                role='button'
                 onPress={() => setSearchQuery('')}
                 style={styles.searchClearButton}
                 testID='search-clear'

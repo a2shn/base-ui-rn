@@ -19,7 +19,12 @@
     "react": "19.1.0",
     "react-native": "0.81.5",
     "react-native-safe-area-context": "^5.6.2",
-    "react-native-svg": "^15.12.1"
+    "react-native-svg": "^15.12.1",
+    "@base-ui-rn/separator": "workspace:*",
+    "@base-ui-rn/button": "workspace:*",
+    "@base-ui-rn/playbook": "workspace:*",
+    "@base-ui-rn/toggle": "workspace:*",
+    "@base-ui-rn/toggle-group": "workspace:*"
   },
   "devDependencies": {
     "@base-ui-rn/eslint-config": "workspace:*",

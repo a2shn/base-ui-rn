@@ -219,7 +219,7 @@ export const Toggle = React.memo(
         style={resolvedStyle}
         disabled={isDisabled}
         accessible
-        accessibilityRole={accessibilityRole ?? role}
+        role={accessibilityRole ?? role}
         accessibilityHint={accessibilityHint}
         accessibilityState={mergedAccessibilityState}
         accessibilityActions={mergedAccessibilityActions}
@@ -239,3 +239,5 @@ export const Toggle = React.memo(
     );
   }),
 );
+
+Toggle.displayName = 'Toggle';

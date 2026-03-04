@@ -1,4 +1,4 @@
-import { getDefaultConfig } from 'expo/metro-config';
+import { getDefaultConfig } from 'expo/metro-config.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 

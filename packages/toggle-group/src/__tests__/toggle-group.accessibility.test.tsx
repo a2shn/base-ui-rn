@@ -72,7 +72,7 @@ describe('ToggleGroup - Accessibility & Dev Mode', () => {
     );
   });
 
-  it('sets accessibilityRole="group" and aria-orientation on the container', () => {
+  it('sets role="group" and aria-orientation on the container', () => {
     const { getByTestId } = render(
       <ToggleGroup testID='group' orientation='vertical'>
         <Toggle value='a'>
@@ -82,7 +82,7 @@ describe('ToggleGroup - Accessibility & Dev Mode', () => {
     );
 
     const group = getByTestId('group');
-    expect(group.props.accessibilityRole).toBe('group');
+    expect(group.props.role).toBe('group');
     expect(group.props['aria-orientation']).toBe('vertical');
     expect(group.props['data-orientation']).toBe('vertical');
   });
@@ -131,7 +131,7 @@ describe('ToggleGroup - Accessibility & Dev Mode', () => {
     expect(group.props['aria-orientation']).toBe('horizontal');
   });
 
-  it('allows overriding accessibilityRole on the container', () => {
+  it('allows overriding role on the container', () => {
     const { getByTestId } = render(
       <ToggleGroup testID='group' accessibilityRole='radiogroup'>
         <Toggle value='a'>
@@ -141,6 +141,6 @@ describe('ToggleGroup - Accessibility & Dev Mode', () => {
     );
 
     const group = getByTestId('group');
-    expect(group.props.accessibilityRole).toBe('radiogroup');
+    expect(group.props.role).toBe('radiogroup');
   });
 });

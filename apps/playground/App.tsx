@@ -5,6 +5,7 @@ import { PlaybookApp, type PlaybookConfig } from '@base-ui-rn/playbook';
 import { TogglePlaybook } from './src/toggle.playbook';
 import { ButtonPlaybook } from './src/button.playbook';
 import { ToggleGroupPlaybook } from './src/toggle-group.playbook';
+import { SeparatorPlaybook } from './src/separator.playbook';
 
 const REGISTRY: PlaybookConfig = {
   Toggle: {
@@ -21,6 +22,11 @@ const REGISTRY: PlaybookConfig = {
     title: 'Toggle Group',
     component: ToggleGroupPlaybook,
     testID: 'toggle-group',
+  },
+  Separator: {
+    title: 'Separator',
+    component: SeparatorPlaybook,
+    testID: 'separator',
   },
 };
 

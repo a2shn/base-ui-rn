@@ -165,7 +165,7 @@ export const Button = React.memo(
         {...props}
         ref={forwardedRef}
         accessible
-        accessibilityRole={accessibilityRole ?? 'button'}
+        role={accessibilityRole ?? 'button'}
         accessibilityHint={accessibilityHint}
         accessibilityState={mergedAccessibilityState}
         accessibilityActions={mergedAccessibilityActions}
@@ -183,3 +183,5 @@ export const Button = React.memo(
     );
   }),
 );
+
+Button.displayName = 'Button';
