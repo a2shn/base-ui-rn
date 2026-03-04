@@ -1,7 +1,7 @@
 {
-  "name": "@base-ui-rn/separator",
+  "name": "@base-ui-rn/focus-ring",
   "version": "0.0.0",
-  "description": "Headless separator primitive for React Native",
+  "description": "Focus ring utility for React Native",
   "license": "MIT",
   "author": "Abdelrahman",
   "type": "module",

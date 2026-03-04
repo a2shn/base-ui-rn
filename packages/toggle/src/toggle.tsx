@@ -6,6 +6,7 @@ import {
   type NativeSyntheticEvent,
   type GestureResponderEvent,
   type AccessibilityActionEvent,
+  type Role,
 } from 'react-native';
 import {
   DEFAULT_HIT_SLOP,
@@ -219,7 +220,7 @@ export const Toggle = React.memo(
         style={resolvedStyle}
         disabled={isDisabled}
         accessible
-        role={accessibilityRole ?? role}
+        role={(accessibilityRole ?? role) as Role}
         accessibilityHint={accessibilityHint}
         accessibilityState={mergedAccessibilityState}
         accessibilityActions={mergedAccessibilityActions}

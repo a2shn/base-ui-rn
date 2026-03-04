@@ -6,6 +6,7 @@ import {
   type NativeSyntheticEvent,
   type GestureResponderEvent,
   type AccessibilityActionEvent,
+  type Role,
 } from 'react-native';
 import {
   type ButtonPressedChangeDetails,
@@ -165,7 +166,7 @@ export const Button = React.memo(
         {...props}
         ref={forwardedRef}
         accessible
-        role={accessibilityRole ?? 'button'}
+        role={(accessibilityRole ?? 'button') as Role}
         accessibilityHint={accessibilityHint}
         accessibilityState={mergedAccessibilityState}
         accessibilityActions={mergedAccessibilityActions}

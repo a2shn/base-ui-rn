@@ -32,6 +32,24 @@ importers:
 
   apps/playground:
     dependencies:
+      '@base-ui-rn/button':
+        specifier: workspace:*
+        version: link:../../packages/button
+      '@base-ui-rn/focus-ring':
+        specifier: workspace:*
+        version: link:../../packages/focus-ring
+      '@base-ui-rn/playbook':
+        specifier: workspace:*
+        version: link:../../packages/playbook
+      '@base-ui-rn/separator':
+        specifier: workspace:*
+        version: link:../../packages/separator
+      '@base-ui-rn/toggle':
+        specifier: workspace:*
+        version: link:../../packages/toggle
+      '@base-ui-rn/toggle-group':
+        specifier: workspace:*
+        version: link:../../packages/toggle-group
       '@expo/ngrok':
         specifier: ^4.1.3
         version: 4.1.3
@@ -156,6 +174,37 @@ importers:
         specifier: ^3.1.2
         version: 3.3.0(eslint@10.0.2)
 
+  packages/focus-ring:
+    dependencies:
+      '@base-ui-rn/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      '@base-ui-rn/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@base-ui-rn/test-utils':
+        specifier: workspace:*
+        version: link:../test-utils
+      '@types/jest':
+        specifier: ^30.0.0
+        version: 30.0.0
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.19.13
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.1.17
+      react:
+        specifier: 19.1.0
+        version: 19.1.0
+      react-native:
+        specifier: 0.81.5
+        version: 0.81.5(@babel/core@7.29.0)(@types/react@19.1.17)(react@19.1.0)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   packages/playbook:
     devDependencies:
       '@base-ui-rn/eslint-config':
@@ -176,6 +225,37 @@ importers:
       react-native-svg:
         specifier: '>=13.0.0'
         version: 15.15.3(react-native@0.81.5(@babel/core@7.29.0)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/separator:
+    dependencies:
+      '@base-ui-rn/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      '@base-ui-rn/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@base-ui-rn/test-utils':
+        specifier: workspace:*
+        version: link:../test-utils
+      '@types/jest':
+        specifier: ^30.0.0
+        version: 30.0.0
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.19.13
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.1.17
+      react:
+        specifier: 19.1.0
+        version: 19.1.0
+      react-native:
+        specifier: 0.81.5
+        version: 0.81.5(@babel/core@7.29.0)(@types/react@19.1.17)(react@19.1.0)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3

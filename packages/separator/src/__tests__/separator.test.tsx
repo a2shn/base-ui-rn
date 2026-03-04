@@ -5,9 +5,9 @@ import { Separator } from '../separator';
 
 describe('Separator', () => {
   it('renders with default horizontal orientation and separator role', () => {
-    const { getByTestId } = render(<Separator testID="separator" />);
+    const { getByTestId } = render(<Separator testID='separator' />);
     const separator = getByTestId('separator');
-    
+
     expect(separator.props.role).toBe('separator');
     // On web, it should have aria-orientation horizontal
     expect(separator.props['aria-orientation']).toBe('horizontal');
@@ -16,21 +16,27 @@ describe('Separator', () => {
   });
 
   it('renders with vertical orientation', () => {
-    const { getByTestId } = render(<Separator testID="separator" orientation="vertical" />);
+    const { getByTestId } = render(
+      <Separator testID='separator' orientation='vertical' />,
+    );
     const separator = getByTestId('separator');
-    
+
     expect(separator.props.role).toBe('separator');
     expect(separator.props['aria-orientation']).toBe('vertical');
     expect(separator.props['data-orientation']).toBe('vertical');
   });
 
   it('is hidden from screen readers when decorative', () => {
-    const { UNSAFE_getByType } = render(<Separator testID="separator" decorative />);
+    const { UNSAFE_getByType } = render(
+      <Separator testID='separator' decorative />,
+    );
     const separator = UNSAFE_getByType(View);
-    
+
     expect(separator.props.role).toBe('presentation');
     expect(separator.props.accessibilityElementsHidden).toBe(true);
-    expect(separator.props.importantForAccessibility).toBe('no-hide-descendants');
+    expect(separator.props.importantForAccessibility).toBe(
+      'no-hide-descendants',
+    );
   });
 
   it('forwards ref to the underlying View', () => {
@@ -41,14 +47,14 @@ describe('Separator', () => {
 
   it('forwards other View props', () => {
     const { getByTestId } = render(
-      <Separator 
-        testID="separator" 
-        style={{ height: 1 }} 
-        pointerEvents="none"
-      />
+      <Separator
+        testID='separator'
+        style={{ height: 1 }}
+        pointerEvents='none'
+      />,
     );
     const separator = getByTestId('separator');
-    
+
     expect(separator.props.style).toEqual({ height: 1 });
     expect(separator.props.pointerEvents).toBe('none');
   });

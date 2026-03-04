@@ -40,7 +40,7 @@ export const Separator = React.forwardRef<View, SeparatorProps>(
         aria-orientation={orientation}
         {...({
           'data-orientation': orientation,
-        } as any)}
+        } as Record<string, unknown>)}
       />
     );
   },
