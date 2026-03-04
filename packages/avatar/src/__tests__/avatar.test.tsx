@@ -7,20 +7,26 @@ jest.useFakeTimers();
 describe('Avatar', () => {
   it('renders correctly', () => {
     const { getByTestId } = render(
-      <Avatar.Root testID="avatar">
-        <Avatar.Image testID="image" source={{ uri: 'https://example.com/image.png' }} />
-        <Avatar.Fallback testID="fallback">FB</Avatar.Fallback>
-      </Avatar.Root>
+      <Avatar.Root testID='avatar'>
+        <Avatar.Image
+          testID='image'
+          source={{ uri: 'https://example.com/image.png' }}
+        />
+        <Avatar.Fallback testID='fallback'>FB</Avatar.Fallback>
+      </Avatar.Root>,
     );
     expect(getByTestId('avatar')).toBeDefined();
   });
 
   it('shows fallback when image fails to load', async () => {
-    const { getByTestId, queryByTestId } = render(
+    const { getByTestId } = render(
       <Avatar.Root>
-        <Avatar.Image testID="image" source={{ uri: 'https://example.com/invalid.png' }} />
-        <Avatar.Fallback testID="fallback">FB</Avatar.Fallback>
-      </Avatar.Root>
+        <Avatar.Image
+          testID='image'
+          source={{ uri: 'https://example.com/invalid.png' }}
+        />
+        <Avatar.Fallback testID='fallback'>FB</Avatar.Fallback>
+      </Avatar.Root>,
     );
 
     const image = getByTestId('image');
@@ -34,9 +40,12 @@ describe('Avatar', () => {
   it('hides fallback when image loads successfully', () => {
     const { getByTestId, queryByTestId } = render(
       <Avatar.Root>
-        <Avatar.Image testID="image" source={{ uri: 'https://example.com/image.png' }} />
-        <Avatar.Fallback testID="fallback">FB</Avatar.Fallback>
-      </Avatar.Root>
+        <Avatar.Image
+          testID='image'
+          source={{ uri: 'https://example.com/image.png' }}
+        />
+        <Avatar.Fallback testID='fallback'>FB</Avatar.Fallback>
+      </Avatar.Root>,
     );
 
     const image = getByTestId('image');
@@ -51,8 +60,10 @@ describe('Avatar', () => {
     const { queryByTestId } = render(
       <Avatar.Root>
         <Avatar.Image source={{ uri: 'https://example.com/slow-image.png' }} />
-        <Avatar.Fallback testID="fallback" delay={500}>FB</Avatar.Fallback>
-      </Avatar.Root>
+        <Avatar.Fallback testID='fallback' delay={500}>
+          FB
+        </Avatar.Fallback>
+      </Avatar.Root>,
     );
 
     // Should not show immediately

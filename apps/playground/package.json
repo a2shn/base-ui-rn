@@ -13,6 +13,7 @@
     "lint": "eslint . --fix && tsc --noEmit"
   },
   "dependencies": {
+    "@base-ui-rn/avatar": "workspace:*",
     "@base-ui-rn/button": "workspace:*",
     "@base-ui-rn/focus-ring": "workspace:*",
     "@base-ui-rn/playbook": "workspace:*",

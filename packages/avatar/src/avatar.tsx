@@ -1,97 +1,142 @@
 import * as React from 'react';
-import { View, Image as RNImage, type ImageProps as RNImageProps } from 'react-native';
-import type { AvatarRootProps, AvatarImageProps, AvatarFallbackProps, ImageLoadingStatus } from './types';
+import {
+  View,
+  Image as RNImage,
+  type ImageProps as RNImageProps,
+} from 'react-native';
+import type {
+  AvatarRootProps,
+  AvatarImageProps,
+  AvatarFallbackProps,
+  ImageLoadingStatus,
+} from './types';
 import { AvatarContext, useAvatarContext } from './avatar-context';
 
 /**
- * Avatar.Root
- * Displays a user's profile picture, initials, or fallback icon.
+ * Headless avatar primitive for React Native.
+ *
+ * @example
+ * ```tsx
+ * <Avatar.Root>
+ *   <Avatar.Image source={{ uri: 'https://github.com/shadcn.png' }} />
+ *   <Avatar.Fallback delay={600}>
+ *     <Text>JD</Text>
+ *   </Avatar.Fallback>
+ * </Avatar.Root>
+ * ```
  */
-export const AvatarRoot = React.forwardRef<View, AvatarRootProps>((props, ref) => {
-  const { children, ...other } = props;
-  const [loadingStatus, setLoadingStatus] = React.useState<ImageLoadingStatus>('idle');
+export const AvatarRoot = React.forwardRef<View, AvatarRootProps>(
+  (props, ref) => {
+    const { children, ...other } = props;
+    const [loadingStatus, setLoadingStatus] =
+      React.useState<ImageLoadingStatus>('idle');
 
-  const onLoadingStatusChange = React.useCallback((status: ImageLoadingStatus) => {
-    setLoadingStatus(status);
-  }, []);
+    const onLoadingStatusChange = React.useCallback(
+      (status: ImageLoadingStatus) => {
+        setLoadingStatus(status);
+      },
+      [],
+    );
 
-  const contextValue = React.useMemo(() => ({
-    loadingStatus,
-    onLoadingStatusChange,
-  }), [loadingStatus, onLoadingStatusChange]);
+    const contextValue = React.useMemo(
+      () => ({
+        loadingStatus,
+        onLoadingStatusChange,
+      }),
+      [loadingStatus, onLoadingStatusChange],
+    );
 
-  return (
-    <AvatarContext.Provider value={contextValue}>
-      <View {...other} ref={ref}>
-        {children}
-      </View>
-    </AvatarContext.Provider>
-  );
-});
+    return (
+      <AvatarContext.Provider value={contextValue}>
+        <View {...other} ref={ref}>
+          {children}
+        </View>
+      </AvatarContext.Provider>
+    );
+  },
+);
 
 AvatarRoot.displayName = 'Avatar.Root';
 
 /**
- * Avatar.Image
- * The image to be displayed in the avatar.
+ * The image component for the avatar.
+ *
+ * Automatically manages loading status within the Avatar.Root context.
+ *
+ * @param onLoadingStatusChange
+ * Callback fired when the image loading status changes ('loading' | 'loaded' | 'error').
  */
-export const AvatarImage = React.forwardRef<RNImage, AvatarImageProps>((props, ref) => {
-  const { onLoadingStatusChange: onLoadingStatusChangeProp, source, ...other } = props;
-  const { onLoadingStatusChange } = useAvatarContext();
+export const AvatarImage = React.forwardRef<RNImage, AvatarImageProps>(
+  (props, ref) => {
+    const {
+      onLoadingStatusChange: onLoadingStatusChangeProp,
+      source,
+      ...other
+    } = props;
+    const { onLoadingStatusChange } = useAvatarContext();
 
-  const handleLoadingStatusChange = React.useCallback((status: ImageLoadingStatus) => {
-    onLoadingStatusChange(status);
-    onLoadingStatusChangeProp?.(status);
-  }, [onLoadingStatusChange, onLoadingStatusChangeProp]);
+    const handleLoadingStatusChange = React.useCallback(
+      (status: ImageLoadingStatus) => {
+        onLoadingStatusChange(status);
+        onLoadingStatusChangeProp?.(status);
+      },
+      [onLoadingStatusChange, onLoadingStatusChangeProp],
+    );
 
-  React.useLayoutEffect(() => {
-    if (!source) {
-      handleLoadingStatusChange('error');
-    } else {
-      handleLoadingStatusChange('loading');
-    }
-  }, [source, handleLoadingStatusChange]);
+    React.useLayoutEffect(() => {
+      if (!source) {
+        handleLoadingStatusChange('error');
+      } else {
+        handleLoadingStatusChange('loading');
+      }
+    }, [source, handleLoadingStatusChange]);
 
-  return (
-    <RNImage
-      {...(other as RNImageProps)}
-      ref={ref}
-      source={source}
-      onLoad={() => handleLoadingStatusChange('loaded')}
-      onError={() => handleLoadingStatusChange('error')}
-    />
-  );
-});
+    return (
+      <RNImage
+        {...(other as RNImageProps)}
+        ref={ref}
+        source={source}
+        onLoad={() => handleLoadingStatusChange('loaded')}
+        onError={() => handleLoadingStatusChange('error')}
+      />
+    );
+  },
+);
 
 AvatarImage.displayName = 'Avatar.Image';
 
 /**
- * Avatar.Fallback
- * Rendered when the image fails to load or when no image is provided.
+ * A fallback component rendered when the image is loading or fails to load.
+ *
+ * @param delay
+ * The duration (inms) to wait before rendering the fallback.
+ * Useful for preventing "flicker" when an image loads quickly.
  */
-export const AvatarFallback = React.forwardRef<View, AvatarFallbackProps>((props, ref) => {
-  const { delay, children, ...other } = props;
-  const { loadingStatus } = useAvatarContext();
-  const [canRender, setCanRender] = React.useState(delay === undefined);
+export const AvatarFallback = React.forwardRef<View, AvatarFallbackProps>(
+  (props, ref) => {
+    const { delay, children, ...other } = props;
+    const { loadingStatus } = useAvatarContext();
+    const [canRender, setCanRender] = React.useState(delay === undefined);
 
-  React.useEffect(() => {
-    if (delay !== undefined) {
-      const timer = setTimeout(() => setCanRender(true), delay);
-      return () => clearTimeout(timer);
+    React.useEffect(() => {
+      if (delay !== undefined) {
+        const timer = setTimeout(() => setCanRender(true), delay);
+        return () => clearTimeout(timer);
+      }
+      return undefined;
+    }, [delay]);
+
+    if (canRender && loadingStatus !== 'loaded') {
+      return (
+        <View {...other} ref={ref}>
+          {children}
+        </View>
+      );
     }
-    return undefined;
-  }, [delay]);
 
-  if (canRender && loadingStatus !== 'loaded') {
-    return (
-      <View {...other} ref={ref}>
-        {children}
-      </View>
-    );
-  }
-
-  return null;
-});
+    return null;
+  },
+);
 
 AvatarFallback.displayName = 'Avatar.Fallback';
 

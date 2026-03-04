@@ -2,19 +2,21 @@ import * as React from 'react';
 import type { FocusRingProps, FocusRingRenderProps } from './types';
 
 /**
- * FocusRing is a headless utility component that manages focus state and focus-visible logic.
+ * Headless utility component that manages focus state and focus-visible logic.
  *
- * It provides a way to show a focus indicator (the "focus ring") only when focusing 
+ * It provides a way to show a focus indicator (the "focus ring") only when focusing
  * via keyboard or non-touch navigation, mirroring the behavior of `:focus-visible` in CSS.
- *
- * @param focusVisible
- * When true, forces the focus ring to be visible even if not focusing via keyboard.
+ * This is particularly useful for building accessible UIs that don't show distracting
+ * outlines on touch but provide high-visibility focus states for hardware users.
  *
  * @example
  * ```tsx
  * <FocusRing>
  *   {({ focusVisible }) => (
- *     <View style={{ borderColor: focusVisible ? 'blue' : 'transparent' }} />
+ *     <View style={{
+ *       borderWidth: 2,
+ *       borderColor: focusVisible ? '#0071E3' : 'transparent'
+ *     }} />
  *   )}
  * </FocusRing>
  * ```
@@ -24,14 +26,21 @@ export const FocusRing: React.FC<FocusRingProps> = (props) => {
   const [focused, setFocused] = React.useState(false);
   const [isFocusVisible, setFocusVisible] = React.useState(forceFocusVisible);
 
+  /**
+   * Internal focus handler that updates state and manages focus-visible heuristic.
+   */
   const onFocus = React.useCallback(() => {
     setFocused(true);
-    // In React Native, the focus-visible logic often depends on tracking 
-    // global interaction state. For this implementation, we default to 
-    // true when focused, but this can be enhanced with global listeners.
+    // In React Native, true focus-visible logic often requires tracking global
+    // interaction state (pointer vs keyboard). For this implementation, we
+    // default to true when focused to ensure accessibility, which can be
+    // further specialized with platform-specific native listeners.
     setFocusVisible(true);
   }, []);
 
+  /**
+   * Internal blur handler.
+   */
   const onBlur = React.useCallback(() => {
     setFocused(false);
     setFocusVisible(false);
@@ -42,10 +51,11 @@ export const FocusRing: React.FC<FocusRingProps> = (props) => {
     focusVisible: isFocusVisible || forceFocusVisible,
   };
 
-  const child = typeof children === 'function' ? children(renderProps) : children;
+  const child =
+    typeof children === 'function' ? children(renderProps) : children;
 
   if (!React.isValidElement(child)) {
-    return child;
+    return child as unknown as React.ReactElement;
   }
 
   const childElement = child as React.ReactElement<{

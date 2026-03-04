@@ -23,7 +23,9 @@ export interface FocusRingProps {
    * The child element or a render function.
    * If a render function is provided, it receives the focus state.
    */
-  children: React.ReactNode | ((props: FocusRingRenderProps) => React.ReactNode);
+  children:
+    | React.ReactNode
+    | ((props: FocusRingRenderProps) => React.ReactNode);
   /**
    * Whether the focus ring should be visible even during touch interactions.
    * @default false

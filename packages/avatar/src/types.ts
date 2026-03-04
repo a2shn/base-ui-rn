@@ -6,7 +6,10 @@ export interface AvatarRootProps extends ViewProps {
   children?: React.ReactNode;
 }
 
-export interface AvatarImageProps extends Omit<RNImageProps, 'onLoad' | 'onError'> {
+export interface AvatarImageProps extends Omit<
+  RNImageProps,
+  'onLoad' | 'onError'
+> {
   /**
    * Callback fired when the loading status changes.
    */

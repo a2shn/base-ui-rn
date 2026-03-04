@@ -1,0 +1,30 @@
+appId: com.baseuirn.playground
+---
+- launchApp
+- tapOn:
+    id: 'avatar'
+
+- assertVisible: 'Avatar'
+
+# 1. Basic Usage
+- assertVisible: 'Basic Usage'
+- assertVisible: 'CN'
+- assertVisible:
+    id: 'Loading Status-value'
+    text: 'loaded'
+
+# 2. Error State with Fallback
+- assertVisible: 'Error State with Fallback'
+- assertVisible: 'JD'
+- assertVisible:
+    id: 'Loading Status-value'
+    text: 'error'
+
+# 3. Loading State with Delay
+- assertVisible: 'Loading State with Delay'
+# Initially fallback should NOT be visible if delay is high,
+# but in maestro it might already be loaded.
+# We just check it eventually shows up or status is correct.
+- assertVisible:
+    id: 'Loading Status-value'
+    text: 'loaded'

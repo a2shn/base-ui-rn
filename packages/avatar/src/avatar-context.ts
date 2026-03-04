@@ -6,7 +6,9 @@ export interface AvatarContextValue {
   onLoadingStatusChange: (status: ImageLoadingStatus) => void;
 }
 
-export const AvatarContext = React.createContext<AvatarContextValue | null>(null);
+export const AvatarContext = React.createContext<AvatarContextValue | null>(
+  null,
+);
 
 export function useAvatarContext() {
   const context = React.useContext(AvatarContext);

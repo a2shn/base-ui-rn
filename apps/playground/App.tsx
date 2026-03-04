@@ -7,6 +7,7 @@ import { ButtonPlaybook } from './src/button.playbook';
 import { ToggleGroupPlaybook } from './src/toggle-group.playbook';
 import { SeparatorPlaybook } from './src/separator.playbook';
 import { FocusRingPlaybook } from './src/focus-ring.playbook';
+import { AvatarPlaybook } from './src/avatar.playbook';
 
 const REGISTRY: PlaybookConfig = {
   Toggle: {
@@ -33,6 +34,11 @@ const REGISTRY: PlaybookConfig = {
     title: 'Focus Ring',
     component: FocusRingPlaybook,
     testID: 'focus-ring',
+  },
+  Avatar: {
+    title: 'Avatar',
+    component: AvatarPlaybook,
+    testID: 'avatar',
   },
 };
 

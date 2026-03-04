@@ -1,0 +1,16 @@
+appId: com.baseuirn.playground
+---
+- launchApp
+- tapOn:
+    id: 'focus-ring'
+
+- assertVisible: 'Focus Ring'
+
+# 1. Blue Outline (Web style)
+- assertVisible: 'Blue Outline (Web style)'
+- assertVisible: 'Focus Me'
+- assertVisible: 'Focus this button via keyboard to see the blue outline.'
+
+# 2. Custom Styling
+- assertVisible: 'Custom Styling'
+- assertVisible: 'Idle'

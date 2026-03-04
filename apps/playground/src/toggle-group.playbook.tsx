@@ -194,6 +194,7 @@ export function ToggleGroupPlaybook() {
             padding: 8,
           }}
           testID='toggle-group-vertical'
+          loopFocus={true}
         >
           {['option1', 'option2', 'option3'].map((val) => (
             <Toggle key={val} value={val} testID={`toggle-v${val.slice(-1)}`}>

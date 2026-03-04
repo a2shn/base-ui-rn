@@ -7,8 +7,8 @@ describe('FocusRing', () => {
   it('renders children correctly', () => {
     const { getByTestId } = render(
       <FocusRing>
-        <View testID="child" />
-      </FocusRing>
+        <View testID='child' />
+      </FocusRing>,
     );
     expect(getByTestId('child')).toBeDefined();
   });
@@ -17,27 +17,37 @@ describe('FocusRing', () => {
     const { getByTestId } = render(
       <FocusRing>
         {({ focused, focusVisible }) => (
-          <View testID="child" accessibilityLabel={`focused: ${focused}, visible: ${focusVisible}`} />
+          <View
+            testID='child'
+            accessibilityLabel={`focused: ${focused}, visible: ${focusVisible}`}
+            accessibilityHint='Focus state display'
+          />
         )}
-      </FocusRing>
+      </FocusRing>,
     );
     const child = getByTestId('child');
-    expect(child.props.accessibilityLabel).toBe('focused: false, visible: false');
+    expect(child.props.accessibilityLabel).toBe(
+      'focused: false, visible: false',
+    );
   });
 
   it('updates focus state on focus and blur', () => {
     const { getByTestId } = render(
       <FocusRing>
         {({ focused }) => (
-          <View testID="child" accessibilityLabel={`focused: ${focused}`} />
+          <View
+            testID='child'
+            accessibilityLabel={`focused: ${focused}`}
+            accessibilityHint='Focus state display'
+          />
         )}
-      </FocusRing>
+      </FocusRing>,
     );
     const child = getByTestId('child');
-    
+
     fireEvent(child, 'focus');
     expect(child.props.accessibilityLabel).toBe('focused: true');
-    
+
     fireEvent(child, 'blur');
     expect(child.props.accessibilityLabel).toBe('focused: false');
   });
@@ -47,14 +57,14 @@ describe('FocusRing', () => {
     const onBlur = jest.fn();
     const { getByTestId } = render(
       <FocusRing>
-        <View testID="child" onFocus={onFocus} onBlur={onBlur} />
-      </FocusRing>
+        <View testID='child' onFocus={onFocus} onBlur={onBlur} />
+      </FocusRing>,
     );
     const child = getByTestId('child');
-    
+
     fireEvent(child, 'focus');
     expect(onFocus).toHaveBeenCalled();
-    
+
     fireEvent(child, 'blur');
     expect(onBlur).toHaveBeenCalled();
   });
@@ -63,9 +73,13 @@ describe('FocusRing', () => {
     const { getByTestId } = render(
       <FocusRing focusVisible>
         {({ focusVisible }) => (
-          <View testID="child" accessibilityLabel={`visible: ${focusVisible}`} />
+          <View
+            testID='child'
+            accessibilityLabel={`visible: ${focusVisible}`}
+            accessibilityHint='Focus state display'
+          />
         )}
-      </FocusRing>
+      </FocusRing>,
     );
     const child = getByTestId('child');
     expect(child.props.accessibilityLabel).toBe('visible: true');
