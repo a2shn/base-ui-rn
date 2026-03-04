@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@base-ui-rn/core": "workspace:*",
+    "@base-ui-rn/focus-ring": "workspace:*",
     "@base-ui-rn/toggle": "workspace:*"
   },
   "peerDependencies": {

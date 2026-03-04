@@ -12,6 +12,7 @@ export {
   DEFAULT_HIT_SLOP,
   ACTIVATION_KEYS,
   isActivationKey,
+  DEFAULT_FOCUS_RING_STYLE,
   type ActivationKey,
 } from './constants';
 

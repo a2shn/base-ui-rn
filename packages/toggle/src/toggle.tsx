@@ -1,12 +1,13 @@
 import * as React from 'react';
 import {
   Pressable,
+  View,
   type PressableProps,
-  type View,
   type NativeSyntheticEvent,
   type GestureResponderEvent,
   type AccessibilityActionEvent,
   type Role,
+  type TargetedEvent,
 } from 'react-native';
 import {
   DEFAULT_HIT_SLOP,
@@ -18,22 +19,32 @@ import {
   resolveAriaDisabled,
   resolveAriaPressed,
   resolveDataPressed,
+  DEFAULT_FOCUS_RING_STYLE,
   type KeyPressEventData,
   type WebToggleAccessibilityProps,
 } from '@base-ui-rn/core';
 import { type TogglePressedChangeDetails, type ToggleProps } from './types';
 import { useToggleGroupContext } from './group-context';
+import { useFocus } from '@base-ui-rn/focus-ring';
 
 const PressableWithKeyPress =
   Pressable as unknown as React.ForwardRefExoticComponent<
     PressableProps &
-      WebToggleAccessibilityProps & {
+      WebAccessibilityProps & {
         onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
       } & React.RefAttributes<View>
   >;
 
 /**
  * Headless toggle primitive built on top of React Native `Pressable`.
+ *
+ * @param disableDefaultFocusRing
+ * Whether to disable the default blue focus ring styling that appears on keyboard focus.
+ *
+ * @param focusVisible
+ * Forces the focus ring to be visible.
+ *
+ * @default disableDefaultFocusRing false
  */
 export const Toggle = React.memo(
   React.forwardRef<View, ToggleProps>(function Root(
@@ -55,6 +66,10 @@ export const Toggle = React.memo(
       hitSlop = DEFAULT_HIT_SLOP,
       children,
       style,
+      focusVisible: forceFocusVisible = false,
+      disableDefaultFocusRing = false,
+      onFocus: onFocusProp,
+      onBlur: onBlurProp,
       ...props
     },
     forwardedRef,
@@ -94,6 +109,10 @@ export const Toggle = React.memo(
     const isDisabled =
       disabled === true || (isInGroup && groupContext.disabled);
     const isFocusable = !isDisabled || focusableWhenDisabled === true;
+
+    const { focused, focusVisible, onFocus, onBlur } = useFocus({
+      focusVisible: forceFocusVisible,
+    });
 
     const [uncontrolledState, setUncontrolledState] =
       React.useState(defaultPressed);
@@ -170,6 +189,22 @@ export const Toggle = React.memo(
       [activateToggle, onAccessibilityAction],
     );
 
+    const handleFocus = React.useCallback(
+      (e: NativeSyntheticEvent<TargetedEvent>) => {
+        onFocus();
+        onFocusProp?.(e);
+      },
+      [onFocus, onFocusProp],
+    );
+
+    const handleBlur = React.useCallback(
+      (e: NativeSyntheticEvent<TargetedEvent>) => {
+        onBlur();
+        onBlurProp?.(e);
+      },
+      [onBlur, onBlurProp],
+    );
+
     const mergedAccessibilityState = React.useMemo(
       () =>
         mergeAccessibilityState(
@@ -205,19 +240,10 @@ export const Toggle = React.memo(
       (props as WebToggleAccessibilityProps)['data-pressed'],
     );
 
-    const resolvedStyle =
-      typeof style === 'function' ? style({ pressed: isPressed }) : style;
-
-    const resolvedChildren =
-      typeof children === 'function'
-        ? children({ pressed: isPressed })
-        : children;
-
     return (
       <PressableWithKeyPress
         {...props}
         ref={resolvedRef}
-        style={resolvedStyle}
         disabled={isDisabled}
         accessible
         role={(accessibilityRole ?? role) as Role}
@@ -234,8 +260,31 @@ export const Toggle = React.memo(
         hitSlop={hitSlop}
         onPress={handlePress}
         onKeyPress={handleKeyPress}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        style={(pressableState) => {
+          const state = {
+            ...pressableState,
+            pressed: isPressed,
+            focused,
+            focusVisible,
+          };
+          const resolvedStyle = typeof style === 'function' ? style(state) : style;
+          return [
+            resolvedStyle,
+            !disableDefaultFocusRing && focusVisible && DEFAULT_FOCUS_RING_STYLE,
+          ];
+        }}
       >
-        {resolvedChildren}
+        {(pressableState) => {
+          const state = {
+            ...pressableState,
+            pressed: isPressed,
+            focused,
+            focusVisible,
+          };
+          return typeof children === 'function' ? children(state) : children;
+        }}
       </PressableWithKeyPress>
     );
   }),

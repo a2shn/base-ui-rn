@@ -127,6 +127,9 @@ importers:
       '@base-ui-rn/core':
         specifier: workspace:*
         version: link:../core
+      '@base-ui-rn/focus-ring':
+        specifier: workspace:*
+        version: link:../focus-ring
     devDependencies:
       '@base-ui-rn/eslint-config':
         specifier: workspace:*
@@ -326,6 +329,9 @@ importers:
       '@base-ui-rn/core':
         specifier: workspace:*
         version: link:../core
+      '@base-ui-rn/focus-ring':
+        specifier: workspace:*
+        version: link:../focus-ring
     devDependencies:
       '@base-ui-rn/eslint-config':
         specifier: workspace:*
@@ -357,6 +363,9 @@ importers:
       '@base-ui-rn/core':
         specifier: workspace:*
         version: link:../core
+      '@base-ui-rn/focus-ring':
+        specifier: workspace:*
+        version: link:../focus-ring
       '@base-ui-rn/toggle':
         specifier: workspace:*
         version: link:../toggle

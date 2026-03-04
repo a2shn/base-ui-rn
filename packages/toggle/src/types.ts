@@ -1,4 +1,9 @@
-import { type PressableProps, type NativeSyntheticEvent } from 'react-native';
+import type {
+  PressableProps,
+  NativeSyntheticEvent,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
 import {
   type PressedChangeDetails,
   type KeyPressEventData,
@@ -10,7 +15,35 @@ import {
  */
 export type TogglePressedChangeDetails = PressedChangeDetails;
 
-export interface ToggleProps extends Omit<PressableProps, 'role'> {
+export interface ToggleState {
+  /**
+   * Whether the toggle is currently pressed.
+   */
+  pressed: boolean;
+  /**
+   * Whether the toggle is currently focused.
+   */
+  focused: boolean;
+  /**
+   * Whether the toggle should show a focus ring.
+   */
+  focusVisible: boolean;
+}
+
+export interface ToggleProps extends Omit<
+  PressableProps,
+  'role' | 'children' | 'style'
+> {
+  /**
+   * The child elements or a render function.
+   */
+  children?: React.ReactNode | ((state: ToggleState) => React.ReactNode);
+
+  /**
+   * The style of the toggle or a function that returns a style based on state.
+   */
+  style?: StyleProp<ViewStyle> | ((state: ToggleState) => StyleProp<ViewStyle>);
+
   /**
    * The value of the toggle.
    * Used when the toggle is part of a `ToggleGroup`.
@@ -64,6 +97,18 @@ export interface ToggleProps extends Omit<PressableProps, 'role'> {
    * @default false
    */
   focusableWhenDisabled?: boolean;
+
+  /**
+   * Whether the focus ring should be visible even during touch interactions.
+   * @default false
+   */
+  focusVisible?: boolean;
+
+  /**
+   * Whether to disable the default focus ring styling.
+   * @default false
+   */
+  disableDefaultFocusRing?: boolean;
 
   /**
    * Called when a hardware keyboard key is pressed while the toggle is focused.

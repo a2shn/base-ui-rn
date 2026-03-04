@@ -13,6 +13,14 @@ export const DEFAULT_HIT_SLOP = {
 } as const;
 
 /**
+ * Default focus ring styling used across components.
+ */
+export const DEFAULT_FOCUS_RING_STYLE = {
+  borderWidth: 2,
+  borderColor: '#0071E3',
+} as const;
+
+/**
  * Keys that should activate a button or toggle component.
  * Supports a wide range of platforms including mobile, web, and TV.
  */

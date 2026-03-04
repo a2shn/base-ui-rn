@@ -8,7 +8,9 @@ import {
 import {
   type KeyPressEventData,
   type WebToggleGroupAccessibilityProps,
+  DEFAULT_FOCUS_RING_STYLE,
 } from '@base-ui-rn/core';
+import { useFocus } from '@base-ui-rn/focus-ring';
 import { type ToggleGroupProps, type ToggleGroupState } from './types';
 
 /**
@@ -32,6 +34,12 @@ import { type ToggleGroupProps, type ToggleGroupState } from './types';
  * @param orientation
  * The orientation of the group, used for keyboard navigation.
  *
+ * @param disableDefaultFocusRing
+ * Whether to disable the default blue focus ring styling that appears on keyboard focus.
+ *
+ * @param focusVisible
+ * Forces the focus ring to be visible.
+ *
  * @param loopFocus
  * Whether keyboard focus should loop back to the start/end.
  *
@@ -42,6 +50,7 @@ import { type ToggleGroupProps, type ToggleGroupState } from './types';
  * @default loopFocus true
  * @default multiple false
  * @default disabled false
+ * @default disableDefaultFocusRing false
  *
  * @example
  * ```tsx
@@ -68,8 +77,14 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
       loopFocus = true,
       onFocusChange,
       style,
+      focusVisible: forceFocusVisible = false,
+      disableDefaultFocusRing = false,
       ...other
     } = props;
+
+    const { focused, focusVisible, onFocus, onBlur } = useFocus({
+      focusVisible: forceFocusVisible,
+    });
 
     const [uncontrolledValue, setUncontrolledValue] = React.useState(
       defaultValue ?? [],
@@ -203,8 +218,18 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
         multiple,
         orientation,
         loopFocus,
+        focused,
+        focusVisible,
       }),
-      [value, disabled, multiple, orientation, loopFocus],
+      [
+        value,
+        disabled,
+        multiple,
+        orientation,
+        loopFocus,
+        focused,
+        focusVisible,
+      ],
     );
 
     const contextValue = React.useMemo(
@@ -241,14 +266,27 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
     const resolvedDataMultiple =
       (props as WebToggleGroupAccessibilityProps)['data-multiple'] ?? multiple;
 
+    const finalStyle = [
+      resolvedStyle,
+      !disableDefaultFocusRing && focusVisible && DEFAULT_FOCUS_RING_STYLE,
+    ];
+
     return (
       <ToggleGroupContext.Provider value={contextValue}>
         <View
           {...other}
           ref={ref}
-          style={resolvedStyle}
+          style={finalStyle}
           role={(other.accessibilityRole ?? 'group') as unknown as 'checkbox'}
           aria-orientation={orientation}
+          onFocus={(e) => {
+            onFocus();
+            other.onFocus?.(e);
+          }}
+          onBlur={(e) => {
+            onBlur();
+            other.onBlur?.(e);
+          }}
           {...({
             'data-orientation': resolvedDataOrientation,
             'data-disabled': resolvedDataDisabled,

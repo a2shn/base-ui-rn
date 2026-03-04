@@ -11,7 +11,8 @@
     "lint": "eslint . --fix && tsc --noEmit"
   },
   "dependencies": {
-    "@base-ui-rn/core": "workspace:*"
+    "@base-ui-rn/core": "workspace:*",
+    "@base-ui-rn/focus-ring": "workspace:*"
   },
   "peerDependencies": {
     "react": ">=19.1.0",

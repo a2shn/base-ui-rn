@@ -1,12 +1,13 @@
 import * as React from 'react';
 import {
   Pressable,
+  View,
   type PressableProps,
-  type View,
   type NativeSyntheticEvent,
   type GestureResponderEvent,
   type AccessibilityActionEvent,
   type Role,
+  type TargetedEvent,
 } from 'react-native';
 import {
   type ButtonPressedChangeDetails,
@@ -22,7 +23,9 @@ import {
   mergeAccessibilityState,
   resolveTabIndex,
   resolveAriaDisabled,
+  DEFAULT_FOCUS_RING_STYLE,
 } from '@base-ui-rn/core';
+import { useFocus } from '@base-ui-rn/focus-ring';
 
 const PressableWithKeyPress =
   Pressable as unknown as React.ForwardRefExoticComponent<
@@ -38,6 +41,12 @@ const PressableWithKeyPress =
  * @param disabled
  * Controls whether the button can be pressed or focused.
  *
+ * @param disableDefaultFocusRing
+ * Whether to disable the default blue focus ring styling that appears on keyboard focus.
+ *
+ * @param focusVisible
+ * Forces the focus ring to be visible.
+ *
  * @param onPress
  * Callback fired when the button is activated.
  *
@@ -48,19 +57,22 @@ const PressableWithKeyPress =
  * Expands the interactive touch area.
  *
  * @default hitSlop { top: 10, bottom: 10, left: 10, right: 10 }
+ * @default disableDefaultFocusRing false
  *
  * @example
  * ```tsx
- * <Button.Root
+ * <Button
  *   accessibilityHint="Submits the form"
  *   onPress={handleSubmit}
  * >
- *   {({ pressed }) => (
- *     <Text style={{ opacity: pressed ? 0.6 : 1 }}>
- *       Submit
- *     </Text>
+ *   {({ pressed, focusVisible }) => (
+ *     <View style={{ 
+ *       opacity: pressed ? 0.6 : 1,
+ *     }}>
+ *       <Text>Submit</Text>
+ *     </View>
  *   )}
- * </Button.Root>
+ * </Button>
  * ```
  */
 export const Button = React.memo(
@@ -78,12 +90,21 @@ export const Button = React.memo(
       focusableWhenDisabled = false,
       hitSlop = DEFAULT_HIT_SLOP,
       children,
+      style,
+      focusVisible: forceFocusVisible = false,
+      disableDefaultFocusRing = false,
+      onFocus: onFocusProp,
+      onBlur: onBlurProp,
       ...props
     },
     forwardedRef,
   ) {
     const isDisabled = disabled === true;
     const isFocusable = !isDisabled || focusableWhenDisabled === true;
+
+    const { focused, focusVisible, onFocus, onBlur } = useFocus({
+      focusVisible: forceFocusVisible,
+    });
 
     const mergedAccessibilityState = React.useMemo(
       () =>
@@ -161,6 +182,22 @@ export const Button = React.memo(
       [activateButton, isDisabled],
     );
 
+    const handleFocus = React.useCallback(
+      (e: NativeSyntheticEvent<TargetedEvent>) => {
+        onFocus();
+        onFocusProp?.(e);
+      },
+      [onFocus, onFocusProp],
+    );
+
+    const handleBlur = React.useCallback(
+      (e: NativeSyntheticEvent<TargetedEvent>) => {
+        onBlur();
+        onBlurProp?.(e);
+      },
+      [onBlur, onBlurProp],
+    );
+
     return (
       <PressableWithKeyPress
         {...props}
@@ -178,8 +215,29 @@ export const Button = React.memo(
         hitSlop={hitSlop}
         onPress={handlePress}
         onKeyPress={handleKeyPress}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        style={(pressableState) => {
+          const state = {
+            ...pressableState,
+            focused,
+            focusVisible,
+          };
+          const resolvedStyle = typeof style === 'function' ? style(state) : style;
+          return [
+            resolvedStyle,
+            !disableDefaultFocusRing && focusVisible && DEFAULT_FOCUS_RING_STYLE,
+          ];
+        }}
       >
-        {children}
+        {(pressableState) => {
+          const state = {
+            ...pressableState,
+            focused,
+            focusVisible,
+          };
+          return typeof children === 'function' ? children(state) : children;
+        }}
       </PressableWithKeyPress>
     );
   }),

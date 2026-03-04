@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import { render } from '@testing-library/react-native';
 import { Button } from '../button';
 
@@ -23,27 +23,31 @@ describe('Button - Rendering', () => {
     expect(ref.current).toBeDefined();
   });
 
-  it('supports style as a function of pressed state', () => {
+  it('supports style as a function of state', () => {
     const { getByTestId } = render(
       <Button
         testID='button'
-        style={({ pressed }) => ({
-          backgroundColor: pressed ? 'red' : 'blue',
+        focusVisible={true}
+        style={({ focusVisible }) => ({
+          backgroundColor: focusVisible ? 'blue' : 'red',
         })}
       >
         <Text>Style</Text>
       </Button>,
     );
     const button = getByTestId('button');
-    expect(button.props.style.backgroundColor).toBe('blue');
+    expect(StyleSheet.flatten(button.props.style).backgroundColor).toBe('blue');
   });
 
-  it('provides pressed state to children function', () => {
-    const { getByText } = render(
-      <Button>
-        {({ pressed }) => <Text>{pressed ? 'Pressed' : 'Idle'}</Text>}
+  it('provides state to children function', () => {
+    const { getByTestId } = render(
+      <Button testID='button' focusVisible={true}>
+        {({ focusVisible }) => (
+          <Text testID='text'>{focusVisible ? 'Focused' : 'Idle'}</Text>
+        )}
       </Button>,
     );
-    expect(getByText('Idle')).toBeDefined();
+    const text = getByTestId('text');
+    expect(text.props.children).toBe('Focused');
   });
 });

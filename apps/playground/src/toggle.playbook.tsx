@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { Toggle } from '@base-ui-rn/toggle';
 import {
   Gallery,
@@ -14,12 +14,24 @@ export function TogglePlaybook() {
     loading: false,
     loadingPressCount: 0,
   });
+
   const handleLoadingPress = React.useCallback(() => {
     loadingPressCount.setValue((prev: number) => prev + 1);
     if (loading.value) return;
     loading.setValue(true);
     setTimeout(() => loading.setValue(false), 2000);
   }, [loading, loadingPressCount]);
+
+  const toggleBaseStyle = {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    backgroundColor: '#f0f0f0',
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  };
 
   return (
     <Gallery title='Toggle'>
@@ -28,6 +40,10 @@ export function TogglePlaybook() {
           defaultPressed={false}
           accessibilityHint='Toggles notifications'
           testID='toggle-uncontrolled'
+          style={({ pressed }) => [
+            toggleBaseStyle,
+            pressed && { opacity: 0.7, backgroundColor: '#e0e0e0' },
+          ]}
         >
           <Text>Notifications</Text>
         </Toggle>
@@ -36,14 +52,17 @@ export function TogglePlaybook() {
       <Section title='Controlled State'>
         <Toggle
           role='switch'
-          pressed={darkMode.value}
+          pressed={darkMode.value as boolean}
           onPressedChange={darkMode.setValue}
           accessibilityHint='Toggles dark mode'
           testID='toggle-dark-mode'
+          style={({ pressed }) => [
+            toggleBaseStyle,
+            pressed && { opacity: 0.7, backgroundColor: '#e0e0e0' },
+          ]}
         >
           <Text>{darkMode.value ? 'ON' : 'OFF'}</Text>
         </Toggle>
-
         <LiveConsole title='darkMode' state={darkMode} />
       </Section>
 
@@ -52,6 +71,7 @@ export function TogglePlaybook() {
           disabled
           accessibilityHint='Locked setting'
           testID='toggle-disabled'
+          style={[toggleBaseStyle, { opacity: 0.5 }]}
         >
           <Text>Disabled</Text>
         </Toggle>
@@ -68,6 +88,10 @@ export function TogglePlaybook() {
           accessibilityState={{ busy: loading.value as boolean }}
           testID='toggle-disabled-focusable'
           accessibilityLabel='Agree Toggle'
+          style={({ pressed }) => [
+            toggleBaseStyle,
+            pressed && { opacity: 0.7, backgroundColor: '#e0e0e0' },
+          ]}
         >
           <Text>{loading.value ? 'Applying...' : 'Agree'}</Text>
         </Toggle>

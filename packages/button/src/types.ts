@@ -1,4 +1,9 @@
-import { type PressableProps, type NativeSyntheticEvent } from 'react-native';
+import type {
+  PressableProps,
+  NativeSyntheticEvent,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
 import {
   type PressedChangeDetails,
   type KeyPressEventData,
@@ -10,7 +15,35 @@ import {
  */
 export type ButtonPressedChangeDetails = PressedChangeDetails;
 
-export interface ButtonProps extends PressableProps {
+export interface ButtonState {
+  /**
+   * Whether the button is currently pressed.
+   */
+  pressed: boolean;
+  /**
+   * Whether the button is currently focused.
+   */
+  focused: boolean;
+  /**
+   * Whether the button should show a focus ring.
+   */
+  focusVisible: boolean;
+}
+
+export interface ButtonProps extends Omit<
+  PressableProps,
+  'children' | 'style'
+> {
+  /**
+   * The child elements or a render function.
+   */
+  children?: React.ReactNode | ((state: ButtonState) => React.ReactNode);
+
+  /**
+   * The style of the button or a function that returns a style based on state.
+   */
+  style?: StyleProp<ViewStyle> | ((state: ButtonState) => StyleProp<ViewStyle>);
+
   /**
    * Disables press, focus, and keyboard interaction.
    *
@@ -26,6 +59,18 @@ export interface ButtonProps extends PressableProps {
    * @default false
    */
   focusableWhenDisabled?: boolean;
+
+  /**
+   * Whether the focus ring should be visible even during touch interactions.
+   * @default false
+   */
+  focusVisible?: boolean;
+
+  /**
+   * Whether to disable the default focus ring styling.
+   * @default false
+   */
+  disableDefaultFocusRing?: boolean;
 
   /**
    * Describes the result of activating the button.

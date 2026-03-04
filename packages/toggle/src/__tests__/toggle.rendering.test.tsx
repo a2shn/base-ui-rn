@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import { render } from '@testing-library/react-native';
 import { Toggle } from '../toggle';
 
@@ -39,7 +39,9 @@ describe('Toggle - Rendering', () => {
     const toggle = getByTestId('toggle');
     // Note: In some test environments, the style might be an array or flattened.
     // We check for red which corresponds to pressed=true.
-    expect(toggle.props.style).toMatchObject({ backgroundColor: 'red' });
+    expect(StyleSheet.flatten(toggle.props.style)).toMatchObject({
+      backgroundColor: 'red',
+    });
   });
 
   it('provides pressed state to children function', () => {

@@ -1,5 +1,6 @@
 import * as React from 'react';
-import type { FocusRingProps, FocusRingRenderProps } from './types';
+import type { FocusRingProps } from './types';
+import { useFocus } from './use-focus';
 
 /**
  * Headless utility component that manages focus state and focus-visible logic.
@@ -23,36 +24,14 @@ import type { FocusRingProps, FocusRingRenderProps } from './types';
  */
 export const FocusRing: React.FC<FocusRingProps> = (props) => {
   const { children, focusVisible: forceFocusVisible = false } = props;
-  const [focused, setFocused] = React.useState(false);
-  const [isFocusVisible, setFocusVisible] = React.useState(forceFocusVisible);
-
-  /**
-   * Internal focus handler that updates state and manages focus-visible heuristic.
-   */
-  const onFocus = React.useCallback(() => {
-    setFocused(true);
-    // In React Native, true focus-visible logic often requires tracking global
-    // interaction state (pointer vs keyboard). For this implementation, we
-    // default to true when focused to ensure accessibility, which can be
-    // further specialized with platform-specific native listeners.
-    setFocusVisible(true);
-  }, []);
-
-  /**
-   * Internal blur handler.
-   */
-  const onBlur = React.useCallback(() => {
-    setFocused(false);
-    setFocusVisible(false);
-  }, []);
-
-  const renderProps: FocusRingRenderProps = {
-    focused,
-    focusVisible: isFocusVisible || forceFocusVisible,
-  };
+  const { focused, focusVisible, onFocus, onBlur } = useFocus({
+    focusVisible: forceFocusVisible,
+  });
 
   const child =
-    typeof children === 'function' ? children(renderProps) : children;
+    typeof children === 'function'
+      ? children({ focused, focusVisible })
+      : children;
 
   if (!React.isValidElement(child)) {
     return child as unknown as React.ReactElement;

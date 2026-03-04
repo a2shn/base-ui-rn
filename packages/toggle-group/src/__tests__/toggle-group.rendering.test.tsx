@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import { render } from '@testing-library/react-native';
 import { ToggleGroup } from '../toggle-group';
 import { Toggle } from '@base-ui-rn/toggle';
@@ -49,7 +49,7 @@ describe('ToggleGroup - Rendering & Props', () => {
     );
 
     const group = getByTestId('group');
-    expect(group.props.style.backgroundColor).toBe('red');
+    expect(StyleSheet.flatten(group.props.style).backgroundColor).toBe('red');
   });
 
   it('supports children as a function of state', () => {
