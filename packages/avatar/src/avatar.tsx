@@ -27,7 +27,7 @@ import { AvatarContext, useAvatarContext } from './avatar-context';
  */
 export const AvatarRoot = React.forwardRef<View, AvatarRootProps>(
   (props, ref) => {
-    const { children, ...other } = props;
+    const { children, accessible, accessibilityRole, ...other } = props;
     const [loadingStatus, setLoadingStatus] =
       React.useState<ImageLoadingStatus>('idle');
 
@@ -46,9 +46,17 @@ export const AvatarRoot = React.forwardRef<View, AvatarRootProps>(
       [loadingStatus, onLoadingStatusChange],
     );
 
+    const isLoading = loadingStatus === 'loading';
+
     return (
       <AvatarContext.Provider value={contextValue}>
-        <View {...other} ref={ref}>
+        <View
+          {...other}
+          ref={ref}
+          accessible={accessible !== false}
+          accessibilityRole={accessibilityRole ?? 'image'}
+          aria-busy={isLoading}
+        >
           {children}
         </View>
       </AvatarContext.Provider>
@@ -65,12 +73,17 @@ AvatarRoot.displayName = 'Avatar.Root';
  *
  * @param onLoadingStatusChange
  * Callback fired when the image loading status changes ('loading' | 'loaded' | 'error').
+ * 
+ * @param accessible
+ * When true, the image is marked as an accessibility element. Defaults to false
+ * since the root handles accessibility.
  */
 export const AvatarImage = React.forwardRef<RNImage, AvatarImageProps>(
   (props, ref) => {
     const {
       onLoadingStatusChange: onLoadingStatusChangeProp,
       source,
+      accessible = false,
       ...other
     } = props;
     const { onLoadingStatusChange } = useAvatarContext();
@@ -83,21 +96,53 @@ export const AvatarImage = React.forwardRef<RNImage, AvatarImageProps>(
       [onLoadingStatusChange, onLoadingStatusChangeProp],
     );
 
-    React.useLayoutEffect(() => {
+    const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+    const clearLoadTimeout = React.useCallback(() => {
+      if (timeoutRef.current !== null) {
+        clearTimeout(timeoutRef.current as ReturnType<typeof setTimeout>);
+        timeoutRef.current = null;
+      }
+    }, []);
+
+    const handleLoadStart = React.useCallback((e?: unknown) => {
+      handleLoadingStatusChange('loading');
+      clearLoadTimeout();
+      timeoutRef.current = setTimeout(() => {
+        handleLoadingStatusChange('error');
+      }, 10000);
+      (other as any).onLoadStart?.(e);
+    }, [handleLoadingStatusChange, clearLoadTimeout, other]);
+
+    const handleLoad = React.useCallback((e?: unknown) => {
+      clearLoadTimeout();
+      handleLoadingStatusChange('loaded');
+      (other as any).onLoad?.(e);
+    }, [clearLoadTimeout, handleLoadingStatusChange, other]);
+
+    const handleError = React.useCallback((e?: unknown) => {
+      clearLoadTimeout();
+      handleLoadingStatusChange('error');
+      (other as any).onError?.(e);
+    }, [clearLoadTimeout, handleLoadingStatusChange, other]);
+
+    React.useEffect(() => {
       if (!source) {
         handleLoadingStatusChange('error');
-      } else {
-        handleLoadingStatusChange('loading');
       }
-    }, [source, handleLoadingStatusChange]);
+      return () => {
+        clearLoadTimeout();
+      };
+    }, [source, handleLoadingStatusChange, clearLoadTimeout]);
 
     return (
       <RNImage
         {...(other as RNImageProps)}
         ref={ref}
         source={source}
-        onLoad={() => handleLoadingStatusChange('loaded')}
-        onError={() => handleLoadingStatusChange('error')}
+        accessible={accessible}
+        onLoadStart={handleLoadStart}
+        onLoad={handleLoad}
+        onError={handleError}
       />
     );
   },
@@ -109,12 +154,15 @@ AvatarImage.displayName = 'Avatar.Image';
  * A fallback component rendered when the image is loading or fails to load.
  *
  * @param delay
- * The duration (inms) to wait before rendering the fallback.
+ * The duration (in ms) to wait before rendering the fallback.
  * Useful for preventing "flicker" when an image loads quickly.
+ * 
+ * @param accessible
+ * When true, the fallback is marked as an accessibility element.
  */
 export const AvatarFallback = React.forwardRef<View, AvatarFallbackProps>(
   (props, ref) => {
-    const { delay, children, ...other } = props;
+    const { delay, children, accessible = true, ...other } = props;
     const { loadingStatus } = useAvatarContext();
     const [canRender, setCanRender] = React.useState(delay === undefined);
 
@@ -128,7 +176,12 @@ export const AvatarFallback = React.forwardRef<View, AvatarFallbackProps>(
 
     if (canRender && loadingStatus !== 'loaded') {
       return (
-        <View {...other} ref={ref}>
+        <View
+          {...other}
+          ref={ref}
+          accessible={accessible}
+          importantForAccessibility='yes'
+        >
           {children}
         </View>
       );

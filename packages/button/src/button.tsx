@@ -102,6 +102,9 @@ export const Button = React.memo(
     const isDisabled = disabled === true;
     const isFocusable = !isDisabled || focusableWhenDisabled === true;
 
+    const internalRef = React.useRef<View>(null);
+    React.useImperativeHandle(forwardedRef, () => internalRef.current!);
+
     const { focused, focusVisible, onFocus, onBlur } = useFocus({
       focusVisible: forceFocusVisible,
     });
@@ -201,7 +204,7 @@ export const Button = React.memo(
     return (
       <PressableWithKeyPress
         {...props}
-        ref={forwardedRef}
+        ref={internalRef}
         accessible
         role={(accessibilityRole ?? 'button') as Role}
         accessibilityHint={accessibilityHint}

@@ -2,30 +2,31 @@ import * as React from 'react';
 import { View, Text } from 'react-native';
 import { Separator } from '@base-ui-rn/separator';
 import { Gallery, Section } from '@base-ui-rn/playbook';
+import styles from './playbookStyles';
 
 export function SeparatorPlaybook() {
   return (
     <Gallery title='Separator'>
       <Section title='Horizontal'>
-        <View style={{ gap: 10, padding: 10 }}>
+        <View style={styles.sep_row}>
           <Text>Content Above</Text>
-          <Separator style={{ height: 1, backgroundColor: '#ccc', width: '100%' }} />
+          <Separator style={styles.sep_horizontal} />
           <Text>Content Below</Text>
         </View>
       </Section>
 
       <Section title='Vertical'>
-        <View style={{ flexDirection: 'row', height: 40, alignItems: 'center', gap: 10, padding: 10 }}>
+        <View style={styles.sep_verticalRow}>
           <Text>Left</Text>
-          <Separator orientation='vertical' style={{ width: 1, height: '100%', backgroundColor: '#ccc' }} />
+          <Separator orientation='vertical' style={styles.sep_vertical} />
           <Text>Right</Text>
         </View>
       </Section>
 
-      <Section title='Decorative (Hidden from A11y)'>
-        <View style={{ gap: 10, padding: 10 }}>
+      <Section title='Decorative'>
+        <View style={styles.sep_row}>
           <Text>Content Above</Text>
-          <Separator decorative style={{ height: 1, backgroundColor: '#ccc', width: '100%' }} />
+          <Separator decorative style={styles.sep_horizontal} />
           <Text>Content Below</Text>
         </View>
       </Section>

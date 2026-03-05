@@ -1,7 +1,7 @@
 import { useStyles } from '../styles';
 import * as React from 'react';
 import { Text, View } from 'react-native';
-import { StatusCircleIcon, ClockIcon, ArrowRightIcon } from '../icons';
+import { StatusCircleIcon, ArrowRightIcon } from '../icons';
 
 export type ActionLog<V> = {
   timestamp: string;
@@ -188,6 +188,8 @@ export const LiveConsole = <V,>({
       <Text
         style={[styles.stateIndicatorValue, { color: valueColor }]}
         testID={testID ? `${testID}-value` : undefined}
+        numberOfLines={1}
+        ellipsizeMode='tail'
       >
         {formattedValue}
       </Text>
@@ -210,8 +212,6 @@ export const LiveConsole = <V,>({
             marginLeft: 'auto',
           }}
         >
-          <ClockIcon size={12} color='#8E8E93' />
-          <Text style={styles.stateIndicatorChange}>{state.log.timestamp}</Text>
           <Text style={[styles.stateIndicatorChange, { marginHorizontal: 2 }]}>
             {formatValue(state.log.from)}
           </Text>

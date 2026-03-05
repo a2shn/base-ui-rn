@@ -30,9 +30,9 @@ import { useFocus } from '@base-ui-rn/focus-ring';
 const PressableWithKeyPress =
   Pressable as unknown as React.ForwardRefExoticComponent<
     PressableProps &
-      WebAccessibilityProps & {
-        onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
-      } & React.RefAttributes<View>
+    WebToggleAccessibilityProps & {
+      onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
+    } & React.RefAttributes<View>
   >;
 
 /**
@@ -86,18 +86,15 @@ export const Toggle = React.memo(
     }
 
     const internalRef = React.useRef<View>(null);
-    const resolvedRef = forwardedRef || internalRef;
+    React.useImperativeHandle(forwardedRef, () => internalRef.current!);
 
     React.useEffect(() => {
       if (isInGroup && value !== undefined) {
         // We use a ref object to store the current element for focus management
-        return groupContext.registerItem(
-          value,
-          resolvedRef as React.RefObject<unknown>,
-        );
+        return groupContext.registerItem(value, internalRef);
       }
       return undefined;
-    }, [isInGroup, value, groupContext, resolvedRef]);
+    }, [isInGroup, value, groupContext]);
 
     React.useEffect(() => {
       if (isInGroup && value !== undefined) {
@@ -243,7 +240,7 @@ export const Toggle = React.memo(
     return (
       <PressableWithKeyPress
         {...props}
-        ref={resolvedRef}
+        ref={internalRef}
         disabled={isDisabled}
         accessible
         role={(accessibilityRole ?? role) as Role}

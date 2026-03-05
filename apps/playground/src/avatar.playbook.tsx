@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
+import styles from './playbookStyles';
 import { Avatar } from '@base-ui-rn/avatar';
 import {
   Gallery,
@@ -17,12 +18,17 @@ export function AvatarPlaybook() {
 
   return (
     <Gallery title='Avatar'>
-      <Section title='Basic Usage'>
+      <Section title='Basic'>
         <View style={styles.container}>
-          <Avatar.Root style={styles.avatar}>
+          <Avatar.Root
+            style={styles.avatar}
+            accessibilityLabel='User avatar'
+          >
             <Avatar.Image
-              source={{ uri: 'https://github.com/shadcn.png' }}
+              source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }}
               style={styles.image}
+              width={60}
+              height={60}
               onLoadingStatusChange={status1.setValue}
             />
             <Avatar.Fallback style={styles.fallback}>
@@ -33,13 +39,18 @@ export function AvatarPlaybook() {
         </View>
       </Section>
 
-      <Section title='Error State with Fallback'>
+      <Section title='Error Fallback'>
         <View style={styles.container}>
-          <Avatar.Root style={styles.avatar}>
+          <Avatar.Root
+            style={styles.avatar}
+            accessibilityLabel='Error avatar showing fallback'
+          >
             <Avatar.Image
-              source={{ uri: 'https://invalid-url.com/image.png' }}
+              source={{ uri: 'https://invalid-url-example.com/image.png' }}
               style={styles.image}
               onLoadingStatusChange={status2.setValue}
+              width={60}
+              height={60}
             />
             <Avatar.Fallback style={styles.fallback}>
               <Text style={styles.fallbackText}>JD</Text>
@@ -49,21 +60,26 @@ export function AvatarPlaybook() {
         </View>
       </Section>
 
-      <Section title='Loading State with Delay'>
+      <Section title='Loading Delay'>
         <View style={styles.container}>
-          <Avatar.Root style={styles.avatar}>
+          <Avatar.Root
+            style={styles.avatar}
+            accessibilityLabel='Loading avatar with delayed fallback'
+          >
             <Avatar.Image
-              source={{ uri: 'https://github.com/google.png' }}
+              source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }}
               style={styles.image}
+              width={60}
+              height={60}
               onLoadingStatusChange={status3.setValue}
             />
-            <Avatar.Fallback style={styles.fallback} delay={1000}>
-              <Text style={styles.fallbackText}>GO</Text>
+            <Avatar.Fallback style={styles.fallback} delay={300}>
+              <Text style={styles.fallbackText}>VL</Text>
             </Avatar.Fallback>
           </Avatar.Root>
           <LiveConsole title='Loading Status' state={status3} />
           <Text style={styles.hint}>
-            The fallback will only appear if loading takes more than 1s.
+            The fallback will only appear if loading takes more than 300ms.
           </Text>
         </View>
       </Section>
@@ -71,40 +87,4 @@ export function AvatarPlaybook() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-    gap: 15,
-  },
-  avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    overflow: 'hidden',
-    backgroundColor: '#eee',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    position: 'absolute',
-  },
-  fallback: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#0071E3',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  fallbackText: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  hint: {
-    fontSize: 12,
-    color: '#666',
-    fontStyle: 'italic',
-  },
-});
+

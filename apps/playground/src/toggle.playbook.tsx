@@ -7,6 +7,7 @@ import {
   usePlaybookToggles,
   LiveConsole,
 } from '@base-ui-rn/playbook';
+import styles from './playbookStyles';
 
 export function TogglePlaybook() {
   const { darkMode, loading, loadingPressCount } = usePlaybookToggles({
@@ -22,20 +23,11 @@ export function TogglePlaybook() {
     setTimeout(() => loading.setValue(false), 2000);
   }, [loading, loadingPressCount]);
 
-  const toggleBaseStyle = {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    backgroundColor: '#f0f0f0',
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-    borderWidth: 2,
-    borderColor: 'transparent',
-  };
+  const toggleBaseStyle = styles.toggleBase;
 
   return (
     <Gallery title='Toggle'>
-      <Section title='Uncontrolled State' showAllProps={true}>
+      <Section title='Uncontrolled' showAllProps={true}>
         <Toggle
           defaultPressed={false}
           accessibilityHint='Toggles notifications'
@@ -49,7 +41,7 @@ export function TogglePlaybook() {
         </Toggle>
       </Section>
 
-      <Section title='Controlled State'>
+      <Section title='Controlled'>
         <Toggle
           role='switch'
           pressed={darkMode.value as boolean}
@@ -66,7 +58,7 @@ export function TogglePlaybook() {
         <LiveConsole title='darkMode' state={darkMode} />
       </Section>
 
-      <Section title='Disabled State'>
+      <Section title='Disabled'>
         <Toggle
           disabled
           accessibilityHint='Locked setting'
@@ -77,7 +69,7 @@ export function TogglePlaybook() {
         </Toggle>
       </Section>
 
-      <Section title='Agree / Processing State'>
+      <Section title='Processing'>
         <Toggle
           disabled={loading.value as boolean}
           focusableWhenDisabled

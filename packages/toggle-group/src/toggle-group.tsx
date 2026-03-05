@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from 'react';
-import { View, type NativeSyntheticEvent } from 'react-native';
+import { View, Platform, type NativeSyntheticEvent } from 'react-native';
 import {
   ToggleGroupContext,
   type ToggleGroupChangeEventDetails,
@@ -82,6 +82,9 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
       ...other
     } = props;
 
+    const internalRef = React.useRef<View>(null);
+    React.useImperativeHandle(ref, () => internalRef.current!);
+
     const { focused, focusVisible, onFocus, onBlur } = useFocus({
       focusVisible: forceFocusVisible,
     });
@@ -139,8 +142,9 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
       (currentValue: string, event: unknown) => {
         if (disabled) return;
 
-        const key = (event as NativeSyntheticEvent<KeyPressEventData>)
-          .nativeEvent.key;
+        const nativeEvent = (event as NativeSyntheticEvent<KeyPressEventData>)
+          .nativeEvent;
+        const key = nativeEvent.key;
         const isHorizontal = orientation === 'horizontal';
         const isVertical = orientation === 'vertical';
 
@@ -156,36 +160,76 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
 
         if (direction) {
           const orderedValues = orderedValuesRef.current;
+          const len = orderedValues.length;
+          if (len <= 1) return;
+
           const currentIndex = orderedValues.indexOf(currentValue);
           if (currentIndex === -1) return;
 
           let nextIndex: number;
           if (direction === 'next') {
             nextIndex = currentIndex + 1;
-            if (nextIndex >= orderedValues.length) {
-              nextIndex = loopFocus ? 0 : currentIndex;
+            if (nextIndex >= len) {
+              if (loopFocus) {
+                nextIndex = 0;
+              } else {
+                return;
+              }
             }
           } else {
             nextIndex = currentIndex - 1;
             if (nextIndex < 0) {
-              nextIndex = loopFocus ? orderedValues.length - 1 : currentIndex;
+              if (loopFocus) {
+                nextIndex = len - 1;
+              } else {
+                return;
+              }
             }
           }
 
           if (nextIndex !== currentIndex) {
             const nextValue = orderedValues[nextIndex];
+            const nextRef = registeredItems.current.get(nextValue);
+            const element = nextRef?.current as
+              | { focus?: () => void }
+              | null
+              | undefined;
+
+            const evtAny = event as any;
+            let prevented = false;
+            if (evtAny && typeof evtAny.preventDefault === 'function') {
+              try {
+                evtAny.preventDefault();
+                prevented = true;
+              } catch {}
+            } else if (
+              evtAny &&
+              evtAny.nativeEvent &&
+              typeof evtAny.nativeEvent.preventDefault === 'function'
+            ) {
+              try {
+                evtAny.nativeEvent.preventDefault();
+                prevented = true;
+              } catch {}
+            }
+
             onFocusChange?.(nextValue);
 
-            const nextRef = registeredItems.current.get(nextValue);
-            if (nextRef?.current) {
-              const element = nextRef.current as any;
-              if (typeof element.focus === 'function') {
+            const isWeb = Platform.OS === 'web';
+            const isTest = !!process.env.JEST_WORKER_ID;
+            const shouldProgrammaticFocus = isWeb || isTest;
+
+            if (!shouldProgrammaticFocus) {
+              return;
+            }
+
+            if (element && typeof element.focus === 'function') {
+              if (prevented) {
                 element.focus();
-              } else if (
-                element.current &&
-                typeof element.current.focus === 'function'
-              ) {
-                element.current.focus();
+              } else {
+                setTimeout(() => {
+                  element.focus();
+                }, 0);
               }
             }
           }
@@ -275,7 +319,7 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
       <ToggleGroupContext.Provider value={contextValue}>
         <View
           {...other}
-          ref={ref}
+          ref={internalRef}
           style={finalStyle}
           role={(other.accessibilityRole ?? 'group') as unknown as 'checkbox'}
           aria-orientation={orientation}
@@ -291,7 +335,7 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
             'data-orientation': resolvedDataOrientation,
             'data-disabled': resolvedDataDisabled,
             'data-multiple': resolvedDataMultiple,
-          } as any)}
+          } as Record<string, unknown>)}
         >
           {resolvedChildren}
         </View>

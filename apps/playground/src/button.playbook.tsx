@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 import { Button } from '@base-ui-rn/button';
 import {
   Gallery,
@@ -7,6 +7,7 @@ import {
   usePlaybookToggles,
   LiveConsole,
 } from '@base-ui-rn/playbook';
+import styles from './playbookStyles';
 
 export function ButtonPlaybook() {
   const { count, loading, loadingPressCount } = usePlaybookToggles({
@@ -22,20 +23,11 @@ export function ButtonPlaybook() {
     setTimeout(() => loading.setValue(false), 2000);
   }, [loading, loadingPressCount]);
 
-  const buttonBaseStyle = {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    backgroundColor: '#f0f0f0',
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-    borderWidth: 2,
-    borderColor: 'transparent',
-  };
+  const buttonBaseStyle = styles.buttonBase;
 
   return (
     <Gallery title='Button'>
-      <Section title='Counter Button'>
+      <Section title='Counter'>
         <Button
           onPress={() => count.setValue(count.value + 1)}
           accessibilityHint='Increments the counter'
@@ -50,19 +42,20 @@ export function ButtonPlaybook() {
         <LiveConsole title='count' state={count} />
       </Section>
 
-      <Section title='Disabled State'>
+      <Section title='Disabled'>
         <Button
           disabled
           accessibilityHint='Locked button'
           testID='button-disabled'
           accessibilityLabel='Disabled Button'
           style={[buttonBaseStyle, { opacity: 0.5 }]}
+          disableDefaultFocusRing
         >
           <Text>Disabled Button</Text>
         </Button>
       </Section>
 
-      <Section title='Loading State'>
+      <Section title='Loading'>
         <Button
           disabled={loading.value as boolean}
           focusableWhenDisabled
@@ -89,10 +82,10 @@ export function ButtonPlaybook() {
         />
       </Section>
 
-      <Section title='Custom Focus (No default ring)'>
-        <Button 
-          disableDefaultFocusRing 
-          onPress={() => {}}
+      <Section title='Custom Focus'>
+        <Button
+          disableDefaultFocusRing
+          onPress={() => { }}
           style={buttonBaseStyle}
         >
           {({ focusVisible }) => (
