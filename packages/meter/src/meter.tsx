@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { View, Text, type ViewStyle } from 'react-native';
+import { resolveTabIndex } from '@base-ui-rn/core';
 import type {
   MeterRootProps,
   MeterLabelProps,
@@ -36,8 +37,11 @@ export const MeterRoot = React.forwardRef<View, MeterRootProps>(
       format,
       accessible = true,
       accessibilityRole = 'progressbar',
+      tabIndex,
       ...other
     } = props;
+
+    const labelId = React.useId();
 
     const percentage = Math.min(Math.max((value - min) / (max - min), 0), 1) * 100;
 
@@ -63,9 +67,12 @@ export const MeterRoot = React.forwardRef<View, MeterRootProps>(
         percentage,
         formattedValue,
         ariaValueText,
+        labelId,
       }),
-      [value, min, max, percentage, formattedValue, ariaValueText],
+      [value, min, max, percentage, formattedValue, ariaValueText, labelId],
     );
+
+    const resolvedTabIndex = resolveTabIndex(false, tabIndex);
 
     return (
       <MeterContext.Provider value={contextValue}>
@@ -73,7 +80,13 @@ export const MeterRoot = React.forwardRef<View, MeterRootProps>(
           {...other}
           ref={ref}
           accessible={accessible}
-          accessibilityRole={accessibilityRole}
+          role={(accessibilityRole ?? 'progressbar') as unknown as 'checkbox'}
+          aria-labelledby={other.accessibilityLabel ? undefined : labelId}
+          tabIndex={resolvedTabIndex}
+          aria-valuemin={min}
+          aria-valuemax={max}
+          aria-valuenow={value}
+          aria-valuetext={ariaValueText}
           accessibilityValue={{
             min,
             max,
@@ -92,12 +105,23 @@ MeterRoot.displayName = 'Meter.Root';
 
 /**
  * An accessible label for the meter.
+ * 
+ * Automatically linked to the `Meter.Root` via `aria-labelledby`.
+ * Hidden from accessibility to avoid redundant announcements.
  */
 export const MeterLabel = React.forwardRef<Text, MeterLabelProps>(
   (props, ref) => {
-    const { children, ...other } = props;
+    const { children, nativeID, ...other } = props;
+    const { labelId } = useMeterContext();
+
     return (
-      <Text {...other} ref={ref}>
+      <Text
+        {...other}
+        ref={ref}
+        nativeID={nativeID ?? labelId}
+        importantForAccessibility='no-hide-descendants'
+        aria-hidden
+      >
         {children}
       </Text>
     );
@@ -108,12 +132,19 @@ MeterLabel.displayName = 'Meter.Label';
 
 /**
  * Contains the meter indicator and represents the entire range of the meter.
+ * 
+ * Hidden from accessibility as it's purely visual.
  */
 export const MeterTrack = React.forwardRef<View, MeterTrackProps>(
   (props, ref) => {
     const { children, ...other } = props;
     return (
-      <View {...other} ref={ref}>
+      <View
+        {...other}
+        ref={ref}
+        importantForAccessibility='no-hide-descendants'
+        aria-hidden
+      >
         {children}
       </View>
     );
@@ -126,6 +157,7 @@ MeterTrack.displayName = 'Meter.Track';
  * Visualizes the position of the value along the range.
  *
  * Automatically applies the width (or height if vertical) based on the meter's value.
+ * Hidden from accessibility as it's purely visual.
  */
 export const MeterIndicator = React.forwardRef<View, MeterIndicatorProps>(
   (props, ref) => {
@@ -143,6 +175,8 @@ export const MeterIndicator = React.forwardRef<View, MeterIndicatorProps>(
         {...other}
         ref={ref}
         style={[indicatorStyle, style]}
+        importantForAccessibility='no-hide-descendants'
+        aria-hidden
       />
     );
   },
@@ -152,6 +186,9 @@ MeterIndicator.displayName = 'Meter.Indicator';
 
 /**
  * A text element displaying the current value.
+ * 
+ * Hidden from accessibility to avoid redundant announcements, as the value is 
+ * provided by `Meter.Root`'s `accessibilityValue`.
  */
 export const MeterValue = React.forwardRef<Text, MeterValueProps>(
   (props, ref) => {
@@ -159,7 +196,12 @@ export const MeterValue = React.forwardRef<Text, MeterValueProps>(
     const { value, formattedValue } = useMeterContext();
 
     return (
-      <Text {...other} ref={ref}>
+      <Text
+        {...other}
+        ref={ref}
+        importantForAccessibility='no-hide-descendants'
+        aria-hidden
+      >
         {typeof children === 'function'
           ? children(formattedValue, value)
           : formattedValue}

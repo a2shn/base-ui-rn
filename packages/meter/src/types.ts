@@ -1,7 +1,8 @@
 import type * as React from 'react';
 import type { ViewProps, TextProps } from 'react-native';
+import type { WebAccessibilityProps } from '@base-ui-rn/core';
 
-export interface MeterRootProps extends ViewProps {
+export interface MeterRootProps extends ViewProps, WebAccessibilityProps {
   /**
    * The current value.
    */
@@ -55,4 +56,5 @@ export interface MeterContextValue {
   percentage: number;
   formattedValue: string;
   ariaValueText?: string;
+  labelId?: string;
 }
