@@ -56,8 +56,8 @@ export const MeterRoot = React.forwardRef<View, MeterRootProps>(
     const ariaValueText = React.useMemo(() => {
       if (ariaValueTextProp) return ariaValueTextProp;
       if (getAriaValueText) return getAriaValueText(value, min, max);
-      return undefined;
-    }, [ariaValueTextProp, getAriaValueText, value, min, max]);
+      return formattedValue;
+    }, [ariaValueTextProp, getAriaValueText, value, min, max, formattedValue]);
 
     const contextValue = React.useMemo(
       () => ({
@@ -73,6 +73,7 @@ export const MeterRoot = React.forwardRef<View, MeterRootProps>(
     );
 
     const resolvedTabIndex = resolveTabIndex(false, tabIndex);
+    const isLabelledByProp = !!other.accessibilityLabel;
 
     return (
       <MeterContext.Provider value={contextValue}>
@@ -81,7 +82,8 @@ export const MeterRoot = React.forwardRef<View, MeterRootProps>(
           ref={ref}
           accessible={accessible}
           role={(accessibilityRole ?? 'progressbar') as unknown as 'checkbox'}
-          aria-labelledby={other.accessibilityLabel ? undefined : labelId}
+          aria-labelledby={isLabelledByProp ? undefined : labelId}
+          accessibilityLabelledBy={isLabelledByProp ? undefined : [labelId]}
           tabIndex={resolvedTabIndex}
           aria-valuemin={min}
           aria-valuemax={max}
@@ -107,7 +109,6 @@ MeterRoot.displayName = 'Meter.Root';
  * An accessible label for the meter.
  * 
  * Automatically linked to the `Meter.Root` via `aria-labelledby`.
- * Hidden from accessibility to avoid redundant announcements.
  */
 export const MeterLabel = React.forwardRef<Text, MeterLabelProps>(
   (props, ref) => {
@@ -119,8 +120,6 @@ export const MeterLabel = React.forwardRef<Text, MeterLabelProps>(
         {...other}
         ref={ref}
         nativeID={nativeID ?? labelId}
-        importantForAccessibility='no-hide-descendants'
-        aria-hidden
       >
         {children}
       </Text>
