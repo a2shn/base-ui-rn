@@ -27,7 +27,7 @@ export function MeterPlaybook() {
             <View style={styles.meterHeader}>
               <Meter.Label style={styles.meterLabel}>Points</Meter.Label>
               <Meter.Value style={styles.meterValue}>
-                {(formattedValue, value) => `${value} / 500`}
+                {(_, value) => `${value} / 500`}
               </Meter.Value>
             </View>
             <Meter.Track style={styles.meterTrack}>

@@ -116,6 +116,7 @@ export default StyleSheet.create({
   },
   meterIndicator: {
     height: '100%',
+    width: '100%',
     backgroundColor: '#0071E3',
   },
 });

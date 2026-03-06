@@ -49,7 +49,9 @@ describe('Meter', () => {
         </Meter.Root>,
       );
 
-      let indicator = getByTestId('indicator', { includeHiddenElements: true });
+      let indicator = getByTestId('indicator', {
+        includeHiddenElements: true,
+      });
       expect(StyleSheet.flatten(indicator.props.style).width).toBe('100%');
 
       rerender(
