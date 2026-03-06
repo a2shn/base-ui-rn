@@ -1,5 +1,9 @@
 import { Toggle as ToggleComponent } from './toggle';
-import type { ToggleProps, TogglePressedChangeDetails } from './types';
+import type {
+  ToggleProps,
+  TogglePressedChangeDetails,
+  ToggleState,
+} from './types';
 import {
   useToggleGroupContext,
   ToggleGroupContext,
@@ -12,6 +16,7 @@ export const Toggle = ToggleComponent;
 export type {
   ToggleProps as Props,
   TogglePressedChangeDetails as PressedChangeDetails,
+  ToggleState as State,
 };
 
 export type {
@@ -19,7 +24,7 @@ export type {
   ToggleGroupChangeEventDetails as GroupChangeEventDetails,
 };
 
-export type { ToggleProps, TogglePressedChangeDetails };
+export type { ToggleProps, TogglePressedChangeDetails, ToggleState };
 export { useToggleGroupContext, ToggleGroupContext };
 export type {
   ToggleGroupContextValue,

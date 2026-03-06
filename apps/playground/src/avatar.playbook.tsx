@@ -23,6 +23,7 @@ export function AvatarPlaybook() {
           <Avatar.Root
             style={styles.avatar}
             accessibilityLabel='User avatar'
+            accessibilityHint='Displays user profile picture'
           >
             <Avatar.Image
               source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }}
@@ -44,6 +45,7 @@ export function AvatarPlaybook() {
           <Avatar.Root
             style={styles.avatar}
             accessibilityLabel='Error avatar showing fallback'
+            accessibilityHint='Displays initials when image fails to load'
           >
             <Avatar.Image
               source={{ uri: 'https://invalid-url-example.com/image.png' }}
@@ -65,6 +67,7 @@ export function AvatarPlaybook() {
           <Avatar.Root
             style={styles.avatar}
             accessibilityLabel='Loading avatar with delayed fallback'
+            accessibilityHint='Displays fallback after a delay during loading'
           >
             <Avatar.Image
               source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }}
@@ -86,5 +89,3 @@ export function AvatarPlaybook() {
     </Gallery>
   );
 }
-
-

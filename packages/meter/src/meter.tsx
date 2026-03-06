@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, Text, type ViewStyle } from 'react-native';
-import { resolveTabIndex } from '@base-ui-rn/core';
+import { resolveTabIndex, mergeAccessibilityState } from '@base-ui-rn/core';
 import type {
   MeterRootProps,
   MeterLabelProps,
@@ -37,18 +37,23 @@ export const MeterRoot = React.forwardRef<View, MeterRootProps>(
       format,
       accessible = true,
       accessibilityRole = 'progressbar',
+      accessibilityHint = 'Displays a value within a range',
+      accessibilityState,
+      focusable = false,
+      importantForAccessibility = 'yes',
       tabIndex,
       ...other
     } = props;
 
     const labelId = React.useId();
 
-    const percentage = Math.min(Math.max((value - min) / (max - min), 0), 1) * 100;
+    const percentage =
+      Math.min(Math.max((value - min) / (max - min), 0), 1) * 100;
 
     const formattedValue = React.useMemo(() => {
       try {
         return new Intl.NumberFormat(locale, format).format(value);
-      } catch (e) {
+      } catch {
         return String(value);
       }
     }, [value, locale, format]);
@@ -72,6 +77,15 @@ export const MeterRoot = React.forwardRef<View, MeterRootProps>(
       [value, min, max, percentage, formattedValue, ariaValueText, labelId],
     );
 
+    const mergedAccessibilityState = React.useMemo(
+      () =>
+        mergeAccessibilityState(
+          accessibilityState as Record<string, unknown> | undefined,
+          false, // Not disabled by default
+        ),
+      [accessibilityState],
+    );
+
     const resolvedTabIndex = resolveTabIndex(false, tabIndex);
     const isLabelledByProp = !!other.accessibilityLabel;
 
@@ -81,6 +95,10 @@ export const MeterRoot = React.forwardRef<View, MeterRootProps>(
           {...other}
           ref={ref}
           accessible={accessible}
+          accessibilityHint={accessibilityHint}
+          accessibilityState={mergedAccessibilityState}
+          focusable={focusable}
+          importantForAccessibility={importantForAccessibility}
           role={(accessibilityRole ?? 'progressbar') as unknown as 'checkbox'}
           aria-labelledby={isLabelledByProp ? undefined : labelId}
           accessibilityLabelledBy={isLabelledByProp ? undefined : [labelId]}
@@ -89,12 +107,15 @@ export const MeterRoot = React.forwardRef<View, MeterRootProps>(
           aria-valuemax={max}
           aria-valuenow={value}
           aria-valuetext={ariaValueText}
-          accessibilityValue={{
-            min,
-            max,
-            now: value,
-            text: ariaValueText,
-          }}
+          accessibilityValue={
+            ariaValueText
+              ? { text: ariaValueText }
+              : {
+                  min,
+                  max,
+                  now: value,
+                }
+          }
         >
           {children}
         </View>
@@ -107,7 +128,7 @@ MeterRoot.displayName = 'Meter.Root';
 
 /**
  * An accessible label for the meter.
- * 
+ *
  * Automatically linked to the `Meter.Root` via `aria-labelledby`.
  */
 export const MeterLabel = React.forwardRef<Text, MeterLabelProps>(
@@ -116,11 +137,7 @@ export const MeterLabel = React.forwardRef<Text, MeterLabelProps>(
     const { labelId } = useMeterContext();
 
     return (
-      <Text
-        {...other}
-        ref={ref}
-        nativeID={nativeID ?? labelId}
-      >
+      <Text {...other} ref={ref} nativeID={nativeID ?? labelId}>
         {children}
       </Text>
     );
@@ -131,7 +148,7 @@ MeterLabel.displayName = 'Meter.Label';
 
 /**
  * Contains the meter indicator and represents the entire range of the meter.
- * 
+ *
  * Hidden from accessibility as it's purely visual.
  */
 export const MeterTrack = React.forwardRef<View, MeterTrackProps>(
@@ -185,8 +202,8 @@ MeterIndicator.displayName = 'Meter.Indicator';
 
 /**
  * A text element displaying the current value.
- * 
- * Hidden from accessibility to avoid redundant announcements, as the value is 
+ *
+ * Hidden from accessibility to avoid redundant announcements, as the value is
  * provided by `Meter.Root`'s `accessibilityValue`.
  */
 export const MeterValue = React.forwardRef<Text, MeterValueProps>(

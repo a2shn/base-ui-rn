@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 import { Toggle } from '@base-ui-rn/toggle';
 import {
   Gallery,

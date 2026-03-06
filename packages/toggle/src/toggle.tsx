@@ -30,10 +30,10 @@ import { useFocus } from '@base-ui-rn/focus-ring';
 const PressableWithKeyPress =
   Pressable as unknown as React.ForwardRefExoticComponent<
     PressableProps &
-    WebToggleAccessibilityProps & {
-      onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
-      onKeyDown?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
-    } & React.RefAttributes<View>
+      WebToggleAccessibilityProps & {
+        onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
+        onKeyDown?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
+      } & React.RefAttributes<View>
   >;
 
 /**
@@ -41,7 +41,7 @@ const PressableWithKeyPress =
  *
  * Supports keyboard interaction, accessibility roles, and focus ring management.
  * Can be used independently or as part of a `ToggleGroup`.
- * 
+ *
  * @example
  * ```tsx
  * <Toggle
@@ -50,7 +50,7 @@ const PressableWithKeyPress =
  *   onPressedChange={(pressed) => console.log('Dark mode:', pressed)}
  * >
  *   {({ pressed, focusVisible }) => (
- *     <View style={{ 
+ *     <View style={{
  *       backgroundColor: pressed ? '#000' : '#fff',
  *       opacity: focusVisible ? 0.8 : 1
  *     }}>
@@ -286,10 +286,13 @@ export const Toggle = React.memo(
             focused,
             focusVisible,
           };
-          const resolvedStyle = typeof style === 'function' ? style(state) : style;
+          const resolvedStyle =
+            typeof style === 'function' ? style(state) : style;
           return [
             resolvedStyle,
-            !disableDefaultFocusRing && focusVisible && DEFAULT_FOCUS_RING_STYLE,
+            !disableDefaultFocusRing &&
+              focusVisible &&
+              DEFAULT_FOCUS_RING_STYLE,
           ];
         }}
       >

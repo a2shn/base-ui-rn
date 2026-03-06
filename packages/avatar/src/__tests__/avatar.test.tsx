@@ -56,7 +56,6 @@ describe('Avatar', () => {
     expect(queryByTestId('fallback')).toBeNull();
   });
 
-
   it('does not regress to loading after image has loaded for the same source', () => {
     const onLoadingStatusChange = jest.fn();
     const { getByTestId, queryByTestId } = render(

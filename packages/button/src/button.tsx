@@ -39,7 +39,7 @@ const PressableWithKeyPress =
  * Headless button primitive built on top of React Native `Pressable`.
  *
  * Supports keyboard interaction, accessibility roles, and focus ring management.
- * 
+ *
  * @example
  * ```tsx
  * <Button
@@ -47,7 +47,7 @@ const PressableWithKeyPress =
  *   onPress={handleSubmit}
  * >
  *   {({ pressed, focusVisible }) => (
- *     <View style={{ 
+ *     <View style={{
  *       opacity: pressed ? 0.6 : 1,
  *       borderWidth: focusVisible ? 2 : 0,
  *     }}>
@@ -208,10 +208,13 @@ export const Button = React.memo(
             focused,
             focusVisible,
           };
-          const resolvedStyle = typeof style === 'function' ? style(state) : style;
+          const resolvedStyle =
+            typeof style === 'function' ? style(state) : style;
           return [
             resolvedStyle,
-            !disableDefaultFocusRing && focusVisible && DEFAULT_FOCUS_RING_STYLE,
+            !disableDefaultFocusRing &&
+              focusVisible &&
+              DEFAULT_FOCUS_RING_STYLE,
           ];
         }}
       >

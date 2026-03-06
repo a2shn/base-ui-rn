@@ -2,20 +2,14 @@ import * as React from 'react';
 import { View, Text } from 'react-native';
 import styles from './playbookStyles';
 import { Meter } from '@base-ui-rn/meter';
-import {
-  Gallery,
-  Section,
-} from '@base-ui-rn/playbook';
+import { Gallery, Section } from '@base-ui-rn/playbook';
 
 export function MeterPlaybook() {
   return (
     <Gallery title='Meter'>
       <Section title='Basic'>
         <View style={styles.container}>
-          <Meter.Root
-            value={24}
-            style={styles.meterRoot}
-          >
+          <Meter.Root value={24} style={styles.meterRoot}>
             <View style={styles.meterHeader}>
               <Meter.Label style={styles.meterLabel}>Storage Used</Meter.Label>
               <Meter.Value style={styles.meterValue} />
@@ -29,12 +23,7 @@ export function MeterPlaybook() {
 
       <Section title='Custom Range (0-500)'>
         <View style={styles.container}>
-          <Meter.Root
-            value={350}
-            min={0}
-            max={500}
-            style={styles.meterRoot}
-          >
+          <Meter.Root value={350} min={0} max={500} style={styles.meterRoot}>
             <View style={styles.meterHeader}>
               <Meter.Label style={styles.meterLabel}>Points</Meter.Label>
               <Meter.Value style={styles.meterValue}>
@@ -42,7 +31,9 @@ export function MeterPlaybook() {
               </Meter.Value>
             </View>
             <Meter.Track style={styles.meterTrack}>
-              <Meter.Indicator style={[styles.meterIndicator, { backgroundColor: '#10B981' }]} />
+              <Meter.Indicator
+                style={[styles.meterIndicator, { backgroundColor: '#10B981' }]}
+              />
             </Meter.Track>
           </Meter.Root>
         </View>
@@ -61,7 +52,9 @@ export function MeterPlaybook() {
               <Meter.Value style={styles.meterValue} />
             </View>
             <Meter.Track style={styles.meterTrack}>
-              <Meter.Indicator style={[styles.meterIndicator, { backgroundColor: '#F59E0B' }]} />
+              <Meter.Indicator
+                style={[styles.meterIndicator, { backgroundColor: '#F59E0B' }]}
+              />
             </Meter.Track>
           </Meter.Root>
         </View>
@@ -79,7 +72,9 @@ export function MeterPlaybook() {
               <Meter.Value style={styles.meterValue} />
             </View>
             <Meter.Track style={styles.meterTrack}>
-              <Meter.Indicator style={[styles.meterIndicator, { backgroundColor: '#EF4444' }]} />
+              <Meter.Indicator
+                style={[styles.meterIndicator, { backgroundColor: '#EF4444' }]}
+              />
             </Meter.Track>
           </Meter.Root>
           <Text style={styles.hint}>

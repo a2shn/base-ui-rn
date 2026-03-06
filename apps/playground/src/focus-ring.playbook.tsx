@@ -13,7 +13,10 @@ export function FocusRingPlaybook() {
           <FocusRing>
             {({ focusVisible }) => (
               <Button
-                style={[styles.buttonBase, focusVisible && { borderColor: '#0071E3', borderWidth: 2 }]}
+                style={[
+                  styles.buttonBase,
+                  focusVisible && { borderColor: '#0071E3', borderWidth: 2 },
+                ]}
               >
                 <Text>Focus Me</Text>
               </Button>
@@ -30,9 +33,14 @@ export function FocusRingPlaybook() {
           <FocusRing>
             {({ focused }) => (
               <Button
-                style={[styles.buttonBase, { backgroundColor: focused ? '#0071E3' : '#f0f0f0' }]}
+                style={[
+                  styles.buttonBase,
+                  { backgroundColor: focused ? '#0071E3' : '#f0f0f0' },
+                ]}
               >
-                <Text style={{ color: focused ? '#fff' : '#000' }}>{focused ? 'Focused' : 'Idle'}</Text>
+                <Text style={{ color: focused ? '#fff' : '#000' }}>
+                  {focused ? 'Focused' : 'Idle'}
+                </Text>
               </Button>
             )}
           </FocusRing>
@@ -41,5 +49,3 @@ export function FocusRingPlaybook() {
     </Gallery>
   );
 }
-
-

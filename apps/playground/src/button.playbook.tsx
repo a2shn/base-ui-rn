@@ -85,11 +85,16 @@ export function ButtonPlaybook() {
       <Section title='Custom Focus'>
         <Button
           disableDefaultFocusRing
-          onPress={() => { }}
+          onPress={() => {}}
           style={buttonBaseStyle}
         >
           {({ focusVisible }) => (
-            <Text style={{ color: focusVisible ? '#0071E3' : '#000', fontWeight: focusVisible ? 'bold' : 'normal' }}>
+            <Text
+              style={{
+                color: focusVisible ? '#0071E3' : '#000',
+                fontWeight: focusVisible ? 'bold' : 'normal',
+              }}
+            >
               {focusVisible ? 'Keyboard Focused' : 'Custom focus logic'}
             </Text>
           )}

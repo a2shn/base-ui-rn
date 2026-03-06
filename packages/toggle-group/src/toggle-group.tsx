@@ -224,11 +224,12 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
             }
 
             if (element && typeof element.focus === 'function') {
+              const focusFn = element.focus;
               if (prevented) {
-                element.focus();
+                focusFn();
               } else {
                 setTimeout(() => {
-                  element.focus();
+                  focusFn();
                 }, 0);
               }
             }

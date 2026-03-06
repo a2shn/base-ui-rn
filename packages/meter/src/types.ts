@@ -36,11 +36,11 @@ export interface MeterRootProps extends ViewProps, WebAccessibilityProps {
   format?: Intl.NumberFormatOptions;
 }
 
-export interface MeterLabelProps extends TextProps {}
+export type MeterLabelProps = TextProps;
 
-export interface MeterTrackProps extends ViewProps {}
+export type MeterTrackProps = ViewProps;
 
-export interface MeterIndicatorProps extends ViewProps {}
+export type MeterIndicatorProps = ViewProps;
 
 export interface MeterValueProps extends Omit<TextProps, 'children'> {
   /**
