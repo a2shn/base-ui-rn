@@ -56,6 +56,86 @@ describe('Avatar', () => {
     expect(queryByTestId('fallback')).toBeNull();
   });
 
+
+  it('does not regress to loading after image has loaded for the same source', () => {
+    const onLoadingStatusChange = jest.fn();
+    const { getByTestId, queryByTestId } = render(
+      <Avatar.Root>
+        <Avatar.Image
+          testID='image'
+          source={{ uri: 'https://example.com/image.png' }}
+          onLoadingStatusChange={onLoadingStatusChange}
+        />
+        <Avatar.Fallback testID='fallback'>FB</Avatar.Fallback>
+      </Avatar.Root>,
+    );
+
+    const image = getByTestId('image');
+
+    act(() => {
+      image.props.onLoad();
+    });
+
+    expect(queryByTestId('fallback')).toBeNull();
+
+    act(() => {
+      image.props.onLoadStart();
+    });
+
+<<<<<<< ours
+=======
+    act(() => {
+      jest.advanceTimersByTime(10000);
+    });
+
+    expect(onLoadingStatusChange).toHaveBeenCalledWith('loaded');
+    expect(onLoadingStatusChange).not.toHaveBeenCalledWith('loading');
+    expect(onLoadingStatusChange).not.toHaveBeenCalledWith('error');
+    expect(queryByTestId('fallback')).toBeNull();
+  });
+
+  it('keeps loaded state when rerendered with equivalent uri source object', () => {
+    const onLoadingStatusChange = jest.fn();
+    const { getByTestId, queryByTestId, rerender } = render(
+      <Avatar.Root>
+        <Avatar.Image
+          testID='image'
+          source={{ uri: 'https://example.com/image.png' }}
+          onLoadingStatusChange={onLoadingStatusChange}
+        />
+        <Avatar.Fallback testID='fallback'>FB</Avatar.Fallback>
+      </Avatar.Root>,
+    );
+
+    const image = getByTestId('image');
+
+    act(() => {
+      image.props.onLoad();
+    });
+
+    rerender(
+      <Avatar.Root>
+        <Avatar.Image
+          testID='image'
+          source={{ uri: 'https://example.com/image.png' }}
+          onLoadingStatusChange={onLoadingStatusChange}
+        />
+        <Avatar.Fallback testID='fallback'>FB</Avatar.Fallback>
+      </Avatar.Root>,
+    );
+
+    const rerenderedImage = getByTestId('image');
+
+    act(() => {
+      rerenderedImage.props.onLoadStart();
+    });
+
+>>>>>>> theirs
+    expect(onLoadingStatusChange).toHaveBeenCalledWith('loaded');
+    expect(onLoadingStatusChange).not.toHaveBeenCalledWith('loading');
+    expect(queryByTestId('fallback')).toBeNull();
+  });
+
   it('respects the delay prop on fallback', () => {
     const { queryByTestId } = render(
       <Avatar.Root>

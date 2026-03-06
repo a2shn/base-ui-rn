@@ -88,10 +88,58 @@ export const AvatarImage = React.forwardRef<RNImage, AvatarImageProps>(
     } = props;
     const { onLoadingStatusChange } = useAvatarContext();
 
+<<<<<<< ours
+    const lastStableStatusRef = React.useRef<ImageLoadingStatus>('idle');
+    const lastSourceRef = React.useRef(source);
+
+    React.useEffect(() => {
+      if (lastSourceRef.current !== source) {
+        lastSourceRef.current = source;
+        lastStableStatusRef.current = 'idle';
+      }
+    }, [source]);
+=======
+    const sourceKey = React.useMemo(() => {
+      if (typeof source === 'number') {
+        return `asset:${source}`;
+      }
+
+      if (Array.isArray(source)) {
+        return source.map((item) => item?.uri ?? '').join('|');
+      }
+
+      if (source && typeof source === 'object' && 'uri' in source) {
+        return source.uri ?? '';
+      }
+
+      return '';
+    }, [source]);
+
+    const lastStableStatusRef = React.useRef<ImageLoadingStatus>('idle');
+    const lastSourceKeyRef = React.useRef(sourceKey);
+
+    React.useEffect(() => {
+      if (lastSourceKeyRef.current !== sourceKey) {
+        lastSourceKeyRef.current = sourceKey;
+        lastStableStatusRef.current = 'idle';
+      }
+    }, [sourceKey]);
+>>>>>>> theirs
+
     const handleLoadingStatusChange = React.useCallback(
       (status: ImageLoadingStatus) => {
+        if (status === 'loading' && lastStableStatusRef.current === 'loaded') {
+<<<<<<< ours
+          return;
+=======
+          return false;
+>>>>>>> theirs
+        }
+
+        lastStableStatusRef.current = status;
         onLoadingStatusChange(status);
         onLoadingStatusChangeProp?.(status);
+        return true;
       },
       [onLoadingStatusChange, onLoadingStatusChangeProp],
     );
@@ -105,11 +153,13 @@ export const AvatarImage = React.forwardRef<RNImage, AvatarImageProps>(
     }, []);
 
     const handleLoadStart = React.useCallback((e?: unknown) => {
-      handleLoadingStatusChange('loading');
+      const didApplyLoading = handleLoadingStatusChange('loading');
       clearLoadTimeout();
-      timeoutRef.current = setTimeout(() => {
-        handleLoadingStatusChange('error');
-      }, 10000);
+      if (didApplyLoading) {
+        timeoutRef.current = setTimeout(() => {
+          handleLoadingStatusChange('error');
+        }, 10000);
+      }
       (other as any).onLoadStart?.(e);
     }, [handleLoadingStatusChange, clearLoadTimeout, other]);
 
