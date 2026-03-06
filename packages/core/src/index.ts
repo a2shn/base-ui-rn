@@ -28,16 +28,8 @@ export {
 } from './accessibility';
 
 // Keyboard navigation
-export {
-  useKeyboardNavigation,
-  KeyboardProvider,
-  useKeyboardManager,
-} from './keyboard';
-export type {
-  KeyboardDirection,
-  KeyboardNavigationOptions,
-  KeyboardHandler,
-} from './keyboard';
+export { useKeyboardNavigation, useKeyboardActivation } from './keyboard';
+export type { KeyboardDirection, KeyboardNavigationOptions } from './keyboard';
 
 // Utils
 export { mergeRefs } from './utils';

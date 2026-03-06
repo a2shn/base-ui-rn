@@ -1,5 +1,8 @@
 import * as React from 'react';
-import { Platform } from 'react-native';
+import { Platform, type NativeSyntheticEvent } from 'react-native';
+
+import { isActivationKey } from './constants';
+import type { KeyPressEventData } from './types';
 
 export type KeyboardDirection = 'next' | 'prev' | 'first' | 'last';
 
@@ -21,11 +24,40 @@ export interface KeyboardNavigationOptions {
 }
 
 const DEFAULT_KEY_MAP: Record<KeyboardDirection, string[]> = {
-  next: ['ArrowRight', 'ArrowDown'],
-  prev: ['ArrowLeft', 'ArrowUp'],
+  next: ['ArrowRight', 'ArrowDown', 'dpadRight', 'dpadDown'],
+  prev: ['ArrowLeft', 'ArrowUp', 'dpadLeft', 'dpadUp'],
   first: ['Home'],
   last: ['End'],
 };
+
+/**
+ * A hook that handles keyboard activation (Space, Enter, Gamepad A/Select, etc.).
+ * Calls the provided `onActivate` callback when an activation key is pressed.
+ *
+ * @param onActivate Callback fired on an activation key press.
+ * @param isDisabled Whether the component is disabled, which blocks activation.
+ * @returns A generic onKeyPress handler to spread onto a component.
+ */
+export function useKeyboardActivation(
+  onActivate: () => void,
+  isDisabled = false,
+) {
+  return React.useCallback(
+    (e: NativeSyntheticEvent<KeyPressEventData> | KeyboardEvent) => {
+      const nativeEvent = (e as NativeSyntheticEvent<KeyPressEventData>)
+        .nativeEvent;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const key = nativeEvent?.key || (e as any).key;
+      if (!key) return;
+
+      if (isActivationKey(key) && !isDisabled) {
+        if (e.preventDefault) e.preventDefault();
+        onActivate();
+      }
+    },
+    [onActivate, isDisabled],
+  );
+}
 
 /**
  * A modular hook for managing keyboard navigation within a group of elements.
@@ -33,7 +65,7 @@ const DEFAULT_KEY_MAP: Record<KeyboardDirection, string[]> = {
  * It provides a centralized way to handle arrow key navigation, Home/End keys,
  * and focus management.
  */
-export function useKeyboardNavigation<T = any>(
+export function useKeyboardNavigation<T = unknown>(
   options: KeyboardNavigationOptions = {},
 ) {
   const { orientation = 'horizontal', loop = true, keyMap = {} } = options;
@@ -89,8 +121,14 @@ export function useKeyboardNavigation<T = any>(
   );
 
   const handleKeyDown = React.useCallback(
-    (currentId: string, event: any) => {
-      const key = event.nativeEvent?.key || event.key;
+    (
+      currentId: string,
+      event: NativeSyntheticEvent<KeyPressEventData> | KeyboardEvent,
+    ) => {
+      const nativeEvent = (event as NativeSyntheticEvent<KeyPressEventData>)
+        .nativeEvent;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const key = nativeEvent?.key || (event as any).key;
       if (!key) return null;
 
       const mergedKeyMap = { ...DEFAULT_KEY_MAP, ...keyMap };
@@ -98,24 +136,35 @@ export function useKeyboardNavigation<T = any>(
 
       if (orientation === 'horizontal' || orientation === 'both') {
         if (
-          mergedKeyMap.next.includes('ArrowRight') &&
-          key === 'ArrowRight'
-        )
+          mergedKeyMap.next.includes(key) &&
+          ['ArrowRight', 'dpadRight'].includes(key)
+        ) {
           direction = 'next';
+        }
         if (
-          mergedKeyMap.prev.includes('ArrowLeft') &&
-          key === 'ArrowLeft'
-        )
+          mergedKeyMap.prev.includes(key) &&
+          ['ArrowLeft', 'dpadLeft'].includes(key)
+        ) {
           direction = 'prev';
+        }
       }
 
       if (orientation === 'vertical' || orientation === 'both') {
-        if (mergedKeyMap.next.includes('ArrowDown') && key === 'ArrowDown')
+        if (
+          mergedKeyMap.next.includes(key) &&
+          ['ArrowDown', 'dpadDown'].includes(key)
+        ) {
           direction = 'next';
-        if (mergedKeyMap.prev.includes('ArrowUp') && key === 'ArrowUp')
+        }
+        if (
+          mergedKeyMap.prev.includes(key) &&
+          ['ArrowUp', 'dpadUp'].includes(key)
+        ) {
           direction = 'prev';
+        }
       }
 
+      // If key is mapped to first/last regardless of orientation
       if (mergedKeyMap.first.includes(key)) direction = 'first';
       if (mergedKeyMap.last.includes(key)) direction = 'last';
 
@@ -124,7 +173,7 @@ export function useKeyboardNavigation<T = any>(
         if (nextId && nextId !== currentId) {
           const nextRef = items.current.get(nextId);
           if (nextRef?.current) {
-            const element = nextRef.current as any;
+            const element = nextRef.current as { focus?: () => void };
             if (typeof element.focus === 'function') {
               // Prevent default scroll behavior on web
               if (event.preventDefault) event.preventDefault();
@@ -134,7 +183,7 @@ export function useKeyboardNavigation<T = any>(
                 element.focus();
               } else {
                 // On native, sometimes a small delay helps
-                setTimeout(() => element.focus(), 0);
+                setTimeout(() => element.focus?.(), 0);
               }
               return nextId;
             }
@@ -155,62 +204,4 @@ export function useKeyboardNavigation<T = any>(
     }),
     [registerItem, handleKeyDown, navigate],
   );
-}
-
-// Global Keyboard Coordination System
-
-export interface KeyboardHandler {
-  id: string;
-  onKeyDown: (event: any) => boolean | void;
-  priority?: number;
-}
-
-interface KeyboardContextValue {
-  registerHandler: (handler: KeyboardHandler) => () => void;
-}
-
-const KeyboardContext = React.createContext<KeyboardContextValue | null>(null);
-
-/**
- * Coordinator for global keyboard events to prevent conflicts between different UI layers.
- */
-export const KeyboardProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const handlers = React.useRef<KeyboardHandler[]>([]);
-
-  const registerHandler = React.useCallback((handler: KeyboardHandler) => {
-    handlers.current.push(handler);
-    // Sort by priority (higher first) then by registration order (LIFO)
-    handlers.current.sort((a, b) => (b.priority || 0) - (a.priority || 0));
-
-    return () => {
-      handlers.current = handlers.current.filter((h) => h.id !== handler.id);
-    };
-  }, []);
-
-  // In a real application, you might attach a global listener to the window on web
-  // or a top-level View on Native.
-
-  const contextValue = React.useMemo(() => ({ registerHandler }), [registerHandler]);
-
-  return (
-    <KeyboardContext.Provider value={contextValue}>
-      {children}
-    </KeyboardContext.Provider>
-  );
-};
-
-/**
- * Hook to register a keyboard handler with the global coordinator.
- */
-export function useKeyboardManager(handler: KeyboardHandler) {
-  const context = React.useContext(KeyboardContext);
-
-  React.useEffect(() => {
-    if (context) {
-      return context.registerHandler(handler);
-    }
-    return undefined;
-  }, [context, handler]);
 }

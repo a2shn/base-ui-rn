@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from 'react';
-import { View, Platform, type NativeSyntheticEvent } from 'react-native';
+import { View } from 'react-native';
 import {
   ToggleGroupContext,
   type ToggleGroupChangeEventDetails,
 } from '@base-ui-rn/toggle';
 import {
-  type KeyPressEventData,
   type WebToggleGroupAccessibilityProps,
   DEFAULT_FOCUS_RING_STYLE,
   useKeyboardNavigation,
@@ -91,7 +90,7 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
     });
 
     const { registerItem, handleKeyDown } = useKeyboardNavigation({
-      orientation: orientation === 'both' ? 'both' : orientation,
+      orientation,
       loop: loopFocus,
     });
 

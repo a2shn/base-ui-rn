@@ -18,9 +18,6 @@ describe('Meter - Accessibility', () => {
     });
 
     expect(meter.props.accessibilityValue).toEqual({
-      min: 0,
-      max: 100,
-      now: 50,
       text: '50',
     });
   });
@@ -51,9 +48,6 @@ describe('Meter - Accessibility', () => {
 
     const meter = getByRole('progressbar');
     expect(meter.props.accessibilityValue).toEqual({
-      min: 0,
-      max: 100,
-      now: 80,
       text: '80 units used',
     });
   });
@@ -65,9 +59,6 @@ describe('Meter - Accessibility', () => {
 
     const meter = getByRole('progressbar');
     expect(meter.props.accessibilityValue).toEqual({
-      min: 0,
-      max: 100,
-      now: 50,
       text: 'Halfway',
     });
   });

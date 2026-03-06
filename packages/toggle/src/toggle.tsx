@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import {
   DEFAULT_HIT_SLOP,
-  isActivationKey,
   mergeAccessibilityActions,
   isActivationAction,
   mergeAccessibilityState,
@@ -22,6 +21,7 @@ import {
   DEFAULT_FOCUS_RING_STYLE,
   type KeyPressEventData,
   type WebToggleAccessibilityProps,
+  useKeyboardActivation,
 } from '@base-ui-rn/core';
 import { type TogglePressedChangeDetails, type ToggleProps } from './types';
 import { useToggleGroupContext } from './group-context';
@@ -170,17 +170,21 @@ export const Toggle = React.memo(
       [activateToggle],
     );
 
+    const performKeyboardActivation = React.useCallback(() => {
+      activateToggle('keyboard');
+    }, [activateToggle]);
+
+    const handleKeyboardActivation = useKeyboardActivation(
+      performKeyboardActivation,
+      isDisabled,
+    );
+
     const handleKeyPress = React.useCallback(
       (e: NativeSyntheticEvent<KeyPressEventData>) => {
-        const key = e.nativeEvent.key;
-
-        if (isActivationKey(key)) {
-          activateToggle('keyboard');
-        }
-
+        handleKeyboardActivation(e);
         onKeyPress?.(e);
       },
-      [activateToggle, onKeyPress],
+      [handleKeyboardActivation, onKeyPress],
     );
 
     const handleKeyDown = React.useCallback(

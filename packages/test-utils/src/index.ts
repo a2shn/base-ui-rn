@@ -142,6 +142,10 @@ export const ACTIVATION_KEYS = [
   'Return',
   'OK',
   'Accept',
+  'GamepadA',
+  'buttonA',
+  'buttonX',
+  'Cross',
 ];
 
 /**

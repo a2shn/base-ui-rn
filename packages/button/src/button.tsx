@@ -17,13 +17,13 @@ import {
 } from './types';
 import {
   DEFAULT_HIT_SLOP,
-  isActivationKey,
   mergeAccessibilityActions,
   isActivationAction,
   mergeAccessibilityState,
   resolveTabIndex,
   resolveAriaDisabled,
   DEFAULT_FOCUS_RING_STYLE,
+  useKeyboardActivation,
 } from '@base-ui-rn/core';
 import { useFocus } from '@base-ui-rn/focus-ring';
 
@@ -144,18 +144,21 @@ export const Button = React.memo(
       [isDisabled, activateButton, onAccessibilityAction],
     );
 
+    const performKeyboardActivation = React.useCallback(() => {
+      activateButton('keyboard');
+    }, [activateButton]);
+
+    const handleKeyboardActivation = useKeyboardActivation(
+      performKeyboardActivation,
+      isDisabled,
+    );
+
     const handleKeyPress = React.useCallback(
       (e: NativeSyntheticEvent<KeyPressEventData>) => {
-        const key = e.nativeEvent.key;
-        const shouldActivate = isActivationKey(key);
-
-        if (shouldActivate && !isDisabled) {
-          activateButton('keyboard');
-        }
-
+        handleKeyboardActivation(e);
         onKeyPress?.(e);
       },
-      [isDisabled, activateButton, onKeyPress],
+      [handleKeyboardActivation, onKeyPress],
     );
 
     const handlePress = React.useCallback(
