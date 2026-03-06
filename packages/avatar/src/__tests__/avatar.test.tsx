@@ -82,16 +82,38 @@ describe('Avatar', () => {
       image.props.onLoadStart();
     });
 
-<<<<<<< ours
-=======
-    act(() => {
-      jest.advanceTimersByTime(10000);
-    });
-
     expect(onLoadingStatusChange).toHaveBeenCalledWith('loaded');
     expect(onLoadingStatusChange).not.toHaveBeenCalledWith('loading');
-    expect(onLoadingStatusChange).not.toHaveBeenCalledWith('error');
     expect(queryByTestId('fallback')).toBeNull();
+  });
+
+  it('does not regress to loading after image has failed for the same source', () => {
+    const onLoadingStatusChange = jest.fn();
+    const { getByTestId } = render(
+      <Avatar.Root>
+        <Avatar.Image
+          testID='image'
+          source={{ uri: 'https://example.com/invalid.png' }}
+          onLoadingStatusChange={onLoadingStatusChange}
+        />
+        <Avatar.Fallback testID='fallback'>FB</Avatar.Fallback>
+      </Avatar.Root>,
+    );
+
+    const image = getByTestId('image');
+
+    act(() => {
+      image.props.onError();
+    });
+
+    expect(onLoadingStatusChange).toHaveBeenCalledWith('error');
+    onLoadingStatusChange.mockClear();
+
+    act(() => {
+      image.props.onLoadStart();
+    });
+
+    expect(onLoadingStatusChange).not.toHaveBeenCalledWith('loading');
   });
 
   it('keeps loaded state when rerendered with equivalent uri source object', () => {
@@ -130,7 +152,6 @@ describe('Avatar', () => {
       rerenderedImage.props.onLoadStart();
     });
 
->>>>>>> theirs
     expect(onLoadingStatusChange).toHaveBeenCalledWith('loaded');
     expect(onLoadingStatusChange).not.toHaveBeenCalledWith('loading');
     expect(queryByTestId('fallback')).toBeNull();

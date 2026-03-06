@@ -1,14 +1,14 @@
 import * as React from 'react';
 import {
-  View,
-  Image as RNImage,
-  type ImageProps as RNImageProps,
+	View,
+	Image as RNImage,
+	type ImageProps as RNImageProps,
 } from 'react-native';
 import type {
-  AvatarRootProps,
-  AvatarImageProps,
-  AvatarFallbackProps,
-  ImageLoadingStatus,
+	AvatarRootProps,
+	AvatarImageProps,
+	AvatarFallbackProps,
+	ImageLoadingStatus,
 } from './types';
 import { AvatarContext, useAvatarContext } from './avatar-context';
 
@@ -26,42 +26,42 @@ import { AvatarContext, useAvatarContext } from './avatar-context';
  * ```
  */
 export const AvatarRoot = React.forwardRef<View, AvatarRootProps>(
-  (props, ref) => {
-    const { children, accessible, accessibilityRole, ...other } = props;
-    const [loadingStatus, setLoadingStatus] =
-      React.useState<ImageLoadingStatus>('idle');
+	(props, ref) => {
+		const { children, accessible, accessibilityRole, ...other } = props;
+		const [loadingStatus, setLoadingStatus] =
+			React.useState<ImageLoadingStatus>('idle');
 
-    const onLoadingStatusChange = React.useCallback(
-      (status: ImageLoadingStatus) => {
-        setLoadingStatus(status);
-      },
-      [],
-    );
+		const onLoadingStatusChange = React.useCallback(
+			(status: ImageLoadingStatus) => {
+				setLoadingStatus(status);
+			},
+			[],
+		);
 
-    const contextValue = React.useMemo(
-      () => ({
-        loadingStatus,
-        onLoadingStatusChange,
-      }),
-      [loadingStatus, onLoadingStatusChange],
-    );
+		const contextValue = React.useMemo(
+			() => ({
+				loadingStatus,
+				onLoadingStatusChange,
+			}),
+			[loadingStatus, onLoadingStatusChange],
+		);
 
-    const isLoading = loadingStatus === 'loading';
+		const isLoading = loadingStatus === 'loading';
 
-    return (
-      <AvatarContext.Provider value={contextValue}>
-        <View
-          {...other}
-          ref={ref}
-          accessible={accessible !== false}
-          accessibilityRole={accessibilityRole ?? 'image'}
-          aria-busy={isLoading}
-        >
-          {children}
-        </View>
-      </AvatarContext.Provider>
-    );
-  },
+		return (
+			<AvatarContext.Provider value={contextValue}>
+				<View
+					{...other}
+					ref={ref}
+					accessible={accessible !== false}
+					accessibilityRole={accessibilityRole ?? 'image'}
+					aria-busy={isLoading}
+				>
+					{children}
+				</View>
+			</AvatarContext.Provider>
+		);
+	},
 );
 
 AvatarRoot.displayName = 'Avatar.Root';
@@ -79,123 +79,109 @@ AvatarRoot.displayName = 'Avatar.Root';
  * since the root handles accessibility.
  */
 export const AvatarImage = React.forwardRef<RNImage, AvatarImageProps>(
-  (props, ref) => {
-    const {
-      onLoadingStatusChange: onLoadingStatusChangeProp,
-      source,
-      accessible = false,
-      ...other
-    } = props;
-    const { onLoadingStatusChange } = useAvatarContext();
+	(props, ref) => {
+		const {
+			onLoadingStatusChange: onLoadingStatusChangeProp,
+			source,
+			accessible = false,
+			...other
+		} = props;
+		const { onLoadingStatusChange } = useAvatarContext();
 
-<<<<<<< ours
-    const lastStableStatusRef = React.useRef<ImageLoadingStatus>('idle');
-    const lastSourceRef = React.useRef(source);
+		const sourceKey = React.useMemo(() => {
+			if (typeof source === 'number') {
+				return `asset:${source}`;
+			}
 
-    React.useEffect(() => {
-      if (lastSourceRef.current !== source) {
-        lastSourceRef.current = source;
-        lastStableStatusRef.current = 'idle';
-      }
-    }, [source]);
-=======
-    const sourceKey = React.useMemo(() => {
-      if (typeof source === 'number') {
-        return `asset:${source}`;
-      }
+			if (Array.isArray(source)) {
+				return source.map((item) => item?.uri ?? '').join('|');
+			}
 
-      if (Array.isArray(source)) {
-        return source.map((item) => item?.uri ?? '').join('|');
-      }
+			if (source && typeof source === 'object' && 'uri' in source) {
+				return source.uri ?? '';
+			}
 
-      if (source && typeof source === 'object' && 'uri' in source) {
-        return source.uri ?? '';
-      }
+			return '';
+		}, [source]);
 
-      return '';
-    }, [source]);
+		const lastStableStatusRef = React.useRef<ImageLoadingStatus>('idle');
+		const lastSourceKeyRef = React.useRef(sourceKey);
 
-    const lastStableStatusRef = React.useRef<ImageLoadingStatus>('idle');
-    const lastSourceKeyRef = React.useRef(sourceKey);
+		if (lastSourceKeyRef.current !== sourceKey) {
+			lastSourceKeyRef.current = sourceKey;
+			lastStableStatusRef.current = 'idle';
+		}
 
-    React.useEffect(() => {
-      if (lastSourceKeyRef.current !== sourceKey) {
-        lastSourceKeyRef.current = sourceKey;
-        lastStableStatusRef.current = 'idle';
-      }
-    }, [sourceKey]);
->>>>>>> theirs
+		const handleLoadingStatusChange = React.useCallback(
+			(status: ImageLoadingStatus) => {
+				if (
+					status === 'loading' &&
+					(lastStableStatusRef.current === 'loaded' ||
+						lastStableStatusRef.current === 'error')
+				) {
+					return false;
+				}
 
-    const handleLoadingStatusChange = React.useCallback(
-      (status: ImageLoadingStatus) => {
-        if (status === 'loading' && lastStableStatusRef.current === 'loaded') {
-<<<<<<< ours
-          return;
-=======
-          return false;
->>>>>>> theirs
-        }
+				lastStableStatusRef.current = status;
+				onLoadingStatusChange(status);
+				onLoadingStatusChangeProp?.(status);
+				return true;
+			},
+			[onLoadingStatusChange, onLoadingStatusChangeProp],
+		);
 
-        lastStableStatusRef.current = status;
-        onLoadingStatusChange(status);
-        onLoadingStatusChangeProp?.(status);
-        return true;
-      },
-      [onLoadingStatusChange, onLoadingStatusChangeProp],
-    );
+		const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+		const clearLoadTimeout = React.useCallback(() => {
+			if (timeoutRef.current !== null) {
+				clearTimeout(timeoutRef.current as ReturnType<typeof setTimeout>);
+				timeoutRef.current = null;
+			}
+		}, []);
 
-    const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-    const clearLoadTimeout = React.useCallback(() => {
-      if (timeoutRef.current !== null) {
-        clearTimeout(timeoutRef.current as ReturnType<typeof setTimeout>);
-        timeoutRef.current = null;
-      }
-    }, []);
+		const handleLoadStart = React.useCallback((e?: unknown) => {
+			const didApplyLoading = handleLoadingStatusChange('loading');
+			clearLoadTimeout();
+			if (didApplyLoading) {
+				timeoutRef.current = setTimeout(() => {
+					handleLoadingStatusChange('error');
+				}, 10000);
+			}
+			(other as any).onLoadStart?.(e);
+		}, [handleLoadingStatusChange, clearLoadTimeout, other]);
 
-    const handleLoadStart = React.useCallback((e?: unknown) => {
-      const didApplyLoading = handleLoadingStatusChange('loading');
-      clearLoadTimeout();
-      if (didApplyLoading) {
-        timeoutRef.current = setTimeout(() => {
-          handleLoadingStatusChange('error');
-        }, 10000);
-      }
-      (other as any).onLoadStart?.(e);
-    }, [handleLoadingStatusChange, clearLoadTimeout, other]);
+		const handleLoad = React.useCallback((e?: unknown) => {
+			clearLoadTimeout();
+			handleLoadingStatusChange('loaded');
+			(other as any).onLoad?.(e);
+		}, [clearLoadTimeout, handleLoadingStatusChange, other]);
 
-    const handleLoad = React.useCallback((e?: unknown) => {
-      clearLoadTimeout();
-      handleLoadingStatusChange('loaded');
-      (other as any).onLoad?.(e);
-    }, [clearLoadTimeout, handleLoadingStatusChange, other]);
+		const handleError = React.useCallback((e?: unknown) => {
+			clearLoadTimeout();
+			handleLoadingStatusChange('error');
+			(other as any).onError?.(e);
+		}, [clearLoadTimeout, handleLoadingStatusChange, other]);
 
-    const handleError = React.useCallback((e?: unknown) => {
-      clearLoadTimeout();
-      handleLoadingStatusChange('error');
-      (other as any).onError?.(e);
-    }, [clearLoadTimeout, handleLoadingStatusChange, other]);
+		React.useEffect(() => {
+			if (!source) {
+				handleLoadingStatusChange('error');
+			}
+			return () => {
+				clearLoadTimeout();
+			};
+		}, [source, handleLoadingStatusChange, clearLoadTimeout]);
 
-    React.useEffect(() => {
-      if (!source) {
-        handleLoadingStatusChange('error');
-      }
-      return () => {
-        clearLoadTimeout();
-      };
-    }, [source, handleLoadingStatusChange, clearLoadTimeout]);
-
-    return (
-      <RNImage
-        {...(other as RNImageProps)}
-        ref={ref}
-        source={source}
-        accessible={accessible}
-        onLoadStart={handleLoadStart}
-        onLoad={handleLoad}
-        onError={handleError}
-      />
-    );
-  },
+		return (
+			<RNImage
+				{...(other as RNImageProps)}
+				ref={ref}
+				source={source}
+				accessible={accessible}
+				onLoadStart={handleLoadStart}
+				onLoad={handleLoad}
+				onError={handleError}
+			/>
+		);
+	},
 );
 
 AvatarImage.displayName = 'Avatar.Image';
@@ -211,40 +197,40 @@ AvatarImage.displayName = 'Avatar.Image';
  * When true, the fallback is marked as an accessibility element.
  */
 export const AvatarFallback = React.forwardRef<View, AvatarFallbackProps>(
-  (props, ref) => {
-    const { delay, children, accessible = true, ...other } = props;
-    const { loadingStatus } = useAvatarContext();
-    const [canRender, setCanRender] = React.useState(delay === undefined);
+	(props, ref) => {
+		const { delay, children, accessible = true, ...other } = props;
+		const { loadingStatus } = useAvatarContext();
+		const [canRender, setCanRender] = React.useState(delay === undefined);
 
-    React.useEffect(() => {
-      if (delay !== undefined) {
-        const timer = setTimeout(() => setCanRender(true), delay);
-        return () => clearTimeout(timer);
-      }
-      return undefined;
-    }, [delay]);
+		React.useEffect(() => {
+			if (delay !== undefined) {
+				const timer = setTimeout(() => setCanRender(true), delay);
+				return () => clearTimeout(timer);
+			}
+			return undefined;
+		}, [delay]);
 
-    if (canRender && loadingStatus !== 'loaded') {
-      return (
-        <View
-          {...other}
-          ref={ref}
-          accessible={accessible}
-          importantForAccessibility='yes'
-        >
-          {children}
-        </View>
-      );
-    }
+		if (canRender && loadingStatus !== 'loaded') {
+			return (
+				<View
+					{...other}
+					ref={ref}
+					accessible={accessible}
+					importantForAccessibility='yes'
+				>
+					{children}
+				</View>
+			);
+		}
 
-    return null;
-  },
+		return null;
+	},
 );
 
 AvatarFallback.displayName = 'Avatar.Fallback';
 
 export const Avatar = {
-  Root: AvatarRoot,
-  Image: AvatarImage,
-  Fallback: AvatarFallback,
+	Root: AvatarRoot,
+	Image: AvatarImage,
+	Fallback: AvatarFallback,
 };
