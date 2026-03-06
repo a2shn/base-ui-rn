@@ -56,6 +56,37 @@ describe('Avatar', () => {
     expect(queryByTestId('fallback')).toBeNull();
   });
 
+
+  it('does not regress to loading after image has loaded for the same source', () => {
+    const onLoadingStatusChange = jest.fn();
+    const { getByTestId, queryByTestId } = render(
+      <Avatar.Root>
+        <Avatar.Image
+          testID='image'
+          source={{ uri: 'https://example.com/image.png' }}
+          onLoadingStatusChange={onLoadingStatusChange}
+        />
+        <Avatar.Fallback testID='fallback'>FB</Avatar.Fallback>
+      </Avatar.Root>,
+    );
+
+    const image = getByTestId('image');
+
+    act(() => {
+      image.props.onLoad();
+    });
+
+    expect(queryByTestId('fallback')).toBeNull();
+
+    act(() => {
+      image.props.onLoadStart();
+    });
+
+    expect(onLoadingStatusChange).toHaveBeenCalledWith('loaded');
+    expect(onLoadingStatusChange).not.toHaveBeenCalledWith('loading');
+    expect(queryByTestId('fallback')).toBeNull();
+  });
+
   it('respects the delay prop on fallback', () => {
     const { queryByTestId } = render(
       <Avatar.Root>

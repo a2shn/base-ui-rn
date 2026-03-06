@@ -88,8 +88,23 @@ export const AvatarImage = React.forwardRef<RNImage, AvatarImageProps>(
     } = props;
     const { onLoadingStatusChange } = useAvatarContext();
 
+    const lastStableStatusRef = React.useRef<ImageLoadingStatus>('idle');
+    const lastSourceRef = React.useRef(source);
+
+    React.useEffect(() => {
+      if (lastSourceRef.current !== source) {
+        lastSourceRef.current = source;
+        lastStableStatusRef.current = 'idle';
+      }
+    }, [source]);
+
     const handleLoadingStatusChange = React.useCallback(
       (status: ImageLoadingStatus) => {
+        if (status === 'loading' && lastStableStatusRef.current === 'loaded') {
+          return;
+        }
+
+        lastStableStatusRef.current = status;
         onLoadingStatusChange(status);
         onLoadingStatusChangeProp?.(status);
       },

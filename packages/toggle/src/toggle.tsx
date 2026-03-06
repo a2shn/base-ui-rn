@@ -32,6 +32,7 @@ const PressableWithKeyPress =
     PressableProps &
     WebToggleAccessibilityProps & {
       onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
+      onKeyDown?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
     } & React.RefAttributes<View>
   >;
 
@@ -164,13 +165,18 @@ export const Toggle = React.memo(
           activateToggle('keyboard');
         }
 
+        onKeyPress?.(e);
+      },
+      [activateToggle, onKeyPress],
+    );
+
+    const handleKeyDown = React.useCallback(
+      (e: NativeSyntheticEvent<KeyPressEventData>) => {
         if (isInGroup && value !== undefined) {
           groupContext.onToggleKeyPress(value, e);
         }
-
-        onKeyPress?.(e);
       },
-      [activateToggle, onKeyPress, isInGroup, value, groupContext],
+      [isInGroup, value, groupContext],
     );
 
     const handleAccessibilityAction = React.useCallback(
@@ -257,6 +263,7 @@ export const Toggle = React.memo(
         hitSlop={hitSlop}
         onPress={handlePress}
         onKeyPress={handleKeyPress}
+        onKeyDown={handleKeyDown}
         onFocus={handleFocus}
         onBlur={handleBlur}
         style={(pressableState) => {

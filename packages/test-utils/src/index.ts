@@ -104,6 +104,7 @@ export function fireKeyPress(
   element: ReturnType<RenderResult['getByRole']>,
   key: string,
 ): void {
+  fireEvent(element, 'keyDown', { nativeEvent: { key } });
   fireEvent(element, 'keyPress', { nativeEvent: { key } });
 }
 
