@@ -14,12 +14,22 @@ export interface AvatarImageProps extends Omit<
    * Callback fired when the loading status changes.
    */
   onLoadingStatusChange?: (status: ImageLoadingStatus) => void;
+  /**
+   * When true, the image is marked as an accessibility element. Defaults to false
+   * since the root handles accessibility.
+   */
+  accessible?: boolean;
 }
 
 export interface AvatarFallbackProps extends ViewProps {
   /**
    * How long to wait before showing the fallback. Specified in milliseconds.
+   * Useful for preventing "flicker" when an image loads quickly.
    * @default 0
    */
   delay?: number;
+  /**
+   * When true, the fallback is marked as an accessibility element.
+   */
+  accessible?: boolean;
 }

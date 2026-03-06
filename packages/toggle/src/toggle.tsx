@@ -39,13 +39,26 @@ const PressableWithKeyPress =
 /**
  * Headless toggle primitive built on top of React Native `Pressable`.
  *
- * @param disableDefaultFocusRing
- * Whether to disable the default blue focus ring styling that appears on keyboard focus.
- *
- * @param focusVisible
- * Forces the focus ring to be visible.
- *
- * @default disableDefaultFocusRing false
+ * Supports keyboard interaction, accessibility roles, and focus ring management.
+ * Can be used independently or as part of a `ToggleGroup`.
+ * 
+ * @example
+ * ```tsx
+ * <Toggle
+ *   role="checkbox"
+ *   accessibilityHint="Enables dark mode"
+ *   onPressedChange={(pressed) => console.log('Dark mode:', pressed)}
+ * >
+ *   {({ pressed, focusVisible }) => (
+ *     <View style={{ 
+ *       backgroundColor: pressed ? '#000' : '#fff',
+ *       opacity: focusVisible ? 0.8 : 1
+ *     }}>
+ *       <Text style={{ color: pressed ? '#fff' : '#000' }}>Dark Mode</Text>
+ *     </View>
+ *   )}
+ * </Toggle>
+ * ```
  */
 export const Toggle = React.memo(
   React.forwardRef<View, ToggleProps>(function Root(

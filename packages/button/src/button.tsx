@@ -38,27 +38,8 @@ const PressableWithKeyPress =
 /**
  * Headless button primitive built on top of React Native `Pressable`.
  *
- * @param disabled
- * Controls whether the button can be pressed or focused.
- *
- * @param disableDefaultFocusRing
- * Whether to disable the default blue focus ring styling that appears on keyboard focus.
- *
- * @param focusVisible
- * Forces the focus ring to be visible.
- *
- * @param onPress
- * Callback fired when the button is activated.
- *
- * @param accessibilityHint
- * Describes the result of activating the button.
- *
- * @param hitSlop
- * Expands the interactive touch area.
- *
- * @default hitSlop { top: 10, bottom: 10, left: 10, right: 10 }
- * @default disableDefaultFocusRing false
- *
+ * Supports keyboard interaction, accessibility roles, and focus ring management.
+ * 
  * @example
  * ```tsx
  * <Button
@@ -68,6 +49,7 @@ const PressableWithKeyPress =
  *   {({ pressed, focusVisible }) => (
  *     <View style={{ 
  *       opacity: pressed ? 0.6 : 1,
+ *       borderWidth: focusVisible ? 2 : 0,
  *     }}>
  *       <Text>Submit</Text>
  *     </View>

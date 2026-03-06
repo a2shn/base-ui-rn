@@ -79,7 +79,7 @@ export const mergeAccessibilityState = (
  *
  * @param isFocusable - Whether the element should be focusable
  * @param providedTabIndex - Optional: override tab index
- * @returns The resolved tab index
+ * @returns The resolved tab index (0 for focusable, -1 for not)
  *
  * @example
  * ```tsx

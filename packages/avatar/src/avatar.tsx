@@ -70,13 +70,6 @@ AvatarRoot.displayName = 'Avatar.Root';
  * The image component for the avatar.
  *
  * Automatically manages loading status within the Avatar.Root context.
- *
- * @param onLoadingStatusChange
- * Callback fired when the image loading status changes ('loading' | 'loaded' | 'error').
- * 
- * @param accessible
- * When true, the image is marked as an accessibility element. Defaults to false
- * since the root handles accessibility.
  */
 export const AvatarImage = React.forwardRef<RNImage, AvatarImageProps>(
 	(props, ref) => {
@@ -188,13 +181,6 @@ AvatarImage.displayName = 'Avatar.Image';
 
 /**
  * A fallback component rendered when the image is loading or fails to load.
- *
- * @param delay
- * The duration (in ms) to wait before rendering the fallback.
- * Useful for preventing "flicker" when an image loads quickly.
- * 
- * @param accessible
- * When true, the fallback is marked as an accessibility element.
  */
 export const AvatarFallback = React.forwardRef<View, AvatarFallbackProps>(
 	(props, ref) => {
