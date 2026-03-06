@@ -1,0 +1,14 @@
+{
+  "name": "@base-ui-rn/meter",
+  "version": "0.0.1",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
+  "dependencies": {
+    "@base-ui-rn/core": "workspace:*"
+  }
+}

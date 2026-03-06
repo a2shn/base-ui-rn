@@ -41,6 +41,9 @@ importers:
       '@base-ui-rn/focus-ring':
         specifier: workspace:*
         version: link:../../packages/focus-ring
+      '@base-ui-rn/meter':
+        specifier: workspace:*
+        version: link:../../packages/meter
       '@base-ui-rn/playbook':
         specifier: workspace:*
         version: link:../../packages/playbook
@@ -247,6 +250,18 @@ importers:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
+
+  packages/meter:
+    dependencies:
+      '@base-ui-rn/core':
+        specifier: workspace:*
+        version: link:../core
+      react:
+        specifier: '*'
+        version: 19.1.0
+      react-native:
+        specifier: '*'
+        version: 0.81.5(@babel/core@7.29.0)(@types/react@19.1.17)(react@19.1.0)
 
   packages/playbook:
     devDependencies:
