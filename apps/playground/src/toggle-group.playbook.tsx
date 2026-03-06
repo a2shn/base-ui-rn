@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { ToggleGroup } from '@base-ui-rn/toggle-group';
 import { Toggle, type ToggleState } from '@base-ui-rn/toggle';
 import {
   Gallery,
   Section,
-  LiveConsole,
   usePlaybookToggles,
+  LiveConsole,
 } from '@base-ui-rn/playbook';
 import styles from './playbookStyles';
 
@@ -31,63 +31,159 @@ export function ToggleGroupPlaybook() {
       <Section title='Loop Focus Horizontal'>
         <ToggleGroup
           orientation='horizontal'
-          value={alignment.value}
-          onValueChange={alignment.setValue}
-          style={groupBaseStyle}
-          disabled={isGroupDisabled.value}
+          loopFocus={true}
+          defaultValue={['h1']}
+          style={{ ...groupBaseStyle, flexDirection: 'row' }}
+          testID='toggle-group-loop-h'
         >
-          <Toggle value='left' style={toggleStyle}>
-            <Text>Left</Text>
-          </Toggle>
-          <Toggle value='center' style={toggleStyle}>
-            <Text>Center</Text>
-          </Toggle>
-          <Toggle value='right' style={toggleStyle}>
-            <Text>Right</Text>
-          </Toggle>
+          {['h1', 'h2', 'h3'].map((val, i) => (
+            <Toggle key={val} value={val} testID={`toggle-h${i + 1}`}>
+              {(state) => (
+                <View style={toggleStyle(state)}>
+                  <Text>Option {i + 1}</Text>
+                </View>
+              )}
+            </Toggle>
+          ))}
         </ToggleGroup>
-        <LiveConsole title='Alignment' state={alignment} />
+        <Text style={{ fontSize: 12, marginTop: 4, color: '#666' }}>
+          Navigate with Left/Right arrows. It should loop from 3 to 1.
+        </Text>
       </Section>
 
-      <Section title='Multi-select Vertical'>
+      <Section title='Loop Focus Vertical'>
         <ToggleGroup
           orientation='vertical'
-          multiple
-          value={formats.value}
-          onValueChange={formats.setValue}
-          style={[groupBaseStyle, { width: 100 }]}
-          disabled={isGroupDisabled.value}
+          loopFocus={true}
+          defaultValue={['v1']}
+          style={{ ...groupBaseStyle, flexDirection: 'column' }}
+          testID='toggle-group-loop-v'
         >
-          <Toggle value='bold' style={toggleStyle}>
-            <Text>Bold</Text>
-          </Toggle>
-          <Toggle value='italic' style={toggleStyle}>
-            <Text>Italic</Text>
-          </Toggle>
-          <Toggle value='underline' style={toggleStyle}>
-            <Text>Underline</Text>
-          </Toggle>
+          {['v1', 'v2', 'v3'].map((val, i) => (
+            <Toggle key={val} value={val} testID={`toggle-v${i + 1}`}>
+              {(state) => (
+                <View style={toggleStyle(state)}>
+                  <Text>Option {i + 1}</Text>
+                </View>
+              )}
+            </Toggle>
+          ))}
         </ToggleGroup>
-        <LiveConsole title='Formats' state={formats} />
+        <Text style={{ fontSize: 12, marginTop: 4, color: '#666' }}>
+          Navigate with Up/Down arrows. It should loop from 3 to 1.
+        </Text>
       </Section>
 
-      <Section title='Disabled State'>
+      <Section title='Uncontrolled Single'>
         <ToggleGroup
-          value={alignment.value}
-          onValueChange={alignment.setValue}
-          style={groupBaseStyle}
-          disabled
+          defaultValue={['center']}
+          testID='toggle-group-uncontrolled-single'
+          style={{ ...groupBaseStyle, flexDirection: 'row' }}
         >
-          <Toggle value='left' style={toggleStyle}>
-            <Text>Left</Text>
-          </Toggle>
-          <Toggle value='center' style={toggleStyle}>
-            <Text>Center</Text>
-          </Toggle>
-          <Toggle value='right' style={toggleStyle}>
-            <Text>Right</Text>
-          </Toggle>
+          {['left', 'center', 'right'].map((val) => (
+            <Toggle key={val} value={val} testID={`toggle-${val}`}>
+              {(state) => (
+                <View style={toggleStyle(state)}>
+                  <Text>{val.charAt(0).toUpperCase() + val.slice(1)}</Text>
+                </View>
+              )}
+            </Toggle>
+          ))}
         </ToggleGroup>
+      </Section>
+
+      <Section title='Controlled Single'>
+        <ToggleGroup
+          value={alignment.value as string[]}
+          onValueChange={alignment.setValue}
+          testID='toggle-group-controlled-single'
+          style={{ ...groupBaseStyle, flexDirection: 'row' }}
+        >
+          {['left', 'center', 'right'].map((val) => (
+            <Toggle key={val} value={val} testID={`toggle-${val}-controlled`}>
+              {(state) => (
+                <View style={toggleStyle(state)}>
+                  <Text>{val.charAt(0).toUpperCase() + val.slice(1)}</Text>
+                </View>
+              )}
+            </Toggle>
+          ))}
+        </ToggleGroup>
+        <LiveConsole
+          title='alignment'
+          state={alignment}
+          testID='alignment-console'
+        />
+      </Section>
+
+      <Section title='Multiple'>
+        <ToggleGroup
+          multiple
+          value={formats.value as string[]}
+          onValueChange={formats.setValue}
+          testID='toggle-group-multiple'
+          style={{ ...groupBaseStyle, flexDirection: 'row' }}
+        >
+          {['bold', 'italic', 'underline'].map((val) => (
+            <Toggle key={val} value={val} testID={`toggle-${val}`}>
+              {(state) => (
+                <View style={toggleStyle(state)}>
+                  <Text>{val.charAt(0).toUpperCase() + val.slice(1)}</Text>
+                </View>
+              )}
+            </Toggle>
+          ))}
+        </ToggleGroup>
+        <LiveConsole title='formats' state={formats} testID='formats-console' />
+      </Section>
+
+      <Section title='Disabled'>
+        <View style={{ gap: 10 }}>
+          <Toggle
+            pressed={isGroupDisabled.value as boolean}
+            onPressedChange={isGroupDisabled.setValue}
+            testID='toggle-group-disabled-switch'
+          >
+            {(state) => (
+              <View
+                style={{
+                  ...toggleStyle(state),
+                  alignSelf: 'flex-start',
+                }}
+              >
+                <Text testID='is-disabled-label'>
+                  {isGroupDisabled.value ? 'Enable Group' : 'Disable Group'}
+                </Text>
+              </View>
+            )}
+          </Toggle>
+
+          <ToggleGroup
+            disabled={isGroupDisabled.value as boolean}
+            defaultValue={['bold']}
+            style={{
+              ...groupBaseStyle,
+              flexDirection: 'row',
+              opacity: isGroupDisabled.value ? 0.5 : 1,
+            }}
+            testID='toggle-group-disabled'
+          >
+            {['bold', 'italic'].map((val) => (
+              <Toggle key={val} value={val} testID={`toggle-disabled-${val}`}>
+                {(state) => (
+                  <View style={toggleStyle(state)}>
+                    <Text>{val.charAt(0).toUpperCase() + val.slice(1)}</Text>
+                  </View>
+                )}
+              </Toggle>
+            ))}
+          </ToggleGroup>
+        </View>
+        <LiveConsole
+          title='isGroupDisabled'
+          state={isGroupDisabled}
+          testID='disabled-console'
+        />
       </Section>
     </Gallery>
   );
