@@ -107,15 +107,12 @@ export const MeterRoot = React.forwardRef<View, MeterRootProps>(
           aria-valuemax={max}
           aria-valuenow={value}
           aria-valuetext={ariaValueText}
-          accessibilityValue={
-            ariaValueText
-              ? { text: ariaValueText }
-              : {
-                  min,
-                  max,
-                  now: value,
-                }
-          }
+          accessibilityValue={{
+            min,
+            max,
+            now: value,
+            text: ariaValueText,
+          }}
         >
           {children}
         </View>

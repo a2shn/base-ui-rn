@@ -17,7 +17,10 @@ describe('Meter - Accessibility', () => {
       importantForAccessibility: 'yes',
     });
 
-    expect(meter.props.accessibilityValue).toMatchObject({
+    expect(meter.props.accessibilityValue).toEqual({
+      min: 0,
+      max: 100,
+      now: 50,
       text: '50',
     });
   });
@@ -47,7 +50,12 @@ describe('Meter - Accessibility', () => {
     );
 
     const meter = getByRole('progressbar');
-    expect(meter.props.accessibilityValue.text).toBe('80 units used');
+    expect(meter.props.accessibilityValue).toEqual({
+      min: 0,
+      max: 100,
+      now: 80,
+      text: '80 units used',
+    });
   });
 
   it('supports custom aria-valuetext prop', () => {
@@ -56,7 +64,12 @@ describe('Meter - Accessibility', () => {
     );
 
     const meter = getByRole('progressbar');
-    expect(meter.props.accessibilityValue.text).toBe('Halfway');
+    expect(meter.props.accessibilityValue).toEqual({
+      min: 0,
+      max: 100,
+      now: 50,
+      text: 'Halfway',
+    });
   });
 
   it('prefers accessibilityLabel over automated labeling', () => {
@@ -118,5 +131,13 @@ describe('Meter - Accessibility', () => {
       const meter = getByRole('progressbar');
       expect(meter.props.tabIndex).toBe(0);
     });
+  });
+
+  it('supports accessible prop', () => {
+    const { getByTestId } = render(
+      <Meter.Root value={50} accessible={false} testID='meter' />,
+    );
+    const meter = getByTestId('meter');
+    expect(meter.props.accessible).toBe(false);
   });
 });

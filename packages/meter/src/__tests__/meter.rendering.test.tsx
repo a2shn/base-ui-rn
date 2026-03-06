@@ -5,11 +5,12 @@ import { Meter } from '../meter';
 
 describe('Meter - Rendering', () => {
   it('renders correctly with default values', () => {
-    const { getByRole, getByTestId } = render(
+    const { getByRole, getByTestId, getByText } = render(
       <Meter.Root value={50}>
         <Meter.Track>
           <Meter.Indicator testID='indicator' />
         </Meter.Track>
+        <Meter.Value />
       </Meter.Root>,
     );
 
@@ -20,6 +21,17 @@ describe('Meter - Rendering', () => {
       includeHiddenElements: true,
     });
     expect(StyleSheet.flatten(indicator.props.style).width).toBe('50%');
+
+    const value = getByText('50', { includeHiddenElements: true });
+    expect(value).toBeDefined();
+  });
+
+  it('passes through style to Meter.Root', () => {
+    const { getByRole } = render(
+      <Meter.Root value={50} style={{ margin: 10 }} />,
+    );
+    const meter = getByRole('progressbar');
+    expect(StyleSheet.flatten(meter.props.style).margin).toBe(10);
   });
 
   it('supports custom min and max values', () => {
@@ -36,6 +48,23 @@ describe('Meter - Rendering', () => {
     });
     // (200 - 100) / (500 - 100) = 100 / 400 = 25%
     expect(StyleSheet.flatten(indicator.props.style).width).toBe('25%');
+  });
+
+  it('merges custom styles with Meter.Indicator computed style', () => {
+    const { getByTestId } = render(
+      <Meter.Root value={50}>
+        <Meter.Track>
+          <Meter.Indicator testID='indicator' style={{ height: 10 }} />
+        </Meter.Track>
+      </Meter.Root>,
+    );
+
+    const indicator = getByTestId('indicator', {
+      includeHiddenElements: true,
+    });
+    const style = StyleSheet.flatten(indicator.props.style);
+    expect(style.width).toBe('50%');
+    expect(style.height).toBe(10);
   });
 
   it('clamps values within min and max range', () => {
