@@ -9,6 +9,7 @@ import {
   type KeyPressEventData,
   type WebToggleGroupAccessibilityProps,
   DEFAULT_FOCUS_RING_STYLE,
+  useKeyboardNavigation,
 } from '@base-ui-rn/core';
 import { useFocus } from '@base-ui-rn/focus-ring';
 import { type ToggleGroupProps, type ToggleGroupState } from './types';
@@ -89,6 +90,11 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
       focusVisible: forceFocusVisible,
     });
 
+    const { registerItem, handleKeyDown } = useKeyboardNavigation({
+      orientation: orientation === 'both' ? 'both' : orientation,
+      loop: loopFocus,
+    });
+
     const [uncontrolledValue, setUncontrolledValue] = React.useState(
       defaultValue ?? [],
     );
@@ -116,127 +122,15 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
       [multiple, valueSet, value, controlledValue, onValueChange],
     );
 
-    const registeredItems = React.useRef<Map<string, React.RefObject<unknown>>>(
-      new Map(),
-    );
-    // Use a Ref for ordered values to avoid re-registration loops that cause OOM.
-    const orderedValuesRef = React.useRef<string[]>([]);
-
-    const registerItem = React.useCallback(
-      (val: string, itemRef: React.RefObject<unknown>) => {
-        registeredItems.current.set(val, itemRef);
-        if (!orderedValuesRef.current.includes(val)) {
-          orderedValuesRef.current.push(val);
-        }
-        return () => {
-          registeredItems.current.delete(val);
-          orderedValuesRef.current = orderedValuesRef.current.filter(
-            (v) => v !== val,
-          );
-        };
-      },
-      [],
-    );
-
     const onToggleKeyPress = React.useCallback(
-      (currentValue: string, event: unknown) => {
+      (currentValue: string, event: any) => {
         if (disabled) return;
-
-        const nativeEvent = (event as NativeSyntheticEvent<KeyPressEventData>)
-          .nativeEvent;
-        const key = nativeEvent.key;
-        const isHorizontal = orientation === 'horizontal';
-        const isVertical = orientation === 'vertical';
-
-        let direction: 'next' | 'prev' | null = null;
-
-        if (isHorizontal) {
-          if (key === 'ArrowRight') direction = 'next';
-          else if (key === 'ArrowLeft') direction = 'prev';
-        } else if (isVertical) {
-          if (key === 'ArrowDown') direction = 'next';
-          else if (key === 'ArrowUp') direction = 'prev';
-        }
-
-        if (direction) {
-          const orderedValues = orderedValuesRef.current;
-          const len = orderedValues.length;
-          if (len <= 1) return;
-
-          const currentIndex = orderedValues.indexOf(currentValue);
-          if (currentIndex === -1) return;
-
-          let nextIndex: number;
-          if (direction === 'next') {
-            nextIndex = currentIndex + 1;
-            if (nextIndex >= len) {
-              if (loopFocus) {
-                nextIndex = 0;
-              } else {
-                return;
-              }
-            }
-          } else {
-            nextIndex = currentIndex - 1;
-            if (nextIndex < 0) {
-              if (loopFocus) {
-                nextIndex = len - 1;
-              } else {
-                return;
-              }
-            }
-          }
-
-          if (nextIndex !== currentIndex) {
-            const nextValue = orderedValues[nextIndex];
-            const nextRef = registeredItems.current.get(nextValue);
-            const element = nextRef?.current as
-              | { focus?: () => void }
-              | null
-              | undefined;
-
-            const evtAny = event as any;
-            let prevented = false;
-            if (evtAny && typeof evtAny.preventDefault === 'function') {
-              try {
-                evtAny.preventDefault();
-                prevented = true;
-              } catch {}
-            } else if (
-              evtAny &&
-              evtAny.nativeEvent &&
-              typeof evtAny.nativeEvent.preventDefault === 'function'
-            ) {
-              try {
-                evtAny.nativeEvent.preventDefault();
-                prevented = true;
-              } catch {}
-            }
-
-            onFocusChange?.(nextValue);
-
-            const isWeb = Platform.OS === 'web';
-            const isTest = !!process.env.JEST_WORKER_ID;
-            const shouldProgrammaticFocus = isWeb || isTest;
-
-            if (!shouldProgrammaticFocus) {
-              return;
-            }
-
-            if (element && typeof element.focus === 'function') {
-              const focusFn = element.focus;
-              if (prevented) {
-                focusFn();
-              } else {
-                setTimeout(() => {
-                  focusFn();
-                }, 0);
-              }
-            }
-          }
+        const nextId = handleKeyDown(currentValue, event);
+        if (nextId) {
+          onFocusChange?.(nextId);
         }
       },
-      [disabled, orientation, loopFocus, onFocusChange],
+      [disabled, handleKeyDown, onFocusChange],
     );
 
     const registeredValues = React.useRef<Set<string>>(new Set());

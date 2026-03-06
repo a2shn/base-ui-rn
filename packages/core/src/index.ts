@@ -27,5 +27,17 @@ export {
   resolveDataPressed,
 } from './accessibility';
 
+// Keyboard navigation
+export {
+  useKeyboardNavigation,
+  KeyboardProvider,
+  useKeyboardManager,
+} from './keyboard';
+export type {
+  KeyboardDirection,
+  KeyboardNavigationOptions,
+  KeyboardHandler,
+} from './keyboard';
+
 // Utils
 export { mergeRefs } from './utils';

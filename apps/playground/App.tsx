@@ -48,10 +48,14 @@ const REGISTRY: PlaybookConfig = {
   },
 };
 
+import { KeyboardProvider } from '@base-ui-rn/core';
+
 export default function App() {
   return (
     <SafeAreaProvider>
-      <PlaybookApp registry={REGISTRY} />
+      <KeyboardProvider>
+        <PlaybookApp registry={REGISTRY} />
+      </KeyboardProvider>
     </SafeAreaProvider>
   );
 }
