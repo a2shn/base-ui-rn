@@ -122,5 +122,25 @@ describe('Button - Accessibility', () => {
       );
       expect(getByRole('button').props.tabIndex).toBe(-1);
     });
+
+    it('populates aria-keyshortcuts from shortcut prop', () => {
+      const { getByRole } = render(
+        <Button shortcut={{ keys: ['s'], modifiers: ['ctrl'] }}>
+          <Text>Save</Text>
+        </Button>,
+      );
+      expect(getByRole('button').props['aria-keyshortcuts']).toBe('Control+s');
+    });
+
+    it('handles multiple keys in aria-keyshortcuts', () => {
+      const { getByRole } = render(
+        <Button shortcut={{ keys: ['k', 'l'], modifiers: ['meta', 'shift'] }}>
+          <Text>Multi</Text>
+        </Button>,
+      );
+      expect(getByRole('button').props['aria-keyshortcuts']).toBe(
+        'Meta+Shift+k Meta+Shift+l',
+      );
+    });
   });
 });

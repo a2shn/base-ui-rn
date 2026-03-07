@@ -1,4 +1,5 @@
 import type { ViewProps, StyleProp, ViewStyle } from 'react-native';
+import type { WebToggleGroupAccessibilityProps } from '@base-ui-rn/core';
 import { type ToggleGroupChangeEventDetails } from '@base-ui-rn/toggle';
 
 export interface ToggleGroupState {
@@ -32,10 +33,10 @@ export interface ToggleGroupState {
   focusVisible: boolean;
 }
 
-export interface ToggleGroupProps extends Omit<
-  ViewProps,
-  'children' | 'style'
-> {
+export interface ToggleGroupProps
+  extends
+    Omit<ViewProps, 'children' | 'style'>,
+    WebToggleGroupAccessibilityProps {
   /**
    * The controlled value of the toggle group.
    */

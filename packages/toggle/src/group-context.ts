@@ -1,4 +1,6 @@
 import * as React from 'react';
+import type { NativeSyntheticEvent } from 'react-native';
+import type { KeyPressEventData } from '@base-ui-rn/core';
 import { type TogglePressedChangeDetails } from './types';
 
 export type Orientation = 'horizontal' | 'vertical';
@@ -54,7 +56,7 @@ export interface ToggleGroupContextValue {
    */
   onToggleKeyPress: (
     value: string,
-    event: unknown, // Using unknown for event as NativeSyntheticEvent<KeyPressEventData> is not available here
+    event: NativeSyntheticEvent<KeyPressEventData>,
   ) => void;
 }
 

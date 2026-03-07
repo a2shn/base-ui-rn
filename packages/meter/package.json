@@ -1,6 +1,6 @@
 {
   "name": "@base-ui-rn/meter",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Headless meter primitive for React Native",
   "license": "MIT",
   "type": "module",

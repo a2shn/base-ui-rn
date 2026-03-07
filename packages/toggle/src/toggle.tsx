@@ -4,29 +4,17 @@ import {
   View,
   type PressableProps,
   type NativeSyntheticEvent,
-  type GestureResponderEvent,
-  type AccessibilityActionEvent,
   type Role,
-  type TargetedEvent,
 } from 'react-native';
 import {
   DEFAULT_HIT_SLOP,
-  mergeAccessibilityActions,
-  isActivationAction,
-  mergeAccessibilityState,
-  resolveTabIndex,
-  resolveAriaDisabled,
-  resolveAriaPressed,
-  resolveDataPressed,
   DEFAULT_FOCUS_RING_STYLE,
   type KeyPressEventData,
   type WebToggleAccessibilityProps,
-  useKeyboardActivation,
 } from '@base-ui-rn/core';
-import { type TogglePressedChangeDetails, type ToggleProps } from './types';
+import { type ToggleProps } from './types';
 import { useToggleGroupContext } from './group-context';
-import { useFocus } from '@base-ui-rn/focus-ring';
-import { useKeyboardShortcut } from '@base-ui-rn/keyboard-shortcuts';
+import { useToggle } from './use-toggle';
 
 const PressableWithKeyPress =
   Pressable as unknown as React.ForwardRefExoticComponent<
@@ -86,12 +74,58 @@ export const Toggle = React.memo(
       onFocus: onFocusProp,
       onBlur: onBlurProp,
       shortcut,
-      ...props
+      tabIndex: tabIndexProp,
+      'aria-disabled': ariaDisabledProp,
+      'aria-pressed': ariaPressedProp,
+      'data-pressed': dataPressedProp,
+      ...otherProps
     },
     forwardedRef,
   ) {
     const groupContext = useToggleGroupContext();
-    const isInGroup = groupContext !== null;
+
+    const {
+      focused,
+      focusVisible,
+      handleAccessibilityAction,
+      handleBlur,
+      handleFocus,
+      handleKeyDown,
+      handleKeyPress,
+      handlePress,
+      isDisabled,
+      isFocusable,
+      isInGroup,
+      isPressed,
+      mergedAccessibilityActions,
+      mergedAccessibilityState,
+      resolvedAriaDisabled,
+      resolvedAriaKeyshortcuts,
+      resolvedAriaPressed,
+      resolvedDataPressed,
+      resolvedTabIndex,
+    } = useToggle({
+      value,
+      controlledPressed,
+      defaultPressed,
+      onPressedChange,
+      disabled,
+      onPress,
+      onKeyPress,
+      accessibilityState,
+      accessibilityActions,
+      onAccessibilityAction,
+      focusableWhenDisabled,
+      forceFocusVisible,
+      onFocusProp,
+      onBlurProp,
+      shortcut,
+      tabIndexProp,
+      ariaDisabledProp,
+      ariaPressedProp,
+      dataPressedProp,
+      groupContext,
+    });
 
     if (process.env.NODE_ENV !== 'production') {
       if (isInGroup && value === undefined) {
@@ -105,172 +139,22 @@ export const Toggle = React.memo(
     React.useImperativeHandle(forwardedRef, () => internalRef.current!);
 
     React.useEffect(() => {
-      if (isInGroup && value !== undefined) {
-        // We use a ref object to store the current element for focus management
+      if (groupContext && value !== undefined) {
         return groupContext.registerItem(value, internalRef);
       }
       return undefined;
-    }, [isInGroup, value, groupContext]);
+    }, [value, groupContext]);
 
     React.useEffect(() => {
-      if (isInGroup && value !== undefined) {
+      if (groupContext && value !== undefined) {
         return groupContext.registerValue(value);
       }
       return undefined;
-    }, [isInGroup, value, groupContext]);
-
-    const isDisabled =
-      disabled === true || (isInGroup && groupContext.disabled);
-    const isFocusable = !isDisabled || focusableWhenDisabled === true;
-
-    const { focused, focusVisible, onFocus, onBlur } = useFocus({
-      focusVisible: forceFocusVisible,
-    });
-
-    const [uncontrolledState, setUncontrolledState] =
-      React.useState(defaultPressed);
-
-    let isPressed: boolean;
-    if (isInGroup && value !== undefined) {
-      isPressed = groupContext.valueSet.has(value);
-    } else {
-      isPressed =
-        controlledPressed !== undefined ? controlledPressed : uncontrolledState;
-    }
-
-    const dispatchChange = React.useCallback(
-      (next: boolean, details: TogglePressedChangeDetails) => {
-        if (isInGroup && value !== undefined) {
-          groupContext.toggleValue(value, { ...details, value });
-        } else {
-          if (controlledPressed === undefined) {
-            setUncontrolledState(next);
-          }
-          onPressedChange?.(next, details);
-        }
-      },
-      [isInGroup, value, groupContext, controlledPressed, onPressedChange],
-    );
-
-    const activateToggle = React.useCallback(
-      (
-        source: TogglePressedChangeDetails['source'],
-        nativeEvent: GestureResponderEvent | null = null,
-      ) => {
-        dispatchChange(!isPressed, { source });
-        if (nativeEvent !== null && source === 'press') {
-          onPress?.(nativeEvent);
-        }
-      },
-      [isPressed, dispatchChange, onPress],
-    );
-
-    const handlePress = React.useCallback(
-      (event: GestureResponderEvent) => {
-        activateToggle('press', event);
-      },
-      [activateToggle],
-    );
-
-    const performKeyboardActivation = React.useCallback(() => {
-      activateToggle('keyboard');
-    }, [activateToggle]);
-
-    const handleKeyboardActivation = useKeyboardActivation(
-      performKeyboardActivation,
-      isDisabled,
-    );
-
-    useKeyboardShortcut(shortcut, () => {
-      if (!isDisabled) {
-        performKeyboardActivation();
-      }
-    });
-
-    const handleKeyPress = React.useCallback(
-      (e: NativeSyntheticEvent<KeyPressEventData>) => {
-        handleKeyboardActivation(e);
-        onKeyPress?.(e);
-      },
-      [handleKeyboardActivation, onKeyPress],
-    );
-
-    const handleKeyDown = React.useCallback(
-      (e: NativeSyntheticEvent<KeyPressEventData>) => {
-        if (isInGroup && value !== undefined) {
-          groupContext.onToggleKeyPress(value, e);
-        }
-      },
-      [isInGroup, value, groupContext],
-    );
-
-    const handleAccessibilityAction = React.useCallback(
-      (event: AccessibilityActionEvent) => {
-        const { actionName } = event.nativeEvent;
-
-        if (isActivationAction(actionName)) {
-          activateToggle('accessibilityAction');
-        }
-
-        onAccessibilityAction?.(event);
-      },
-      [activateToggle, onAccessibilityAction],
-    );
-
-    const handleFocus = React.useCallback(
-      (e: NativeSyntheticEvent<TargetedEvent>) => {
-        onFocus();
-        onFocusProp?.(e);
-      },
-      [onFocus, onFocusProp],
-    );
-
-    const handleBlur = React.useCallback(
-      (e: NativeSyntheticEvent<TargetedEvent>) => {
-        onBlur();
-        onBlurProp?.(e);
-      },
-      [onBlur, onBlurProp],
-    );
-
-    const mergedAccessibilityState = React.useMemo(
-      () =>
-        mergeAccessibilityState(
-          accessibilityState as Record<string, unknown> | undefined,
-          isDisabled,
-          isPressed,
-        ),
-      [accessibilityState, isDisabled, isPressed],
-    );
-
-    const mergedAccessibilityActions = React.useMemo(
-      () => mergeAccessibilityActions(accessibilityActions),
-      [accessibilityActions],
-    );
-
-    const resolvedTabIndex = resolveTabIndex(
-      isFocusable,
-      (props as WebToggleAccessibilityProps).tabIndex,
-    );
-
-    const resolvedAriaDisabled = resolveAriaDisabled(
-      isDisabled,
-      (props as WebToggleAccessibilityProps)['aria-disabled'],
-    );
-
-    const resolvedAriaPressed = resolveAriaPressed(
-      isPressed,
-      (props as WebToggleAccessibilityProps)['aria-pressed'],
-    );
-
-    const resolvedDataPressed = resolveDataPressed(
-      isPressed,
-      (props as WebToggleAccessibilityProps)['data-pressed'],
-    );
+    }, [value, groupContext]);
 
     return (
       <PressableWithKeyPress
-        {...props}
+        {...otherProps}
         ref={internalRef}
         disabled={isDisabled}
         accessible
@@ -282,6 +166,7 @@ export const Toggle = React.memo(
         focusable={isFocusable}
         tabIndex={resolvedTabIndex}
         aria-disabled={resolvedAriaDisabled}
+        aria-keyshortcuts={resolvedAriaKeyshortcuts}
         aria-pressed={resolvedAriaPressed}
         data-pressed={resolvedDataPressed}
         importantForAccessibility='yes'

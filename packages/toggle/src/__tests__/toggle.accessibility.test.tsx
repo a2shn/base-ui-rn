@@ -158,5 +158,14 @@ describe('Toggle - Accessibility', () => {
       expect(toggle.props['aria-pressed']).toBe(false);
       expect(toggle.props['data-pressed']).toBe(false);
     });
+
+    it('populates aria-keyshortcuts from shortcut prop', () => {
+      const { getByRole } = render(
+        <Toggle shortcut={{ keys: ['t'], modifiers: ['alt'] }}>
+          <Text>Toggle</Text>
+        </Toggle>,
+      );
+      expect(getByRole('checkbox').props['aria-keyshortcuts']).toBe('Alt+t');
+    });
   });
 });

@@ -1,74 +1,22 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from 'react';
-import { View } from 'react-native';
 import {
-  ToggleGroupContext,
-  type ToggleGroupChangeEventDetails,
-} from '@base-ui-rn/toggle';
-import {
-  type WebToggleGroupAccessibilityProps,
-  DEFAULT_FOCUS_RING_STYLE,
-  useKeyboardNavigation,
-} from '@base-ui-rn/core';
-import { useFocus } from '@base-ui-rn/focus-ring';
-import { type ToggleGroupProps, type ToggleGroupState } from './types';
+  View,
+  type NativeSyntheticEvent,
+  type TargetedEvent,
+} from 'react-native';
+import { ToggleGroupContext } from '@base-ui-rn/toggle';
+import { DEFAULT_FOCUS_RING_STYLE } from '@base-ui-rn/core';
+import { type ToggleGroupProps } from './types';
+import { useToggleGroup } from './use-toggle-group';
 
 /**
  * Headless toggle-group primitive for React Native.
- *
- * @param value
- * The controlled value of the toggle group.
- *
- * @param defaultValue
- * The default value of the toggle group when uncontrolled.
- *
- * @param onValueChange
- * Callback fired when the value changes.
- *
- * @param multiple
- * Whether multiple items can be pressed at once.
- *
- * @param disabled
- * Whether the entire group is disabled.
- *
- * @param orientation
- * The orientation of the group, used for keyboard navigation.
- *
- * @param disableDefaultFocusRing
- * Whether to disable the default blue focus ring styling that appears on keyboard focus.
- *
- * @param focusVisible
- * Forces the focus ring to be visible.
- *
- * @param loopFocus
- * Whether keyboard focus should loop back to the start/end.
- *
- * @param onFocusChange
- * Callback fired when the focused item in the group changes.
- *
- * @default orientation 'horizontal'
- * @default loopFocus true
- * @default multiple false
- * @default disabled false
- * @default disableDefaultFocusRing false
- *
- * @example
- * ```tsx
- * <ToggleGroup value={value} onValueChange={setValue} multiple>
- *   <Toggle value="bold">
- *     <Text>Bold</Text>
- *   </Toggle>
- *   <Toggle value="italic">
- *     <Text>Italic</Text>
- *   </Toggle>
- * </ToggleGroup>
- * ```
  */
 export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
   (props, ref) => {
     const {
       children,
-      value: controlledValue,
+      value,
       defaultValue,
       onValueChange,
       multiple = false,
@@ -79,101 +27,44 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
       style,
       focusVisible: forceFocusVisible = false,
       disableDefaultFocusRing = false,
-      ...other
+      accessibilityRole,
+      onFocus: onFocusProp,
+      onBlur: onBlurProp,
+      tabIndex,
+      'aria-disabled': ariaDisabled,
+      'data-orientation': dataOrientation,
+      'data-disabled': dataDisabled,
+      'data-multiple': dataMultiple,
+      ...otherViewProps
     } = props;
 
     const internalRef = React.useRef<View>(null);
     React.useImperativeHandle(ref, () => internalRef.current!);
 
-    const { focused, focusVisible, onFocus, onBlur } = useFocus({
+    const {
+      onBlur,
+      onFocus,
+      onToggleKeyPress,
+      registerItem,
+      registerValue,
+      state,
+      toggleValue,
+      valueSet,
+    } = useToggleGroup({
+      value,
+      defaultValue,
+      onValueChange,
+      multiple,
+      disabled,
+      orientation,
+      loopFocus,
+      onFocusChange,
       focusVisible: forceFocusVisible,
     });
-
-    const { registerItem, handleKeyDown } = useKeyboardNavigation({
-      orientation,
-      loop: loopFocus,
-    });
-
-    const [uncontrolledValue, setUncontrolledValue] = React.useState(
-      defaultValue ?? [],
-    );
-
-    const value = controlledValue ?? uncontrolledValue;
-    const valueSet = React.useMemo(() => new Set(value), [value]);
-
-    const toggleValue = React.useCallback(
-      (itemValue: string, details: ToggleGroupChangeEventDetails) => {
-        let nextValue: string[];
-        if (multiple) {
-          nextValue = valueSet.has(itemValue)
-            ? value.filter((v) => v !== itemValue)
-            : [...value, itemValue];
-        } else {
-          nextValue = valueSet.has(itemValue) ? [] : [itemValue];
-        }
-
-        if (controlledValue === undefined) {
-          setUncontrolledValue(nextValue);
-        }
-
-        onValueChange?.(nextValue, details);
-      },
-      [multiple, valueSet, value, controlledValue, onValueChange],
-    );
-
-    const onToggleKeyPress = React.useCallback(
-      (currentValue: string, event: any) => {
-        if (disabled) return;
-        const nextId = handleKeyDown(currentValue, event);
-        if (nextId) {
-          onFocusChange?.(nextId);
-        }
-      },
-      [disabled, handleKeyDown, onFocusChange],
-    );
-
-    const registeredValues = React.useRef<Set<string>>(new Set());
-    const registerValue = React.useCallback((val: string) => {
-      if (process.env.NODE_ENV !== 'production') {
-        if (registeredValues.current.has(val)) {
-          console.warn(
-            `ToggleGroup: Duplicate value "${val}" detected. Each Toggle within a ToggleGroup must have a unique value.`,
-          );
-        }
-        registeredValues.current.add(val);
-      }
-      return () => {
-        if (process.env.NODE_ENV !== 'production') {
-          registeredValues.current.delete(val);
-        }
-      };
-    }, []);
-
-    const state: ToggleGroupState = React.useMemo(
-      () => ({
-        value,
-        disabled,
-        multiple,
-        orientation,
-        loopFocus,
-        focused,
-        focusVisible,
-      }),
-      [
-        value,
-        disabled,
-        multiple,
-        orientation,
-        loopFocus,
-        focused,
-        focusVisible,
-      ],
-    );
 
     const contextValue = React.useMemo(
       () => ({
         ...state,
-        multiple,
         toggleValue,
         valueSet,
         registerValue,
@@ -182,7 +73,6 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
       }),
       [
         state,
-        multiple,
         toggleValue,
         valueSet,
         registerValue,
@@ -192,44 +82,41 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
     );
 
     const resolvedStyle = typeof style === 'function' ? style(state) : style;
-
     const resolvedChildren =
       typeof children === 'function' ? children(state) : children;
 
-    const resolvedDataOrientation =
-      (props as WebToggleGroupAccessibilityProps)['data-orientation'] ??
-      orientation;
-    const resolvedDataDisabled =
-      (props as WebToggleGroupAccessibilityProps)['data-disabled'] ?? disabled;
-    const resolvedDataMultiple =
-      (props as WebToggleGroupAccessibilityProps)['data-multiple'] ?? multiple;
-
     const finalStyle = [
       resolvedStyle,
-      !disableDefaultFocusRing && focusVisible && DEFAULT_FOCUS_RING_STYLE,
+      !disableDefaultFocusRing &&
+        state.focusVisible &&
+        DEFAULT_FOCUS_RING_STYLE,
     ];
+
+    const handleFocus = (event: NativeSyntheticEvent<TargetedEvent>) => {
+      onFocus();
+      onFocusProp?.(event);
+    };
+
+    const handleBlur = (event: NativeSyntheticEvent<TargetedEvent>) => {
+      onBlur();
+      onBlurProp?.(event);
+    };
 
     return (
       <ToggleGroupContext.Provider value={contextValue}>
         <View
-          {...other}
+          {...otherViewProps}
           ref={internalRef}
           style={finalStyle}
-          role={(other.accessibilityRole ?? 'group') as unknown as 'checkbox'}
+          role={(accessibilityRole ?? 'group') as unknown as 'checkbox'}
+          tabIndex={tabIndex}
+          aria-disabled={ariaDisabled ?? disabled}
           aria-orientation={orientation}
-          onFocus={(e) => {
-            onFocus();
-            other.onFocus?.(e);
-          }}
-          onBlur={(e) => {
-            onBlur();
-            other.onBlur?.(e);
-          }}
-          {...({
-            'data-orientation': resolvedDataOrientation,
-            'data-disabled': resolvedDataDisabled,
-            'data-multiple': resolvedDataMultiple,
-          } as Record<string, unknown>)}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          data-orientation={dataOrientation ?? orientation}
+          data-disabled={dataDisabled ?? disabled}
+          data-multiple={dataMultiple ?? multiple}
         >
           {resolvedChildren}
         </View>

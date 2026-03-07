@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, Text, type ViewStyle } from 'react-native';
-import { resolveTabIndex, mergeAccessibilityState } from '@base-ui-rn/core';
+import { resolveTabIndex } from '@base-ui-rn/core';
 import type {
   MeterRootProps,
   MeterLabelProps,
@@ -9,20 +9,10 @@ import type {
   MeterValueProps,
 } from './types';
 import { MeterContext, useMeterContext } from './meter-context';
+import { useMeterRoot } from './use-meter-root';
 
 /**
  * Headless meter primitive for React Native.
- *
- * @example
- * ```tsx
- * <Meter.Root value={24}>
- *   <Meter.Label>Storage Used</Meter.Label>
- *   <Meter.Track>
- *     <Meter.Indicator style={{ width: '24%' }} />
- *   </Meter.Track>
- *   <Meter.Value />
- * </Meter.Root>
- * ```
  */
 export const MeterRoot = React.forwardRef<View, MeterRootProps>(
   (props, ref) => {
@@ -39,30 +29,29 @@ export const MeterRoot = React.forwardRef<View, MeterRootProps>(
       accessibilityRole = 'progressbar',
       accessibilityHint = 'Displays a value within a range',
       accessibilityState,
+      accessibilityLabel,
       focusable = false,
       importantForAccessibility = 'yes',
       tabIndex,
-      ...other
+      ...otherViewProps
     } = props;
 
-    const labelId = React.useId();
-
-    const percentage =
-      Math.min(Math.max((value - min) / (max - min), 0), 1) * 100;
-
-    const formattedValue = React.useMemo(() => {
-      try {
-        return new Intl.NumberFormat(locale, format).format(value);
-      } catch {
-        return String(value);
-      }
-    }, [value, locale, format]);
-
-    const ariaValueText = React.useMemo(() => {
-      if (ariaValueTextProp) return ariaValueTextProp;
-      if (getAriaValueText) return getAriaValueText(value, min, max);
-      return formattedValue;
-    }, [ariaValueTextProp, getAriaValueText, value, min, max, formattedValue]);
+    const {
+      ariaValueText,
+      formattedValue,
+      labelId,
+      mergedAccessibilityState,
+      percentage,
+    } = useMeterRoot({
+      value,
+      min,
+      max,
+      locale,
+      format,
+      ariaValueTextProp,
+      getAriaValueText,
+      accessibilityState,
+    });
 
     const contextValue = React.useMemo(
       () => ({
@@ -77,26 +66,18 @@ export const MeterRoot = React.forwardRef<View, MeterRootProps>(
       [value, min, max, percentage, formattedValue, ariaValueText, labelId],
     );
 
-    const mergedAccessibilityState = React.useMemo(
-      () =>
-        mergeAccessibilityState(
-          accessibilityState as Record<string, unknown> | undefined,
-          false, // Not disabled by default
-        ),
-      [accessibilityState],
-    );
-
     const resolvedTabIndex = resolveTabIndex(false, tabIndex);
-    const isLabelledByProp = !!other.accessibilityLabel;
+    const isLabelledByProp = Boolean(accessibilityLabel);
 
     return (
       <MeterContext.Provider value={contextValue}>
         <View
-          {...other}
+          {...otherViewProps}
           ref={ref}
           accessible={accessible}
           accessibilityHint={accessibilityHint}
           accessibilityState={mergedAccessibilityState}
+          accessibilityLabel={accessibilityLabel}
           focusable={focusable}
           importantForAccessibility={importantForAccessibility}
           role={(accessibilityRole ?? 'progressbar') as unknown as 'checkbox'}
@@ -126,11 +107,6 @@ export const MeterRoot = React.forwardRef<View, MeterRootProps>(
 
 MeterRoot.displayName = 'Meter.Root';
 
-/**
- * An accessible label for the meter.
- *
- * Automatically linked to the `Meter.Root` via `aria-labelledby`.
- */
 export const MeterLabel = React.forwardRef<Text, MeterLabelProps>(
   (props, ref) => {
     const { children, nativeID, ...other } = props;
@@ -146,11 +122,6 @@ export const MeterLabel = React.forwardRef<Text, MeterLabelProps>(
 
 MeterLabel.displayName = 'Meter.Label';
 
-/**
- * Contains the meter indicator and represents the entire range of the meter.
- *
- * Hidden from accessibility as it's purely visual.
- */
 export const MeterTrack = React.forwardRef<View, MeterTrackProps>(
   (props, ref) => {
     const { children, ...other } = props;
@@ -169,12 +140,6 @@ export const MeterTrack = React.forwardRef<View, MeterTrackProps>(
 
 MeterTrack.displayName = 'Meter.Track';
 
-/**
- * Visualizes the position of the value along the range.
- *
- * Automatically applies the width (or height if vertical) based on the meter's value.
- * Hidden from accessibility as it's purely visual.
- */
 export const MeterIndicator = React.forwardRef<View, MeterIndicatorProps>(
   (props, ref) => {
     const { style, ...other } = props;
@@ -200,12 +165,6 @@ export const MeterIndicator = React.forwardRef<View, MeterIndicatorProps>(
 
 MeterIndicator.displayName = 'Meter.Indicator';
 
-/**
- * A text element displaying the current value.
- *
- * Hidden from accessibility to avoid redundant announcements, as the value is
- * provided by `Meter.Root`'s `accessibilityValue`.
- */
 export const MeterValue = React.forwardRef<Text, MeterValueProps>(
   (props, ref) => {
     const { children, ...other } = props;

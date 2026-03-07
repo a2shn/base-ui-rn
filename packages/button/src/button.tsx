@@ -4,29 +4,15 @@ import {
   View,
   type PressableProps,
   type NativeSyntheticEvent,
-  type GestureResponderEvent,
-  type AccessibilityActionEvent,
   type Role,
-  type TargetedEvent,
 } from 'react-native';
-import {
-  type ButtonPressedChangeDetails,
-  type ButtonProps,
-  type KeyPressEventData,
-  type WebAccessibilityProps,
-} from './types';
+import { type ButtonProps, type KeyPressEventData } from './types';
 import {
   DEFAULT_HIT_SLOP,
-  mergeAccessibilityActions,
-  isActivationAction,
-  mergeAccessibilityState,
-  resolveTabIndex,
-  resolveAriaDisabled,
   DEFAULT_FOCUS_RING_STYLE,
-  useKeyboardActivation,
+  type WebAccessibilityProps,
 } from '@base-ui-rn/core';
-import { useFocus } from '@base-ui-rn/focus-ring';
-import { useKeyboardShortcut } from '@base-ui-rn/keyboard-shortcuts';
+import { useButton } from './use-button';
 
 const PressableWithKeyPress =
   Pressable as unknown as React.ForwardRefExoticComponent<
@@ -79,125 +65,49 @@ export const Button = React.memo(
       onFocus: onFocusProp,
       onBlur: onBlurProp,
       shortcut,
-      ...props
+      tabIndex: tabIndexProp,
+      'aria-disabled': ariaDisabledProp,
+      ...otherProps
     },
     forwardedRef,
   ) {
-    const isDisabled = disabled === true;
-    const isFocusable = !isDisabled || focusableWhenDisabled === true;
-
     const internalRef = React.useRef<View>(null);
     React.useImperativeHandle(forwardedRef, () => internalRef.current!);
 
-    const { focused, focusVisible, onFocus, onBlur } = useFocus({
-      focusVisible: forceFocusVisible,
-    });
-
-    const mergedAccessibilityState = React.useMemo(
-      () =>
-        mergeAccessibilityState(
-          accessibilityState as Record<string, unknown> | undefined,
-          isDisabled,
-        ),
-      [accessibilityState, isDisabled],
-    );
-
-    const resolvedTabIndex = resolveTabIndex(
+    const {
+      focused,
+      focusVisible,
+      handleAccessibilityAction,
+      handleBlur,
+      handleFocus,
+      handleKeyPress,
+      handlePress,
       isFocusable,
-      (props as WebAccessibilityProps).tabIndex,
-    );
-    const resolvedAriaDisabled = resolveAriaDisabled(
-      isDisabled,
-      (props as WebAccessibilityProps)['aria-disabled'],
-    );
-
-    const mergedAccessibilityActions = React.useMemo(
-      () => mergeAccessibilityActions(accessibilityActions),
-      [accessibilityActions],
-    );
-
-    const activateButton = React.useCallback(
-      (
-        source: ButtonPressedChangeDetails['source'],
-        nativeEvent: GestureResponderEvent | null = null,
-      ) => {
-        onPressedChange?.({ source });
-        // For 'press' source, always call onPress
-        // For other sources, only call onPress if onPressedChange is not provided
-        if (source === 'press') {
-          onPress?.(nativeEvent as GestureResponderEvent);
-        } else if (!onPressedChange) {
-          // If onPressedChange is not provided, call onPress for all sources
-          onPress?.(nativeEvent as GestureResponderEvent);
-        }
-      },
-      [onPressedChange, onPress],
-    );
-
-    const handleAccessibilityAction = React.useCallback(
-      (event: AccessibilityActionEvent) => {
-        const actionName = event.nativeEvent.actionName;
-        if (isActivationAction(actionName) && !isDisabled) {
-          activateButton('accessibilityAction');
-        }
-
-        onAccessibilityAction?.(event);
-      },
-      [isDisabled, activateButton, onAccessibilityAction],
-    );
-
-    const performKeyboardActivation = React.useCallback(() => {
-      activateButton('keyboard');
-    }, [activateButton]);
-
-    const handleKeyboardActivation = useKeyboardActivation(
-      performKeyboardActivation,
-      isDisabled,
-    );
-
-    useKeyboardShortcut(shortcut, () => {
-      if (!isDisabled) {
-        // Map the shortcut event to our 'keyboard' source
-        performKeyboardActivation();
-      }
+      mergedAccessibilityActions,
+      mergedAccessibilityState,
+      resolvedAriaDisabled,
+      resolvedAriaKeyshortcuts,
+      resolvedTabIndex,
+    } = useButton({
+      disabled,
+      focusableWhenDisabled,
+      focusVisible: forceFocusVisible,
+      accessibilityState,
+      accessibilityActions,
+      onPressedChange,
+      onPress,
+      onAccessibilityAction,
+      onKeyPress,
+      onFocusProp,
+      onBlurProp,
+      shortcut,
+      tabIndex: tabIndexProp,
+      ariaDisabled: ariaDisabledProp,
     });
-
-    const handleKeyPress = React.useCallback(
-      (e: NativeSyntheticEvent<KeyPressEventData>) => {
-        handleKeyboardActivation(e);
-        onKeyPress?.(e);
-      },
-      [handleKeyboardActivation, onKeyPress],
-    );
-
-    const handlePress = React.useCallback(
-      (event: GestureResponderEvent) => {
-        if (!isDisabled) {
-          activateButton('press', event);
-        }
-      },
-      [activateButton, isDisabled],
-    );
-
-    const handleFocus = React.useCallback(
-      (e: NativeSyntheticEvent<TargetedEvent>) => {
-        onFocus();
-        onFocusProp?.(e);
-      },
-      [onFocus, onFocusProp],
-    );
-
-    const handleBlur = React.useCallback(
-      (e: NativeSyntheticEvent<TargetedEvent>) => {
-        onBlur();
-        onBlurProp?.(e);
-      },
-      [onBlur, onBlurProp],
-    );
 
     return (
       <PressableWithKeyPress
-        {...props}
+        {...otherProps}
         ref={internalRef}
         accessible
         role={(accessibilityRole ?? 'button') as Role}
@@ -208,6 +118,7 @@ export const Button = React.memo(
         focusable={isFocusable}
         tabIndex={resolvedTabIndex}
         aria-disabled={resolvedAriaDisabled}
+        aria-keyshortcuts={resolvedAriaKeyshortcuts}
         importantForAccessibility='yes'
         hitSlop={hitSlop}
         onPress={handlePress}

@@ -1,6 +1,6 @@
 {
   "name": "@base-ui-rn/keyboard-shortcuts",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Keyboard shortcuts system primitive for React Native and Web.",
   "license": "MIT",
   "type": "module",

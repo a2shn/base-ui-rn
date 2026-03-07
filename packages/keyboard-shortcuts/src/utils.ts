@@ -53,3 +53,34 @@ export function isShortcutMatch(
 
   return isModifierMatch(event, config.modifiers);
 }
+
+/**
+ * Converts a shortcut config into a W3C-standard aria-keyshortcuts string.
+ *
+ * Examples:
+ * - { keys: ['k'], modifiers: ['ctrl'] } -> "Control+k"
+ * - { keys: ['k'], modifiers: ['meta', 'shift'] } -> "Meta+Shift+k"
+ * - { keys: ['k', 'l'], modifiers: ['alt'] } -> "Alt+k Alt+l"
+ *
+ * Note: Key names like 'Enter', 'Escape', 'ArrowLeft' are used directly.
+ */
+export function getAriaKeyshortcuts(config?: ShortcutConfig): string | undefined {
+  if (!config || !config.keys.length) return undefined;
+
+  const modifierMap: Record<ModifierKey, string> = {
+    ctrl: 'Control',
+    alt: 'Alt',
+    shift: 'Shift',
+    meta: 'Meta',
+  };
+
+  const mods = (config.modifiers || [])
+    .map((m) => modifierMap[m])
+    .join('+');
+
+  return config.keys
+    .map((key) => {
+      return mods ? `${mods}+${key}` : key;
+    })
+    .join(' ');
+}

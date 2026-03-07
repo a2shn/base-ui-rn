@@ -10,6 +10,11 @@ export type KeyPressEventData = { key: string };
 export type WebAccessibilityProps = {
   tabIndex?: 0 | -1;
   'aria-disabled'?: boolean;
+  /**
+   * Defines a keyboard shortcut that activates or focuses the element.
+   * @see https://www.w3.org/TR/wai-aria-1.2/#aria-keyshortcuts
+   */
+  'aria-keyshortcuts'?: string;
 };
 
 /**

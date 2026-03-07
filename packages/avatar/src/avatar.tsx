@@ -14,6 +14,7 @@ import type {
   ImageLoadingStatus,
 } from './types';
 import { AvatarContext, useAvatarContext } from './avatar-context';
+import { useAvatarImageLoading } from './avatar-image-loading';
 
 /**
  * Headless avatar primitive for React Native.
@@ -30,7 +31,15 @@ import { AvatarContext, useAvatarContext } from './avatar-context';
  */
 export const AvatarRoot = React.forwardRef<View, AvatarRootProps>(
   (props, ref) => {
-    const { children, accessible, accessibilityRole, ...other } = props;
+    const {
+      children,
+      accessible,
+      accessibilityRole,
+      accessibilityLabel,
+      accessibilityHint,
+      importantForAccessibility,
+      ...other
+    } = props;
     const [loadingStatus, setLoadingStatus] =
       React.useState<ImageLoadingStatus>('idle');
 
@@ -58,6 +67,9 @@ export const AvatarRoot = React.forwardRef<View, AvatarRootProps>(
           ref={ref}
           accessible={accessible !== false}
           accessibilityRole={accessibilityRole ?? 'image'}
+          accessibilityLabel={accessibilityLabel}
+          accessibilityHint={accessibilityHint}
+          importantForAccessibility={importantForAccessibility}
           aria-busy={isLoading}
         >
           {children}
@@ -80,97 +92,64 @@ export const AvatarImage = React.forwardRef<RNImage, AvatarImageProps>(
       onLoadingStatusChange: onLoadingStatusChangeProp,
       source,
       accessible = false,
+      onLoadStart,
+      onLoad,
+      onError,
       ...other
     } = props;
     const { onLoadingStatusChange } = useAvatarContext();
 
-    const sourceKey = React.useMemo(() => {
-      if (typeof source === 'number') {
-        return `asset:${source}`;
-      }
-
-      if (Array.isArray(source)) {
-        return source.map((item) => item?.uri ?? '').join('|');
-      }
-
-      if (source && typeof source === 'object' && 'uri' in source) {
-        return source.uri ?? '';
-      }
-
-      return '';
-    }, [source]);
-
-    const lastStableStatusRef = React.useRef<ImageLoadingStatus>('idle');
-    const lastSourceKeyRef = React.useRef(sourceKey);
-
-    if (lastSourceKeyRef.current !== sourceKey) {
-      lastSourceKeyRef.current = sourceKey;
-      lastStableStatusRef.current = 'idle';
-    }
-
-    const handleLoadingStatusChange = React.useCallback(
-      (status: ImageLoadingStatus) => {
-        if (
-          status === 'loading' &&
-          (lastStableStatusRef.current === 'loaded' ||
-            lastStableStatusRef.current === 'error')
-        ) {
-          return false;
-        }
-
-        lastStableStatusRef.current = status;
-        onLoadingStatusChange(status);
-        onLoadingStatusChangeProp?.(status);
-        return true;
-      },
-      [onLoadingStatusChange, onLoadingStatusChangeProp],
-    );
-
-    const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-    const clearLoadTimeout = React.useCallback(() => {
-      if (timeoutRef.current !== null) {
-        clearTimeout(timeoutRef.current as ReturnType<typeof setTimeout>);
-        timeoutRef.current = null;
-      }
-    }, []);
+    const {
+      clearLoadTimeout,
+      handleLoadingStatusChange,
+      sourceKey,
+      timeoutRef,
+    } = useAvatarImageLoading({
+      source,
+      onLoadingStatusChange,
+      onLoadingStatusChangeProp,
+    });
 
     const handleLoadStart = React.useCallback(() => {
-      const didApplyLoading = handleLoadingStatusChange('loading');
+      const eventSourceKey = sourceKey;
+      const didApplyLoading = handleLoadingStatusChange(
+        'loading',
+        eventSourceKey,
+      );
       clearLoadTimeout();
+
       if (didApplyLoading) {
         timeoutRef.current = setTimeout(() => {
-          handleLoadingStatusChange('error');
+          handleLoadingStatusChange('error', eventSourceKey);
         }, 10000);
       }
-      other.onLoadStart?.();
-    }, [handleLoadingStatusChange, clearLoadTimeout, other]);
+
+      onLoadStart?.();
+    }, [
+      clearLoadTimeout,
+      handleLoadingStatusChange,
+      onLoadStart,
+      sourceKey,
+      timeoutRef,
+    ]);
 
     const handleLoad = React.useCallback(
       (e: NativeSyntheticEvent<ImageLoadEventData>) => {
         clearLoadTimeout();
-        handleLoadingStatusChange('loaded');
-        other.onLoad?.(e);
+        handleLoadingStatusChange('loaded', sourceKey);
+        onLoad?.(e);
       },
-      [clearLoadTimeout, handleLoadingStatusChange, other],
+      [clearLoadTimeout, handleLoadingStatusChange, onLoad, sourceKey],
     );
 
     const handleError = React.useCallback(
       (e: NativeSyntheticEvent<ImageErrorEventData>) => {
         clearLoadTimeout();
-        handleLoadingStatusChange('error');
-        other.onError?.(e);
+        handleLoadingStatusChange('error', sourceKey);
+        onError?.(e);
       },
-      [clearLoadTimeout, handleLoadingStatusChange, other],
+      [clearLoadTimeout, handleLoadingStatusChange, onError, sourceKey],
     );
-
-    React.useEffect(() => {
-      if (!source) {
-        handleLoadingStatusChange('error');
-      }
-      return () => {
-        clearLoadTimeout();
-      };
-    }, [source, handleLoadingStatusChange, clearLoadTimeout]);
 
     return (
       <RNImage
@@ -193,7 +172,15 @@ AvatarImage.displayName = 'Avatar.Image';
  */
 export const AvatarFallback = React.forwardRef<View, AvatarFallbackProps>(
   (props, ref) => {
-    const { delay, children, accessible = true, ...other } = props;
+    const {
+      delay,
+      children,
+      accessible = true,
+      accessibilityRole,
+      accessibilityLabel,
+      accessibilityHint,
+      ...other
+    } = props;
     const { loadingStatus } = useAvatarContext();
     const [canRender, setCanRender] = React.useState(delay === undefined);
 
@@ -211,6 +198,9 @@ export const AvatarFallback = React.forwardRef<View, AvatarFallbackProps>(
           {...other}
           ref={ref}
           accessible={accessible}
+          accessibilityRole={accessibilityRole}
+          accessibilityLabel={accessibilityLabel}
+          accessibilityHint={accessibilityHint}
           importantForAccessibility='yes'
         >
           {children}

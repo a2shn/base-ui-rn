@@ -7,6 +7,7 @@ import type {
 import {
   type PressedChangeDetails,
   type KeyPressEventData,
+  type WebAccessibilityProps,
 } from '@base-ui-rn/core';
 import type { ShortcutConfig } from '@base-ui-rn/keyboard-shortcuts';
 
@@ -31,10 +32,8 @@ export interface ButtonState {
   focusVisible: boolean;
 }
 
-export interface ButtonProps extends Omit<
-  PressableProps,
-  'children' | 'style'
-> {
+export interface ButtonProps
+  extends Omit<PressableProps, 'children' | 'style'>, WebAccessibilityProps {
   /**
    * The child elements or a render function.
    */

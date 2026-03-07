@@ -7,6 +7,7 @@ import type {
 import {
   type PressedChangeDetails,
   type KeyPressEventData,
+  type WebToggleAccessibilityProps,
 } from '@base-ui-rn/core';
 import type { ShortcutConfig } from '@base-ui-rn/keyboard-shortcuts';
 
@@ -31,10 +32,10 @@ export interface ToggleState {
   focusVisible: boolean;
 }
 
-export interface ToggleProps extends Omit<
-  PressableProps,
-  'role' | 'children' | 'style'
-> {
+export interface ToggleProps
+  extends
+    Omit<PressableProps, 'role' | 'children' | 'style'>,
+    WebToggleAccessibilityProps {
   /**
    * The child elements or a render function.
    */

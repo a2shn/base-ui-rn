@@ -156,6 +156,48 @@ describe('Avatar', () => {
     expect(queryByTestId('fallback')).toBeNull();
   });
 
+  it('enters loading state when source changes before effects flush', () => {
+    const onLoadingStatusChange = jest.fn();
+    const { getByTestId, rerender, queryByTestId } = render(
+      <Avatar.Root>
+        <Avatar.Image
+          testID='image'
+          source={{ uri: 'https://example.com/first.png' }}
+          onLoadingStatusChange={onLoadingStatusChange}
+        />
+        <Avatar.Fallback testID='fallback'>FB</Avatar.Fallback>
+      </Avatar.Root>,
+    );
+
+    const image = getByTestId('image');
+
+    act(() => {
+      image.props.onLoad();
+    });
+
+    onLoadingStatusChange.mockClear();
+
+    rerender(
+      <Avatar.Root>
+        <Avatar.Image
+          testID='image'
+          source={{ uri: 'https://example.com/second.png' }}
+          onLoadingStatusChange={onLoadingStatusChange}
+        />
+        <Avatar.Fallback testID='fallback'>FB</Avatar.Fallback>
+      </Avatar.Root>,
+    );
+
+    const rerenderedImage = getByTestId('image');
+
+    act(() => {
+      rerenderedImage.props.onLoadStart();
+    });
+
+    expect(onLoadingStatusChange).toHaveBeenCalledWith('loading');
+    expect(queryByTestId('fallback')).toBeDefined();
+  });
+
   it('respects the delay prop on fallback', () => {
     const { queryByTestId } = render(
       <Avatar.Root>
