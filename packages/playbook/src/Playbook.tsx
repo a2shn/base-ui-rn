@@ -2,23 +2,30 @@ import * as React from 'react';
 import {
   View,
   Text,
-  Pressable,
   StatusBar,
   ScrollView,
-  Animated,
   TextInput,
   Keyboard,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Button } from '@base-ui-rn/button';
 import { useStyles } from './styles';
-import {
-  getIconForComponent,
-  SearchIcon,
-  CloseIcon,
-  BackIcon,
-  ChevronRightIcon,
-} from './icons';
+import { getIconForComponent, SearchIcon, CloseIcon, BackIcon } from './icons';
 
+/**
+ * Configuration for the Playbook app.
+ *
+ * @example
+ * ```ts
+ * const registry: PlaybookConfig = {
+ *   Button: {
+ *     title: 'Button',
+ *     component: ButtonPlayground,
+ *     testID: 'button-playground',
+ *   },
+ * };
+ * ```
+ */
 export interface PlaybookConfig {
   [key: string]: {
     title: string;
@@ -29,93 +36,12 @@ export interface PlaybookConfig {
   };
 }
 
-interface MenuCardProps {
-  title: string;
-  description?: string;
-  testID: string;
-  onPress: () => void;
-}
-
-const MenuCard = ({ title, description, testID, onPress }: MenuCardProps) => {
-  const styles = useStyles();
-  const scaleAnim = React.useRef(new Animated.Value(1)).current;
-  const opacityAnim = React.useRef(new Animated.Value(1)).current;
-  const [isPressed, setIsPressed] = React.useState(false);
-
-  const Icon = getIconForComponent(title);
-  const iconColor = '#0071E3';
-
-  const handlePressIn = () => {
-    setIsPressed(true);
-    Animated.parallel([
-      Animated.spring(scaleAnim, {
-        toValue: 0.97,
-        useNativeDriver: true,
-        speed: 50,
-        bounciness: 4,
-      }),
-      Animated.timing(opacityAnim, {
-        toValue: 0.85,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
-
-  const handlePressOut = () => {
-    setIsPressed(false);
-    Animated.parallel([
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        useNativeDriver: true,
-        speed: 50,
-        bounciness: 4,
-      }),
-      Animated.timing(opacityAnim, {
-        toValue: 1,
-        duration: 150,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
-
-  return (
-    <Pressable
-      role='button'
-      onPress={onPress}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      testID={testID}
-    >
-      <Animated.View
-        style={[
-          styles.menuCard,
-          {
-            transform: [{ scale: scaleAnim }],
-            opacity: opacityAnim,
-          },
-          isPressed && styles.menuCardPressed,
-        ]}
-      >
-        <View style={styles.menuCardIconContainer}>
-          <View style={styles.menuCardIconBg}>
-            <Icon size={28} color={iconColor} />
-          </View>
-        </View>
-        <View style={styles.menuCardContent}>
-          <Text style={styles.menuCardText}>{title}</Text>
-          {description && (
-            <Text style={styles.menuCardDescription}>{description}</Text>
-          )}
-        </View>
-        <View style={styles.menuCardArrow}>
-          <ChevronRightIcon size={24} color='#0071E3' />
-        </View>
-      </Animated.View>
-    </Pressable>
-  );
-};
-
+/**
+ * Main Playbook application component.
+ *
+ * Renders a searchable list of components and allows navigation
+ * to individual component playgrounds.
+ */
 export const PlaybookApp = ({ registry }: { registry: PlaybookConfig }) => {
   const [screen, setScreen] = React.useState<string | 'Home'>('Home');
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -126,7 +52,6 @@ export const PlaybookApp = ({ registry }: { registry: PlaybookConfig }) => {
   const isHome = screen === 'Home';
   const ActiveComponent = !isHome ? registry[screen].component : null;
 
-  // Filter and sort components based on search query
   const filteredComponents = React.useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
 
@@ -144,7 +69,6 @@ export const PlaybookApp = ({ registry }: { registry: PlaybookConfig }) => {
       });
     }
 
-    // Sort alphabetically by title
     return components.sort(([, a], [, b]) => a.title.localeCompare(b.title));
   }, [registry, searchQuery]);
 
@@ -161,17 +85,16 @@ export const PlaybookApp = ({ registry }: { registry: PlaybookConfig }) => {
       <StatusBar barStyle='dark-content' />
 
       {!isHome && (
-        <Pressable
-          role='button'
+        <Button
           onPress={() => setScreen('Home')}
           style={styles.backButton}
           testID='back-button'
         >
           <View style={styles.backButtonContent}>
-            <BackIcon size={20} color='#0071E3' />
+            <BackIcon size={20} color={styles.backButtonText.color} />
             <Text style={styles.backButtonText}>Back to Menu</Text>
           </View>
-        </Pressable>
+        </Button>
       )}
 
       {isHome ? (
@@ -194,14 +117,14 @@ export const PlaybookApp = ({ registry }: { registry: PlaybookConfig }) => {
             ]}
           >
             <View style={styles.searchIconContainer}>
-              <SearchIcon size={20} color='#9898A0' />
+              <SearchIcon size={20} color={styles.searchInput.color} />
             </View>
             <TextInput
               accessibilityLabel='Text input field'
               accessibilityHint='Filters the components list as you type'
               style={styles.searchInput}
               placeholder='Search components...'
-              placeholderTextColor='#9898A0'
+              placeholderTextColor={styles.searchInput.color}
               value={searchQuery}
               onChangeText={setSearchQuery}
               onFocus={() => setIsSearchFocused(true)}
@@ -211,21 +134,21 @@ export const PlaybookApp = ({ registry }: { registry: PlaybookConfig }) => {
               testID='search-input'
             />
             {searchQuery.length > 0 && (
-              <Pressable
+              <Button
                 role='button'
                 onPress={() => setSearchQuery('')}
                 style={styles.searchClearButton}
                 testID='search-clear'
               >
-                <CloseIcon size={18} color='#9898A0' />
-              </Pressable>
+                <CloseIcon size={18} color={styles.searchInput.color} />
+              </Button>
             )}
           </View>
 
           {filteredComponents.length === 0 ? (
             <View style={styles.emptyState}>
-              <View style={styles.emptyStateIconContainer}>
-                <SearchIcon size={64} color='#E0E0E5' />
+              <View>
+                <SearchIcon size={64} color={styles.emptyStateText.color} />
               </View>
               <Text style={styles.emptyStateText}>No components found</Text>
               <Text style={styles.emptyStateSubtext}>
@@ -240,15 +163,38 @@ export const PlaybookApp = ({ registry }: { registry: PlaybookConfig }) => {
                   {filteredComponents.length !== 1 ? 's' : ''}
                 </Text>
               )}
-              {filteredComponents.map(([key, config]) => (
-                <MenuCard
-                  key={key}
-                  title={config.title}
-                  description={config.description}
-                  testID={config.testID}
-                  onPress={() => setScreen(key)}
-                />
-              ))}
+              {filteredComponents.map(([key, config]) => {
+                const Icon = getIconForComponent(config.title);
+                return (
+                  <Button
+                    key={key}
+                    onPress={() => setScreen(key)}
+                    testID={config.testID}
+                    style={styles.componentButton}
+                  >
+                    {() => (
+                      <View style={styles.componentButtonInner}>
+                        <View style={styles.componentButtonIcon}>
+                          <Icon
+                            size={24}
+                            color={styles.componentButtonTitle.color}
+                          />
+                        </View>
+                        <View style={styles.componentButtonContent}>
+                          <Text style={styles.componentButtonTitle}>
+                            {config.title}
+                          </Text>
+                          {config.description && (
+                            <Text style={styles.componentButtonDescription}>
+                              {config.description}
+                            </Text>
+                          )}
+                        </View>
+                      </View>
+                    )}
+                  </Button>
+                );
+              })}
             </View>
           )}
         </ScrollView>

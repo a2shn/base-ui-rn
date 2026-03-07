@@ -326,6 +326,10 @@ importers:
         version: 5.9.3
 
   packages/playbook:
+    dependencies:
+      '@base-ui-rn/button':
+        specifier: workspace:*
+        version: link:../button
     devDependencies:
       '@base-ui-rn/eslint-config':
         specifier: workspace:*

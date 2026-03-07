@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { View, Text } from 'react-native';
+import { Button } from '@base-ui-rn/button';
 
 import { DebugTable } from './DebugTable';
 import { ExtractionBadge } from './ExtractionBadge';
@@ -9,7 +10,6 @@ import { useStyles } from './styles';
 
 import { useInspector } from './utils/useInspector';
 import type { SectionProps } from './types';
-import { AnimatedButton } from './AnimatedButton';
 
 /**
  * Renders a labeled section that can inspect and display props
@@ -108,14 +108,16 @@ export const Section = ({
 
         {hasProps && (
           <View style={styles.buttonRow}>
-            <AnimatedButton
+            <Button
               onPress={() => setShowDebug((v) => !v)}
               style={styles.debugToggle}
             >
-              <Text style={styles.debugToggleText}>
-                {showDebug ? 'Hide Props' : 'Inspect Props'}
-              </Text>
-            </AnimatedButton>
+              {() => (
+                <Text style={styles.debugToggleText}>
+                  {showDebug ? 'Hide Props' : 'Inspect Props'}
+                </Text>
+              )}
+            </Button>
           </View>
         )}
       </View>
