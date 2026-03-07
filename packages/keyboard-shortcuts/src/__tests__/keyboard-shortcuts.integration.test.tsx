@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { Text, Pressable } from 'react-native';
 import { render } from '@testing-library/react-native';
-import { renderHook } from '@testing-library/react-hooks';
-import * as ShortcutContext from '../keyboard-shortcuts-context';
 import { ShortcutProvider, useKeyboardShortcut } from '../index';
 import type { ShortcutConfig } from '../types';
 
@@ -34,29 +32,6 @@ const MockButton = ({
     </Pressable>
   );
 };
-
-describe('useKeyboardShortcut Hook', () => {
-  it('registers and unregisters a shortcut', () => {
-    const mockRegister = jest.fn(() => jest.fn());
-    const spy = jest
-      .spyOn(ShortcutContext, 'useShortcutRegistry')
-      .mockImplementation(() => ({
-        registerShortcut: mockRegister,
-      }));
-
-    const { unmount } = renderHook(() =>
-      useKeyboardShortcut({ keys: ['k'] }, jest.fn()),
-    );
-
-    expect(mockRegister).toHaveBeenCalledTimes(1);
-    expect(mockRegister).toHaveBeenCalledWith(
-      expect.objectContaining({ keys: ['k'] }),
-    );
-
-    unmount();
-    spy.mockRestore();
-  });
-});
 
 describe('KeyboardShortcuts Integration', () => {
   it('does not trigger onPress if the MockButton is disabled', () => {

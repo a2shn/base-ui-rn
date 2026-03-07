@@ -10,6 +10,7 @@ import { SeparatorPlaybook } from './src/separator.playbook';
 import { FocusRingPlaybook } from './src/focus-ring.playbook';
 import { AvatarPlaybook } from './src/avatar.playbook';
 import { MeterPlaybook } from './src/meter.playbook';
+import { ProgressPlaybook } from './src/progress.playbook';
 import { KeyboardShortcutsPlaybook } from './src/keyboard-shortcuts.playbook';
 
 const REGISTRY: PlaybookConfig = {
@@ -47,6 +48,11 @@ const REGISTRY: PlaybookConfig = {
     title: 'Meter',
     component: MeterPlaybook,
     testID: 'meter',
+  },
+  Progress: {
+    title: 'Progress',
+    component: ProgressPlaybook,
+    testID: 'progress',
   },
   Shortcuts: {
     title: 'Keyboard Shortcuts',

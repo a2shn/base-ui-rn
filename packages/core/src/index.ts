@@ -4,6 +4,8 @@ export type {
   WebAccessibilityProps,
   WebToggleAccessibilityProps,
   WebToggleGroupAccessibilityProps,
+  WebProgressAccessibilityProps,
+  WebSeparatorAccessibilityProps,
   PressedChangeDetails,
 } from './types';
 

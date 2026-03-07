@@ -64,7 +64,9 @@ export function isShortcutMatch(
  *
  * Note: Key names like 'Enter', 'Escape', 'ArrowLeft' are used directly.
  */
-export function getAriaKeyshortcuts(config?: ShortcutConfig): string | undefined {
+export function getAriaKeyshortcuts(
+  config?: ShortcutConfig,
+): string | undefined {
   if (!config || !config.keys.length) return undefined;
 
   const modifierMap: Record<ModifierKey, string> = {
@@ -74,9 +76,7 @@ export function getAriaKeyshortcuts(config?: ShortcutConfig): string | undefined
     meta: 'Meta',
   };
 
-  const mods = (config.modifiers || [])
-    .map((m) => modifierMap[m])
-    .join('+');
+  const mods = (config.modifiers || []).map((m) => modifierMap[m]).join('+');
 
   return config.keys
     .map((key) => {

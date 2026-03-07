@@ -1,9 +1,10 @@
 import type { ViewProps } from 'react-native';
-import type { WebAccessibilityProps } from '@base-ui-rn/core';
+import type { WebSeparatorAccessibilityProps } from '@base-ui-rn/core';
 
 export type Orientation = 'horizontal' | 'vertical';
 
-export interface SeparatorProps extends ViewProps, WebAccessibilityProps {
+export interface SeparatorProps
+  extends ViewProps, WebSeparatorAccessibilityProps {
   /**
    * The orientation of the separator.
    * @default 'horizontal'
@@ -15,8 +16,4 @@ export interface SeparatorProps extends ViewProps, WebAccessibilityProps {
    * @default false
    */
   decorative?: boolean;
-  /**
-   * Web data attribute used for styling and testing.
-   */
-  'data-orientation'?: Orientation;
 }

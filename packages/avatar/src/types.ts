@@ -1,12 +1,13 @@
 import type { ViewProps, ImageProps as RNImageProps } from 'react-native';
+import type { WebAccessibilityProps } from '@base-ui-rn/core';
 
 export type ImageLoadingStatus = 'idle' | 'loading' | 'loaded' | 'error';
 
-export interface AvatarRootProps extends ViewProps {
+export interface AvatarRootProps extends ViewProps, WebAccessibilityProps {
   children?: React.ReactNode;
 }
 
-export interface AvatarImageProps extends RNImageProps {
+export interface AvatarImageProps extends RNImageProps, WebAccessibilityProps {
   /**
    * Callback fired when the loading status changes.
    */
@@ -18,7 +19,7 @@ export interface AvatarImageProps extends RNImageProps {
   accessible?: boolean;
 }
 
-export interface AvatarFallbackProps extends ViewProps {
+export interface AvatarFallbackProps extends ViewProps, WebAccessibilityProps {
   /**
    * How long to wait before showing the fallback. Specified in milliseconds.
    * Useful for preventing "flicker" when an image loads quickly.

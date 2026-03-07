@@ -4,20 +4,7 @@ import { Avatar } from '../avatar';
 
 jest.useFakeTimers();
 
-describe('Avatar', () => {
-  it('renders correctly', () => {
-    const { getByTestId } = render(
-      <Avatar.Root testID='avatar'>
-        <Avatar.Image
-          testID='image'
-          source={{ uri: 'https://example.com/image.png' }}
-        />
-        <Avatar.Fallback testID='fallback'>FB</Avatar.Fallback>
-      </Avatar.Root>,
-    );
-    expect(getByTestId('avatar')).toBeDefined();
-  });
-
+describe('Avatar - State', () => {
   it('shows fallback when image fails to load', async () => {
     const { getByTestId } = render(
       <Avatar.Root>

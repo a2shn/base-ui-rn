@@ -55,6 +55,34 @@ export type WebToggleGroupAccessibilityProps = WebAccessibilityProps & {
 };
 
 /**
+ * Web-specific accessibility props for Separator.
+ */
+export type WebSeparatorAccessibilityProps = WebAccessibilityProps & {
+  /**
+   * Indicates the orientation of the separator.
+   */
+  'data-orientation'?: 'horizontal' | 'vertical';
+};
+
+/**
+ * Web-specific accessibility props for Progress.
+ */
+export type WebProgressAccessibilityProps = WebAccessibilityProps & {
+  /**
+   * Present when the progress has completed.
+   */
+  'data-complete'?: string;
+  /**
+   * Present when the progress is in indeterminate state.
+   */
+  'data-indeterminate'?: string;
+  /**
+   * Present while the progress is progressing.
+   */
+  'data-progressing'?: string;
+};
+
+/**
  * Base type for press/toggle activation details.
  * Describes how a component was activated.
  */

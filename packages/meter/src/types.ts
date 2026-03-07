@@ -36,13 +36,14 @@ export interface MeterRootProps extends ViewProps, WebAccessibilityProps {
   format?: Intl.NumberFormatOptions;
 }
 
-export type MeterLabelProps = TextProps;
+export interface MeterLabelProps extends TextProps, WebAccessibilityProps {}
 
-export type MeterTrackProps = ViewProps;
+export interface MeterTrackProps extends ViewProps, WebAccessibilityProps {}
 
-export type MeterIndicatorProps = ViewProps;
+export interface MeterIndicatorProps extends ViewProps, WebAccessibilityProps {}
 
-export interface MeterValueProps extends Omit<TextProps, 'children'> {
+export interface MeterValueProps
+  extends Omit<TextProps, 'children'>, WebAccessibilityProps {
   /**
    * A function that returns a ReactNode based on the formatted value and current value.
    */
