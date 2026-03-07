@@ -26,6 +26,7 @@ import {
 import { type TogglePressedChangeDetails, type ToggleProps } from './types';
 import { useToggleGroupContext } from './group-context';
 import { useFocus } from '@base-ui-rn/focus-ring';
+import { useKeyboardShortcut } from '@base-ui-rn/keyboard-shortcuts';
 
 const PressableWithKeyPress =
   Pressable as unknown as React.ForwardRefExoticComponent<
@@ -84,6 +85,7 @@ export const Toggle = React.memo(
       disableDefaultFocusRing = false,
       onFocus: onFocusProp,
       onBlur: onBlurProp,
+      shortcut,
       ...props
     },
     forwardedRef,
@@ -178,6 +180,12 @@ export const Toggle = React.memo(
       performKeyboardActivation,
       isDisabled,
     );
+
+    useKeyboardShortcut(shortcut, () => {
+      if (!isDisabled) {
+        performKeyboardActivation();
+      }
+    });
 
     const handleKeyPress = React.useCallback(
       (e: NativeSyntheticEvent<KeyPressEventData>) => {

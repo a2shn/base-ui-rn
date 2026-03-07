@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "@base-ui-rn/core": "workspace:*",
-    "@base-ui-rn/focus-ring": "workspace:*"
+    "@base-ui-rn/focus-ring": "workspace:*",
+    "@base-ui-rn/keyboard-shortcuts": "workspace:*"
   },
   "peerDependencies": {
     "react": ">=19.1.0",

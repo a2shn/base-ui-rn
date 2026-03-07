@@ -26,6 +26,7 @@ import {
   useKeyboardActivation,
 } from '@base-ui-rn/core';
 import { useFocus } from '@base-ui-rn/focus-ring';
+import { useKeyboardShortcut } from '@base-ui-rn/keyboard-shortcuts';
 
 const PressableWithKeyPress =
   Pressable as unknown as React.ForwardRefExoticComponent<
@@ -77,6 +78,7 @@ export const Button = React.memo(
       disableDefaultFocusRing = false,
       onFocus: onFocusProp,
       onBlur: onBlurProp,
+      shortcut,
       ...props
     },
     forwardedRef,
@@ -152,6 +154,13 @@ export const Button = React.memo(
       performKeyboardActivation,
       isDisabled,
     );
+
+    useKeyboardShortcut(shortcut, () => {
+      if (!isDisabled) {
+        // Map the shortcut event to our 'keyboard' source
+        performKeyboardActivation();
+      }
+    });
 
     const handleKeyPress = React.useCallback(
       (e: NativeSyntheticEvent<KeyPressEventData>) => {

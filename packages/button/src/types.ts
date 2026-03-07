@@ -8,6 +8,7 @@ import {
   type PressedChangeDetails,
   type KeyPressEventData,
 } from '@base-ui-rn/core';
+import type { ShortcutConfig } from '@base-ui-rn/keyboard-shortcuts';
 
 /**
  * Details passed to `onPressedChange` callback.
@@ -92,6 +93,11 @@ export interface ButtonProps extends Omit<
    * Useful for Web and TV platforms where keyboard interaction is expected.
    */
   onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
+
+  /**
+   * Keyboard shortcut for the button.
+   */
+  shortcut?: ShortcutConfig;
 
   /**
    * Expands the interactive touch area beyond the visual bounds.

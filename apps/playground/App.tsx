@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { PlaybookApp, type PlaybookConfig } from '@base-ui-rn/playbook';
+import { ShortcutProvider } from '@base-ui-rn/keyboard-shortcuts';
 
 import { TogglePlaybook } from './src/toggle.playbook';
 import { ButtonPlaybook } from './src/button.playbook';
@@ -9,6 +10,7 @@ import { SeparatorPlaybook } from './src/separator.playbook';
 import { FocusRingPlaybook } from './src/focus-ring.playbook';
 import { AvatarPlaybook } from './src/avatar.playbook';
 import { MeterPlaybook } from './src/meter.playbook';
+import { KeyboardShortcutsPlaybook } from './src/keyboard-shortcuts.playbook';
 
 const REGISTRY: PlaybookConfig = {
   Toggle: {
@@ -46,12 +48,19 @@ const REGISTRY: PlaybookConfig = {
     component: MeterPlaybook,
     testID: 'meter',
   },
+  Shortcuts: {
+    title: 'Keyboard Shortcuts',
+    component: KeyboardShortcutsPlaybook,
+    testID: 'shortcuts',
+  },
 };
 
 export default function App() {
   return (
     <SafeAreaProvider>
-      <PlaybookApp registry={REGISTRY} />
+      <ShortcutProvider>
+        <PlaybookApp registry={REGISTRY} />
+      </ShortcutProvider>
     </SafeAreaProvider>
   );
 }

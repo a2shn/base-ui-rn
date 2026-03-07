@@ -16,6 +16,7 @@
     "@base-ui-rn/avatar": "workspace:*",
     "@base-ui-rn/button": "workspace:*",
     "@base-ui-rn/focus-ring": "workspace:*",
+    "@base-ui-rn/keyboard-shortcuts": "workspace:*",
     "@base-ui-rn/meter": "workspace:*",
     "@base-ui-rn/playbook": "workspace:*",
     "@base-ui-rn/separator": "workspace:*",

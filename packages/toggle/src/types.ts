@@ -8,6 +8,7 @@ import {
   type PressedChangeDetails,
   type KeyPressEventData,
 } from '@base-ui-rn/core';
+import type { ShortcutConfig } from '@base-ui-rn/keyboard-shortcuts';
 
 /**
  * Details passed as the second argument to `onPressedChange`.
@@ -118,6 +119,11 @@ export interface ToggleProps extends Omit<
    * are processed before this callback fires.
    */
   onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
+
+  /**
+   * Keyboard shortcut for the toggle.
+   */
+  shortcut?: ShortcutConfig;
 
   /**
    * Expands the interactive touch area beyond the visual bounds.
