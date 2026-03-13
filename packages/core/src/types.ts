@@ -236,6 +236,92 @@ export type WebMeterAccessibilityProps = WebAccessibilityProps & {
 };
 
 /**
+ * Web-specific accessibility props for Tabs Root.
+ */
+export type WebTabsRootAccessibilityProps = WebAccessibilityProps & {
+  /**
+   * Indicates the orientation of the tabs.
+   */
+  'data-orientation'?: 'horizontal' | 'vertical';
+  /**
+   * Indicates the direction of the activation.
+   */
+  'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
+};
+
+/**
+ * Web-specific accessibility props for Tabs List.
+ */
+export type WebTabsListAccessibilityProps = WebAccessibilityProps & {
+  /**
+   * Indicates the orientation of the tabs.
+   */
+  'data-orientation'?: 'horizontal' | 'vertical';
+  /**
+   * Indicates the direction of the activation.
+   */
+  'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
+};
+
+/**
+ * Web-specific accessibility props for Tabs Tab.
+ */
+export type WebTabsTabAccessibilityProps = WebAccessibilityProps & {
+  /**
+   * Present when the tab is active.
+   */
+  'data-active'?: 'true';
+  /**
+   * Present when the tab is disabled.
+   */
+  'data-disabled'?: 'true';
+  /**
+   * Indicates the orientation of the tabs.
+   */
+  'data-orientation'?: 'horizontal' | 'vertical';
+  /**
+   * Indicates the direction of the activation.
+   */
+  'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
+};
+
+/**
+ * Web-specific accessibility props for Tabs Indicator.
+ */
+export type WebTabsIndicatorAccessibilityProps = WebAccessibilityProps & {
+  /**
+   * Indicates the orientation of the tabs.
+   */
+  'data-orientation'?: 'horizontal' | 'vertical';
+  /**
+   * Indicates the direction of the activation.
+   */
+  'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
+};
+
+/**
+ * Web-specific accessibility props for Tabs Panel.
+ */
+export type WebTabsPanelAccessibilityProps = WebAccessibilityProps & {
+  /**
+   * Present when the panel is hidden.
+   */
+  'data-hidden'?: 'true';
+  /**
+   * Indicates the orientation of the tabs.
+   */
+  'data-orientation'?: 'horizontal' | 'vertical';
+  /**
+   * Indicates the direction of the activation.
+   */
+  'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
+  /**
+   * The index of the tab panel.
+   */
+  'data-index'?: number;
+};
+
+/**
  * Base type for press/toggle activation details.
  * Describes how a component was activated.
  */

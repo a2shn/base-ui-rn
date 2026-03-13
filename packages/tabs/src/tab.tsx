@@ -1,14 +1,22 @@
 import * as React from 'react';
-import { Pressable, View, type PressableProps } from 'react-native';
-import { DEFAULT_FOCUS_RING_STYLE } from '@base-ui-rn/core';
-import type { TabProps, TabState } from './types';
+import {
+  Pressable,
+  View,
+  type PressableProps,
+  type NativeSyntheticEvent,
+} from 'react-native';
+import {
+  DEFAULT_FOCUS_RING_STYLE,
+  type KeyPressEventData,
+} from '@base-ui-rn/core';
+import type { TabProps } from './types';
 import { useTab } from './use-tabs';
 
 const PressableWithKeyPress =
   Pressable as unknown as React.ForwardRefExoticComponent<
     PressableProps & {
-      onKeyPress?: (e: any) => void;
-      onKeyDown?: (e: any) => void;
+      onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
+      onKeyDown?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
     } & React.RefAttributes<View>
   >;
 
@@ -39,6 +47,10 @@ export const Tab = React.memo(
       'aria-details': ariaDetails,
       'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'data-active': dataActive,
+      'data-disabled': dataDisabled,
+      'data-orientation': dataOrientation,
+      'data-activation-direction': dataActivationDirection,
       ...otherProps
     } = props;
 
@@ -57,14 +69,15 @@ export const Tab = React.memo(
 
     React.useImperativeHandle(forwardedRef, () => ref.current!);
 
-    const resolvedStyle =
-      typeof style === 'function' ? style(state) : style;
+    const resolvedStyle = typeof style === 'function' ? style(state) : style;
     const resolvedChildren =
       typeof children === 'function' ? children(state) : children;
 
     const finalStyle = [
       resolvedStyle,
-      !disableDefaultFocusRing && state.focusVisible && DEFAULT_FOCUS_RING_STYLE,
+      !disableDefaultFocusRing &&
+        state.focusVisible &&
+        DEFAULT_FOCUS_RING_STYLE,
     ];
 
     return (
@@ -73,14 +86,18 @@ export const Tab = React.memo(
         ref={ref}
         disabled={state.disabled}
         onPress={handlePress}
-        onKeyPress={handleKeyPress}
-        onKeyDown={handleKeyPress}
+        onKeyPress={(e: unknown) =>
+          handleKeyPress(e as NativeSyntheticEvent<KeyPressEventData>)
+        }
+        onKeyDown={(e: unknown) =>
+          handleKeyPress(e as NativeSyntheticEvent<KeyPressEventData>)
+        }
         onFocus={handleFocus}
         onBlur={handleBlur}
         onLayout={onLayout}
         style={finalStyle}
         accessible
-        role="tab"
+        role='tab'
         aria-selected={state.active}
         aria-disabled={state.disabled}
         aria-label={ariaLabel}
@@ -90,10 +107,12 @@ export const Tab = React.memo(
         aria-busy={ariaBusy}
         aria-hidden={ariaHidden}
         tabIndex={tabIndex}
-        data-active={state.active ? 'true' : undefined}
-        data-disabled={state.disabled ? 'true' : undefined}
-        data-orientation={state.orientation}
-        data-activation-direction={state.activationDirection}
+        data-active={dataActive ?? (state.active ? 'true' : undefined)}
+        data-disabled={dataDisabled ?? (state.disabled ? 'true' : undefined)}
+        data-orientation={dataOrientation ?? state.orientation}
+        data-activation-direction={
+          dataActivationDirection ?? state.activationDirection
+        }
       >
         {resolvedChildren}
       </PressableWithKeyPress>

@@ -10,6 +10,11 @@ import type {
 import {
   type KeyPressEventData,
   type WebAccessibilityProps,
+  type WebTabsRootAccessibilityProps,
+  type WebTabsListAccessibilityProps,
+  type WebTabsTabAccessibilityProps,
+  type WebTabsIndicatorAccessibilityProps,
+  type WebTabsPanelAccessibilityProps,
 } from '@base-ui-rn/core';
 
 export type TabValue = string | number;
@@ -22,11 +27,18 @@ export interface TabsRootState {
   activationDirection: ActivationDirection;
 }
 
-export interface TabsRootProps extends ViewProps, WebAccessibilityProps {
+export interface TabsRootProps
+  extends Omit<ViewProps, 'children' | 'style'>, WebTabsRootAccessibilityProps {
   /**
    * The content of the tabs.
    */
   children?: React.ReactNode | ((state: TabsRootState) => React.ReactNode);
+  /**
+   * Style applied to the root view.
+   */
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: TabsRootState) => StyleProp<ViewStyle>);
   /**
    * The default value of the active tab when uncontrolled.
    * @default 0
@@ -52,11 +64,18 @@ export interface TabsListState {
   activationDirection: ActivationDirection;
 }
 
-export interface TabsListProps extends ViewProps, WebAccessibilityProps {
+export interface TabsListProps
+  extends Omit<ViewProps, 'children' | 'style'>, WebTabsListAccessibilityProps {
   /**
    * The content of the tabs list.
    */
   children?: React.ReactNode | ((state: TabsListState) => React.ReactNode);
+  /**
+   * Style applied to the list view.
+   */
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: TabsListState) => StyleProp<ViewStyle>);
   /**
    * Whether to automatically change the active tab on arrow key focus.
    * @default false
@@ -79,8 +98,9 @@ export interface TabState {
 }
 
 export interface TabProps
-  extends Omit<PressableProps, 'children' | 'style'>,
-    WebAccessibilityProps {
+  extends
+    Omit<PressableProps, 'children' | 'style'>,
+    WebTabsTabAccessibilityProps {
   /**
    * The content of the tab.
    */
@@ -139,11 +159,20 @@ export interface TabsIndicatorState {
   '--active-tab-height'?: number;
 }
 
-export interface TabsIndicatorProps extends ViewProps, WebAccessibilityProps {
+export interface TabsIndicatorProps
+  extends
+    Omit<ViewProps, 'children' | 'style'>,
+    WebTabsIndicatorAccessibilityProps {
   /**
    * The content of the indicator.
    */
   children?: React.ReactNode | ((state: TabsIndicatorState) => React.ReactNode);
+  /**
+   * Style applied to the indicator view.
+   */
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: TabsIndicatorState) => StyleProp<ViewStyle>);
 }
 
 export interface TabPanelState {
@@ -153,11 +182,20 @@ export interface TabPanelState {
   index: number;
 }
 
-export interface TabPanelProps extends ViewProps, WebAccessibilityProps {
+export interface TabPanelProps
+  extends
+    Omit<ViewProps, 'children' | 'style'>,
+    WebTabsPanelAccessibilityProps {
   /**
    * The content of the panel.
    */
   children?: React.ReactNode | ((state: TabPanelState) => React.ReactNode);
+  /**
+   * Style applied to the panel view.
+   */
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: TabPanelState) => StyleProp<ViewStyle>);
   /**
    * The value of the tab this panel corresponds to.
    */

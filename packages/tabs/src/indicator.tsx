@@ -15,6 +15,7 @@ export const TabsIndicator = React.memo(
   React.forwardRef<View, TabsIndicatorProps>((props, ref) => {
     const {
       children,
+      style,
       tabIndex,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
@@ -23,6 +24,8 @@ export const TabsIndicator = React.memo(
       'aria-expanded': ariaExpanded,
       'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'data-orientation': dataOrientation,
+      'data-activation-direction': dataActivationDirection,
       ...otherProps
     } = props;
 
@@ -30,11 +33,13 @@ export const TabsIndicator = React.memo(
 
     const resolvedChildren =
       typeof children === 'function' ? children(state) : children;
+    const resolvedStyle = typeof style === 'function' ? style(state) : style;
 
     return (
       <View
         {...otherProps}
         ref={ref}
+        style={resolvedStyle}
         tabIndex={tabIndex}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
@@ -43,9 +48,11 @@ export const TabsIndicator = React.memo(
         aria-expanded={ariaExpanded}
         aria-busy={ariaBusy}
         aria-hidden={ariaHidden ?? true}
-        importantForAccessibility="no-hide-descendants"
-        data-orientation={state.orientation}
-        data-activation-direction={state.activationDirection}
+        importantForAccessibility='no-hide-descendants'
+        data-orientation={dataOrientation ?? state.orientation}
+        data-activation-direction={
+          dataActivationDirection ?? state.activationDirection
+        }
       >
         {resolvedChildren}
       </View>

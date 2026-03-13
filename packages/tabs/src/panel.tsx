@@ -21,6 +21,7 @@ export const TabPanel = React.memo(
       children,
       value,
       keepMounted,
+      style,
       tabIndex,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
@@ -29,6 +30,10 @@ export const TabPanel = React.memo(
       'aria-expanded': ariaExpanded,
       'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'data-hidden': dataHidden,
+      'data-orientation': dataOrientation,
+      'data-activation-direction': dataActivationDirection,
+      'data-index': dataIndex,
       ...otherProps
     } = props;
 
@@ -43,12 +48,14 @@ export const TabPanel = React.memo(
 
     const resolvedChildren =
       typeof children === 'function' ? children(state) : children;
+    const resolvedStyle = typeof style === 'function' ? style(state) : style;
 
     return (
       <View
         {...otherProps}
         ref={ref}
-        role="tabpanel"
+        style={resolvedStyle}
+        role='tabpanel'
         tabIndex={tabIndex}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
@@ -57,10 +64,12 @@ export const TabPanel = React.memo(
         aria-expanded={ariaExpanded}
         aria-busy={ariaBusy}
         aria-hidden={ariaHidden ?? (state.hidden ? true : undefined)}
-        data-hidden={state.hidden ? 'true' : undefined}
-        data-orientation={state.orientation}
-        data-activation-direction={state.activationDirection}
-        data-index={state.index}
+        data-hidden={dataHidden ?? (state.hidden ? 'true' : undefined)}
+        data-orientation={dataOrientation ?? state.orientation}
+        data-activation-direction={
+          dataActivationDirection ?? state.activationDirection
+        }
+        data-index={dataIndex ?? state.index}
       >
         {resolvedChildren}
       </View>

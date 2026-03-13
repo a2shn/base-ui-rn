@@ -27,6 +27,7 @@ export const TabsRoot = React.memo(
       onValueChange,
       orientation,
       tabIndex,
+      style,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       'aria-describedby': ariaDescribedBy,
@@ -34,6 +35,8 @@ export const TabsRoot = React.memo(
       'aria-expanded': ariaExpanded,
       'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'data-orientation': dataOrientation,
+      'data-activation-direction': dataActivationDirection,
       ...otherProps
     } = props;
 
@@ -46,12 +49,14 @@ export const TabsRoot = React.memo(
 
     const resolvedChildren =
       typeof children === 'function' ? children(state) : children;
+    const resolvedStyle = typeof style === 'function' ? style(state) : style;
 
     return (
       <TabsContext.Provider value={contextValue}>
         <View
           {...otherProps}
           ref={ref}
+          style={resolvedStyle}
           tabIndex={tabIndex}
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
@@ -60,8 +65,10 @@ export const TabsRoot = React.memo(
           aria-expanded={ariaExpanded}
           aria-busy={ariaBusy}
           aria-hidden={ariaHidden}
-          data-orientation={state.orientation}
-          data-activation-direction={state.activationDirection}
+          data-orientation={dataOrientation ?? state.orientation}
+          data-activation-direction={
+            dataActivationDirection ?? state.activationDirection
+          }
         >
           {resolvedChildren}
         </View>

@@ -1,15 +1,16 @@
 import * as React from 'react';
-import { type View, type LayoutChangeEvent } from 'react-native';
 import {
-  useKeyboardNavigation,
-  useKeyboardActivation,
-} from '@base-ui-rn/core';
+  type View,
+  type LayoutChangeEvent,
+  type NativeSyntheticEvent,
+  type TargetedEvent,
+} from 'react-native';
+import { useKeyboardNavigation, useKeyboardActivation } from '@base-ui-rn/core';
 import { useFocus } from '@base-ui-rn/focus-ring';
 import type {
   TabValue,
   TabsRootProps,
   TabsRootState,
-  TabsListProps,
   TabsListState,
   TabProps,
   TabState,
@@ -17,6 +18,7 @@ import type {
   TabPanelProps,
   TabPanelState,
   ActivationDirection,
+  KeyPressEventData,
 } from './types';
 import { useTabsContext, type TabMeasurement } from './context';
 
@@ -164,7 +166,7 @@ export function useTabsRoot(props: TabsRootProps) {
   };
 }
 
-export function useTabsList(props: TabsListProps) {
+export function useTabsList() {
   const context = useTabsContext();
 
   const state: TabsListState = {
@@ -196,7 +198,7 @@ export function useTab(props: TabProps) {
   });
 
   const handleFocus = React.useCallback(
-    (e: any) => {
+    (e: NativeSyntheticEvent<TargetedEvent>) => {
       onFocus();
       onFocusProp?.(e);
     },
@@ -204,7 +206,7 @@ export function useTab(props: TabProps) {
   );
 
   const handleBlur = React.useCallback(
-    (e: any) => {
+    (e: NativeSyntheticEvent<TargetedEvent>) => {
       onBlur();
       onBlurProp?.(e);
     },
@@ -226,7 +228,7 @@ export function useTab(props: TabProps) {
   }, [disabled, handleActivation]);
 
   const handleKeyPress = React.useCallback(
-    (e: any) => {
+    (e: NativeSyntheticEvent<KeyPressEventData>) => {
       if (disabled) return;
       handleKeyboardActivation(e);
       context.onTabKeyPress(value, e);
@@ -265,13 +267,14 @@ export function useTab(props: TabProps) {
 
 export function useTabsIndicator() {
   const context = useTabsContext();
-  const activeMeasurement = context.value !== null ? context.tabMeasurements.get(context.value) : null;
+  const activeMeasurement =
+    context.value !== null ? context.tabMeasurements.get(context.value) : null;
 
   const state: TabsIndicatorState = {
     orientation: context.orientation,
     activationDirection: context.activationDirection,
-    '--active-tab-top': activeMeasurement?.top,
-    '--active-tab-left': activeMeasurement?.left,
+    '--active-tab-top': activeMeasurement?.y,
+    '--active-tab-left': activeMeasurement?.x,
     '--active-tab-width': activeMeasurement?.width,
     '--active-tab-height': activeMeasurement?.height,
   };

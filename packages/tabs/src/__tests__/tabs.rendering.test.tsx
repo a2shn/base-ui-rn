@@ -6,14 +6,22 @@ import { Tabs } from '../index';
 describe('Tabs - Rendering', () => {
   it('renders active panel and hides others', () => {
     const { getByText, queryByTestId } = render(
-      <Tabs.Root defaultValue="tab-1">
+      <Tabs.Root defaultValue='tab-1'>
         <Tabs.List>
-          <Tabs.Tab value="tab-1"><Text>Tab 1</Text></Tabs.Tab>
-          <Tabs.Tab value="tab-2"><Text>Tab 2</Text></Tabs.Tab>
+          <Tabs.Tab value='tab-1'>
+            <Text>Tab 1</Text>
+          </Tabs.Tab>
+          <Tabs.Tab value='tab-2'>
+            <Text>Tab 2</Text>
+          </Tabs.Tab>
         </Tabs.List>
-        <Tabs.Panel value="tab-1" testID="panel-1"><Text>Content 1</Text></Tabs.Panel>
-        <Tabs.Panel value="tab-2" testID="panel-2"><Text>Content 2</Text></Tabs.Panel>
-      </Tabs.Root>
+        <Tabs.Panel value='tab-1' testID='panel-1'>
+          <Text>Content 1</Text>
+        </Tabs.Panel>
+        <Tabs.Panel value='tab-2' testID='panel-2'>
+          <Text>Content 2</Text>
+        </Tabs.Panel>
+      </Tabs.Root>,
     );
 
     expect(getByText('Content 1')).toBeTruthy();
@@ -22,14 +30,16 @@ describe('Tabs - Rendering', () => {
 
   it('honors keepMounted prop', () => {
     const { getByTestId } = render(
-      <Tabs.Root defaultValue="tab-1">
+      <Tabs.Root defaultValue='tab-1'>
         <Tabs.List>
-          <Tabs.Tab value="tab-1"><Text>Tab 1</Text></Tabs.Tab>
+          <Tabs.Tab value='tab-1'>
+            <Text>Tab 1</Text>
+          </Tabs.Tab>
         </Tabs.List>
-        <Tabs.Panel value="tab-2" keepMounted testID="panel-2">
+        <Tabs.Panel value='tab-2' keepMounted testID='panel-2'>
           <Text>Content 2</Text>
         </Tabs.Panel>
-      </Tabs.Root>
+      </Tabs.Root>,
     );
 
     const panel = getByTestId('panel-2', { includeHiddenElements: true });

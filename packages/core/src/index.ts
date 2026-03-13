@@ -11,6 +11,11 @@ export type {
   WebAccordionTriggerAccessibilityProps,
   WebAccordionPanelAccessibilityProps,
   WebMeterAccessibilityProps,
+  WebTabsRootAccessibilityProps,
+  WebTabsListAccessibilityProps,
+  WebTabsTabAccessibilityProps,
+  WebTabsIndicatorAccessibilityProps,
+  WebTabsPanelAccessibilityProps,
   PressedChangeDetails,
 } from './types';
 

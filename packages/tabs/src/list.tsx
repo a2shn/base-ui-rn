@@ -21,6 +21,7 @@ export const TabsList = React.memo(
     const {
       children,
       tabIndex,
+      style,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       'aria-describedby': ariaDescribedBy,
@@ -28,19 +29,23 @@ export const TabsList = React.memo(
       'aria-expanded': ariaExpanded,
       'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'data-orientation': dataOrientation,
+      'data-activation-direction': dataActivationDirection,
       ...otherProps
     } = props;
 
-    const { state } = useTabsList(props);
+    const { state } = useTabsList();
 
     const resolvedChildren =
       typeof children === 'function' ? children(state) : children;
+    const resolvedStyle = typeof style === 'function' ? style(state) : style;
 
     return (
       <View
         {...otherProps}
         ref={ref}
-        role="tablist"
+        style={resolvedStyle}
+        role='tablist'
         tabIndex={tabIndex}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
@@ -49,8 +54,10 @@ export const TabsList = React.memo(
         aria-expanded={ariaExpanded}
         aria-busy={ariaBusy}
         aria-hidden={ariaHidden}
-        data-orientation={state.orientation}
-        data-activation-direction={state.activationDirection}
+        data-orientation={dataOrientation ?? state.orientation}
+        data-activation-direction={
+          dataActivationDirection ?? state.activationDirection
+        }
       >
         {resolvedChildren}
       </View>

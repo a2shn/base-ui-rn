@@ -10,10 +10,14 @@ describe('Tabs - Keyboard', () => {
     const { getByTestId } = render(
       <Tabs.Root onValueChange={onValueChange}>
         <Tabs.List>
-          <Tabs.Tab value="tab-1" testID="tab-1"><Text>Tab 1</Text></Tabs.Tab>
-          <Tabs.Tab value="tab-2" testID="tab-2"><Text>Tab 2</Text></Tabs.Tab>
+          <Tabs.Tab value='tab-1' testID='tab-1'>
+            <Text>Tab 1</Text>
+          </Tabs.Tab>
+          <Tabs.Tab value='tab-2' testID='tab-2'>
+            <Text>Tab 2</Text>
+          </Tabs.Tab>
         </Tabs.List>
-      </Tabs.Root>
+      </Tabs.Root>,
     );
 
     fireKeyPress(getByTestId('tab-2'), 'Enter');
@@ -28,10 +32,14 @@ describe('Tabs - Keyboard', () => {
     const { getByTestId } = render(
       <Tabs.Root onValueChange={onValueChange}>
         <Tabs.List>
-          <Tabs.Tab value="tab-1" testID="tab-1"><Text>Tab 1</Text></Tabs.Tab>
-          <Tabs.Tab value="tab-2" disabled testID="tab-2"><Text>Tab 2</Text></Tabs.Tab>
+          <Tabs.Tab value='tab-1' testID='tab-1'>
+            <Text>Tab 1</Text>
+          </Tabs.Tab>
+          <Tabs.Tab value='tab-2' disabled testID='tab-2'>
+            <Text>Tab 2</Text>
+          </Tabs.Tab>
         </Tabs.List>
-      </Tabs.Root>
+      </Tabs.Root>,
     );
 
     fireKeyPress(getByTestId('tab-2'), 'Enter');

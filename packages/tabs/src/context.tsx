@@ -9,8 +9,8 @@ import type {
 import type { NativeSyntheticEvent } from 'react-native';
 
 export interface TabMeasurement {
-  top: number;
-  left: number;
+  x: number;
+  y: number;
   width: number;
   height: number;
 }
