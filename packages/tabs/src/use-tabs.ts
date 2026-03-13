@@ -33,7 +33,9 @@ export function useTabsRoot(props: TabsRootProps) {
     defaultValue,
     onValueChange,
     orientation = 'horizontal',
-  } = props;
+    activateOnFocus = false,
+    onFocusChange,
+  } = props as any; // Cast temporarily to access internal props
 
   const [internalValue, setInternalValue] = React.useState<TabValue | null>(
     defaultValue ?? null,
@@ -130,10 +132,14 @@ export function useTabsRoot(props: TabsRootProps) {
     (value: TabValue, event: NativeSyntheticEvent<KeyPressEventData>) => {
       const nextId = handleKeyDown(String(value), event);
       if (nextId) {
-        handleValueChange(nextId);
+        if (activateOnFocus) {
+          handleValueChange(nextId);
+        } else {
+          onFocusChange?.(nextId);
+        }
       }
     },
-    [handleKeyDown, handleValueChange],
+    [handleKeyDown, handleValueChange, activateOnFocus, onFocusChange],
   );
 
   const state: TabsRootState = {
@@ -149,6 +155,7 @@ export function useTabsRoot(props: TabsRootProps) {
       orientation,
       activationDirection,
       onValueChange: handleValueChange,
+      onFocusChange,
       registerTab: (v: TabValue, ref: React.RefObject<View | null>) => {
         const unregNav = registerForNav(String(v), ref);
         const unregTab = registerTab(v, ref);
@@ -200,9 +207,10 @@ export function useTab(props: TabProps) {
   const handleFocus = React.useCallback(
     (e: NativeSyntheticEvent<TargetedEvent>) => {
       onFocus();
+      context.onFocusChange?.(String(value));
       onFocusProp?.(e);
     },
-    [onFocus, onFocusProp],
+    [onFocus, onFocusProp, context, value],
   );
 
   const handleBlur = React.useCallback(
@@ -267,8 +275,7 @@ export function useTab(props: TabProps) {
 
 export function useTabsIndicator() {
   const context = useTabsContext();
-  const activeMeasurement =
-    context.value !== null ? context.tabMeasurements.get(context.value) : null;
+  const activeMeasurement = context.value !== null ? context.tabMeasurements.get(context.value) : null;
 
   const state: TabsIndicatorState = {
     orientation: context.orientation,

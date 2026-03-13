@@ -1,5 +1,3 @@
-import { Platform } from 'react-native';
-
 /**
  * Default hit slop for components.
  * Expands the interactive touch area to improve accessibility.
@@ -16,17 +14,11 @@ export const DEFAULT_HIT_SLOP = {
 
 /**
  * Default focus ring styling used across components.
- * Uses platform-native defaults on web, and custom branding on native.
  */
-export const DEFAULT_FOCUS_RING_STYLE = Platform.select({
-  web: {
-    outlineStyle: 'auto',
-  } as any,
-  default: {
-    borderWidth: 2,
-    borderColor: '#0071E3',
-  },
-});
+export const DEFAULT_FOCUS_RING_STYLE = {
+  borderWidth: 2,
+  borderColor: '#0071E3',
+} as const;
 
 /**
  * Keys that should activate a button or toggle component.

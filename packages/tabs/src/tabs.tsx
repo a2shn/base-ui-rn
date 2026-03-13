@@ -26,6 +26,8 @@ export const TabsRoot = React.memo(
       value,
       onValueChange,
       orientation,
+      activateOnFocus,
+      onFocusChange,
       tabIndex,
       style,
       'aria-label': ariaLabel,
@@ -45,6 +47,8 @@ export const TabsRoot = React.memo(
       value,
       onValueChange,
       orientation,
+      activateOnFocus,
+      onFocusChange,
     });
 
     const resolvedChildren =

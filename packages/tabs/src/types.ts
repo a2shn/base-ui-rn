@@ -28,7 +28,9 @@ export interface TabsRootState {
 }
 
 export interface TabsRootProps
-  extends Omit<ViewProps, 'children' | 'style'>, WebTabsRootAccessibilityProps {
+  extends
+    Omit<ViewProps, 'children' | 'style'>,
+    WebTabsRootAccessibilityProps {
   /**
    * The content of the tabs.
    */
@@ -57,6 +59,15 @@ export interface TabsRootProps
    * @default 'horizontal'
    */
   orientation?: Orientation;
+  /**
+   * Whether to automatically change the active tab on arrow key focus.
+   * @default false
+   */
+  activateOnFocus?: boolean;
+  /**
+   * Callback fired when keyboard focus changes.
+   */
+  onFocusChange?: (value: string) => void;
 }
 
 export interface TabsListState {
@@ -65,7 +76,9 @@ export interface TabsListState {
 }
 
 export interface TabsListProps
-  extends Omit<ViewProps, 'children' | 'style'>, WebTabsListAccessibilityProps {
+  extends
+    Omit<ViewProps, 'children' | 'style'>,
+    WebTabsListAccessibilityProps {
   /**
    * The content of the tabs list.
    */
@@ -76,11 +89,6 @@ export interface TabsListProps
   style?:
     | StyleProp<ViewStyle>
     | ((state: TabsListState) => StyleProp<ViewStyle>);
-  /**
-   * Whether to automatically change the active tab on arrow key focus.
-   * @default false
-   */
-  activateOnFocus?: boolean;
   /**
    * Whether to loop keyboard focus within the tabs list.
    * @default true
@@ -98,8 +106,7 @@ export interface TabState {
 }
 
 export interface TabProps
-  extends
-    Omit<PressableProps, 'children' | 'style'>,
+  extends Omit<PressableProps, 'children' | 'style'>,
     WebTabsTabAccessibilityProps {
   /**
    * The content of the tab.
