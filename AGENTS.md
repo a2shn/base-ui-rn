@@ -40,27 +40,49 @@ export { Root as AccordionRoot, ... };
 
 ---
 
-## 3. JSDoc Standards
+## 3. JSDoc Mandates
 
-Every component and public prop **MUST** have standardized JSDoc.
+You **MUST** create, maintain, and update JSDoc for every public component and prop. Documentation **MUST** be treated as code; if a behavior changes, the JSDoc **MUST** change.
 
-### Component Level
+### Component Template
+Every component **MUST** use this exact structure:
 ```ts
 /**
- * Headless [Name] primitive built on top of React Native [Base].
+ * [Description: One sentence explaining the component's purpose].
  *
- * Supports [Feature 1], [Feature 2], and focus behavior.
+ * [Behavior: One or two sentences about state, a11y, or sub-components].
  *
  * @example
  * ```tsx
- * <[Name].Root>...</[Name].Root>
+ * <Package.Root>
+ *   <Package.SubComponent />
+ * </Package.Root>
  * ```
  */
 ```
 
-### Prop Level
-- Provide a concise description.
-- **MUST** include `@default` where applicable.
+### Prop Template
+Every public prop **MUST** have a concise JSDoc block:
+- **MUST** include a description of the prop's effect.
+- **MUST** include `@default` if the prop has a default value.
+```ts
+/**
+ * Whether the component is disabled.
+ * @default false
+ */
+disabled?: boolean;
+```
+
+### Hook Template
+Public hooks **MUST** document their parameters and return values:
+```ts
+/**
+ * Manages the state and logic for the [Name] primitive.
+ * @param props The initialization properties.
+ * @returns State and event handlers for the component.
+ */
+export function useName(props: NameProps) { ... }
+```
 
 ---
 
