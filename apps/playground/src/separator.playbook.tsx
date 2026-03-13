@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { Separator } from '@base-ui-rn/separator';
 import { Gallery, Section } from '@base-ui-rn/playbook';
-import styles from './playbookStyles';
 
 export function SeparatorPlaybook() {
   return (
@@ -33,3 +32,30 @@ export function SeparatorPlaybook() {
     </Gallery>
   );
 }
+
+const styles = StyleSheet.create({
+  sep_row: {
+    gap: 10,
+    padding: 10,
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
+  sep_horizontal: {
+    height: 1,
+    backgroundColor: '#ccc',
+    width: 200,
+  },
+  sep_verticalRow: {
+    flexDirection: 'row',
+    height: 40,
+    alignItems: 'center',
+    gap: 10,
+    padding: 10,
+    alignSelf: 'center',
+  },
+  sep_vertical: {
+    width: 1,
+    height: '100%',
+    backgroundColor: '#ccc',
+  },
+});

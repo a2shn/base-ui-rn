@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { View, Text } from 'react-native';
-import styles from './playbookStyles';
+import { View, Text, StyleSheet } from 'react-native';
 import { Meter } from '@base-ui-rn/meter';
 import { Gallery, Section } from '@base-ui-rn/playbook';
 
@@ -85,3 +84,47 @@ export function MeterPlaybook() {
     </Gallery>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 10,
+    gap: 12,
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
+  meterRoot: {
+    width: 200,
+    gap: 8,
+  },
+  meterHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  meterLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#111',
+  },
+  meterValue: {
+    fontSize: 14,
+    color: '#666',
+  },
+  meterTrack: {
+    height: 8,
+    width: '100%',
+    backgroundColor: '#eee',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  meterIndicator: {
+    height: '100%',
+    width: '100%',
+    backgroundColor: '#0071E3',
+  },
+  hint: {
+    fontSize: 12,
+    color: '#666',
+    textAlign: 'center',
+  },
+});

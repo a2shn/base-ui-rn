@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { View, Text } from 'react-native';
-import styles from './playbookStyles';
+import { View, Text, StyleSheet } from 'react-native';
 import { Avatar } from '@base-ui-rn/avatar';
 import {
   Gallery,
@@ -89,3 +88,43 @@ export function AvatarPlaybook() {
     </Gallery>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 10,
+    gap: 12,
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    overflow: 'hidden',
+    backgroundColor: '#eee',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+  },
+  fallback: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#0071E3',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fallbackText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  hint: {
+    fontSize: 12,
+    color: '#666',
+    textAlign: 'center',
+  },
+});

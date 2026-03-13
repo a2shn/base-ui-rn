@@ -1,13 +1,12 @@
 import * as React from 'react';
-import { Text } from 'react-native';
-import { Toggle } from '@base-ui-rn/toggle';
+import { Text, StyleSheet } from 'react-native';
+import { Toggle, type ToggleState } from '@base-ui-rn/toggle';
 import {
   Gallery,
   Section,
   usePlaybookToggles,
   LiveConsole,
 } from '@base-ui-rn/playbook';
-import styles from './playbookStyles';
 
 export function TogglePlaybook() {
   const { darkMode, loading, loadingPressCount } = usePlaybookToggles({
@@ -23,8 +22,6 @@ export function TogglePlaybook() {
     setTimeout(() => loading.setValue(false), 2000);
   }, [loading, loadingPressCount]);
 
-  const toggleBaseStyle = styles.toggleBase;
-
   return (
     <Gallery title='Toggle'>
       <Section title='Uncontrolled' showAllProps={true}>
@@ -32,10 +29,7 @@ export function TogglePlaybook() {
           defaultPressed={false}
           accessibilityHint='Toggles notifications'
           testID='toggle-uncontrolled'
-          style={({ pressed }) => [
-            toggleBaseStyle,
-            pressed && { opacity: 0.7, backgroundColor: '#e0e0e0' },
-          ]}
+          style={getToggleStyle}
         >
           <Text>Notifications</Text>
         </Toggle>
@@ -48,10 +42,7 @@ export function TogglePlaybook() {
           onPressedChange={darkMode.setValue}
           accessibilityHint='Toggles dark mode'
           testID='toggle-dark-mode'
-          style={({ pressed }) => [
-            toggleBaseStyle,
-            pressed && { opacity: 0.7, backgroundColor: '#e0e0e0' },
-          ]}
+          style={getToggleStyle}
         >
           <Text>{darkMode.value ? 'ON' : 'OFF'}</Text>
         </Toggle>
@@ -63,7 +54,7 @@ export function TogglePlaybook() {
           disabled
           accessibilityHint='Locked setting'
           testID='toggle-disabled'
-          style={[toggleBaseStyle, { opacity: 0.5 }]}
+          style={[styles.toggleBase, styles.disabled]}
         >
           <Text>Disabled</Text>
         </Toggle>
@@ -80,10 +71,7 @@ export function TogglePlaybook() {
           accessibilityState={{ busy: loading.value as boolean }}
           testID='toggle-disabled-focusable'
           accessibilityLabel='Agree Toggle'
-          style={({ pressed }) => [
-            toggleBaseStyle,
-            pressed && { opacity: 0.7, backgroundColor: '#e0e0e0' },
-          ]}
+          style={getToggleStyle}
         >
           <Text>{loading.value ? 'Applying...' : 'Agree'}</Text>
         </Toggle>
@@ -97,4 +85,27 @@ export function TogglePlaybook() {
       </Section>
     </Gallery>
   );
+}
+
+const styles = StyleSheet.create({
+  toggleBase: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    backgroundColor: '#f0f0f0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  pressed: {
+    opacity: 0.7,
+    backgroundColor: '#e0e0e0',
+  },
+  disabled: {
+    opacity: 0.5,
+  },
+});
+
+function getToggleStyle({ pressed }: ToggleState) {
+  return [styles.toggleBase, pressed && styles.pressed];
 }

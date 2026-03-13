@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import { ToggleGroup } from '@base-ui-rn/toggle-group';
 import { Toggle, type ToggleState } from '@base-ui-rn/toggle';
 import {
@@ -8,22 +8,12 @@ import {
   usePlaybookToggles,
   LiveConsole,
 } from '@base-ui-rn/playbook';
-import styles from './playbookStyles';
 
 export function ToggleGroupPlaybook() {
   const { alignment, formats, isGroupDisabled } = usePlaybookToggles({
     alignment: ['center'],
     formats: ['bold', 'italic'],
     isGroupDisabled: false,
-  });
-
-  const groupBaseStyle = styles.groupBase;
-
-  const toggleStyle = ({ pressed, focusVisible }: ToggleState) => ({
-    borderWidth: 1,
-    borderColor: pressed ? 'blue' : focusVisible ? '#0071E3' : '#ccc',
-    padding: 8,
-    backgroundColor: pressed ? '#f0f0f0' : 'transparent',
   });
 
   return (
@@ -33,20 +23,20 @@ export function ToggleGroupPlaybook() {
           orientation='horizontal'
           loopFocus={true}
           defaultValue={['h1']}
-          style={{ ...groupBaseStyle, flexDirection: 'row' }}
+          style={[styles.groupBase, styles.row]}
           testID='toggle-group-loop-h'
         >
           {['h1', 'h2', 'h3'].map((val, i) => (
             <Toggle key={val} value={val} testID={`toggle-h${i + 1}`}>
               {(state) => (
-                <View style={toggleStyle(state)}>
+                <View style={getToggleStyle(state)}>
                   <Text>Option {i + 1}</Text>
                 </View>
               )}
             </Toggle>
           ))}
         </ToggleGroup>
-        <Text style={{ fontSize: 12, marginTop: 4, color: '#666' }}>
+        <Text style={styles.hint}>
           Navigate with Left/Right arrows. It should loop from 3 to 1.
         </Text>
       </Section>
@@ -56,20 +46,20 @@ export function ToggleGroupPlaybook() {
           orientation='vertical'
           loopFocus={true}
           defaultValue={['v1']}
-          style={{ ...groupBaseStyle, flexDirection: 'column' }}
+          style={[styles.groupBase, styles.column]}
           testID='toggle-group-loop-v'
         >
           {['v1', 'v2', 'v3'].map((val, i) => (
             <Toggle key={val} value={val} testID={`toggle-v${i + 1}`}>
               {(state) => (
-                <View style={toggleStyle(state)}>
+                <View style={getToggleStyle(state)}>
                   <Text>Option {i + 1}</Text>
                 </View>
               )}
             </Toggle>
           ))}
         </ToggleGroup>
-        <Text style={{ fontSize: 12, marginTop: 4, color: '#666' }}>
+        <Text style={styles.hint}>
           Navigate with Up/Down arrows. It should loop from 3 to 1.
         </Text>
       </Section>
@@ -78,12 +68,12 @@ export function ToggleGroupPlaybook() {
         <ToggleGroup
           defaultValue={['center']}
           testID='toggle-group-uncontrolled-single'
-          style={{ ...groupBaseStyle, flexDirection: 'row' }}
+          style={[styles.groupBase, styles.row]}
         >
           {['left', 'center', 'right'].map((val) => (
             <Toggle key={val} value={val} testID={`toggle-${val}`}>
               {(state) => (
-                <View style={toggleStyle(state)}>
+                <View style={getToggleStyle(state)}>
                   <Text>{val.charAt(0).toUpperCase() + val.slice(1)}</Text>
                 </View>
               )}
@@ -97,12 +87,12 @@ export function ToggleGroupPlaybook() {
           value={alignment.value as string[]}
           onValueChange={alignment.setValue}
           testID='toggle-group-controlled-single'
-          style={{ ...groupBaseStyle, flexDirection: 'row' }}
+          style={[styles.groupBase, styles.row]}
         >
           {['left', 'center', 'right'].map((val) => (
             <Toggle key={val} value={val} testID={`toggle-${val}-controlled`}>
               {(state) => (
-                <View style={toggleStyle(state)}>
+                <View style={getToggleStyle(state)}>
                   <Text>{val.charAt(0).toUpperCase() + val.slice(1)}</Text>
                 </View>
               )}
@@ -122,12 +112,12 @@ export function ToggleGroupPlaybook() {
           value={formats.value as string[]}
           onValueChange={formats.setValue}
           testID='toggle-group-multiple'
-          style={{ ...groupBaseStyle, flexDirection: 'row' }}
+          style={[styles.groupBase, styles.row]}
         >
           {['bold', 'italic', 'underline'].map((val) => (
             <Toggle key={val} value={val} testID={`toggle-${val}`}>
               {(state) => (
-                <View style={toggleStyle(state)}>
+                <View style={getToggleStyle(state)}>
                   <Text>{val.charAt(0).toUpperCase() + val.slice(1)}</Text>
                 </View>
               )}
@@ -146,10 +136,10 @@ export function ToggleGroupPlaybook() {
           >
             {(state) => (
               <View
-                style={{
-                  ...toggleStyle(state),
-                  alignSelf: 'flex-start',
-                }}
+                style={[
+                  getToggleStyle(state),
+                  { alignSelf: 'flex-start' }
+                ]}
               >
                 <Text testID='is-disabled-label'>
                   {isGroupDisabled.value ? 'Enable Group' : 'Disable Group'}
@@ -161,17 +151,17 @@ export function ToggleGroupPlaybook() {
           <ToggleGroup
             disabled={isGroupDisabled.value as boolean}
             defaultValue={['bold']}
-            style={{
-              ...groupBaseStyle,
-              flexDirection: 'row',
-              opacity: isGroupDisabled.value ? 0.5 : 1,
-            }}
+            style={[
+              styles.groupBase,
+              styles.row,
+              isGroupDisabled.value && styles.disabledGroup
+            ]}
             testID='toggle-group-disabled'
           >
             {['bold', 'italic'].map((val) => (
               <Toggle key={val} value={val} testID={`toggle-disabled-${val}`}>
                 {(state) => (
-                  <View style={toggleStyle(state)}>
+                  <View style={getToggleStyle(state)}>
                     <Text>{val.charAt(0).toUpperCase() + val.slice(1)}</Text>
                   </View>
                 )}
@@ -187,4 +177,51 @@ export function ToggleGroupPlaybook() {
       </Section>
     </Gallery>
   );
+}
+
+const styles = StyleSheet.create({
+  groupBase: {
+    gap: 8,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 8,
+    alignSelf: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+  },
+  column: {
+    flexDirection: 'column',
+  },
+  toggle: {
+    borderWidth: 1,
+    padding: 8,
+  },
+  togglePressed: {
+    borderColor: 'blue',
+    backgroundColor: '#f0f0f0',
+  },
+  toggleFocused: {
+    borderColor: '#0071E3',
+  },
+  toggleDefault: {
+    borderColor: '#ccc',
+    backgroundColor: 'transparent',
+  },
+  hint: {
+    fontSize: 12,
+    marginTop: 4,
+    color: '#666',
+    textAlign: 'center',
+  },
+  disabledGroup: {
+    opacity: 0.5,
+  },
+});
+
+function getToggleStyle({ pressed, focusVisible }: ToggleState) {
+  return [
+    styles.toggle,
+    pressed ? styles.togglePressed : focusVisible ? styles.toggleFocused : styles.toggleDefault,
+  ];
 }

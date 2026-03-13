@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { View, Text } from 'react-native';
-import styles from './playbookStyles';
-import { FocusRing } from '@base-ui-rn/focus-ring';
+import { View, Text, StyleSheet } from 'react-native';
+import { FocusRing, type FocusState } from '@base-ui-rn/focus-ring';
 import { Button } from '@base-ui-rn/button';
 import { Gallery, Section } from '@base-ui-rn/playbook';
 
@@ -13,10 +12,7 @@ export function FocusRingPlaybook() {
           <FocusRing>
             {({ focusVisible }) => (
               <Button
-                style={[
-                  styles.buttonBase,
-                  focusVisible && { borderColor: '#0071E3', borderWidth: 2 },
-                ]}
+                style={getOutlineButtonStyle({ focusVisible })}
               >
                 <Text>Focus Me</Text>
               </Button>
@@ -33,10 +29,7 @@ export function FocusRingPlaybook() {
           <FocusRing>
             {({ focused }) => (
               <Button
-                style={[
-                  styles.buttonBase,
-                  { backgroundColor: focused ? '#0071E3' : '#f0f0f0' },
-                ]}
+                style={getCustomButtonStyle({ focused })}
               >
                 <Text style={{ color: focused ? '#fff' : '#000' }}>
                   {focused ? 'Focused' : 'Idle'}
@@ -48,4 +41,41 @@ export function FocusRingPlaybook() {
       </Section>
     </Gallery>
   );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 10,
+    gap: 12,
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
+  buttonBase: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    backgroundColor: '#f0f0f0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  outline: {
+    borderColor: '#0071E3',
+    borderWidth: 2,
+  },
+  focused: {
+    backgroundColor: '#0071E3',
+  },
+  hint: {
+    fontSize: 12,
+    color: '#666',
+    textAlign: 'center',
+  },
+});
+
+function getOutlineButtonStyle({ focusVisible }: Partial<FocusState>) {
+  return [styles.buttonBase, focusVisible && styles.outline];
+}
+
+function getCustomButtonStyle({ focused }: Partial<FocusState>) {
+  return [styles.buttonBase, focused && styles.focused];
 }

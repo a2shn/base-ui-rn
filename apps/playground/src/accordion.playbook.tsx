@@ -1,6 +1,10 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, Animated } from 'react-native';
-import { Accordion } from '@base-ui-rn/accordion';
+import { Text, View, StyleSheet } from 'react-native';
+import {
+  Accordion,
+  type AccordionTriggerState,
+  type AccordionPanelState,
+} from '@base-ui-rn/accordion';
 import { Gallery, Section, usePlaybookToggles } from '@base-ui-rn/playbook';
 
 export function AccordionPlaybook() {
@@ -18,10 +22,7 @@ export function AccordionPlaybook() {
               <Accordion.Header>
                 <Accordion.Trigger
                   testID='accordion-trigger-1'
-                  style={({ open }) => [
-                    styles.trigger,
-                    { backgroundColor: open ? '#f5f5f5' : '#fff' },
-                  ]}
+                  style={getTriggerStyle}
                 >
                   {({ open }) => (
                     <>
@@ -43,10 +44,7 @@ export function AccordionPlaybook() {
               <Accordion.Header>
                 <Accordion.Trigger
                   testID='accordion-trigger-2'
-                  style={({ open }) => [
-                    styles.trigger,
-                    { backgroundColor: open ? '#f5f5f5' : '#fff' },
-                  ]}
+                  style={getTriggerStyle}
                 >
                   {({ open }) => (
                     <>
@@ -65,10 +63,7 @@ export function AccordionPlaybook() {
               <Accordion.Header>
                 <Accordion.Trigger
                   testID='accordion-trigger-3'
-                  style={({ open }) => [
-                    styles.trigger,
-                    { backgroundColor: open ? '#f5f5f5' : '#fff' },
-                  ]}
+                  style={getTriggerStyle}
                 >
                   {({ open }) => (
                     <>
@@ -91,12 +86,7 @@ export function AccordionPlaybook() {
           <Accordion.Root>
             <Accordion.Item value='item-1'>
               <Accordion.Header>
-                <Accordion.Trigger
-                  style={({ open }) => [
-                    styles.trigger,
-                    { backgroundColor: open ? '#f5f5f5' : '#fff' },
-                  ]}
-                >
+                <Accordion.Trigger style={getTriggerStyle}>
                   {({ open }) => (
                     <>
                       <Text>Animated Panel</Text>
@@ -107,16 +97,7 @@ export function AccordionPlaybook() {
               </Accordion.Header>
               <Accordion.Panel
                 keepMounted
-                style={(state) => [
-                  styles.panel,
-                  styles.animatedPanel,
-                  {
-                    height: state.open
-                      ? state['--accordion-panel-height']
-                      : 0,
-                    opacity: state.open ? 1 : 0,
-                  },
-                ]}
+                style={getAnimatedPanelStyle}
               >
                 <View>
                   <Text>
@@ -139,12 +120,7 @@ export function AccordionPlaybook() {
           <Accordion.Root value='item-1' onValueChange={() => {}}>
             <Accordion.Item value='item-1'>
               <Accordion.Header>
-                <Accordion.Trigger
-                  style={({ open }) => [
-                    styles.trigger,
-                    { backgroundColor: open ? '#f5f5f5' : '#fff' },
-                  ]}
-                >
+                <Accordion.Trigger style={getTriggerStyle}>
                   {({ open }) => (
                     <>
                       <Text>Pre-opened item</Text>
@@ -160,12 +136,7 @@ export function AccordionPlaybook() {
 
             <Accordion.Item value='item-2'>
               <Accordion.Header>
-                <Accordion.Trigger
-                  style={({ open }) => [
-                    styles.trigger,
-                    { backgroundColor: open ? '#f5f5f5' : '#fff' },
-                  ]}
-                >
+                <Accordion.Trigger style={getTriggerStyle}>
                   {({ open }) => (
                     <>
                       <Text>Another item</Text>
@@ -187,12 +158,7 @@ export function AccordionPlaybook() {
           <Accordion.Root multiple>
             <Accordion.Item value='item-1'>
               <Accordion.Header>
-                <Accordion.Trigger
-                  style={({ open }) => [
-                    styles.trigger,
-                    { backgroundColor: open ? '#f5f5f5' : '#fff' },
-                  ]}
-                >
+                <Accordion.Trigger style={getTriggerStyle}>
                   {({ open }) => (
                     <>
                       <Text>First item</Text>
@@ -208,12 +174,7 @@ export function AccordionPlaybook() {
 
             <Accordion.Item value='item-2'>
               <Accordion.Header>
-                <Accordion.Trigger
-                  style={({ open }) => [
-                    styles.trigger,
-                    { backgroundColor: open ? '#f5f5f5' : '#fff' },
-                  ]}
-                >
+                <Accordion.Trigger style={getTriggerStyle}>
                   {({ open }) => (
                     <>
                       <Text>Second item</Text>
@@ -235,12 +196,7 @@ export function AccordionPlaybook() {
           <Accordion.Root>
             <Accordion.Item value='item-1'>
               <Accordion.Header>
-                <Accordion.Trigger
-                  style={({ open }) => [
-                    styles.trigger,
-                    { backgroundColor: open ? '#f5f5f5' : '#fff' },
-                  ]}
-                >
+                <Accordion.Trigger style={getTriggerStyle}>
                   {({ open }) => (
                     <>
                       <Text>Enabled item</Text>
@@ -256,13 +212,7 @@ export function AccordionPlaybook() {
 
             <Accordion.Item value='item-2' disabled>
               <Accordion.Header>
-                <Accordion.Trigger
-                  style={({ open, disabled }) => [
-                    styles.trigger,
-                    { backgroundColor: open ? '#f5f5f5' : '#fff' },
-                    disabled ? styles.disabled : {},
-                  ]}
-                >
+                <Accordion.Trigger style={getTriggerStyle}>
                   {({ open }) => (
                     <>
                       <Text>Disabled item</Text>
@@ -278,12 +228,7 @@ export function AccordionPlaybook() {
 
             <Accordion.Item value='item-3'>
               <Accordion.Header>
-                <Accordion.Trigger
-                  style={({ open }) => [
-                    styles.trigger,
-                    { backgroundColor: open ? '#f5f5f5' : '#fff' },
-                  ]}
-                >
+                <Accordion.Trigger style={getTriggerStyle}>
                   {({ open }) => (
                     <>
                       <Text>Another enabled</Text>
@@ -319,6 +264,12 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
   },
+  triggerOpen: {
+    backgroundColor: '#f5f5f5',
+  },
+  triggerDefault: {
+    backgroundColor: '#fff',
+  },
   icon: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -334,3 +285,22 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
 });
+
+function getTriggerStyle({ open, disabled }: AccordionTriggerState) {
+  return [
+    styles.trigger,
+    open ? styles.triggerOpen : styles.triggerDefault,
+    disabled && styles.disabled,
+  ];
+}
+
+function getAnimatedPanelStyle(state: AccordionPanelState) {
+  return [
+    styles.panel,
+    styles.animatedPanel,
+    {
+      height: state.open ? state['--accordion-panel-height'] : 0,
+      opacity: state.open ? 1 : 0,
+    },
+  ];
+}

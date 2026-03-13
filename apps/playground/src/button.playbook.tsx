@@ -1,13 +1,12 @@
 import * as React from 'react';
-import { Text } from 'react-native';
-import { Button } from '@base-ui-rn/button';
+import { Text, StyleSheet } from 'react-native';
+import { Button, type ButtonState } from '@base-ui-rn/button';
 import {
   Gallery,
   Section,
   usePlaybookToggles,
   LiveConsole,
 } from '@base-ui-rn/playbook';
-import styles from './playbookStyles';
 
 export function ButtonPlaybook() {
   const { count, loading, loadingPressCount } = usePlaybookToggles({
@@ -23,8 +22,6 @@ export function ButtonPlaybook() {
     setTimeout(() => loading.setValue(false), 2000);
   }, [loading, loadingPressCount]);
 
-  const buttonBaseStyle = styles.buttonBase;
-
   return (
     <Gallery title='Button'>
       <Section title='Counter'>
@@ -32,10 +29,7 @@ export function ButtonPlaybook() {
           onPress={() => count.setValue(count.value + 1)}
           accessibilityHint='Increments the counter'
           testID='button-counter'
-          style={({ pressed }) => [
-            buttonBaseStyle,
-            pressed && { opacity: 0.7, backgroundColor: '#e0e0e0' },
-          ]}
+          style={getButtonStyle}
         >
           <Text>{count.value}</Text>
         </Button>
@@ -48,7 +42,7 @@ export function ButtonPlaybook() {
           accessibilityHint='Locked button'
           testID='button-disabled'
           accessibilityLabel='Disabled Button'
-          style={[buttonBaseStyle, { opacity: 0.5 }]}
+          style={[styles.buttonBase, styles.disabled]}
           disableDefaultFocusRing
         >
           <Text>Disabled Button</Text>
@@ -66,10 +60,7 @@ export function ButtonPlaybook() {
           accessibilityState={{ busy: loading.value as boolean }}
           testID='button-disabled-focusable'
           accessibilityLabel='Loading Button'
-          style={({ pressed }) => [
-            buttonBaseStyle,
-            pressed && { opacity: 0.7, backgroundColor: '#e0e0e0' },
-          ]}
+          style={getButtonStyle}
         >
           <Text>{loading.value ? 'Loading...' : 'Load'}</Text>
         </Button>
@@ -86,7 +77,7 @@ export function ButtonPlaybook() {
         <Button
           disableDefaultFocusRing
           onPress={() => {}}
-          style={buttonBaseStyle}
+          style={styles.buttonBase}
         >
           {({ focusVisible }) => (
             <Text
@@ -102,4 +93,27 @@ export function ButtonPlaybook() {
       </Section>
     </Gallery>
   );
+}
+
+const styles = StyleSheet.create({
+  buttonBase: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    backgroundColor: '#f0f0f0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  pressed: {
+    opacity: 0.7,
+    backgroundColor: '#e0e0e0',
+  },
+  disabled: {
+    opacity: 0.5,
+  },
+});
+
+function getButtonStyle({ pressed }: ButtonState) {
+  return [styles.buttonBase, pressed && styles.pressed];
 }
