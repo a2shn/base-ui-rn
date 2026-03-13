@@ -449,6 +449,40 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  packages/tabs:
+    dependencies:
+      '@base-ui-rn/core':
+        specifier: workspace:*
+        version: link:../core
+      '@base-ui-rn/focus-ring':
+        specifier: workspace:*
+        version: link:../focus-ring
+    devDependencies:
+      '@base-ui-rn/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@base-ui-rn/test-utils':
+        specifier: workspace:*
+        version: link:../test-utils
+      '@types/jest':
+        specifier: ^30.0.0
+        version: 30.0.0
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.19.13
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.1.17
+      react:
+        specifier: 19.1.0
+        version: 19.1.0
+      react-native:
+        specifier: 0.81.5
+        version: 0.81.5(@babel/core@7.29.0)(@react-native-community/cli@13.6.6)(@types/react@19.1.17)(react@19.1.0)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   packages/test-utils:
     devDependencies:
       '@base-ui-rn/eslint-config':

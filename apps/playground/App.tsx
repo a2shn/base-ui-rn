@@ -13,6 +13,7 @@ import { MeterPlaybook } from './src/meter.playbook';
 import { ProgressPlaybook } from './src/progress.playbook';
 import { KeyboardShortcutsPlaybook } from './src/keyboard-shortcuts.playbook';
 import { AccordionPlaybook } from './src/accordion.playbook';
+import { TabsPlaybook } from './src/tabs.playbook';
 
 const REGISTRY: PlaybookConfig = {
   Toggle: {
@@ -64,6 +65,11 @@ const REGISTRY: PlaybookConfig = {
     title: 'Accordion',
     component: AccordionPlaybook,
     testID: 'accordion',
+  },
+  Tabs: {
+    title: 'Tabs',
+    component: TabsPlaybook,
+    testID: 'tabs',
   },
 };
 
