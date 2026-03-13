@@ -14,11 +14,19 @@ export const DEFAULT_HIT_SLOP = {
 
 /**
  * Default focus ring styling used across components.
+ * On web, it uses 'outline' to avoid layout shifts and double rings.
+ * On native, it uses 'border' as a fallback.
  */
-export const DEFAULT_FOCUS_RING_STYLE = {
-  borderWidth: 2,
-  borderColor: '#0071E3',
-} as const;
+export const DEFAULT_FOCUS_RING_STYLE = Platform.select({
+  web: {
+    outline: '2px solid #0071E3',
+    outlineOffset: '2px',
+  } as any,
+  default: {
+    borderWidth: 2,
+    borderColor: '#0071E3',
+  },
+});
 
 /**
  * Keys that should activate a button or toggle component.
