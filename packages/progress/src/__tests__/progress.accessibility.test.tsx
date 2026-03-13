@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { render } from '@testing-library/react-native';
-import { Progress } from '../progress';
+import { Progress } from '../index';
 import { testAccessibility } from '@base-ui-rn/test-utils';
 
 describe('Progress - Accessibility', () => {

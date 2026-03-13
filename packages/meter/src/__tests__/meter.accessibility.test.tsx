@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { render } from '@testing-library/react-native';
-import { Meter } from '../meter';
+import { Meter } from '../index';
 import { testAccessibility } from '@base-ui-rn/test-utils';
 
 describe('Meter - Accessibility', () => {

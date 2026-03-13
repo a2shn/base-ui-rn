@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { render } from '@testing-library/react-native';
-import { Avatar } from '../avatar';
+import { Avatar } from '../index';
 
 describe('Avatar - Rendering', () => {
   it('renders correctly', () => {

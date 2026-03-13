@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View, Text } from 'react-native';
 import { render } from '@testing-library/react-native';
-import { Meter } from '../meter';
+import { Meter } from '../index';
 
 describe('Meter - Ref', () => {
   it('forwards refs correctly', () => {

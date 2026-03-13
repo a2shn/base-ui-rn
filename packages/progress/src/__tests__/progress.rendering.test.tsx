@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { render } from '@testing-library/react-native';
-import { Progress } from '../progress';
+import { Progress } from '../index';
 
 describe('Progress - Rendering & State', () => {
   it('handles indeterminate state', () => {
