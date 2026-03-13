@@ -4,6 +4,19 @@ import { AccordionContext } from './context';
 import type { AccordionRootProps } from './types';
 import { useAccordionRoot } from './use-accordion';
 
+/**
+ * Headless accordion root primitive built on top of React Native View.
+ *
+ * Provides the state and context for all accordion items. Supports keyboard
+ * navigation, multiple open items, and controlled/uncontrolled state.
+ *
+ * @example
+ * ```tsx
+ * <Accordion.Root defaultValue="item-1">
+ *   <Accordion.Item value="item-1">...</Accordion.Item>
+ * </Accordion.Root>
+ * ```
+ */
 export const AccordionRoot = React.forwardRef<View, AccordionRootProps>(
   (props, ref) => {
     const {

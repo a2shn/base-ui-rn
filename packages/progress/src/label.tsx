@@ -7,6 +7,11 @@ import { useProgressContext } from './progress-context';
  * An accessible label for the progress bar.
  *
  * Automatically linked to the `Progress.Root` via `aria-labelledby`.
+ *
+ * @example
+ * ```tsx
+ * <Progress.Label>Export data</Progress.Label>
+ * ```
  */
 export const ProgressLabel = React.forwardRef<Text, ProgressLabelProps>(
   (props, ref) => {

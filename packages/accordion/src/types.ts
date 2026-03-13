@@ -75,18 +75,45 @@ export interface AccordionRootProps
   extends
     Omit<ViewProps, 'children' | 'style'>,
     WebAccordionRootAccessibilityProps {
+  /**
+   * The content of the accordion.
+   */
   children?: React.ReactNode | ((state: AccordionRootState) => React.ReactNode);
+  /**
+   * Style applied to the root view.
+   */
   style?:
     | StyleProp<ViewStyle>
     | ((state: AccordionRootState) => StyleProp<ViewStyle>);
+  /**
+   * The default value of the open item(s) when uncontrolled.
+   */
   defaultValue?: string | string[];
+  /**
+   * The controlled value of the open item(s).
+   */
   value?: string | string[];
+  /**
+   * Callback fired when the open item(s) change.
+   */
   onValueChange?: (
     value: string | string[],
     details: AccordionValueChangeDetails,
   ) => void;
+  /**
+   * Whether multiple items can be open at the same time.
+   * @default false
+   */
   multiple?: boolean;
+  /**
+   * Whether the accordion is disabled.
+   * @default false
+   */
   disabled?: boolean;
+  /**
+   * The layout orientation of the accordion.
+   * @default 'vertical'
+   */
   orientation?: Orientation;
   /**
    * Whether to loop keyboard focus within the accordion.
@@ -103,12 +130,29 @@ export interface AccordionItemProps
   extends
     Omit<ViewProps, 'children' | 'style'>,
     WebAccordionItemAccessibilityProps {
+  /**
+   * The content of the accordion item.
+   */
   children?: React.ReactNode | ((state: AccordionItemState) => React.ReactNode);
+  /**
+   * Style applied to the item view.
+   */
   style?:
     | StyleProp<ViewStyle>
     | ((state: AccordionItemState) => StyleProp<ViewStyle>);
+  /**
+   * A unique value for the accordion item.
+   * If not provided, a random ID will be generated.
+   */
   value?: string;
+  /**
+   * Whether the accordion item is disabled.
+   * @default false
+   */
   disabled?: boolean;
+  /**
+   * Callback fired when the open state of the item changes.
+   */
   onOpenChange?: (
     open: boolean,
     details: AccordionItemOpenChangeDetails,
@@ -119,9 +163,15 @@ export interface AccordionHeaderProps
   extends
     Omit<ViewProps, 'children' | 'style'>,
     WebAccordionItemAccessibilityProps {
+  /**
+   * The content of the accordion header.
+   */
   children?:
     | React.ReactNode
     | ((state: AccordionHeaderState) => React.ReactNode);
+  /**
+   * Style applied to the header view.
+   */
   style?:
     | StyleProp<ViewStyle>
     | ((state: AccordionHeaderState) => StyleProp<ViewStyle>);
@@ -131,15 +181,33 @@ export interface AccordionTriggerProps
   extends
     Omit<PressableProps, 'children' | 'style'>,
     WebAccordionTriggerAccessibilityProps {
+  /**
+   * The content of the accordion trigger.
+   */
   children?:
     | React.ReactNode
     | ((state: AccordionTriggerState) => React.ReactNode);
+  /**
+   * Style applied to the trigger view.
+   */
   style?:
     | StyleProp<ViewStyle>
     | ((state: AccordionTriggerState) => StyleProp<ViewStyle>);
+  /**
+   * Callback fired when a key is pressed down.
+   */
   onKeyDown?: (e: NativeSyntheticEvent<CoreKeyPressEventData>) => void;
+  /**
+   * Callback fired when a key is pressed.
+   */
   onKeyPress?: (e: NativeSyntheticEvent<CoreKeyPressEventData>) => void;
+  /**
+   * Callback fired when the trigger receives focus.
+   */
   onFocus?: (e: NativeSyntheticEvent<TargetedEvent>) => void;
+  /**
+   * Callback fired when the trigger loses focus.
+   */
   onBlur?: (e: NativeSyntheticEvent<TargetedEvent>) => void;
   /**
    * Whether the trigger should be in a focus-visible state.
@@ -158,12 +226,26 @@ export interface AccordionPanelProps
   extends
     Omit<ViewProps, 'children' | 'style'>,
     WebAccordionPanelAccessibilityProps {
+  /**
+   * The content of the accordion panel.
+   */
   children?:
     | React.ReactNode
     | ((state: AccordionPanelState) => React.ReactNode);
+  /**
+   * Style applied to the panel view.
+   */
   style?:
     | StyleProp<ViewStyle>
     | ((state: AccordionPanelState) => StyleProp<ViewStyle>);
+  /**
+   * Whether to keep the panel mounted when closed.
+   * @default false
+   */
   keepMounted?: boolean;
+  /**
+   * Whether the panel should be hidden until a specific search is performed.
+   * @default false
+   */
   hiddenUntilFound?: boolean;
 }

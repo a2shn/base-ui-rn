@@ -3,6 +3,19 @@ import { View } from 'react-native';
 import type { AccordionPanelProps } from './types';
 import { useAccordionPanel } from './use-accordion';
 
+/**
+ * The content area that is revealed when an accordion item is expanded.
+ *
+ * Supports conditional rendering, dimension measurement variables, and
+ * accessibility attributes. Must be used within an `Accordion.Item`.
+ *
+ * @example
+ * ```tsx
+ * <Accordion.Panel>
+ *   <Text>Panel content here</Text>
+ * </Accordion.Panel>
+ * ```
+ */
 export const AccordionPanel = React.forwardRef<View, AccordionPanelProps>(
   (props, ref) => {
     const {

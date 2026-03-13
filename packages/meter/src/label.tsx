@@ -3,6 +3,16 @@ import { Text } from 'react-native';
 import type { MeterLabelProps } from './types';
 import { useMeterContext } from './meter-context';
 
+/**
+ * An accessible label for the meter.
+ *
+ * Automatically linked to the `Meter.Root` via context.
+ *
+ * @example
+ * ```tsx
+ * <Meter.Label>Storage Used</Meter.Label>
+ * ```
+ */
 export const MeterLabel = React.forwardRef<Text, MeterLabelProps>(
   (props, ref) => {
     const {

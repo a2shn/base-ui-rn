@@ -13,7 +13,13 @@ import { useAvatarImageLoading } from './avatar-image-loading';
 /**
  * The image component for the avatar.
  *
- * Automatically manages loading status within the Avatar.Root context.
+ * Automatically manages loading status within the Avatar.Root context and
+ * communicates status changes to the root.
+ *
+ * @example
+ * ```tsx
+ * <Avatar.Image source={{ uri: 'https://github.com/shadcn.png' }} />
+ * ```
  */
 export const AvatarImage = React.forwardRef<RNImage, AvatarImageProps>(
   (props, ref) => {

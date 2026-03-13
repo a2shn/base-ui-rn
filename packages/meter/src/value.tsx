@@ -3,6 +3,16 @@ import { Text } from 'react-native';
 import type { MeterValueProps } from './types';
 import { useMeterContext } from './meter-context';
 
+/**
+ * A text element displaying the current value of the meter.
+ *
+ * Hidden from accessibility to avoid redundant announcements.
+ *
+ * @example
+ * ```tsx
+ * <Meter.Value />
+ * ```
+ */
 export const MeterValue = React.forwardRef<Text, MeterValueProps>(
   (props, ref) => {
     const {

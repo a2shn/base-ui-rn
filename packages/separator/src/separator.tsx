@@ -4,6 +4,14 @@ import type { SeparatorProps } from './types';
 
 /**
  * Headless separator primitive for React Native.
+ *
+ * Visually or semantically separates content. Supports horizontal and vertical
+ * orientations and decorative mode.
+ *
+ * @example
+ * ```tsx
+ * <Separator orientation="horizontal" />
+ * ```
  */
 export const Separator = React.forwardRef<View, SeparatorProps>(
   (props, ref) => {

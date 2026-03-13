@@ -26,26 +26,15 @@ const PressableWithKeyPress =
   >;
 
 /**
- * Headless toggle primitive built on top of React Native `Pressable`.
+ * Headless toggle primitive built on top of React Native Pressable.
  *
- * Supports keyboard interaction, accessibility roles, and focus ring management.
- * Can be used independently or as part of a `ToggleGroup`.
+ * A two-state button that can be pressed or not pressed. Supports keyboard
+ * interaction, focus behavior, and ARIA attributes for web.
  *
  * @example
  * ```tsx
- * <Toggle
- *   role="checkbox"
- *   accessibilityHint="Enables dark mode"
- *   onPressedChange={(pressed) => console.log('Dark mode:', pressed)}
- * >
- *   {({ pressed, focusVisible }) => (
- *     <View style={{
- *       backgroundColor: pressed ? '#000' : '#fff',
- *       opacity: focusVisible ? 0.8 : 1
- *     }}>
- *       <Text style={{ color: pressed ? '#fff' : '#000' }}>Dark Mode</Text>
- *     </View>
- *   )}
+ * <Toggle>
+ *   {({ pressed }) => <Text>{pressed ? 'ON' : 'OFF'}</Text>}
  * </Toggle>
  * ```
  */

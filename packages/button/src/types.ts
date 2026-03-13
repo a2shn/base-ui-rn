@@ -35,74 +35,63 @@ export interface ButtonState {
 export interface ButtonProps
   extends Omit<PressableProps, 'children' | 'style'>, WebAccessibilityProps {
   /**
-   * The child elements or a render function.
+   * The content of the button.
    */
   children?: React.ReactNode | ((state: ButtonState) => React.ReactNode);
 
   /**
-   * The style of the button or a function that returns a style based on state.
+   * Style applied to the button view.
    */
   style?: StyleProp<ViewStyle> | ((state: ButtonState) => StyleProp<ViewStyle>);
 
   /**
-   * Disables press, focus, and keyboard interaction.
-   *
+   * Whether the button is disabled.
    * @default false
    */
   disabled?: boolean;
 
   /**
-   * Keeps the button focusable even when disabled.
-   *
-   * Useful for loading states where focus should not be lost.
-   *
+   * Whether the button remains focusable when disabled.
    * @default false
    */
   focusableWhenDisabled?: boolean;
 
   /**
-   * Whether the focus ring should be visible even during touch interactions.
+   * Whether to force the focus-visible state.
    * @default false
    */
   focusVisible?: boolean;
 
   /**
-   * Whether to disable the default focus ring styling.
+   * Whether to disable the default focus ring style.
    * @default false
    */
   disableDefaultFocusRing?: boolean;
 
   /**
-   * Describes the result of activating the button.
-   *
+   * A short hint describing the result of the action.
    * @default 'Activates the button'
    */
   accessibilityHint?: string;
 
   /**
-   * Called when the button is activated.
-   *
-   * @param details  Source details describing how the button was activated.
+   * Callback fired when the pressed state changes.
    */
   onPressedChange?: (details: ButtonPressedChangeDetails) => void;
 
   /**
-   * Called when a hardware keyboard key is pressed while the button is focused.
-   *
-   * Useful for Web and TV platforms where keyboard interaction is expected.
+   * Callback fired when a key is pressed.
    */
   onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
 
   /**
-   * Keyboard shortcut for the button.
+   * Keyboard shortcut configuration for the button.
    */
   shortcut?: ShortcutConfig;
 
   /**
-   * Expands the interactive touch area beyond the visual bounds.
-   *
-   * @default
-   * { top: 10, bottom: 10, left: 10, right: 10 }
+   * The hit slop of the button.
+   * @default { top: 10, bottom: 10, left: 10, right: 10 }
    */
   hitSlop?: PressableProps['hitSlop'];
 }

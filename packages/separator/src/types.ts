@@ -12,7 +12,6 @@ export interface SeparatorProps
   orientation?: Orientation;
   /**
    * Whether the separator is purely decorative.
-   * If true, it will be hidden from assistive technologies.
    * @default false
    */
   decorative?: boolean;

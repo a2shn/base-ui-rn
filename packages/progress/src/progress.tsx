@@ -6,17 +6,16 @@ import { ProgressContext } from './progress-context';
 import { useProgress } from './use-progress';
 
 /**
- * A high-quality, unstyled React progress bar component that displays the status of a task that takes a long time.
- * Groups all parts of the progress bar and provides the task completion status to screen readers.
+ * Headless progress root primitive for React Native.
+ *
+ * Displays the status of a long-running task. Provides state to its sub-components
+ * and ensures proper ARIA attributes for screen readers.
  *
  * @example
  * ```tsx
  * <Progress.Root value={20}>
  *   <Progress.Label>Export data</Progress.Label>
- *   <Progress.Value />
- *   <Progress.Track>
- *     <Progress.Indicator style={{ width: '20%' }} />
- *   </Progress.Track>
+ *   <Progress.Track><Progress.Indicator /></Progress.Track>
  * </Progress.Root>
  * ```
  */

@@ -7,48 +7,57 @@ import type {
 
 export interface MeterRootProps extends ViewProps, WebMeterAccessibilityProps {
   /**
-   * The current value.
+   * The current value of the meter.
    */
   value: number;
   /**
-   * The minimum value.
+   * The minimum value of the meter.
    * @default 0
    */
   min?: number;
   /**
-   * The maximum value.
+   * The maximum value of the meter.
    * @default 100
    */
   max?: number;
   /**
-   * A string value that provides a user-friendly name for aria-valuenow.
+   * A user-friendly name for the current value.
    */
   'aria-valuetext'?: string;
   /**
-   * A function that returns a string value that provides a human-readable text alternative for aria-valuenow.
+   * Callback to generate a human-readable text alternative for the value.
    */
   getAriaValueText?: (value: number, min: number, max: number) => string;
   /**
-   * The locale used by Intl.NumberFormat when formatting the value.
-   * Defaults to the user's runtime locale.
+   * The locale used for formatting the value.
    */
   locale?: string;
   /**
-   * Options to format the value.
+   * Options for formatting the value.
    */
   format?: Intl.NumberFormatOptions;
 }
 
-export interface MeterLabelProps extends TextProps, WebAccessibilityProps {}
+export interface MeterLabelProps extends TextProps, WebAccessibilityProps {
+  /**
+   * The content of the label.
+   */
+  children?: React.ReactNode;
+}
 
-export interface MeterTrackProps extends ViewProps, WebAccessibilityProps {}
+export interface MeterTrackProps extends ViewProps, WebAccessibilityProps {
+  /**
+   * The content of the track.
+   */
+  children?: React.ReactNode;
+}
 
 export interface MeterIndicatorProps extends ViewProps, WebAccessibilityProps {}
 
 export interface MeterValueProps
   extends Omit<TextProps, 'children'>, WebAccessibilityProps {
   /**
-   * A function that returns a ReactNode based on the formatted value and current value.
+   * A function that returns content based on the formatted value.
    */
   children?: (formattedValue: string, value: number) => React.ReactNode;
 }

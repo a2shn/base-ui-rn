@@ -3,6 +3,19 @@ import { View } from 'react-native';
 import type { AccordionHeaderProps } from './types';
 import { useAccordionHeader } from './use-accordion';
 
+/**
+ * An optional wrapper for the Accordion.Trigger.
+ *
+ * Typically used to provide semantic structure (e.g., heading levels)
+ * while inheriting the item's state.
+ *
+ * @example
+ * ```tsx
+ * <Accordion.Header>
+ *   <Accordion.Trigger>...</Accordion.Trigger>
+ * </Accordion.Header>
+ * ```
+ */
 export const AccordionHeader = React.forwardRef<View, AccordionHeaderProps>(
   (props, ref) => {
     const {

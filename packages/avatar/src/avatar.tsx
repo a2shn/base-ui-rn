@@ -6,13 +6,14 @@ import { AvatarContext } from './avatar-context';
 /**
  * Headless avatar root primitive for React Native.
  *
+ * Manages the image loading lifecycle and provides state to its Image and
+ * Fallback sub-components. Supports accessibility attributes and ARIA busy states.
+ *
  * @example
  * ```tsx
  * <Avatar.Root>
- *   <Avatar.Image source={{ uri: 'https://github.com/shadcn.png' }} />
- *   <Avatar.Fallback delay={600}>
- *     <Text>JD</Text>
- *   </Avatar.Fallback>
+ *   <Avatar.Image source={{ uri: '...' }} />
+ *   <Avatar.Fallback>JD</Avatar.Fallback>
  * </Avatar.Root>
  * ```
  */

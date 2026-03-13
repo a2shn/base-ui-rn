@@ -10,7 +10,19 @@ import { type ToggleGroupProps } from './types';
 import { useToggleGroup } from './use-toggle-group';
 
 /**
- * Headless toggle-group primitive for React Native.
+ * Headless toggle group primitive for React Native.
+ *
+ * Coordinates the state of multiple toggles. Supports single and multiple
+ * selection, keyboard navigation, and looping focus.
+ *
+ * @example
+ * ```tsx
+ * <ToggleGroup type="single" defaultValue="center">
+ *   <Toggle value="left">Left</Toggle>
+ *   <Toggle value="center">Center</Toggle>
+ *   <Toggle value="right">Right</Toggle>
+ * </ToggleGroup>
+ * ```
  */
 export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
   (props, ref) => {

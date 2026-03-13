@@ -6,7 +6,18 @@ import { MeterContext } from './meter-context';
 import { useMeterRoot } from './use-meter-root';
 
 /**
- * Headless meter primitive for React Native.
+ * Headless meter root primitive for React Native.
+ *
+ * Measures a value within a known range and provides state to its sub-components.
+ * Supports localization, custom value formatting, and ARIA attributes.
+ *
+ * @example
+ * ```tsx
+ * <Meter.Root value={50}>
+ *   <Meter.Label>Storage</Meter.Label>
+ *   <Meter.Track><Meter.Indicator /></Meter.Track>
+ * </Meter.Root>
+ * ```
  */
 export const MeterRoot = React.forwardRef<View, MeterRootProps>(
   (props, ref) => {

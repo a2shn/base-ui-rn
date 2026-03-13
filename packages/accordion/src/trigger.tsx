@@ -18,6 +18,19 @@ const PressableWithKeyPress =
     } & React.RefAttributes<View>
   >;
 
+/**
+ * The interactive element that toggles the accordion item's panel.
+ *
+ * Supports keyboard activation, focus states, and accessibility attributes.
+ * Must be used within an `Accordion.Item`.
+ *
+ * @example
+ * ```tsx
+ * <Accordion.Trigger>
+ *   {({ open }) => <Text>{open ? 'Close' : 'Open'}</Text>}
+ * </Accordion.Trigger>
+ * ```
+ */
 export const AccordionTrigger = React.forwardRef<View, AccordionTriggerProps>(
   (props, ref) => {
     const {

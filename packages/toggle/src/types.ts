@@ -37,38 +37,33 @@ export interface ToggleProps
     Omit<PressableProps, 'role' | 'children' | 'style'>,
     WebToggleAccessibilityProps {
   /**
-   * The child elements or a render function.
+   * The content of the toggle.
    */
   children?: React.ReactNode | ((state: ToggleState) => React.ReactNode);
 
   /**
-   * The style of the toggle or a function that returns a style based on state.
+   * Style applied to the toggle view.
    */
   style?: StyleProp<ViewStyle> | ((state: ToggleState) => StyleProp<ViewStyle>);
 
   /**
-   * The value of the toggle.
-   * Used when the toggle is part of a `ToggleGroup`.
+   * A unique value for the toggle. Used within a `ToggleGroup`.
    */
   value?: string;
 
   /**
-   * Controlled pressed state.
+   * The controlled pressed state of the toggle.
    */
   pressed?: boolean;
 
   /**
-   * Uncontrolled initial pressed state.
-   *
+   * The initial pressed state when uncontrolled.
    * @default false
    */
   defaultPressed?: boolean;
 
   /**
-   * Called when the pressed state changes.
-   *
-   * @param pressed  The next pressed state.
-   * @param details  Source details describing how the toggle was activated.
+   * Callback fired when the pressed state changes.
    */
   onPressedChange?: (
     pressed: boolean,
@@ -76,61 +71,48 @@ export interface ToggleProps
   ) => void;
 
   /**
-   * Accessibility role exposed to assistive technologies.
-   *
+   * The accessibility role of the toggle.
    * @default 'checkbox'
    */
   role?: 'checkbox' | 'switch';
 
   /**
-   * Describes the result of toggling the control.
-   *
+   * A short hint describing the result of the action.
    * @default 'Toggles the state'
    */
   accessibilityHint?: string;
 
   /**
-   * Keeps the toggle focusable even when disabled.
-   *
-   * Useful for loading states where focus should not jump away.
-   * The toggle remains in the tab/focus order and screen readers can still
-   * announce it as disabled, but all activation is blocked.
-   *
+   * Whether the toggle remains focusable when disabled.
    * @default false
    */
   focusableWhenDisabled?: boolean;
 
   /**
-   * Whether the focus ring should be visible even during touch interactions.
+   * Whether to force the focus-visible state.
    * @default false
    */
   focusVisible?: boolean;
 
   /**
-   * Whether to disable the default focus ring styling.
+   * Whether to disable the default focus ring style.
    * @default false
    */
   disableDefaultFocusRing?: boolean;
 
   /**
-   * Called when a hardware keyboard key is pressed while the toggle is focused.
-   *
-   * Fired for every key — including non-activation keys — so you can handle
-   * custom navigation or analytics. Activation keys that change pressed state
-   * are processed before this callback fires.
+   * Callback fired when a key is pressed.
    */
   onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
 
   /**
-   * Keyboard shortcut for the toggle.
+   * Keyboard shortcut configuration for the toggle.
    */
   shortcut?: ShortcutConfig;
 
   /**
-   * Expands the interactive touch area beyond the visual bounds.
-   *
-   * @default
-   * { top: 14, bottom: 14, left: 14, right: 14 }
+   * The hit slop of the toggle.
+   * @default { top: 14, bottom: 14, left: 14, right: 14 }
    */
   hitSlop?: PressableProps['hitSlop'];
 }

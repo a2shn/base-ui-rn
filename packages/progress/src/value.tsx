@@ -4,10 +4,14 @@ import type { ProgressValueProps } from './types';
 import { useProgressContext } from './progress-context';
 
 /**
- * A text element displaying the current value.
+ * A text element displaying the current value of the progress.
  *
- * Hidden from accessibility to avoid redundant announcements, as the value is
- * provided by `Progress.Root`'s `accessibilityValue`.
+ * Hidden from accessibility to avoid redundant announcements.
+ *
+ * @example
+ * ```tsx
+ * <Progress.Value />
+ * ```
  */
 export const ProgressValue = React.forwardRef<Text, ProgressValueProps>(
   (props, ref) => {

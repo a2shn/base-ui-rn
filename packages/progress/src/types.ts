@@ -44,57 +44,66 @@ export interface ProgressState {
 export interface ProgressRootProps
   extends Omit<ViewProps, 'style' | 'children'>, WebProgressAccessibilityProps {
   /**
-   * The current value. The component is indeterminate when value is null.
+   * The current value of the progress bar.
    * @default null
    */
   value?: number | null;
   /**
-   * The minimum value.
+   * The minimum value of the progress bar.
    * @default 0
    */
   min?: number;
   /**
-   * The maximum value.
+   * The maximum value of the progress bar.
    * @default 100
    */
   max?: number;
   /**
-   * A string value that provides a user-friendly name for aria-valuenow.
+   * A user-friendly name for the current value.
    */
   'aria-valuetext'?: string;
   /**
-   * Accepts a function which returns a string value that provides a human-readable text alternative for the current value.
+   * Callback to generate a human-readable text alternative for the value.
    */
   getAriaValueText?: (
     formattedValue: string | null,
     value: number | null,
   ) => string;
   /**
-   * The locale used by Intl.NumberFormat when formatting the value.
-   * Defaults to the user's runtime locale.
+   * The locale used for formatting the value.
    */
   locale?: string;
   /**
-   * Options to format the value.
+   * Options for formatting the value.
    */
   format?: Intl.NumberFormatOptions;
   /**
-   * The style of the component.
+   * Style applied to the root view.
    */
   style?:
     | StyleProp<ViewStyle>
     | ((state: ProgressState) => StyleProp<ViewStyle>);
   /**
-   * The child elements or a render function.
+   * The content of the progress root.
    */
   children?: React.ReactNode | ((state: ProgressState) => React.ReactNode);
 }
 
 export interface ProgressLabelProps
-  extends TextProps, WebProgressAccessibilityProps {}
+  extends TextProps, WebProgressAccessibilityProps {
+  /**
+   * The content of the label.
+   */
+  children?: React.ReactNode;
+}
 
 export interface ProgressTrackProps
-  extends ViewProps, WebProgressAccessibilityProps {}
+  extends ViewProps, WebProgressAccessibilityProps {
+  /**
+   * The content of the track.
+   */
+  children?: React.ReactNode;
+}
 
 export interface ProgressIndicatorProps
   extends ViewProps, WebProgressAccessibilityProps {}
@@ -102,7 +111,7 @@ export interface ProgressIndicatorProps
 export interface ProgressValueProps
   extends Omit<TextProps, 'children'>, WebProgressAccessibilityProps {
   /**
-   * A function that returns a ReactNode based on the formatted value and current value.
+   * A function that returns content based on the formatted value.
    */
   children?: (
     formattedValue: string | null,

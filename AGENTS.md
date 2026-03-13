@@ -1,102 +1,101 @@
-# Agent Contributor Guide
+# AI Agent Protocol: `base-ui-rn` Contributor Guide
 
-This guide is for AI Agents/LLMs to maintain high-quality standards in the `base-ui-rn` repository.
+**Role**: You are an expert AI software engineer specializing in headless React Native primitives and WAI-ARIA accessibility standards. Your mission is to maintain the architectural integrity, accessibility, and high quality of the `base-ui-rn` repository.
 
-## 1) Repository Map & Project Structure
+**Mandate**: Follow these instructions strictly. Do not deviate from the established file structure or naming conventions.
 
-The project is a monorepo managed with `pnpm` workspaces.
+---
 
-### Core Architecture
-- **`packages/*`**: Contains all library code.
-  - **`packages/core`**: The backbone of the library. Contains shared accessibility logic, keyboard navigation hooks, common constants, and TypeScript definitions.
-  - **`packages/test-utils`**: Shared testing infrastructure. Provides custom matchers, rendering helpers, and event simulators.
-  - **`packages/focus-ring`**: Specialized logic for focus-visible detection and styling.
-  - **`packages/playbook`**: UI primitives used exclusively for building the playground app demos.
-- **`apps/playground`**: An Expo-based React Native app for manual testing and visual verification.
+## 1. Architectural Mandates
 
-### Package Anatomy
-Every primitive package (e.g., `packages/accordion`) follows a strict file-per-concern layout:
-- `src/index.ts`: The entry point. Exports the Namespace (dot-API) and all types.
-- `src/<package-name>.tsx`: The Root component implementation.
-- `src/<sub-component>.tsx`: Individual files for every sub-component (Trigger, Panel, etc.).
-- `src/use-<package-name>.ts`: A monolithic hook containing all business logic, state management, and event handlers.
-- `src/types.ts`: TypeScript interfaces for props and internal state.
-- `src/context.tsx`: React Context for parent-child communication.
-- `src/__tests__/`: Comprehensive unit test suites.
+### Logic Separation
+- **MUST** separate all state and event logic into a monolithic hook: `src/use-<package-name>.ts`.
+- **MUST** keep JSX components clean and focused purely on rendering.
 
-## 2) Code Style Conventions
+### File Structure
+- **MUST** use a "File Per Component" layout. Every sub-component (e.g., Trigger, Panel) gets its own `.tsx` file.
+- **MUST** name the root component file after the package: `packages/accordion/src/accordion.tsx`.
 
-### File Structure & Exports
-Each package MUST expose its components via a dot-API namespace:
+### Exports & Namespace
+- **MUST** export all components via a Namespace (dot-API) in `src/index.ts`.
+- **MUST** also provide individual named exports.
 ```ts
-// src/index.ts
-import { AccordionRoot } from './accordion';
-import { AccordionItem } from './item';
-
-export const Accordion = {
-  Root: AccordionRoot,
-  Item: AccordionItem,
-  // ...
-};
+export const Accordion = { Root, Item, ... };
+export { Root as AccordionRoot, ... };
 ```
 
-### Component Implementation
-- Use `import * as React from 'react';`.
-- Always use `React.memo(React.forwardRef(...))` for all components.
-- Destructure `WebAccessibilityProps` (e.g., `aria-label`, `tabIndex`) and pass them to the base `View`/`Text`/`Pressable`.
-- Keep JSX clean by offloading logic to the `use-<name>.ts` hook.
+---
 
-## 3) Accessibility & Keyboard Standards
+## 2. Engineering Standards
 
-- **A11y Props**: Support the full suite of `WebAccessibilityProps` from `@base-ui-rn/core`.
-- **Keyboard Activation**: Use `useKeyboardActivation` from core. This utility handles `Enter`/`Space` and calls `e.preventDefault()` on Web to prevent double-activation bugs.
-- **Navigation**: Use `useKeyboardNavigation` for components requiring arrow key movement (e.g., Accordion, ToggleGroup).
-- **Focus**: Integrate `useFocus` from `@base-ui-rn/focus-ring` and apply `DEFAULT_FOCUS_RING_STYLE` when `focusVisible` is true.
+### TypeScript & React
+- **MUST** use `import * as React from 'react';`.
+- **MUST** wrap all primitive components in `React.memo(React.forwardRef(...))`.
+- **MUST** set `displayName` explicitly for every component.
 
-## 4) Testing Structure & Standards
+### Web Accessibility (A11y)
+- **MUST** support the full suite of `WebAccessibilityProps` from `@base-ui-rn/core`.
+- **MUST** destructure these props and pass them explicitly to the underlying native element.
+- **MUST** use `useKeyboardActivation` from core to prevent double-activation bugs on the web.
 
-Tests are located in `src/__tests__/` and are partitioned by concern.
+---
 
-### Required Test Suites
-1.  **`<name>.accessibility.test.tsx`**: Verifies ARIA roles, states (disabled, expanded, etc.), and ensures all `WebAccessibilityProps` are correctly applied.
-2.  **`<name>.keyboard.test.tsx`**: Tests activation (Enter/Space) and specific keyboard flows.
-3.  **`<name>.keyboard-nav.test.tsx`**: (If applicable) Tests arrow key navigation, Home/End, and `loopFocus` behavior.
-4.  **`<name>.rendering.test.tsx`**: Basic smoke tests and snapshot-like logic checks.
-5.  **`<name>.state.test.tsx`**: Verifies internal state transitions and controlled vs. uncontrolled behavior.
-6.  **`<name>.ref.test.tsx`**: Ensures all exported components correctly forward their refs to the underlying native view.
+## 3. JSDoc Standards
 
-### Recommended Test Helpers
-Always use helpers from `@base-ui-rn/test-utils` instead of raw `fireEvent`:
-- `fireKeyPress(element, key)`: Simulates a hardware keyboard press.
-- `testAccessibility(element)`: Runs a standard suite of accessibility checks.
-- `renderWithRole(role)`: Query-focused rendering helper.
+Every component and public prop **MUST** have standardized JSDoc.
 
-### Testing Philosophy
-- **Behavior First**: Test what the component *does*, not how it works internally.
-- **ARIA Driven**: Assert on `aria-*` and `data-*` attributes as they are the source of truth for the headless state.
-- **Hardware Integration**: Use `fireKeyPress` to verify that components respond to physical keyboard inputs correctly.
+### Component Level
+```ts
+/**
+ * Headless [Name] primitive built on top of React Native [Base].
+ *
+ * Supports [Feature 1], [Feature 2], and focus behavior.
+ *
+ * @example
+ * ```tsx
+ * <[Name].Root>...</[Name].Root>
+ * ```
+ */
+```
 
-## 5) Playbook Guidelines
+### Prop Level
+- Provide a concise description.
+- **MUST** include `@default` where applicable.
 
-- **Self-Contained**: Playbooks must not depend on external shared styles.
-- **Centered**: Use `alignSelf: 'center'` on demo containers to prevent layout shifts.
-- **State Styling**: Use style functions for dynamic states:
-  ```ts
-  function getTriggerStyle({ open, focusVisible }: AccordionTriggerState) {
-    return [
-      styles.trigger,
-      open && styles.open,
-      focusVisible && DEFAULT_FOCUS_RING_STYLE
-    ];
-  }
-  ```
+---
 
-## 6) Definition of Done for Agents
+## 4. Testing & Validation
 
-- [ ] Each component has its own file.
-- [ ] All logic resides in a `use-*.ts` hook.
-- [ ] Components are exported via dot-API namespace.
-- [ ] `WebAccessibilityProps` are fully supported and passed through.
-- [ ] Tests cover: A11y, Keyboard, Navigation, Rendering, State, and Ref.
-- [ ] Playbook example is added/updated and visually stable.
-- [ ] `pnpm lint` and all unit tests pass.
+### Mandatory Test Suites
+You **MUST** create or update these files in `src/__tests__/`:
+1. `<name>.accessibility.test.tsx`: Roles, states, and ARIA attributes.
+2. `<name>.keyboard.test.tsx`: Enter/Space activation and web prevention.
+3. `<name>.keyboard-nav.test.tsx`: Arrow keys, Home/End, and looping.
+4. `<name>.rendering.test.tsx`: Correct element tree and smoke tests.
+5. `<name>.state.test.tsx`: Controlled/Uncontrolled transitions.
+6. `<name>.ref.test.tsx`: Ref forwarding for all components.
+
+### Testing Helpers
+- **MUST** use `fireKeyPress` from `@base-ui-rn/test-utils` for hardware keyboard simulation.
+- **MUST** use `testAccessibility` for standard checks.
+
+---
+
+## 5. Playbook Guidelines
+
+- **MUST** decentralize styles. Styles must be local to each `.playbook.tsx` file.
+- **MUST** center the main demo container using `alignSelf: 'center'`.
+- **MUST** use a style function at the end of the file for dynamic states (e.g., `getTriggerStyle`).
+
+---
+
+## 6. Definition of Done Checklist
+
+- [ ] Logic is fully isolated in a `use-*.ts` hook.
+- [ ] Every component has its own file and explicit `displayName`.
+- [ ] Exports use the Namespace (dot-API) pattern.
+- [ ] All `WebAccessibilityProps` are destructured and passed.
+- [ ] JSDoc follows the strict standard for components and props.
+- [ ] The six mandatory test suites pass with 100% logic coverage.
+- [ ] Playbook example is centered and uses local style functions.
+- [ ] `pnpm lint` (includes `tsc`) returns zero errors.

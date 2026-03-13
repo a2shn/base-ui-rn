@@ -7,6 +7,11 @@ import { useProgressContext } from './progress-context';
  * Contains the progress indicator and represents the entire range of the progress bar.
  *
  * Hidden from accessibility as it's purely visual.
+ *
+ * @example
+ * ```tsx
+ * <Progress.Track><Progress.Indicator /></Progress.Track>
+ * ```
  */
 export const ProgressTrack = React.forwardRef<View, ProgressTrackProps>(
   (props, ref) => {

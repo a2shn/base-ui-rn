@@ -4,10 +4,15 @@ import type { ProgressIndicatorProps } from './types';
 import { useProgressContext } from './progress-context';
 
 /**
- * Visualizes the completion status of the task.
+ * Visualizes the progress bar's completion status.
  *
- * Automatically applies the width (or height if vertical) based on the progress's value.
+ * Automatically applies the width based on the progress's percentage.
  * Hidden from accessibility as it's purely visual.
+ *
+ * @example
+ * ```tsx
+ * <Progress.Indicator style={{ backgroundColor: 'blue' }} />
+ * ```
  */
 export const ProgressIndicator = React.forwardRef<View, ProgressIndicatorProps>(
   (props, ref) => {

@@ -62,25 +62,25 @@ export interface ToggleGroupProps
   multiple?: boolean;
 
   /**
-   * Whether the entire group is disabled.
+   * Whether the group is disabled.
    * @default false
    */
   disabled?: boolean;
 
   /**
-   * The orientation of the group, used for keyboard navigation.
+   * The layout orientation of the group.
    * @default 'horizontal'
    */
   orientation?: 'horizontal' | 'vertical';
 
   /**
-   * Whether keyboard focus should loop back to the start/end.
+   * Whether keyboard focus should loop within the group.
    * @default true
    */
   loopFocus?: boolean;
 
   /**
-   * Callback fired when the focused item in the group changes.
+   * Callback fired when keyboard focus changes.
    */
   onFocusChange?: (value: string | null) => void;
 
@@ -90,20 +90,20 @@ export interface ToggleGroupProps
   children?: React.ReactNode | ((state: ToggleGroupState) => React.ReactNode);
 
   /**
-   * The style of the toggle group.
+   * Style applied to the group view.
    */
   style?:
     | StyleProp<ViewStyle>
     | ((state: ToggleGroupState) => StyleProp<ViewStyle>);
 
   /**
-   * Whether the focus ring should be visible even during touch interactions.
+   * Whether to force the focus-visible state.
    * @default false
    */
   focusVisible?: boolean;
 
   /**
-   * Whether to disable the default focus ring styling.
+   * Whether to disable the default focus ring style.
    * @default false
    */
   disableDefaultFocusRing?: boolean;

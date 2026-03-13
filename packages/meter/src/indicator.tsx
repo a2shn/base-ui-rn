@@ -3,6 +3,17 @@ import { View, type ViewStyle } from 'react-native';
 import type { MeterIndicatorProps } from './types';
 import { useMeterContext } from './meter-context';
 
+/**
+ * Visualizes the meter's current value.
+ *
+ * Automatically applies the width based on the meter's percentage.
+ * Hidden from accessibility as it's purely visual.
+ *
+ * @example
+ * ```tsx
+ * <Meter.Indicator style={{ backgroundColor: 'blue' }} />
+ * ```
+ */
 export const MeterIndicator = React.forwardRef<View, MeterIndicatorProps>(
   (props, ref) => {
     const {

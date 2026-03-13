@@ -23,24 +23,15 @@ const PressableWithKeyPress =
   >;
 
 /**
- * Headless button primitive built on top of React Native `Pressable`.
+ * Headless button primitive built on top of React Native Pressable.
  *
- * Supports keyboard interaction, accessibility roles, and focus ring management.
+ * Supports keyboard interaction, accessibility roles, focus ring management,
+ * and ARIA attributes for web.
  *
  * @example
  * ```tsx
- * <Button
- *   accessibilityHint="Submits the form"
- *   onPress={handleSubmit}
- * >
- *   {({ pressed, focusVisible }) => (
- *     <View style={{
- *       opacity: pressed ? 0.6 : 1,
- *       borderWidth: focusVisible ? 2 : 0,
- *     }}>
- *       <Text>Submit</Text>
- *     </View>
- *   )}
+ * <Button onPress={...}>
+ *   {({ pressed }) => <Text>{pressed ? 'Pressed' : 'Press Me'}</Text>}
  * </Button>
  * ```
  */
