@@ -46,6 +46,18 @@ export const ProgressRoot = React.forwardRef<View, ProgressRootProps>(
       importantForAccessibility = 'yes',
       tabIndex,
       style,
+      'aria-valuemin': ariaValueMin,
+      'aria-valuemax': ariaValueMax,
+      'aria-valuenow': ariaValueNow,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-expanded': ariaExpanded,
+      'aria-busy': ariaBusy,
+      'aria-hidden': ariaHidden,
+      'data-complete': dataComplete,
+      'data-indeterminate': dataIndeterminate,
+      'data-progressing': dataProgressing,
       ...otherViewProps
     } = props;
 
@@ -87,13 +99,20 @@ export const ProgressRoot = React.forwardRef<View, ProgressRootProps>(
           focusable={focusable}
           importantForAccessibility={importantForAccessibility}
           role={(accessibilityRole ?? 'progressbar') as unknown as 'checkbox'}
-          aria-labelledby={isLabelledByProp ? undefined : labelId}
+          aria-labelledby={
+            ariaLabelledBy ?? (isLabelledByProp ? undefined : labelId)
+          }
           accessibilityLabelledBy={isLabelledByProp ? undefined : [labelId]}
+          aria-describedby={ariaDescribedBy}
+          aria-details={ariaDetails}
+          aria-expanded={ariaExpanded}
+          aria-busy={ariaBusy}
+          aria-hidden={ariaHidden}
           tabIndex={resolvedTabIndex}
-          aria-valuemin={min}
-          aria-valuemax={max}
-          aria-valuenow={state.value ?? undefined}
-          aria-valuetext={state.ariaValueText}
+          aria-valuemin={ariaValueMin ?? min}
+          aria-valuemax={ariaValueMax ?? max}
+          aria-valuenow={ariaValueNow ?? state.value ?? undefined}
+          aria-valuetext={ariaValueTextProp ?? state.ariaValueText}
           accessibilityValue={
             state.isIndeterminate
               ? undefined
@@ -107,9 +126,12 @@ export const ProgressRoot = React.forwardRef<View, ProgressRootProps>(
           }
           style={resolvedStyle}
           {...({
-            'data-complete': state.isComplete ? '' : undefined,
-            'data-indeterminate': state.isIndeterminate ? '' : undefined,
-            'data-progressing': state.isProgressing ? '' : undefined,
+            'data-complete':
+              dataComplete ?? (state.isComplete ? '' : undefined),
+            'data-indeterminate':
+              dataIndeterminate ?? (state.isIndeterminate ? '' : undefined),
+            'data-progressing':
+              dataProgressing ?? (state.isProgressing ? '' : undefined),
           } as Record<string, unknown>)}
         >
           {resolvedChildren}
@@ -128,7 +150,20 @@ ProgressRoot.displayName = 'Progress.Root';
  */
 export const ProgressLabel = React.forwardRef<Text, ProgressLabelProps>(
   (props, ref) => {
-    const { children, nativeID, ...other } = props;
+    const {
+      children,
+      nativeID,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-expanded': ariaExpanded,
+      'aria-busy': ariaBusy,
+      'aria-hidden': ariaHidden,
+      'data-complete': dataComplete,
+      'data-indeterminate': dataIndeterminate,
+      'data-progressing': dataProgressing,
+      ...other
+    } = props;
     const { labelId, isComplete, isIndeterminate, isProgressing } =
       useProgressContext();
 
@@ -137,10 +172,18 @@ export const ProgressLabel = React.forwardRef<Text, ProgressLabelProps>(
         {...other}
         ref={ref}
         nativeID={nativeID ?? labelId}
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
+        aria-expanded={ariaExpanded}
+        aria-busy={ariaBusy}
+        aria-hidden={ariaHidden}
         {...({
-          'data-complete': isComplete ? '' : undefined,
-          'data-indeterminate': isIndeterminate ? '' : undefined,
-          'data-progressing': isProgressing ? '' : undefined,
+          'data-complete': dataComplete ?? (isComplete ? '' : undefined),
+          'data-indeterminate':
+            dataIndeterminate ?? (isIndeterminate ? '' : undefined),
+          'data-progressing':
+            dataProgressing ?? (isProgressing ? '' : undefined),
         } as Record<string, unknown>)}
       >
         {children}
@@ -158,7 +201,19 @@ ProgressLabel.displayName = 'Progress.Label';
  */
 export const ProgressTrack = React.forwardRef<View, ProgressTrackProps>(
   (props, ref) => {
-    const { children, ...other } = props;
+    const {
+      children,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-expanded': ariaExpanded,
+      'aria-busy': ariaBusy,
+      'aria-hidden': ariaHidden,
+      'data-complete': dataComplete,
+      'data-indeterminate': dataIndeterminate,
+      'data-progressing': dataProgressing,
+      ...other
+    } = props;
     const { isComplete, isIndeterminate, isProgressing } = useProgressContext();
 
     return (
@@ -166,11 +221,18 @@ export const ProgressTrack = React.forwardRef<View, ProgressTrackProps>(
         {...other}
         ref={ref}
         importantForAccessibility='no-hide-descendants'
-        aria-hidden
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
+        aria-expanded={ariaExpanded}
+        aria-busy={ariaBusy}
+        aria-hidden={ariaHidden ?? true}
         {...({
-          'data-complete': isComplete ? '' : undefined,
-          'data-indeterminate': isIndeterminate ? '' : undefined,
-          'data-progressing': isProgressing ? '' : undefined,
+          'data-complete': dataComplete ?? (isComplete ? '' : undefined),
+          'data-indeterminate':
+            dataIndeterminate ?? (isIndeterminate ? '' : undefined),
+          'data-progressing':
+            dataProgressing ?? (isProgressing ? '' : undefined),
         } as Record<string, unknown>)}
       >
         {children}
@@ -189,7 +251,19 @@ ProgressTrack.displayName = 'Progress.Track';
  */
 export const ProgressIndicator = React.forwardRef<View, ProgressIndicatorProps>(
   (props, ref) => {
-    const { style, ...other } = props;
+    const {
+      style,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-expanded': ariaExpanded,
+      'aria-busy': ariaBusy,
+      'aria-hidden': ariaHidden,
+      'data-complete': dataComplete,
+      'data-indeterminate': dataIndeterminate,
+      'data-progressing': dataProgressing,
+      ...other
+    } = props;
     const { percentage, isComplete, isIndeterminate, isProgressing } =
       useProgressContext();
 
@@ -206,11 +280,18 @@ export const ProgressIndicator = React.forwardRef<View, ProgressIndicatorProps>(
         ref={ref}
         style={[indicatorStyle, style]}
         importantForAccessibility='no-hide-descendants'
-        aria-hidden
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
+        aria-expanded={ariaExpanded}
+        aria-busy={ariaBusy}
+        aria-hidden={ariaHidden ?? true}
         {...({
-          'data-complete': isComplete ? '' : undefined,
-          'data-indeterminate': isIndeterminate ? '' : undefined,
-          'data-progressing': isProgressing ? '' : undefined,
+          'data-complete': dataComplete ?? (isComplete ? '' : undefined),
+          'data-indeterminate':
+            dataIndeterminate ?? (isIndeterminate ? '' : undefined),
+          'data-progressing':
+            dataProgressing ?? (isProgressing ? '' : undefined),
         } as Record<string, unknown>)}
       />
     );
@@ -227,7 +308,19 @@ ProgressIndicator.displayName = 'Progress.Indicator';
  */
 export const ProgressValue = React.forwardRef<Text, ProgressValueProps>(
   (props, ref) => {
-    const { children, ...other } = props;
+    const {
+      children,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-expanded': ariaExpanded,
+      'aria-busy': ariaBusy,
+      'aria-hidden': ariaHidden,
+      'data-complete': dataComplete,
+      'data-indeterminate': dataIndeterminate,
+      'data-progressing': dataProgressing,
+      ...other
+    } = props;
     const {
       value,
       formattedValue,
@@ -241,11 +334,18 @@ export const ProgressValue = React.forwardRef<Text, ProgressValueProps>(
         {...other}
         ref={ref}
         importantForAccessibility='no-hide-descendants'
-        aria-hidden
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
+        aria-expanded={ariaExpanded}
+        aria-busy={ariaBusy}
+        aria-hidden={ariaHidden ?? true}
         {...({
-          'data-complete': isComplete ? '' : undefined,
-          'data-indeterminate': isIndeterminate ? '' : undefined,
-          'data-progressing': isProgressing ? '' : undefined,
+          'data-complete': dataComplete ?? (isComplete ? '' : undefined),
+          'data-indeterminate':
+            dataIndeterminate ?? (isIndeterminate ? '' : undefined),
+          'data-progressing':
+            dataProgressing ?? (isProgressing ? '' : undefined),
         } as Record<string, unknown>)}
       >
         {typeof children === 'function'

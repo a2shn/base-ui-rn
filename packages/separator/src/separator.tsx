@@ -14,6 +14,13 @@ export const Separator = React.forwardRef<View, SeparatorProps>(
       tabIndex,
       'aria-disabled': ariaDisabled,
       'data-orientation': dataOrientation,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-expanded': ariaExpanded,
+      'aria-busy': ariaBusy,
+      'aria-hidden': ariaHidden,
+      'aria-orientation': ariaOrientationProp,
       ...otherProps
     } = props;
 
@@ -28,9 +35,15 @@ export const Separator = React.forwardRef<View, SeparatorProps>(
         }
         tabIndex={tabIndex}
         aria-disabled={ariaDisabled}
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
+        aria-expanded={ariaExpanded}
+        aria-busy={ariaBusy}
+        aria-hidden={ariaHidden ?? (decorative ? true : undefined)}
         accessibilityElementsHidden={decorative}
         importantForAccessibility={decorative ? 'no-hide-descendants' : 'yes'}
-        aria-orientation={orientation}
+        aria-orientation={ariaOrientationProp ?? orientation}
         data-orientation={dataOrientation ?? orientation}
       />
     );

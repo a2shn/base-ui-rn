@@ -12,6 +12,7 @@ import { AvatarPlaybook } from './src/avatar.playbook';
 import { MeterPlaybook } from './src/meter.playbook';
 import { ProgressPlaybook } from './src/progress.playbook';
 import { KeyboardShortcutsPlaybook } from './src/keyboard-shortcuts.playbook';
+import { AccordionPlaybook } from './src/accordion.playbook';
 
 const REGISTRY: PlaybookConfig = {
   Toggle: {
@@ -58,6 +59,11 @@ const REGISTRY: PlaybookConfig = {
     title: 'Keyboard Shortcuts',
     component: KeyboardShortcutsPlaybook,
     testID: 'shortcuts',
+  },
+  Accordion: {
+    title: 'Accordion',
+    component: AccordionPlaybook,
+    testID: 'accordion',
   },
 };
 

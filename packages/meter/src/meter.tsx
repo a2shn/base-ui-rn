@@ -33,6 +33,15 @@ export const MeterRoot = React.forwardRef<View, MeterRootProps>(
       focusable = false,
       importantForAccessibility = 'yes',
       tabIndex,
+      'aria-valuemin': ariaValueMin,
+      'aria-valuemax': ariaValueMax,
+      'aria-valuenow': ariaValueNow,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-expanded': ariaExpanded,
+      'aria-busy': ariaBusy,
+      'aria-hidden': ariaHidden,
       ...otherViewProps
     } = props;
 
@@ -81,13 +90,20 @@ export const MeterRoot = React.forwardRef<View, MeterRootProps>(
           focusable={focusable}
           importantForAccessibility={importantForAccessibility}
           role={(accessibilityRole ?? 'progressbar') as unknown as 'checkbox'}
-          aria-labelledby={isLabelledByProp ? undefined : labelId}
+          aria-labelledby={
+            ariaLabelledBy ?? (isLabelledByProp ? undefined : labelId)
+          }
           accessibilityLabelledBy={isLabelledByProp ? undefined : [labelId]}
+          aria-describedby={ariaDescribedBy}
+          aria-details={ariaDetails}
+          aria-expanded={ariaExpanded}
+          aria-busy={ariaBusy}
+          aria-hidden={ariaHidden}
           tabIndex={resolvedTabIndex}
-          aria-valuemin={min}
-          aria-valuemax={max}
-          aria-valuenow={value}
-          aria-valuetext={ariaValueText}
+          aria-valuemin={ariaValueMin ?? min}
+          aria-valuemax={ariaValueMax ?? max}
+          aria-valuenow={ariaValueNow ?? value}
+          aria-valuetext={ariaValueTextProp ?? ariaValueText}
           accessibilityValue={
             ariaValueText
               ? { text: ariaValueText }
@@ -109,11 +125,31 @@ MeterRoot.displayName = 'Meter.Root';
 
 export const MeterLabel = React.forwardRef<Text, MeterLabelProps>(
   (props, ref) => {
-    const { children, nativeID, ...other } = props;
+    const {
+      children,
+      nativeID,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-expanded': ariaExpanded,
+      'aria-busy': ariaBusy,
+      'aria-hidden': ariaHidden,
+      ...other
+    } = props;
     const { labelId } = useMeterContext();
 
     return (
-      <Text {...other} ref={ref} nativeID={nativeID ?? labelId}>
+      <Text
+        {...other}
+        ref={ref}
+        nativeID={nativeID ?? labelId}
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
+        aria-expanded={ariaExpanded}
+        aria-busy={ariaBusy}
+        aria-hidden={ariaHidden}
+      >
         {children}
       </Text>
     );
@@ -124,13 +160,27 @@ MeterLabel.displayName = 'Meter.Label';
 
 export const MeterTrack = React.forwardRef<View, MeterTrackProps>(
   (props, ref) => {
-    const { children, ...other } = props;
+    const {
+      children,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-expanded': ariaExpanded,
+      'aria-busy': ariaBusy,
+      'aria-hidden': ariaHidden,
+      ...other
+    } = props;
     return (
       <View
         {...other}
         ref={ref}
         importantForAccessibility='no-hide-descendants'
-        aria-hidden
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
+        aria-expanded={ariaExpanded}
+        aria-busy={ariaBusy}
+        aria-hidden={ariaHidden ?? true}
       >
         {children}
       </View>
@@ -142,7 +192,16 @@ MeterTrack.displayName = 'Meter.Track';
 
 export const MeterIndicator = React.forwardRef<View, MeterIndicatorProps>(
   (props, ref) => {
-    const { style, ...other } = props;
+    const {
+      style,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-expanded': ariaExpanded,
+      'aria-busy': ariaBusy,
+      'aria-hidden': ariaHidden,
+      ...other
+    } = props;
     const { percentage } = useMeterContext();
 
     const indicatorStyle = React.useMemo<ViewStyle>(() => {
@@ -157,7 +216,12 @@ export const MeterIndicator = React.forwardRef<View, MeterIndicatorProps>(
         ref={ref}
         style={[indicatorStyle, style]}
         importantForAccessibility='no-hide-descendants'
-        aria-hidden
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
+        aria-expanded={ariaExpanded}
+        aria-busy={ariaBusy}
+        aria-hidden={ariaHidden ?? true}
       />
     );
   },
@@ -167,7 +231,16 @@ MeterIndicator.displayName = 'Meter.Indicator';
 
 export const MeterValue = React.forwardRef<Text, MeterValueProps>(
   (props, ref) => {
-    const { children, ...other } = props;
+    const {
+      children,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-expanded': ariaExpanded,
+      'aria-busy': ariaBusy,
+      'aria-hidden': ariaHidden,
+      ...other
+    } = props;
     const { value, formattedValue } = useMeterContext();
 
     return (
@@ -175,7 +248,12 @@ export const MeterValue = React.forwardRef<Text, MeterValueProps>(
         {...other}
         ref={ref}
         importantForAccessibility='no-hide-descendants'
-        aria-hidden
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
+        aria-expanded={ariaExpanded}
+        aria-busy={ariaBusy}
+        aria-hidden={ariaHidden ?? true}
       >
         {typeof children === 'function'
           ? children(formattedValue, value)

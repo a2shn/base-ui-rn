@@ -67,6 +67,12 @@ export const Button = React.memo(
       shortcut,
       tabIndex: tabIndexProp,
       'aria-disabled': ariaDisabledProp,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-expanded': ariaExpanded,
+      'aria-busy': ariaBusy,
+      'aria-hidden': ariaHidden,
       ...otherProps
     },
     forwardedRef,
@@ -119,6 +125,12 @@ export const Button = React.memo(
         tabIndex={resolvedTabIndex}
         aria-disabled={resolvedAriaDisabled}
         aria-keyshortcuts={resolvedAriaKeyshortcuts}
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
+        aria-expanded={ariaExpanded}
+        aria-busy={ariaBusy}
+        aria-hidden={ariaHidden}
         importantForAccessibility='yes'
         hitSlop={hitSlop}
         onPress={handlePress}

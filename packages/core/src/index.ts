@@ -6,6 +6,11 @@ export type {
   WebToggleGroupAccessibilityProps,
   WebProgressAccessibilityProps,
   WebSeparatorAccessibilityProps,
+  WebAccordionRootAccessibilityProps,
+  WebAccordionItemAccessibilityProps,
+  WebAccordionTriggerAccessibilityProps,
+  WebAccordionPanelAccessibilityProps,
+  WebMeterAccessibilityProps,
   PressedChangeDetails,
 } from './types';
 

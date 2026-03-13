@@ -78,6 +78,12 @@ export const Toggle = React.memo(
       'aria-disabled': ariaDisabledProp,
       'aria-pressed': ariaPressedProp,
       'data-pressed': dataPressedProp,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-expanded': ariaExpanded,
+      'aria-busy': ariaBusy,
+      'aria-hidden': ariaHidden,
       ...otherProps
     },
     forwardedRef,
@@ -169,6 +175,12 @@ export const Toggle = React.memo(
         aria-keyshortcuts={resolvedAriaKeyshortcuts}
         aria-pressed={resolvedAriaPressed}
         data-pressed={resolvedDataPressed}
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
+        aria-expanded={ariaExpanded}
+        aria-busy={ariaBusy}
+        aria-hidden={ariaHidden}
         importantForAccessibility='yes'
         hitSlop={hitSlop}
         onPress={handlePress}

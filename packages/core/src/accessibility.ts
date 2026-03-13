@@ -62,7 +62,7 @@ export const isActivationAction = (actionName: string): boolean => {
 export const mergeAccessibilityState = (
   accessibilityState: Record<string, unknown> | undefined,
   disabled: boolean,
-  checked?: boolean,
+  checked?: boolean | 'mixed',
 ): Record<string, unknown> => {
   const state: Record<string, unknown> = { ...accessibilityState, disabled };
 
@@ -128,8 +128,8 @@ export const resolveAriaDisabled = (
  */
 export const resolveAriaPressed = (
   pressed: boolean,
-  providedAriaPressed?: boolean,
-): boolean => {
+  providedAriaPressed?: boolean | 'mixed',
+): boolean | 'mixed' => {
   return providedAriaPressed ?? pressed;
 };
 

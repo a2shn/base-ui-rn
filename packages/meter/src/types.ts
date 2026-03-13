@@ -1,8 +1,11 @@
 import type * as React from 'react';
 import type { ViewProps, TextProps } from 'react-native';
-import type { WebAccessibilityProps } from '@base-ui-rn/core';
+import type {
+  WebAccessibilityProps,
+  WebMeterAccessibilityProps,
+} from '@base-ui-rn/core';
 
-export interface MeterRootProps extends ViewProps, WebAccessibilityProps {
+export interface MeterRootProps extends ViewProps, WebMeterAccessibilityProps {
   /**
    * The current value.
    */

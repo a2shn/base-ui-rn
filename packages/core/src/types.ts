@@ -6,6 +6,7 @@ export type KeyPressEventData = { key: string };
 /**
  * Web-specific accessibility and interactivity props.
  * Used for keyboard focus and ARIA attributes on web platforms.
+ * @see https://www.w3.org/TR/wai-aria-1.2/
  */
 export type WebAccessibilityProps = {
   tabIndex?: 0 | -1;
@@ -15,6 +16,36 @@ export type WebAccessibilityProps = {
    * @see https://www.w3.org/TR/wai-aria-1.2/#aria-keyshortcuts
    */
   'aria-keyshortcuts'?: string;
+  /**
+   * Identifies the element (or elements) that labels the current element.
+   * @see https://www.w3.org/TR/wai-aria-1.2/#aria-labelledby
+   */
+  'aria-labelledby'?: string;
+  /**
+   * Identifies the element (or elements) that describes the object.
+   * @see https://www.w3.org/TR/wai-aria-1.2/#aria-describedby
+   */
+  'aria-describedby'?: string;
+  /**
+   * Identifies the element (or elements) that provide a detailed, extended description for the object.
+   * @see https://www.w3.org/TR/wai-aria-1.2/#aria-details
+   */
+  'aria-details'?: string;
+  /**
+   * Indicates whether an element, or another grouping element it controls, is currently expanded or collapsed.
+   * @see https://www.w3.org/TR/wai-aria-1.2/#aria-expanded
+   */
+  'aria-expanded'?: boolean;
+  /**
+   * Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user.
+   * @see https://www.w3.org/TR/wai-aria-1.2/#aria-busy
+   */
+  'aria-busy'?: boolean;
+  /**
+   * Indicates whether the element is exposed to an accessibility API.
+   * @see https://www.w3.org/TR/wai-aria-1.2/#aria-hidden
+   */
+  'aria-hidden'?: boolean;
 };
 
 /**
@@ -25,10 +56,10 @@ export type WebToggleAccessibilityProps = WebAccessibilityProps & {
    * Reflects pressed state for the ARIA button-toggle pattern on web.
    * Automatically set when using role="button".
    */
-  'aria-pressed'?: boolean;
+  'aria-pressed'?: boolean | 'mixed';
   /**
    * Custom data attribute applied on web for CSS selectors and testing.
-   * Reflects the current pressed state as a boolean string.
+   * Reflects the current pressed state.
    *
    * @example
    * [data-pressed="true"] { background: blue; }
@@ -52,6 +83,10 @@ export type WebToggleGroupAccessibilityProps = WebAccessibilityProps & {
    * Present when the toggle group allows multiple buttons to be in the pressed state at the same time.
    */
   'data-multiple'?: boolean;
+  /**
+   * Indicates the orientation of the toggle group for assistive technologies.
+   */
+  'aria-orientation'?: 'horizontal' | 'vertical';
 };
 
 /**
@@ -62,6 +97,10 @@ export type WebSeparatorAccessibilityProps = WebAccessibilityProps & {
    * Indicates the orientation of the separator.
    */
   'data-orientation'?: 'horizontal' | 'vertical';
+  /**
+   * Indicates the orientation of the separator for assistive technologies.
+   */
+  'aria-orientation'?: 'horizontal' | 'vertical';
 };
 
 /**
@@ -71,15 +110,129 @@ export type WebProgressAccessibilityProps = WebAccessibilityProps & {
   /**
    * Present when the progress has completed.
    */
-  'data-complete'?: string;
+  'data-complete'?: '';
   /**
    * Present when the progress is in indeterminate state.
    */
-  'data-indeterminate'?: string;
+  'data-indeterminate'?: '';
   /**
    * Present while the progress is progressing.
    */
-  'data-progressing'?: string;
+  'data-progressing'?: '';
+  /**
+   * Defines the maximum allowed value for a range widget.
+   */
+  'aria-valuemax'?: number;
+  /**
+   * Defines the minimum allowed value for a range widget.
+   */
+  'aria-valuemin'?: number;
+  /**
+   * Defines the current value for a range widget.
+   */
+  'aria-valuenow'?: number;
+  /**
+   * Defines the human readable text alternative of aria-valuenow for a range widget.
+   */
+  'aria-valuetext'?: string;
+};
+
+/**
+ * Web-specific accessibility props for Accordion Root.
+ */
+export type WebAccordionRootAccessibilityProps = WebAccessibilityProps & {
+  /**
+   * Indicates the orientation of the accordion.
+   */
+  'data-orientation'?: 'horizontal' | 'vertical';
+  /**
+   * Present when the accordion is disabled.
+   */
+  'data-disabled'?: 'true';
+};
+
+/**
+ * Web-specific accessibility props for Accordion Item.
+ */
+export type WebAccordionItemAccessibilityProps = WebAccessibilityProps & {
+  /**
+   * Present when the accordion item is open.
+   */
+  'data-open'?: 'true';
+  /**
+   * Present when the accordion item is disabled.
+   */
+  'data-disabled'?: 'true';
+  /**
+   * The index of the accordion item.
+   */
+  'data-index'?: number;
+};
+
+/**
+ * Web-specific accessibility props for Accordion Trigger.
+ */
+export type WebAccordionTriggerAccessibilityProps = WebAccessibilityProps & {
+  /**
+   * Present when the accordion panel is open.
+   */
+  'data-panel-open'?: 'true';
+  /**
+   * Present when the trigger is disabled.
+   */
+  'data-disabled'?: 'true';
+};
+
+/**
+ * Web-specific accessibility props for Accordion Panel.
+ */
+export type WebAccordionPanelAccessibilityProps = WebAccessibilityProps & {
+  /**
+   * Present when the accordion panel is open.
+   */
+  'data-open'?: 'true';
+  /**
+   * Indicates the orientation of the accordion.
+   */
+  'data-orientation'?: 'horizontal' | 'vertical';
+  /**
+   * Present when the accordion item is disabled.
+   */
+  'data-disabled'?: 'true';
+  /**
+   * The index of the accordion item.
+   */
+  'data-index'?: number;
+  /**
+   * Present when the panel is animating in.
+   */
+  'data-starting-style'?: '';
+  /**
+   * Present when the panel is animating out.
+   */
+  'data-ending-style'?: '';
+};
+
+/**
+ * Web-specific accessibility props for Meter.
+ */
+export type WebMeterAccessibilityProps = WebAccessibilityProps & {
+  /**
+   * Defines the maximum allowed value for a range widget.
+   */
+  'aria-valuemax'?: number;
+  /**
+   * Defines the minimum allowed value for a range widget.
+   */
+  'aria-valuemin'?: number;
+  /**
+   * Defines the current value for a range widget.
+   */
+  'aria-valuenow'?: number;
+  /**
+   * Defines the human readable text alternative of aria-valuenow for a range widget.
+   */
+  'aria-valuetext'?: string;
 };
 
 /**

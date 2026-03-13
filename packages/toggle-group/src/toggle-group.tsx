@@ -32,9 +32,16 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
       onBlur: onBlurProp,
       tabIndex,
       'aria-disabled': ariaDisabled,
+      'aria-orientation': ariaOrientationProp,
       'data-orientation': dataOrientation,
       'data-disabled': dataDisabled,
       'data-multiple': dataMultiple,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-expanded': ariaExpanded,
+      'aria-busy': ariaBusy,
+      'aria-hidden': ariaHidden,
       ...otherViewProps
     } = props;
 
@@ -111,7 +118,13 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
           role={(accessibilityRole ?? 'group') as unknown as 'checkbox'}
           tabIndex={tabIndex}
           aria-disabled={ariaDisabled ?? disabled}
-          aria-orientation={orientation}
+          aria-orientation={ariaOrientationProp ?? orientation}
+          aria-labelledby={ariaLabelledBy}
+          aria-describedby={ariaDescribedBy}
+          aria-details={ariaDetails}
+          aria-expanded={ariaExpanded}
+          aria-busy={ariaBusy}
+          aria-hidden={ariaHidden}
           onFocus={handleFocus}
           onBlur={handleBlur}
           data-orientation={dataOrientation ?? orientation}

@@ -38,6 +38,12 @@ export const AvatarRoot = React.forwardRef<View, AvatarRootProps>(
       accessibilityLabel,
       accessibilityHint,
       importantForAccessibility,
+      'aria-busy': ariaBusy,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-expanded': ariaExpanded,
+      'aria-hidden': ariaHidden,
       ...other
     } = props;
     const [loadingStatus, setLoadingStatus] =
@@ -70,7 +76,12 @@ export const AvatarRoot = React.forwardRef<View, AvatarRootProps>(
           accessibilityLabel={accessibilityLabel}
           accessibilityHint={accessibilityHint}
           importantForAccessibility={importantForAccessibility}
-          aria-busy={isLoading}
+          aria-busy={ariaBusy ?? isLoading}
+          aria-labelledby={ariaLabelledBy}
+          aria-describedby={ariaDescribedBy}
+          aria-details={ariaDetails}
+          aria-expanded={ariaExpanded}
+          aria-hidden={ariaHidden}
         >
           {children}
         </View>
