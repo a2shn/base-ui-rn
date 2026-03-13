@@ -14,14 +14,13 @@ import type {
   AccordionItemState,
   AccordionTriggerProps,
   AccordionTriggerState,
-  AccordionHeaderProps,
   AccordionHeaderState,
   AccordionPanelProps,
   AccordionPanelState,
   KeyPressEventData,
 } from './types';
 import { useAccordionContext, useAccordionItemContext } from './context';
-import { isActivationKey, useKeyboardNavigation } from '@base-ui-rn/core';
+import { useKeyboardNavigation, useKeyboardActivation } from '@base-ui-rn/core';
 import { useFocus } from '@base-ui-rn/focus-ring';
 
 function useId(prefix = 'accordion') {
@@ -51,7 +50,7 @@ export function useAccordionRoot(props: AccordionRootProps) {
   const baseId = useId();
 
   const { registerItem: registerTrigger, handleKeyDown } =
-    useKeyboardNavigation<View>({
+    useKeyboardNavigation<View | null>({
       orientation,
       loop: loopFocus,
     });
@@ -268,25 +267,34 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
     [disabled, itemContext.value, context, onPress],
   );
 
+  const performKeyboardActivation = React.useCallback(() => {
+    const details: AccordionValueChangeDetails = {
+      value: itemContext.value,
+      reason: 'toggle',
+    };
+    context.toggleItem(itemContext.value, details);
+  }, [context, itemContext.value]);
+
+  const handleKeyboardActivation = useKeyboardActivation(
+    performKeyboardActivation,
+    disabled,
+  );
+
   const handleKeyPress = React.useCallback(
     (event: NativeSyntheticEvent<KeyPressEventData>) => {
       if (disabled) return;
 
-      const nativeEvent = event.nativeEvent;
-      const key = nativeEvent?.key;
-
-      if (isActivationKey(key)) {
-        const details: AccordionValueChangeDetails = {
-          value: itemContext.value,
-          reason: 'toggle',
-        };
-        context.toggleItem(itemContext.value, details);
-      }
-
+      handleKeyboardActivation(event);
       context.onTriggerKeyPress(itemContext.value, event);
       onKeyPress?.(event);
     },
-    [disabled, itemContext.value, context, onKeyPress],
+    [
+      disabled,
+      handleKeyboardActivation,
+      itemContext.value,
+      context,
+      onKeyPress,
+    ],
   );
 
   const state: AccordionTriggerState = {

@@ -22,7 +22,6 @@ export const AccordionTrigger = React.forwardRef<View, AccordionTriggerProps>(
   (props, ref) => {
     const {
       children,
-      onKeyDown,
       style,
       disableDefaultFocusRing = false,
       'aria-labelledby': ariaLabelledBy,

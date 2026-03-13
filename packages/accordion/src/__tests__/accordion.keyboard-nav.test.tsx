@@ -8,16 +8,16 @@ describe('Accordion Keyboard Navigation', () => {
     const onFocusChange = jest.fn();
     const { getByTestId } = render(
       <Accordion.Root onFocusChange={onFocusChange}>
-        <Accordion.Item value="item-1">
-          <Accordion.Trigger testID="trigger-1">Trigger 1</Accordion.Trigger>
+        <Accordion.Item value='item-1'>
+          <Accordion.Trigger testID='trigger-1'>Trigger 1</Accordion.Trigger>
         </Accordion.Item>
-        <Accordion.Item value="item-2">
-          <Accordion.Trigger testID="trigger-2">Trigger 2</Accordion.Trigger>
+        <Accordion.Item value='item-2'>
+          <Accordion.Trigger testID='trigger-2'>Trigger 2</Accordion.Trigger>
         </Accordion.Item>
-        <Accordion.Item value="item-3">
-          <Accordion.Trigger testID="trigger-3">Trigger 3</Accordion.Trigger>
+        <Accordion.Item value='item-3'>
+          <Accordion.Trigger testID='trigger-3'>Trigger 3</Accordion.Trigger>
         </Accordion.Item>
-      </Accordion.Root>
+      </Accordion.Root>,
     );
 
     const trigger1 = getByTestId('trigger-1');
@@ -41,13 +41,13 @@ describe('Accordion Keyboard Navigation', () => {
     const onFocusChange = jest.fn();
     const { getByTestId } = render(
       <Accordion.Root onFocusChange={onFocusChange} loopFocus={false}>
-        <Accordion.Item value="item-1">
-          <Accordion.Trigger testID="trigger-1">Trigger 1</Accordion.Trigger>
+        <Accordion.Item value='item-1'>
+          <Accordion.Trigger testID='trigger-1'>Trigger 1</Accordion.Trigger>
         </Accordion.Item>
-        <Accordion.Item value="item-2">
-          <Accordion.Trigger testID="trigger-2">Trigger 2</Accordion.Trigger>
+        <Accordion.Item value='item-2'>
+          <Accordion.Trigger testID='trigger-2'>Trigger 2</Accordion.Trigger>
         </Accordion.Item>
-      </Accordion.Root>
+      </Accordion.Root>,
     );
 
     const trigger2 = getByTestId('trigger-2');
@@ -63,16 +63,16 @@ describe('Accordion Keyboard Navigation', () => {
     const onFocusChange = jest.fn();
     const { getByTestId } = render(
       <Accordion.Root onFocusChange={onFocusChange}>
-        <Accordion.Item value="item-1">
-          <Accordion.Trigger testID="trigger-1">Trigger 1</Accordion.Trigger>
+        <Accordion.Item value='item-1'>
+          <Accordion.Trigger testID='trigger-1'>Trigger 1</Accordion.Trigger>
         </Accordion.Item>
-        <Accordion.Item value="item-2">
-          <Accordion.Trigger testID="trigger-2">Trigger 2</Accordion.Trigger>
+        <Accordion.Item value='item-2'>
+          <Accordion.Trigger testID='trigger-2'>Trigger 2</Accordion.Trigger>
         </Accordion.Item>
-        <Accordion.Item value="item-3">
-          <Accordion.Trigger testID="trigger-3">Trigger 3</Accordion.Trigger>
+        <Accordion.Item value='item-3'>
+          <Accordion.Trigger testID='trigger-3'>Trigger 3</Accordion.Trigger>
         </Accordion.Item>
-      </Accordion.Root>
+      </Accordion.Root>,
     );
 
     const trigger2 = getByTestId('trigger-2');
@@ -87,14 +87,14 @@ describe('Accordion Keyboard Navigation', () => {
   it('supports horizontal navigation when orientation is horizontal', () => {
     const onFocusChange = jest.fn();
     const { getByTestId } = render(
-      <Accordion.Root onFocusChange={onFocusChange} orientation="horizontal">
-        <Accordion.Item value="item-1">
-          <Accordion.Trigger testID="trigger-1">Trigger 1</Accordion.Trigger>
+      <Accordion.Root onFocusChange={onFocusChange} orientation='horizontal'>
+        <Accordion.Item value='item-1'>
+          <Accordion.Trigger testID='trigger-1'>Trigger 1</Accordion.Trigger>
         </Accordion.Item>
-        <Accordion.Item value="item-2">
-          <Accordion.Trigger testID="trigger-2">Trigger 2</Accordion.Trigger>
+        <Accordion.Item value='item-2'>
+          <Accordion.Trigger testID='trigger-2'>Trigger 2</Accordion.Trigger>
         </Accordion.Item>
-      </Accordion.Root>
+      </Accordion.Root>,
     );
 
     const trigger1 = getByTestId('trigger-1');
