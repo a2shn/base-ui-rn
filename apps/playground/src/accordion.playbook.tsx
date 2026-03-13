@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, Animated } from 'react-native';
 import { Accordion } from '@base-ui-rn/accordion';
 import { Gallery, Section, usePlaybookToggles } from '@base-ui-rn/playbook';
 
@@ -31,12 +31,7 @@ export function AccordionPlaybook() {
                   )}
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Panel
-                style={({ open }) => [
-                  styles.panel,
-                  open ? {} : styles.panelHidden,
-                ]}
-              >
+              <Accordion.Panel style={styles.panel}>
                 <Text>
                   Base UI is a library of high-quality unstyled React components
                   for design systems and web apps.
@@ -61,12 +56,7 @@ export function AccordionPlaybook() {
                   )}
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Panel
-                style={({ open }) => [
-                  styles.panel,
-                  open ? {} : styles.panelHidden,
-                ]}
-              >
+              <Accordion.Panel style={styles.panel}>
                 <Text>Head to the "Quick start" guide in the docs.</Text>
               </Accordion.Panel>
             </Accordion.Item>
@@ -88,13 +78,56 @@ export function AccordionPlaybook() {
                   )}
                 </Accordion.Trigger>
               </Accordion.Header>
+              <Accordion.Panel style={styles.panel}>
+                <Text>Of course! Base UI is free and open source.</Text>
+              </Accordion.Panel>
+            </Accordion.Item>
+          </Accordion.Root>
+        </View>
+      </Section>
+
+      <Section title='Animated (Custom Variables)'>
+        <View style={styles.container}>
+          <Accordion.Root>
+            <Accordion.Item value='item-1'>
+              <Accordion.Header>
+                <Accordion.Trigger
+                  style={({ open }) => [
+                    styles.trigger,
+                    { backgroundColor: open ? '#f5f5f5' : '#fff' },
+                  ]}
+                >
+                  {({ open }) => (
+                    <>
+                      <Text>Animated Panel</Text>
+                      <Text style={styles.icon}>{open ? '×' : '+'}</Text>
+                    </>
+                  )}
+                </Accordion.Trigger>
+              </Accordion.Header>
               <Accordion.Panel
-                style={({ open }) => [
+                keepMounted
+                style={(state) => [
                   styles.panel,
-                  open ? {} : styles.panelHidden,
+                  styles.animatedPanel,
+                  {
+                    height: state.open
+                      ? state['--accordion-panel-height']
+                      : 0,
+                    opacity: state.open ? 1 : 0,
+                  },
                 ]}
               >
-                <Text>Of course! Base UI is free and open source.</Text>
+                <View>
+                  <Text>
+                    This panel uses the --accordion-panel-height variable to
+                    smoothly toggle its height.
+                  </Text>
+                  <Text style={{ marginTop: 8 }}>
+                    It stays mounted to allow for height measurements even when
+                    closed.
+                  </Text>
+                </View>
               </Accordion.Panel>
             </Accordion.Item>
           </Accordion.Root>
@@ -120,12 +153,7 @@ export function AccordionPlaybook() {
                   )}
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Panel
-                style={({ open }) => [
-                  styles.panel,
-                  open ? {} : styles.panelHidden,
-                ]}
-              >
+              <Accordion.Panel style={styles.panel}>
                 <Text>This panel is open by default.</Text>
               </Accordion.Panel>
             </Accordion.Item>
@@ -146,12 +174,7 @@ export function AccordionPlaybook() {
                   )}
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Panel
-                style={({ open }) => [
-                  styles.panel,
-                  open ? {} : styles.panelHidden,
-                ]}
-              >
+              <Accordion.Panel style={styles.panel}>
                 <Text>Click to toggle this panel.</Text>
               </Accordion.Panel>
             </Accordion.Item>
@@ -178,12 +201,7 @@ export function AccordionPlaybook() {
                   )}
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Panel
-                style={({ open }) => [
-                  styles.panel,
-                  open ? {} : styles.panelHidden,
-                ]}
-              >
+              <Accordion.Panel style={styles.panel}>
                 <Text>You can have multiple items open at once.</Text>
               </Accordion.Panel>
             </Accordion.Item>
@@ -204,12 +222,7 @@ export function AccordionPlaybook() {
                   )}
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Panel
-                style={({ open }) => [
-                  styles.panel,
-                  open ? {} : styles.panelHidden,
-                ]}
-              >
+              <Accordion.Panel style={styles.panel}>
                 <Text>Try opening both items!</Text>
               </Accordion.Panel>
             </Accordion.Item>
@@ -236,12 +249,7 @@ export function AccordionPlaybook() {
                   )}
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Panel
-                style={({ open }) => [
-                  styles.panel,
-                  open ? {} : styles.panelHidden,
-                ]}
-              >
+              <Accordion.Panel style={styles.panel}>
                 <Text>This item is enabled.</Text>
               </Accordion.Panel>
             </Accordion.Item>
@@ -263,12 +271,7 @@ export function AccordionPlaybook() {
                   )}
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Panel
-                style={({ open }) => [
-                  styles.panel,
-                  open ? {} : styles.panelHidden,
-                ]}
-              >
+              <Accordion.Panel style={styles.panel}>
                 <Text>This item is disabled.</Text>
               </Accordion.Panel>
             </Accordion.Item>
@@ -289,12 +292,7 @@ export function AccordionPlaybook() {
                   )}
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Panel
-                style={({ open }) => [
-                  styles.panel,
-                  open ? {} : styles.panelHidden,
-                ]}
-              >
+              <Accordion.Panel style={styles.panel}>
                 <Text>This item is also enabled.</Text>
               </Accordion.Panel>
             </Accordion.Item>
@@ -312,6 +310,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 8,
     overflow: 'hidden',
+    alignSelf: 'center',
   },
   trigger: {
     flexDirection: 'row',
@@ -328,10 +327,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 16,
   },
-  panelHidden: {
-    height: 0,
+  animatedPanel: {
     overflow: 'hidden',
-    paddingVertical: 0,
   },
   disabled: {
     opacity: 0.5,

@@ -3,6 +3,8 @@ import type {
   View,
   GestureResponderEvent,
   NativeSyntheticEvent,
+  LayoutChangeEvent,
+  TargetedEvent,
 } from 'react-native';
 import type {
   AccordionRootProps,
@@ -19,6 +21,7 @@ import type {
 } from './types';
 import { useAccordionContext, useAccordionItemContext } from './context';
 import { isActivationKey } from '@base-ui-rn/core';
+import { useFocus } from '@base-ui-rn/focus-ring';
 
 function useId(prefix = 'accordion') {
   return React.useMemo(
@@ -184,12 +187,39 @@ export function useAccordionItem(props: AccordionItemProps) {
 }
 
 export function useAccordionTrigger(props: AccordionTriggerProps) {
-  const { disabled: disabledProp, onPress, onKeyPress } = props;
+  const {
+    disabled: disabledProp,
+    onPress,
+    onKeyPress,
+    focusVisible: forceFocusVisible = false,
+    onFocus: onFocusProp,
+    onBlur: onBlurProp,
+  } = props;
 
   const context = useAccordionContext();
   const itemContext = useAccordionItemContext();
 
   const disabled = disabledProp || itemContext.disabled || context.disabled;
+
+  const { focused, focusVisible, onFocus, onBlur } = useFocus({
+    focusVisible: forceFocusVisible,
+  });
+
+  const handleFocus = React.useCallback(
+    (event: NativeSyntheticEvent<TargetedEvent>) => {
+      onFocus();
+      onFocusProp?.(event);
+    },
+    [onFocus, onFocusProp],
+  );
+
+  const handleBlur = React.useCallback(
+    (event: NativeSyntheticEvent<TargetedEvent>) => {
+      onBlur();
+      onBlurProp?.(event);
+    },
+    [onBlur, onBlurProp],
+  );
 
   const handlePress = React.useCallback(
     (event: GestureResponderEvent) => {
@@ -229,12 +259,18 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
   const state: AccordionTriggerState = {
     open: itemContext.open,
     disabled,
+    focused,
+    focusVisible,
   };
 
   return {
     disabled,
     handlePress,
     handleKeyPress,
+    handleFocus,
+    handleBlur,
+    focused,
+    focusVisible,
     state,
     open: itemContext.open,
   };
@@ -263,17 +299,33 @@ export function useAccordionPanel(props: AccordionPanelProps) {
   const context = useAccordionContext();
   const itemContext = useAccordionItemContext();
 
+  const [contentHeight, setContentHeight] = React.useState<number | undefined>(
+    undefined,
+  );
+  const [contentWidth, setContentWidth] = React.useState<number | undefined>(
+    undefined,
+  );
+
+  const onLayout = React.useCallback((event: LayoutChangeEvent) => {
+    const { height, width } = event.nativeEvent.layout;
+    setContentHeight(height);
+    setContentWidth(width);
+  }, []);
+
   const shouldRender = keepMounted || hiddenUntilFound || itemContext.open;
 
   const state: AccordionPanelState = {
     open: itemContext.open,
     disabled: itemContext.disabled,
     index: itemContext.index,
+    '--accordion-panel-height': contentHeight,
+    '--accordion-panel-width': contentWidth,
   };
 
   return {
     state,
     shouldRender,
+    onLayout,
     open: itemContext.open,
     orientation: context.orientation,
     disabled: itemContext.disabled,

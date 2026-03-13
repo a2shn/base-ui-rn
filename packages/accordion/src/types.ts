@@ -4,6 +4,7 @@ import type {
   StyleProp,
   ViewStyle,
   NativeSyntheticEvent,
+  TargetedEvent,
 } from 'react-native';
 import {
   type KeyPressEventData as CoreKeyPressEventData,
@@ -41,12 +42,22 @@ export interface AccordionHeaderState {
 export interface AccordionTriggerState {
   open: boolean;
   disabled: boolean;
+  focused: boolean;
+  focusVisible: boolean;
 }
 
 export interface AccordionPanelState {
   open: boolean;
   disabled: boolean;
   index: number;
+  /**
+   * The accordion panel's height.
+   */
+  '--accordion-panel-height'?: number;
+  /**
+   * The accordion panel's width.
+   */
+  '--accordion-panel-width'?: number;
 }
 
 export interface AccordionValueChangeDetails {
@@ -120,6 +131,19 @@ export interface AccordionTriggerProps
     | ((state: AccordionTriggerState) => StyleProp<ViewStyle>);
   onKeyDown?: (e: NativeSyntheticEvent<CoreKeyPressEventData>) => void;
   onKeyPress?: (e: NativeSyntheticEvent<CoreKeyPressEventData>) => void;
+  onFocus?: (e: NativeSyntheticEvent<TargetedEvent>) => void;
+  onBlur?: (e: NativeSyntheticEvent<TargetedEvent>) => void;
+  /**
+   * Whether the trigger should be in a focus-visible state.
+   * Useful for manual control of focus ring.
+   * @default false
+   */
+  focusVisible?: boolean;
+  /**
+   * Whether to disable the default focus ring style.
+   * @default false
+   */
+  disableDefaultFocusRing?: boolean;
 }
 
 export interface AccordionPanelProps

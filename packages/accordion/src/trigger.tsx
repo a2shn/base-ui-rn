@@ -5,6 +5,7 @@ import {
   type PressableProps,
   type NativeSyntheticEvent,
 } from 'react-native';
+import { DEFAULT_FOCUS_RING_STYLE } from '@base-ui-rn/core';
 import type { AccordionTriggerProps, KeyPressEventData } from './types';
 import { useAccordionTrigger } from './use-accordion';
 
@@ -22,6 +23,7 @@ export const AccordionTrigger = React.forwardRef<View, AccordionTriggerProps>(
       children,
       onKeyDown,
       style,
+      disableDefaultFocusRing = false,
       'aria-labelledby': ariaLabelledBy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
@@ -33,8 +35,16 @@ export const AccordionTrigger = React.forwardRef<View, AccordionTriggerProps>(
       ...otherProps
     } = props;
 
-    const { disabled, handlePress, handleKeyPress, state, open } =
-      useAccordionTrigger(props);
+    const {
+      disabled,
+      handlePress,
+      handleKeyPress,
+      handleFocus,
+      handleBlur,
+      focusVisible,
+      state,
+      open,
+    } = useAccordionTrigger(props);
 
     const internalRef = React.useRef<View>(null);
     React.useImperativeHandle(ref, () => internalRef.current!, []);
@@ -42,6 +52,11 @@ export const AccordionTrigger = React.forwardRef<View, AccordionTriggerProps>(
     const resolvedStyle = typeof style === 'function' ? style(state) : style;
     const resolvedChildren =
       typeof children === 'function' ? children(state) : children;
+
+    const finalStyle = [
+      resolvedStyle,
+      !disableDefaultFocusRing && focusVisible && DEFAULT_FOCUS_RING_STYLE,
+    ];
 
     return (
       <PressableWithKeyPress
@@ -51,7 +66,9 @@ export const AccordionTrigger = React.forwardRef<View, AccordionTriggerProps>(
         onPress={handlePress}
         onKeyPress={handleKeyPress}
         onKeyDown={onKeyDown}
-        style={resolvedStyle}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        style={finalStyle}
         accessible
         role='button'
         aria-labelledby={ariaLabelledBy}

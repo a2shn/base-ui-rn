@@ -23,8 +23,15 @@ export const AccordionPanel = React.forwardRef<View, AccordionPanelProps>(
       ...otherProps
     } = props;
 
-    const { state, shouldRender, open, orientation, disabled, index } =
-      useAccordionPanel(props);
+    const {
+      state,
+      shouldRender,
+      onLayout,
+      open,
+      orientation,
+      disabled,
+      index,
+    } = useAccordionPanel(props);
 
     const resolvedStyle = typeof style === 'function' ? style(state) : style;
     const resolvedChildren =
@@ -39,6 +46,7 @@ export const AccordionPanel = React.forwardRef<View, AccordionPanelProps>(
         {...otherProps}
         ref={ref}
         style={resolvedStyle}
+        onLayout={onLayout}
         aria-labelledby={ariaLabelledBy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
