@@ -2,87 +2,101 @@
 
 This guide is for AI Agents/LLMs to maintain high-quality standards in the `base-ui-rn` repository.
 
-## 1) Repository map
+## 1) Repository Map & Project Structure
 
-- Monorepo managed with `pnpm` workspaces.
-- Core code lives in `packages/*`.
-  - Primitive packages (e.g., `button`, `toggle`, `avatar`, `accordion`) expose headless React Native components.
-  - `packages/core` contains shared accessibility, keyboard, and behavior utilities.
-  - `packages/test-utils` contains shared testing helpers.
-  - `packages/playbook` contains visual demo primitives used by the playground app.
-- Playground app lives in `apps/playground` and is used for manual verification + e2e flows.
+The project is a monorepo managed with `pnpm` workspaces.
 
-## 2) Ground rules for any change
+### Core Architecture
+- **`packages/*`**: Contains all library code.
+  - **`packages/core`**: The backbone of the library. Contains shared accessibility logic, keyboard navigation hooks, common constants, and TypeScript definitions.
+  - **`packages/test-utils`**: Shared testing infrastructure. Provides custom matchers, rendering helpers, and event simulators.
+  - **`packages/focus-ring`**: Specialized logic for focus-visible detection and styling.
+  - **`packages/playbook`**: UI primitives used exclusively for building the playground app demos.
+- **`apps/playground`**: An Expo-based React Native app for manual testing and visual verification.
 
-1. Make the smallest coherent change that solves the task.
-2. **Comprehensive Accessibility**: Always support `WebAccessibilityProps` from `@base-ui-rn/core`. Destructure them and pass them explicitly to the underlying React Native components.
-3. **Keyboard Interactivity**: Preserve and enhance keyboard behavior (arrows, loop focus, activation prevention on web).
-4. **Headless & Unstyled**: Keep components logic-focused; avoid forcing opinionated UI styles.
-5. **Logic Separation**: Use `use-<name>.ts` hooks to separate concerns from the JSX components.
-6. **File Per Component**: Each sub-component (e.g., Root, Trigger, Panel) MUST reside in its own file.
-7. **Namespace Export**: Export components via a namespace (dot-API) in `src/index.ts`.
+### Package Anatomy
+Every primitive package (e.g., `packages/accordion`) follows a strict file-per-concern layout:
+- `src/index.ts`: The entry point. Exports the Namespace (dot-API) and all types.
+- `src/<package-name>.tsx`: The Root component implementation.
+- `src/<sub-component>.tsx`: Individual files for every sub-component (Trigger, Panel, etc.).
+- `src/use-<package-name>.ts`: A monolithic hook containing all business logic, state management, and event handlers.
+- `src/types.ts`: TypeScript interfaces for props and internal state.
+- `src/context.tsx`: React Context for parent-child communication.
+- `src/__tests__/`: Comprehensive unit test suites.
 
-## 3) Code style conventions
+## 2) Code Style Conventions
 
 ### File Structure & Exports
+Each package MUST expose its components via a dot-API namespace:
+```ts
+// src/index.ts
+import { AccordionRoot } from './accordion';
+import { AccordionItem } from './item';
 
-- **Hook**: `src/use-<name>.ts` contains all state and event logic.
-- **Root**: `src/<name>.tsx` contains the Root component.
-- **Sub-components**: `src/<sub-component>.tsx` (e.g., `src/trigger.tsx`, `src/panel.tsx`).
-- **Entry**: `src/index.ts` exports everything:
-  ```ts
-  import { AccordionRoot } from './accordion';
-  import { AccordionItem } from './item';
+export const Accordion = {
+  Root: AccordionRoot,
+  Item: AccordionItem,
   // ...
-  export const Accordion = {
-    Root: AccordionRoot,
-    Item: AccordionItem,
-    // ...
-  };
-  export * from './types';
-  ```
+};
+```
 
-### TypeScript + React Native
-
+### Component Implementation
 - Use `import * as React from 'react';`.
-- Prefer explicit type imports from `react-native` and local `types.ts`.
-- Components should be `React.memo(React.forwardRef(...))`.
-- Use `useCallback` for stable handlers and `useMemo` for derived props.
-- Ensure all components handle `data-` and `aria-` props from `WebAccessibilityProps`.
+- Always use `React.memo(React.forwardRef(...))` for all components.
+- Destructure `WebAccessibilityProps` (e.g., `aria-label`, `tabIndex`) and pass them to the base `View`/`Text`/`Pressable`.
+- Keep JSX clean by offloading logic to the `use-<name>.ts` hook.
 
-## 4) Accessibility Standards
+## 3) Accessibility & Keyboard Standards
 
-- **Core Coverage**: `WebAccessibilityProps` includes `tabIndex`, `aria-label`, `aria-labelledby`, `aria-describedby`, `aria-details`, `aria-expanded`, `aria-busy`, `aria-hidden`, and more.
-- **Activation Fix**: Use `useKeyboardActivation` from `@base-ui-rn/core` to prevent double-activation on Web (it calls `e.preventDefault()`).
-- **Focus States**: Integrate `useFocus` from `@base-ui-rn/focus-ring` and apply `DEFAULT_FOCUS_RING_STYLE` when `focusVisible` is true.
+- **A11y Props**: Support the full suite of `WebAccessibilityProps` from `@base-ui-rn/core`.
+- **Keyboard Activation**: Use `useKeyboardActivation` from core. This utility handles `Enter`/`Space` and calls `e.preventDefault()` on Web to prevent double-activation bugs.
+- **Navigation**: Use `useKeyboardNavigation` for components requiring arrow key movement (e.g., Accordion, ToggleGroup).
+- **Focus**: Integrate `useFocus` from `@base-ui-rn/focus-ring` and apply `DEFAULT_FOCUS_RING_STYLE` when `focusVisible` is true.
 
-## 5) Creating or updating playbooks
+## 4) Testing Structure & Standards
 
-- **Decentralized Styles**: NEVER use shared `playbookStyles.ts`. Each playbook file MUST contain its own `StyleSheet`.
-- **Centering**: Use `alignSelf: 'center'` on the main demo container within a `Section`.
-- **Dynamic Styling**: For state-dependent styles (like `open` or `pressed`), define a style function at the end of the file:
+Tests are located in `src/__tests__/` and are partitioned by concern.
+
+### Required Test Suites
+1.  **`<name>.accessibility.test.tsx`**: Verifies ARIA roles, states (disabled, expanded, etc.), and ensures all `WebAccessibilityProps` are correctly applied.
+2.  **`<name>.keyboard.test.tsx`**: Tests activation (Enter/Space) and specific keyboard flows.
+3.  **`<name>.keyboard-nav.test.tsx`**: (If applicable) Tests arrow key navigation, Home/End, and `loopFocus` behavior.
+4.  **`<name>.rendering.test.tsx`**: Basic smoke tests and snapshot-like logic checks.
+5.  **`<name>.state.test.tsx`**: Verifies internal state transitions and controlled vs. uncontrolled behavior.
+6.  **`<name>.ref.test.tsx`**: Ensures all exported components correctly forward their refs to the underlying native view.
+
+### Recommended Test Helpers
+Always use helpers from `@base-ui-rn/test-utils` instead of raw `fireEvent`:
+- `fireKeyPress(element, key)`: Simulates a hardware keyboard press.
+- `testAccessibility(element)`: Runs a standard suite of accessibility checks.
+- `renderWithRole(role)`: Query-focused rendering helper.
+
+### Testing Philosophy
+- **Behavior First**: Test what the component *does*, not how it works internally.
+- **ARIA Driven**: Assert on `aria-*` and `data-*` attributes as they are the source of truth for the headless state.
+- **Hardware Integration**: Use `fireKeyPress` to verify that components respond to physical keyboard inputs correctly.
+
+## 5) Playbook Guidelines
+
+- **Self-Contained**: Playbooks must not depend on external shared styles.
+- **Centered**: Use `alignSelf: 'center'` on demo containers to prevent layout shifts.
+- **State Styling**: Use style functions for dynamic states:
   ```ts
-  function getTriggerStyle({ open, disabled }: AccordionTriggerState) {
+  function getTriggerStyle({ open, focusVisible }: AccordionTriggerState) {
     return [
       styles.trigger,
-      open ? styles.triggerOpen : styles.triggerDefault,
-      disabled && styles.disabled,
+      open && styles.open,
+      focusVisible && DEFAULT_FOCUS_RING_STYLE
     ];
   }
   ```
 
-## 6) Testing Requirements
+## 6) Definition of Done for Agents
 
-- **Unit Tests**: Update tests for any behavior changes. Import components from `../index` (the dot-API).
-- **Keyboard Navigation**: Verify arrow keys, Home/End, and looping behavior using `fireKeyPress`.
-- **Commands**:
-  - Package Lint: `pnpm --filter @base-ui-rn/<pkg> lint` (includes `tsc`).
-  - Package Tests: `pnpm test packages/<pkg>`
-
-## 7) Definition of done for Agents
-
-- Code follows the "File Per Component" and "Logic in Hook" structure.
-- `src/index.ts` uses the Namespace (dot-API) export pattern.
-- All `WebAccessibilityProps` are destructured and passed to the base component.
-- Playbook demo is centered and uses local, dynamic style functions.
-- `pnpm lint` and unit tests pass with 100% coverage for the new logic.
+- [ ] Each component has its own file.
+- [ ] All logic resides in a `use-*.ts` hook.
+- [ ] Components are exported via dot-API namespace.
+- [ ] `WebAccessibilityProps` are fully supported and passed through.
+- [ ] Tests cover: A11y, Keyboard, Navigation, Rendering, State, and Ref.
+- [ ] Playbook example is added/updated and visually stable.
+- [ ] `pnpm lint` and all unit tests pass.
