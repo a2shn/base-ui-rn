@@ -88,7 +88,15 @@ export interface AccordionRootProps
   multiple?: boolean;
   disabled?: boolean;
   orientation?: Orientation;
+  /**
+   * Whether to loop keyboard focus within the accordion.
+   * @default true
+   */
   loopFocus?: boolean;
+  /**
+   * Callback fired when keyboard focus changes.
+   */
+  onFocusChange?: (value: string) => void;
 }
 
 export interface AccordionItemProps

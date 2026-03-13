@@ -14,13 +14,14 @@ import type {
   AccordionItemState,
   AccordionTriggerProps,
   AccordionTriggerState,
+  AccordionHeaderProps,
   AccordionHeaderState,
   AccordionPanelProps,
   AccordionPanelState,
   KeyPressEventData,
 } from './types';
 import { useAccordionContext, useAccordionItemContext } from './context';
-import { isActivationKey } from '@base-ui-rn/core';
+import { isActivationKey, useKeyboardNavigation } from '@base-ui-rn/core';
 import { useFocus } from '@base-ui-rn/focus-ring';
 
 function useId(prefix = 'accordion') {
@@ -43,9 +44,28 @@ export function useAccordionRoot(props: AccordionRootProps) {
     multiple = false,
     disabled = false,
     orientation = 'vertical',
+    loopFocus = true,
+    onFocusChange,
   } = props;
 
   const baseId = useId();
+
+  const { registerItem: registerTrigger, handleKeyDown } =
+    useKeyboardNavigation<View>({
+      orientation,
+      loop: loopFocus,
+    });
+
+  const onTriggerKeyPress = React.useCallback(
+    (value: string, event: NativeSyntheticEvent<KeyPressEventData>) => {
+      if (disabled) return;
+      const nextId = handleKeyDown(value, event);
+      if (nextId) {
+        onFocusChange?.(nextId);
+      }
+    },
+    [disabled, handleKeyDown, onFocusChange],
+  );
 
   const [internalValue, setInternalValue] = React.useState<string[]>(() =>
     getValueArray(defaultValue),
@@ -131,9 +151,11 @@ export function useAccordionRoot(props: AccordionRootProps) {
     multiple,
     openItems,
     registerItem,
+    registerTrigger,
     toggleItem,
     getItemIndex,
     getItemRef,
+    onTriggerKeyPress,
     state,
   };
 }
@@ -146,12 +168,22 @@ export function useAccordionItem(props: AccordionItemProps) {
   } = props;
 
   const context = useAccordionContext();
-  const triggerRef = React.useRef<View | null>(null);
+  const triggerRefRef = React.useRef<React.RefObject<View | null>>({
+    current: null,
+  });
   const generatedId = useId('item');
   const value = valueProp ?? generatedId;
 
   React.useLayoutEffect(() => {
-    return context.registerItem(value, triggerRef);
+    const unregisterItem = context.registerItem(value, triggerRefRef.current);
+    const unregisterTrigger = context.registerTrigger(
+      value,
+      triggerRefRef.current,
+    );
+    return () => {
+      unregisterItem();
+      unregisterTrigger();
+    };
   }, [value, context]);
 
   const index = context.getItemIndex(value);
@@ -180,7 +212,7 @@ export function useAccordionItem(props: AccordionItemProps) {
     disabled: itemState.disabled,
     index,
     registerTriggerRef: (refItem: React.RefObject<View | null>) => {
-      triggerRef.current = refItem.current;
+      triggerRefRef.current = refItem;
     },
     state: itemState,
   };
@@ -251,6 +283,7 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
         context.toggleItem(itemContext.value, details);
       }
 
+      context.onTriggerKeyPress(itemContext.value, event);
       onKeyPress?.(event);
     },
     [disabled, itemContext.value, context, onKeyPress],

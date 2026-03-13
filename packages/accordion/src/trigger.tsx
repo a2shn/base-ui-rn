@@ -6,6 +6,7 @@ import {
   type NativeSyntheticEvent,
 } from 'react-native';
 import { DEFAULT_FOCUS_RING_STYLE } from '@base-ui-rn/core';
+import { useAccordionItemContext } from './context';
 import type { AccordionTriggerProps, KeyPressEventData } from './types';
 import { useAccordionTrigger } from './use-accordion';
 
@@ -46,8 +47,13 @@ export const AccordionTrigger = React.forwardRef<View, AccordionTriggerProps>(
       open,
     } = useAccordionTrigger(props);
 
+    const itemContext = useAccordionItemContext();
     const internalRef = React.useRef<View>(null);
     React.useImperativeHandle(ref, () => internalRef.current!, []);
+
+    React.useLayoutEffect(() => {
+      itemContext.registerTriggerRef(internalRef);
+    }, [itemContext]);
 
     const resolvedStyle = typeof style === 'function' ? style(state) : style;
     const resolvedChildren =
@@ -65,7 +71,7 @@ export const AccordionTrigger = React.forwardRef<View, AccordionTriggerProps>(
         disabled={disabled}
         onPress={handlePress}
         onKeyPress={handleKeyPress}
-        onKeyDown={onKeyDown}
+        onKeyDown={handleKeyPress}
         onFocus={handleFocus}
         onBlur={handleBlur}
         style={finalStyle}

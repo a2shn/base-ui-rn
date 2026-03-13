@@ -27,9 +27,11 @@ export const AccordionRoot = React.forwardRef<View, AccordionRootProps>(
       multiple,
       openItems,
       registerItem,
+      registerTrigger,
       toggleItem,
       getItemIndex,
       getItemRef,
+      onTriggerKeyPress,
       state,
     } = useAccordionRoot(props);
 
@@ -41,9 +43,11 @@ export const AccordionRoot = React.forwardRef<View, AccordionRootProps>(
         multiple,
         openItems,
         registerItem,
+        registerTrigger,
         toggleItem,
         getItemIndex,
         getItemRef,
+        onTriggerKeyPress,
       }),
       [
         baseId,
@@ -52,9 +56,11 @@ export const AccordionRoot = React.forwardRef<View, AccordionRootProps>(
         multiple,
         openItems,
         registerItem,
+        registerTrigger,
         toggleItem,
         getItemIndex,
         getItemRef,
+        onTriggerKeyPress,
       ],
     );
 
@@ -70,6 +76,7 @@ export const AccordionRoot = React.forwardRef<View, AccordionRootProps>(
             ref={ref}
             style={resolvedStyle}
             role='group'
+            aria-orientation={orientation}
             aria-labelledby={ariaLabelledBy}
             aria-describedby={ariaDescribedBy}
             aria-details={ariaDetails}

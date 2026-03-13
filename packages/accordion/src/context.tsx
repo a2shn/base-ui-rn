@@ -1,6 +1,11 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import type { Orientation, AccordionValueChangeDetails } from './types';
+import type {
+  Orientation,
+  AccordionValueChangeDetails,
+  KeyPressEventData,
+} from './types';
+import type { NativeSyntheticEvent } from 'react-native';
 
 interface AccordionContextValue {
   baseId: string;
@@ -12,9 +17,17 @@ interface AccordionContextValue {
     value: string,
     ref: React.RefObject<View | null>,
   ) => () => void;
+  registerTrigger: (
+    value: string,
+    ref: React.RefObject<View | null>,
+  ) => () => void;
   toggleItem: (value: string, details: AccordionValueChangeDetails) => void;
   getItemIndex: (value: string) => number;
   getItemRef: (value: string) => React.RefObject<View | null> | null;
+  onTriggerKeyPress: (
+    value: string,
+    event: NativeSyntheticEvent<KeyPressEventData>,
+  ) => void;
 }
 
 export type { AccordionContextValue };
