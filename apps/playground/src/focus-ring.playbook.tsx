@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { FocusRing, type FocusState } from '@base-ui-rn/focus-ring';
+import { FocusRing, type FocusRingRenderProps } from '@base-ui-rn/focus-ring';
 import { Button } from '@base-ui-rn/button';
 import { Gallery, Section, theme } from '@base-ui-rn/playbook';
 
@@ -76,10 +76,12 @@ const styles = StyleSheet.create({
   },
 });
 
-function getOutlineButtonStyle({ focusVisible }: Partial<FocusState>) {
+function getOutlineButtonStyle({
+  focusVisible,
+}: Partial<FocusRingRenderProps>) {
   return [styles.buttonBase, focusVisible && styles.outline];
 }
 
-function getCustomButtonStyle({ focused }: Partial<FocusState>) {
+function getCustomButtonStyle({ focused }: Partial<FocusRingRenderProps>) {
   return [styles.buttonBase, focused && styles.focused];
 }

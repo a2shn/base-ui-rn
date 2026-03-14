@@ -21,6 +21,7 @@
     "@base-ui-rn/playbook": "workspace:*",
     "@base-ui-rn/progress": "workspace:*",
     "@base-ui-rn/separator": "workspace:*",
+    "@base-ui-rn/switch": "workspace:*",
     "@base-ui-rn/toggle": "workspace:*",
     "@base-ui-rn/toggle-group": "workspace:*",
     "@expo/ngrok": "^4.1.3",

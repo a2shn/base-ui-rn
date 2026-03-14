@@ -14,8 +14,14 @@ import { ProgressPlaybook } from './src/progress.playbook';
 import { KeyboardShortcutsPlaybook } from './src/keyboard-shortcuts.playbook';
 import { AccordionPlaybook } from './src/accordion.playbook';
 import { TabsPlaybook } from './src/tabs.playbook';
+import { SwitchPlaybook } from './src/switch.playbook';
 
 const REGISTRY: PlaybookConfig = {
+  Switch: {
+    title: 'Switch',
+    component: SwitchPlaybook,
+    testID: 'switch',
+  },
   Toggle: {
     title: 'Toggle',
     component: TogglePlaybook,

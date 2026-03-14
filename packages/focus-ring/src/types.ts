@@ -16,11 +16,6 @@ export interface FocusRingRenderProps {
 }
 
 /**
- * Alias for FocusRingRenderProps.
- */
-export type FocusState = FocusRingRenderProps;
-
-/**
  * Props for the FocusRing component.
  */
 export interface FocusRingProps {
