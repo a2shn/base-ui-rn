@@ -1,9 +1,9 @@
 import type {
   PressableProps,
   NativeSyntheticEvent,
+  ViewProps,
   StyleProp,
   ViewStyle,
-  ViewProps,
 } from 'react-native';
 import type {
   KeyPressEventData,
@@ -47,7 +47,7 @@ export interface SwitchRootProps
   /**
    * Style applied to the switch view.
    */
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle> | ((state: SwitchState) => StyleProp<ViewStyle>);
 
   /**
    * The controlled checked state of the switch.
@@ -96,18 +96,11 @@ export interface SwitchRootProps
 }
 
 export interface SwitchThumbProps
-  extends
-    Omit<ViewProps, 'children' | 'style'>,
-    WebSwitchThumbAccessibilityProps {
+  extends Omit<ViewProps, 'children'>, WebSwitchThumbAccessibilityProps {
   /**
    * The content of the thumb.
    */
   children?: React.ReactNode | ((state: SwitchState) => React.ReactNode);
-
-  /**
-   * Style applied to the thumb view.
-   */
-  style?: StyleProp<ViewStyle>;
 }
 
 export type { KeyPressEventData, WebAccessibilityProps };

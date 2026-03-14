@@ -1,10 +1,11 @@
 import * as React from 'react';
 import {
-  type GestureResponderEvent,
   type LayoutChangeEvent,
   type NativeSyntheticEvent,
+  type GestureResponderHandlers,
+  type View,
 } from 'react-native';
-import type { SliderState, KeyPressEventData } from './types';
+import type { SliderState, KeyPressEventData, ThumbAlignment } from './types';
 
 export interface SliderContextValue extends SliderState {
   setThumbValue: (index: number, value: number) => void;
@@ -13,13 +14,15 @@ export interface SliderContextValue extends SliderState {
   onThumbFocus: (index: number) => void;
   onThumbBlur: () => void;
   onLayout: (e: LayoutChangeEvent) => void;
-  handlePointerDown: (event: GestureResponderEvent) => void;
-  handlePointerMove: (event: GestureResponderEvent) => void;
-  handlePointerUp: () => void;
+  onThumbLayout: (e: LayoutChangeEvent) => void;
+  panHandlers: GestureResponderHandlers;
   handleKeyDown: (
     index: number,
     event: NativeSyntheticEvent<KeyPressEventData>,
   ) => void;
+  thumbAlignment: ThumbAlignment;
+  thumbSize: number;
+  controlRef: React.RefObject<View | null>;
 }
 
 export const SliderContext = React.createContext<SliderContextValue | null>(

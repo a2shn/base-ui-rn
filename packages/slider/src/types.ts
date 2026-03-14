@@ -1,7 +1,5 @@
 import type {
   ViewProps,
-  StyleProp,
-  ViewStyle,
   NativeSyntheticEvent,
   TargetedEvent,
 } from 'react-native';
@@ -54,15 +52,11 @@ export interface SliderState {
 }
 
 export interface SliderRootProps
-  extends Omit<ViewProps, 'children' | 'style'>, WebAccessibilityProps {
+  extends Omit<ViewProps, 'children'>, WebAccessibilityProps {
   /**
    * The content of the slider.
    */
   children?: React.ReactNode | ((state: SliderState) => React.ReactNode);
-  /**
-   * Style applied to the root view.
-   */
-  style?: StyleProp<ViewStyle>;
   /**
    * The controlled value of the slider.
    * For range sliders, provide an array of numbers.
@@ -123,20 +117,15 @@ export interface SliderRootProps
 }
 
 export interface SliderLabelProps
-  extends Omit<ViewProps, 'children' | 'style'>, WebAccessibilityProps {
+  extends Omit<ViewProps, 'children'>, WebAccessibilityProps {
   children?: React.ReactNode | ((state: SliderState) => React.ReactNode);
-  style?: StyleProp<ViewStyle>;
 }
 
-export interface SliderValueProps extends Omit<
-  ViewProps,
-  'children' | 'style'
-> {
+export interface SliderValueProps extends Omit<ViewProps, 'children'> {
   /**
    * Render function for formatting values.
    */
   children?: (formattedValues: string[], values: number[]) => React.ReactNode;
-  style?: StyleProp<ViewStyle>;
   /**
    * Options for value formatting.
    */
@@ -147,36 +136,23 @@ export interface SliderValueProps extends Omit<
   locale?: string;
 }
 
-export interface SliderControlProps extends Omit<
-  ViewProps,
-  'children' | 'style'
-> {
+export interface SliderControlProps extends Omit<ViewProps, 'children'> {
   children?: React.ReactNode | ((state: SliderState) => React.ReactNode);
-  style?: StyleProp<ViewStyle>;
 }
 
-export interface SliderTrackProps extends Omit<
-  ViewProps,
-  'children' | 'style'
-> {
+export interface SliderTrackProps extends Omit<ViewProps, 'children'> {
   children?: React.ReactNode | ((state: SliderState) => React.ReactNode);
-  style?: StyleProp<ViewStyle>;
 }
 
-export interface SliderIndicatorProps extends Omit<
-  ViewProps,
-  'children' | 'style'
-> {
+export interface SliderIndicatorProps extends Omit<ViewProps, 'children'> {
   children?: React.ReactNode | ((state: SliderState) => React.ReactNode);
-  style?: StyleProp<ViewStyle>;
 }
 
 export interface SliderThumbProps
-  extends Omit<ViewProps, 'children' | 'style'>, WebAccessibilityProps {
+  extends Omit<ViewProps, 'children'>, WebAccessibilityProps {
   children?:
     | React.ReactNode
     | ((state: SliderState & { index: number }) => React.ReactNode);
-  style?: StyleProp<ViewStyle>;
   /**
    * The index of the thumb in a range slider.
    */

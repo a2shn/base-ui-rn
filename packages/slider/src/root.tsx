@@ -36,28 +36,32 @@ export const SliderRoot = React.forwardRef<View, SliderRootProps>(
     const {
       state,
       onLayout,
-      handlePointerDown,
-      handlePointerMove,
-      handlePointerUp,
+      onThumbLayout,
+      panHandlers,
       handleKeyDown,
       setThumbValue,
       onThumbFocus,
       onThumbBlur,
+      thumbAlignment,
+      thumbSize,
+      controlRef,
     } = useSliderRoot(props);
 
     const contextValue = React.useMemo(
       () => ({
         ...state,
         setThumbValue,
-        onThumbDragStart: () => {}, // Handled by Control
-        onThumbDragEnd: () => {}, // Handled by Control
+        onThumbDragStart: () => {}, // Handled by PanResponder
+        onThumbDragEnd: () => {}, // Handled by PanResponder
         onThumbFocus,
         onThumbBlur,
         onLayout,
-        handlePointerDown,
-        handlePointerMove,
-        handlePointerUp,
+        onThumbLayout,
+        panHandlers,
         handleKeyDown,
+        thumbAlignment,
+        thumbSize,
+        controlRef,
       }),
       [
         state,
@@ -65,10 +69,12 @@ export const SliderRoot = React.forwardRef<View, SliderRootProps>(
         onThumbFocus,
         onThumbBlur,
         onLayout,
-        handlePointerDown,
-        handlePointerMove,
-        handlePointerUp,
+        onThumbLayout,
+        panHandlers,
         handleKeyDown,
+        thumbAlignment,
+        thumbSize,
+        controlRef,
       ],
     );
 

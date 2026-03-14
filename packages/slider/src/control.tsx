@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
+import { View } from 'react-native';
+import { mergeRefs } from '@base-ui-rn/core';
 import type { SliderControlProps } from './types';
 import { useSliderContext } from './context';
 
@@ -19,23 +20,22 @@ export const SliderControl = React.forwardRef<View, SliderControlProps>(
     const { children, style, ...otherViewProps } = props;
     const context = useSliderContext();
 
+    const mergedRef = React.useMemo(
+      () => mergeRefs([ref, context.controlRef] as unknown as React.Ref<View>),
+      [ref, context.controlRef],
+    );
+
     const resolvedChildren =
       typeof children === 'function' ? children(context) : children;
 
     return (
       <View
         {...otherViewProps}
-        ref={ref}
+        {...context.panHandlers}
+        ref={mergedRef}
         style={style}
         onLayout={context.onLayout}
       >
-        <Pressable
-          accessibilityRole='button'
-          onPressIn={context.handlePointerDown}
-          onPressOut={context.handlePointerUp}
-          style={StyleSheet.absoluteFill}
-          disabled={context.disabled}
-        />
         {resolvedChildren}
       </View>
     );

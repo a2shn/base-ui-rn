@@ -52,19 +52,45 @@ export const SliderThumb = React.forwardRef<View, SliderThumbProps>(
 
     const thumbStyle = React.useMemo<ViewStyle>(() => {
       const isHorizontal = context.orientation === 'horizontal';
+      const isEdge = context.thumbAlignment === 'edge';
+
       if (isHorizontal) {
+        if (isEdge && context.thumbSize > 0) {
+          // For 'edge' alignment, we already calculated the value correctly in useSliderRoot.
+          // We just need to place it.
+          return {
+            position: 'absolute',
+            left: `${percentage}%`,
+            marginLeft: -(percentage / 100) * context.thumbSize,
+          };
+        }
         return {
           position: 'absolute',
           left: `${percentage}%`,
-          transform: [{ translateX: '-50%' }],
+          transform: [{ translateX: -context.thumbSize / 2 || 0 }],
+        };
+      }
+
+      if (isEdge && context.thumbSize > 0) {
+        return {
+          position: 'absolute',
+          bottom: `${percentage}%`,
+          marginBottom: -(percentage / 100) * context.thumbSize,
         };
       }
       return {
         position: 'absolute',
         bottom: `${percentage}%`,
-        transform: [{ translateY: '50%' }],
+        transform: [{ translateY: context.thumbSize / 2 || 0 }],
       };
-    }, [percentage, context.orientation]);
+    }, [
+      percentage,
+      context.orientation,
+      context.thumbAlignment,
+      context.thumbSize,
+      context.min,
+      context.max,
+    ]);
 
     const handleFocus = React.useCallback(
       (e: NativeSyntheticEvent<TargetedEvent>) => {
@@ -109,7 +135,9 @@ export const SliderThumb = React.forwardRef<View, SliderThumbProps>(
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
         onKeyPress={handleKeyDown}
+        onLayout={context.onThumbLayout}
         disabled={context.disabled}
+        tabIndex={0}
         accessible
         role='slider'
         accessibilityLabel={ariaLabel}

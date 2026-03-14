@@ -4,6 +4,8 @@ import {
   View,
   type PressableProps,
   type NativeSyntheticEvent,
+  type StyleProp,
+  type ViewStyle,
 } from 'react-native';
 import { DEFAULT_FOCUS_RING_STYLE } from '@base-ui-rn/core';
 import type { KeyPressEventData } from './types';
@@ -57,15 +59,16 @@ export const SwitchRoot = React.forwardRef<View, SwitchRootProps>(
       handleBlur,
     } = useSwitchRoot(props);
 
+    const resolvedStyle = typeof style === 'function' ? style(state) : style;
     const resolvedChildren =
       typeof children === 'function' ? children(state) : children;
 
     const finalStyle = [
-      style,
+      resolvedStyle,
       !disableDefaultFocusRing &&
         state.focusVisible &&
         DEFAULT_FOCUS_RING_STYLE,
-    ];
+    ] as StyleProp<ViewStyle>;
 
     const contextValue = React.useMemo(
       () => ({
