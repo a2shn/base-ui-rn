@@ -27,7 +27,9 @@ export function FocusRingPlaybook() {
           <FocusRing>
             {({ focused }) => (
               <Button style={getCustomButtonStyle({ focused })}>
-                <Text style={focused ? styles.textPrimary : styles.textSecondary}>
+                <Text
+                  style={focused ? styles.textPrimary : styles.textSecondary}
+                >
                   {focused ? 'Focused' : 'Idle'}
                 </Text>
               </Button>

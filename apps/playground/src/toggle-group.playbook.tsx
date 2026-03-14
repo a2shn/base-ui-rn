@@ -142,9 +142,7 @@ export function ToggleGroupPlaybook() {
             testID='toggle-group-disabled-switch'
           >
             {(state) => (
-              <View
-                style={[getToggleStyle(state), styles.alignStart]}
-              >
+              <View style={[getToggleStyle(state), styles.alignStart]}>
                 <Text testID='is-disabled-label' style={styles.toggleText}>
                   {isGroupDisabled.value ? 'Enable Group' : 'Disable Group'}
                 </Text>

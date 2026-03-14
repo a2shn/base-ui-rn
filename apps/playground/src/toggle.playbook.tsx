@@ -45,9 +45,7 @@ export function TogglePlaybook() {
           testID='toggle-dark-mode'
           style={getToggleStyle}
         >
-          <Text style={styles.text}>
-            {darkMode.value ? 'ON' : 'OFF'}
-          </Text>
+          <Text style={styles.text}>{darkMode.value ? 'ON' : 'OFF'}</Text>
         </Toggle>
         <LiveConsole title='darkMode' state={darkMode} />
       </Section>

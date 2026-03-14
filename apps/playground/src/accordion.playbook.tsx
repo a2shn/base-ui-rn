@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
+import { Accordion, type AccordionTriggerState } from '@base-ui-rn/accordion';
 import {
-  Accordion,
-  type AccordionTriggerState,
-} from '@base-ui-rn/accordion';
-import { Gallery, Section, usePlaybookToggles, theme } from '@base-ui-rn/playbook';
+  Gallery,
+  Section,
+  usePlaybookToggles,
+  theme,
+} from '@base-ui-rn/playbook';
 
 export function AccordionPlaybook() {
   usePlaybookToggles({
@@ -90,7 +92,7 @@ export function AccordionPlaybook() {
 
       <Section title='Controlled'>
         <View style={styles.container}>
-          <Accordion.Root value='item-1' onValueChange={() => { }}>
+          <Accordion.Root value='item-1' onValueChange={() => {}}>
             <Accordion.Item value='item-1'>
               <Accordion.Header>
                 <Accordion.Trigger style={getTriggerStyle}>
@@ -283,4 +285,3 @@ function getTriggerStyle({ open, disabled }: AccordionTriggerState) {
     disabled && styles.disabled,
   ];
 }
-

@@ -70,7 +70,9 @@ export const KeyboardShortcutsPlaybook = () => {
             style={styles.buttonBase}
           >
             {({ pressed }) => (
-              <Text style={[styles.textPrimary, pressed && styles.pressedOpacity]}>
+              <Text
+                style={[styles.textPrimary, pressed && styles.pressedOpacity]}
+              >
                 Save (Ctrl+S)
               </Text>
             )}
@@ -102,7 +104,11 @@ export const KeyboardShortcutsPlaybook = () => {
               <Text
                 style={[
                   styles.textPrimary,
-                  { fontWeight: pressed ? theme.font.weight.bold : theme.font.weight.regular },
+                  {
+                    fontWeight: pressed
+                      ? theme.font.weight.bold
+                      : theme.font.weight.regular,
+                  },
                 ]}
               >
                 Bold (Ctrl+B)
