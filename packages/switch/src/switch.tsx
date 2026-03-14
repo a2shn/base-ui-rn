@@ -86,7 +86,6 @@ export const SwitchRoot = React.forwardRef<View, SwitchRootProps>(
           disabled={disabled}
           onPress={handlePress}
           onKeyPress={handleKeyPress}
-          onKeyDown={handleKeyPress}
           onFocus={handleFocus}
           onBlur={handleBlur}
           style={finalStyle}

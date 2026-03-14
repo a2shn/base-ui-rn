@@ -322,6 +322,44 @@ export type WebTabsPanelAccessibilityProps = WebAccessibilityProps & {
 };
 
 /**
+ * Web-specific accessibility props for Switch Root.
+ */
+export type WebSwitchAccessibilityProps = WebAccessibilityProps & {
+  /**
+   * Reflects checked state for the ARIA switch pattern on web.
+   */
+  'aria-checked'?: boolean | 'mixed';
+  /**
+   * Reflects read-only state for the ARIA switch pattern on web.
+   */
+  'aria-readonly'?: boolean;
+  /**
+   * Custom data attribute applied on web for CSS selectors and testing.
+   * Reflects the current checked state.
+   */
+  'data-checked'?: 'true';
+  /**
+   * Present when the switch is disabled.
+   */
+  'data-disabled'?: 'true';
+};
+
+/**
+ * Web-specific accessibility props for Switch Thumb.
+ */
+export type WebSwitchThumbAccessibilityProps = WebAccessibilityProps & {
+  /**
+   * Custom data attribute applied on web for CSS selectors and testing.
+   * Reflects the current checked state.
+   */
+  'data-checked'?: 'true';
+  /**
+   * Present when the switch is disabled.
+   */
+  'data-disabled'?: 'true';
+};
+
+/**
  * Base type for press/toggle activation details.
  * Describes how a component was activated.
  */

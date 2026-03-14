@@ -16,6 +16,8 @@ export type {
   WebTabsTabAccessibilityProps,
   WebTabsIndicatorAccessibilityProps,
   WebTabsPanelAccessibilityProps,
+  WebSwitchAccessibilityProps,
+  WebSwitchThumbAccessibilityProps,
   PressedChangeDetails,
 } from './types';
 

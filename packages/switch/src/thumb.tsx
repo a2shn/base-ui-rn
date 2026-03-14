@@ -22,6 +22,8 @@ export const SwitchThumb = React.forwardRef<View, SwitchThumbProps>(
       children,
       style,
       'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
       'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
       ...otherProps
@@ -38,6 +40,8 @@ export const SwitchThumb = React.forwardRef<View, SwitchThumbProps>(
         ref={ref}
         style={style}
         aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
         aria-busy={ariaBusy}
         aria-hidden={ariaHidden}
         data-checked={context.checked ? 'true' : undefined}

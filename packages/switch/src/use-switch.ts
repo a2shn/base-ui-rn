@@ -32,6 +32,7 @@ export function useSwitchRoot(props: SwitchRootProps) {
     React.useState(defaultChecked);
 
   const checked = isControlled ? checkedProp : uncontrolledChecked;
+  const isKeyboardActivationRef = React.useRef(false);
 
   const { focused, focusVisible, onFocus, onBlur } = useFocus({
     focusVisible: forceFocusVisible,
@@ -48,13 +49,30 @@ export function useSwitchRoot(props: SwitchRootProps) {
 
   const handlePress = React.useCallback(
     (event: GestureResponderEvent) => {
+      if (isKeyboardActivationRef.current) {
+        return;
+      }
       toggleState();
       onPress?.(event);
     },
     [toggleState, onPress],
   );
 
-  const handleKeyboardActivation = useKeyboardActivation(toggleState, disabled);
+  const performKeyboardActivation = React.useCallback(() => {
+    isKeyboardActivationRef.current = true;
+    toggleState();
+
+    // Reset the ref after a delay to ensure it catches the browser's follow-up click event.
+    // 100ms is safe for most browsers.
+    setTimeout(() => {
+      isKeyboardActivationRef.current = false;
+    }, 100);
+  }, [toggleState]);
+
+  const handleKeyboardActivation = useKeyboardActivation(
+    performKeyboardActivation,
+    disabled,
+  );
 
   const handleKeyPress = React.useCallback(
     (event: NativeSyntheticEvent<KeyPressEventData>) => {

@@ -8,6 +8,8 @@ import type {
 import type {
   KeyPressEventData,
   WebAccessibilityProps,
+  WebSwitchAccessibilityProps,
+  WebSwitchThumbAccessibilityProps,
 } from '@base-ui-rn/core';
 
 export interface SwitchState {
@@ -34,7 +36,9 @@ export interface SwitchState {
 }
 
 export interface SwitchRootProps
-  extends Omit<PressableProps, 'children' | 'style'>, WebAccessibilityProps {
+  extends
+    Omit<PressableProps, 'children' | 'style'>,
+    WebSwitchAccessibilityProps {
   /**
    * The content of the switch root.
    */
@@ -89,13 +93,12 @@ export interface SwitchRootProps
    * Callback fired when a key is pressed.
    */
   onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
-
-  'data-checked'?: string;
-  'data-disabled'?: string;
 }
 
 export interface SwitchThumbProps
-  extends Omit<ViewProps, 'children' | 'style'>, WebAccessibilityProps {
+  extends
+    Omit<ViewProps, 'children' | 'style'>,
+    WebSwitchThumbAccessibilityProps {
   /**
    * The content of the thumb.
    */
@@ -105,9 +108,6 @@ export interface SwitchThumbProps
    * Style applied to the thumb view.
    */
   style?: StyleProp<ViewStyle>;
-
-  'data-checked'?: string;
-  'data-disabled'?: string;
 }
 
 export type { KeyPressEventData, WebAccessibilityProps };
