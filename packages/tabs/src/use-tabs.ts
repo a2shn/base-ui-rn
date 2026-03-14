@@ -35,7 +35,7 @@ export function useTabsRoot(props: TabsRootProps) {
     orientation = 'horizontal',
     activateOnFocus = false,
     onFocusChange,
-  } = props as any; // Cast temporarily to access internal props
+  } = props;
 
   const [internalValue, setInternalValue] = React.useState<TabValue | null>(
     defaultValue ?? null,
@@ -275,7 +275,8 @@ export function useTab(props: TabProps) {
 
 export function useTabsIndicator() {
   const context = useTabsContext();
-  const activeMeasurement = context.value !== null ? context.tabMeasurements.get(context.value) : null;
+  const activeMeasurement =
+    context.value !== null ? context.tabMeasurements.get(context.value) : null;
 
   const state: TabsIndicatorState = {
     orientation: context.orientation,

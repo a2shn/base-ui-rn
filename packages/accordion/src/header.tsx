@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View } from 'react-native';
+import { View, Platform } from 'react-native';
 import type { AccordionHeaderProps } from './types';
 import { useAccordionHeader } from './use-accordion';
 
@@ -33,17 +33,24 @@ export const AccordionHeader = React.forwardRef<View, AccordionHeaderProps>(
       ...otherProps
     } = props;
 
-    const { state, open, disabled, index } = useAccordionHeader();
+    const { state, open, focused, disabled, index } = useAccordionHeader();
 
     const resolvedStyle = typeof style === 'function' ? style(state) : style;
     const resolvedChildren =
       typeof children === 'function' ? children(state) : children;
 
+    const finalStyle = [
+      resolvedStyle,
+      Platform.select({
+        web: open || focused ? { zIndex: 1 } : undefined,
+      }),
+    ];
+
     return (
       <View
         {...otherProps}
         ref={ref}
-        style={resolvedStyle}
+        style={finalStyle}
         aria-labelledby={ariaLabelledBy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}

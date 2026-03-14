@@ -1,3 +1,5 @@
+import { Platform, type ViewStyle } from 'react-native';
+
 /**
  * Default hit slop for components.
  * Expands the interactive touch area to improve accessibility.
@@ -21,7 +23,7 @@ export const DEFAULT_FOCUS_RING_STYLE = Platform.select({
   web: {
     outline: '2px solid #0071E3',
     outlineOffset: '2px',
-  } as any,
+  } as unknown as ViewStyle,
   default: {
     borderWidth: 2,
     borderColor: '#0071E3',

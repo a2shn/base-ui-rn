@@ -32,15 +32,15 @@ const font = {
 } as const;
 
 const colors = {
-  bg: '#FFFFFF',
-  bgSecondary: '#F5F5F5',
-  bgCanvas: '#F5F5F5',
-  border: '#E0E0E0',
-  borderLight: '#EBEBEB',
-  textPrimary: '#000000',
-  textSecondary: '#666666',
-  textMuted: '#999999',
-  divider: '#E8E8EC',
+  bg: '#000000',
+  bgSecondary: '#0D0D0D',
+  bgCanvas: '#1A1A1A',
+  border: '#2E2E2E',
+  borderLight: '#252525',
+  textPrimary: '#FFFFFF',
+  textSecondary: '#A0A0A0',
+  textMuted: '#666666',
+  divider: '#252525',
 } as const;
 
 const radius = {

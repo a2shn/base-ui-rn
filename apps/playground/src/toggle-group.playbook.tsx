@@ -7,6 +7,7 @@ import {
   Section,
   usePlaybookToggles,
   LiveConsole,
+  theme,
 } from '@base-ui-rn/playbook';
 
 export function ToggleGroupPlaybook() {
@@ -30,7 +31,7 @@ export function ToggleGroupPlaybook() {
             <Toggle key={val} value={val} testID={`toggle-h${i + 1}`}>
               {(state) => (
                 <View style={getToggleStyle(state)}>
-                  <Text>Option {i + 1}</Text>
+                  <Text style={styles.toggleText}>Option {i + 1}</Text>
                 </View>
               )}
             </Toggle>
@@ -53,7 +54,7 @@ export function ToggleGroupPlaybook() {
             <Toggle key={val} value={val} testID={`toggle-v${i + 1}`}>
               {(state) => (
                 <View style={getToggleStyle(state)}>
-                  <Text>Option {i + 1}</Text>
+                  <Text style={styles.toggleText}>Option {i + 1}</Text>
                 </View>
               )}
             </Toggle>
@@ -74,7 +75,9 @@ export function ToggleGroupPlaybook() {
             <Toggle key={val} value={val} testID={`toggle-${val}`}>
               {(state) => (
                 <View style={getToggleStyle(state)}>
-                  <Text>{val.charAt(0).toUpperCase() + val.slice(1)}</Text>
+                  <Text style={styles.toggleText}>
+                    {val.charAt(0).toUpperCase() + val.slice(1)}
+                  </Text>
                 </View>
               )}
             </Toggle>
@@ -93,7 +96,9 @@ export function ToggleGroupPlaybook() {
             <Toggle key={val} value={val} testID={`toggle-${val}-controlled`}>
               {(state) => (
                 <View style={getToggleStyle(state)}>
-                  <Text>{val.charAt(0).toUpperCase() + val.slice(1)}</Text>
+                  <Text style={styles.toggleText}>
+                    {val.charAt(0).toUpperCase() + val.slice(1)}
+                  </Text>
                 </View>
               )}
             </Toggle>
@@ -118,7 +123,9 @@ export function ToggleGroupPlaybook() {
             <Toggle key={val} value={val} testID={`toggle-${val}`}>
               {(state) => (
                 <View style={getToggleStyle(state)}>
-                  <Text>{val.charAt(0).toUpperCase() + val.slice(1)}</Text>
+                  <Text style={styles.toggleText}>
+                    {val.charAt(0).toUpperCase() + val.slice(1)}
+                  </Text>
                 </View>
               )}
             </Toggle>
@@ -128,7 +135,7 @@ export function ToggleGroupPlaybook() {
       </Section>
 
       <Section title='Disabled'>
-        <View style={{ gap: 10 }}>
+        <View style={styles.disabledContainer}>
           <Toggle
             pressed={isGroupDisabled.value as boolean}
             onPressedChange={isGroupDisabled.setValue}
@@ -136,12 +143,9 @@ export function ToggleGroupPlaybook() {
           >
             {(state) => (
               <View
-                style={[
-                  getToggleStyle(state),
-                  { alignSelf: 'flex-start' }
-                ]}
+                style={[getToggleStyle(state), styles.alignStart]}
               >
-                <Text testID='is-disabled-label'>
+                <Text testID='is-disabled-label' style={styles.toggleText}>
                   {isGroupDisabled.value ? 'Enable Group' : 'Disable Group'}
                 </Text>
               </View>
@@ -154,7 +158,7 @@ export function ToggleGroupPlaybook() {
             style={[
               styles.groupBase,
               styles.row,
-              isGroupDisabled.value && styles.disabledGroup
+              isGroupDisabled.value && styles.disabledGroup,
             ]}
             testID='toggle-group-disabled'
           >
@@ -162,7 +166,9 @@ export function ToggleGroupPlaybook() {
               <Toggle key={val} value={val} testID={`toggle-disabled-${val}`}>
                 {(state) => (
                   <View style={getToggleStyle(state)}>
-                    <Text>{val.charAt(0).toUpperCase() + val.slice(1)}</Text>
+                    <Text style={styles.toggleText}>
+                      {val.charAt(0).toUpperCase() + val.slice(1)}
+                    </Text>
                   </View>
                 )}
               </Toggle>
@@ -181,11 +187,13 @@ export function ToggleGroupPlaybook() {
 
 const styles = StyleSheet.create({
   groupBase: {
-    gap: 8,
+    gap: theme.spacing.sm,
     borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 8,
+    borderColor: theme.colors.border,
+    padding: theme.spacing.sm,
     alignSelf: 'center',
+    backgroundColor: theme.colors.bgCanvas,
+    borderRadius: theme.radius.md,
   },
   row: {
     flexDirection: 'row',
@@ -194,34 +202,48 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   toggle: {
-    borderWidth: 1,
-    padding: 8,
+    borderWidth: 0,
+    borderRadius: theme.radius.sm + 2,
+    padding: theme.spacing.sm,
+    backgroundColor: theme.colors.borderLight,
+  },
+  toggleText: {
+    color: theme.colors.textPrimary,
+    fontSize: theme.font.size.md,
   },
   togglePressed: {
-    borderColor: 'blue',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: theme.colors.border,
   },
   toggleFocused: {
-    borderColor: '#0071E3',
+    backgroundColor: '#333333',
   },
   toggleDefault: {
-    borderColor: '#ccc',
     backgroundColor: 'transparent',
   },
   hint: {
-    fontSize: 12,
-    marginTop: 4,
-    color: '#666',
+    fontSize: theme.font.size.xs,
+    marginTop: theme.spacing.xs,
+    color: theme.colors.textMuted,
     textAlign: 'center',
   },
   disabledGroup: {
     opacity: 0.5,
+  },
+  disabledContainer: {
+    gap: theme.spacing.md,
+  },
+  alignStart: {
+    alignSelf: 'flex-start',
   },
 });
 
 function getToggleStyle({ pressed, focusVisible }: ToggleState) {
   return [
     styles.toggle,
-    pressed ? styles.togglePressed : focusVisible ? styles.toggleFocused : styles.toggleDefault,
+    pressed
+      ? styles.togglePressed
+      : focusVisible
+        ? styles.toggleFocused
+        : styles.toggleDefault,
   ];
 }

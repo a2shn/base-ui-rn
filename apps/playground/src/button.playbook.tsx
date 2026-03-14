@@ -6,6 +6,7 @@ import {
   Section,
   usePlaybookToggles,
   LiveConsole,
+  theme,
 } from '@base-ui-rn/playbook';
 
 export function ButtonPlaybook() {
@@ -31,7 +32,7 @@ export function ButtonPlaybook() {
           testID='button-counter'
           style={getButtonStyle}
         >
-          <Text>{count.value}</Text>
+          <Text style={styles.textWhite}>{count.value}</Text>
         </Button>
         <LiveConsole title='count' state={count} />
       </Section>
@@ -45,7 +46,7 @@ export function ButtonPlaybook() {
           style={[styles.buttonBase, styles.disabled]}
           disableDefaultFocusRing
         >
-          <Text>Disabled Button</Text>
+          <Text style={styles.textWhite}>Disabled Button</Text>
         </Button>
       </Section>
 
@@ -62,7 +63,9 @@ export function ButtonPlaybook() {
           accessibilityLabel='Loading Button'
           style={getButtonStyle}
         >
-          <Text>{loading.value ? 'Loading...' : 'Load'}</Text>
+          <Text style={styles.textWhite}>
+            {loading.value ? 'Loading...' : 'Load'}
+          </Text>
         </Button>
 
         <LiveConsole title='loading' state={loading} testID='loading-console' />
@@ -81,10 +84,10 @@ export function ButtonPlaybook() {
         >
           {({ focusVisible }) => (
             <Text
-              style={{
-                color: focusVisible ? '#0071E3' : '#000',
-                fontWeight: focusVisible ? 'bold' : 'normal',
-              }}
+              style={[
+                styles.textSecondary,
+                focusVisible && styles.textWhiteBold,
+              ]}
             >
               {focusVisible ? 'Keyboard Focused' : 'Custom focus logic'}
             </Text>
@@ -97,20 +100,31 @@ export function ButtonPlaybook() {
 
 const styles = StyleSheet.create({
   buttonBase: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    backgroundColor: '#f0f0f0',
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.xl,
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.colors.border,
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
   },
   pressed: {
     opacity: 0.7,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: theme.colors.borderLight,
   },
   disabled: {
     opacity: 0.5,
+  },
+  textWhite: {
+    color: theme.colors.textPrimary,
+  },
+  textWhiteBold: {
+    color: theme.colors.textPrimary,
+    fontWeight: theme.font.weight.bold,
+  },
+  textSecondary: {
+    color: theme.colors.textSecondary,
+    fontWeight: theme.font.weight.regular,
   },
 });
 

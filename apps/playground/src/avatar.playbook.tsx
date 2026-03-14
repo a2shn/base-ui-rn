@@ -6,6 +6,7 @@ import {
   Section,
   LiveConsole,
   usePlaybookToggles,
+  theme,
 } from '@base-ui-rn/playbook';
 
 export function AvatarPlaybook() {
@@ -91,17 +92,17 @@ export function AvatarPlaybook() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
-    gap: 12,
+    padding: theme.spacing.sm,
+    gap: theme.spacing.md,
     alignItems: 'center',
     alignSelf: 'center',
   },
   avatar: {
     width: 60,
     height: 60,
-    borderRadius: 30,
+    borderRadius: theme.radius.lg * 2.5, // 30 is 60/2. radius.lg is 12, so 30 is lg*2.5
     overflow: 'hidden',
-    backgroundColor: '#eee',
+    backgroundColor: theme.colors.border,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -113,18 +114,18 @@ const styles = StyleSheet.create({
   fallback: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#0071E3',
+    backgroundColor: theme.colors.borderLight,
     justifyContent: 'center',
     alignItems: 'center',
   },
   fallbackText: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
+    color: theme.colors.textPrimary,
+    fontSize: theme.font.size.xl,
+    fontWeight: theme.font.weight.bold,
   },
   hint: {
-    fontSize: 12,
-    color: '#666',
+    fontSize: theme.font.size.xs,
+    color: theme.colors.textMuted,
     textAlign: 'center',
   },
 });

@@ -187,6 +187,7 @@ export function useAccordionItem(props: AccordionItemProps) {
 
   const index = context.getItemIndex(value);
   const open = context.openItems.has(value);
+  const [focused, setFocused] = React.useState(false);
 
   React.useEffect(() => {
     if (onOpenChangeProp) {
@@ -208,11 +209,13 @@ export function useAccordionItem(props: AccordionItemProps) {
   return {
     value,
     open,
+    focused,
     disabled: itemState.disabled,
     index,
     registerTriggerRef: (refItem: React.RefObject<View | null>) => {
       triggerRefRef.current = refItem;
     },
+    setFocused,
     state: itemState,
   };
 }
@@ -235,6 +238,10 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
   const { focused, focusVisible, onFocus, onBlur } = useFocus({
     focusVisible: forceFocusVisible,
   });
+
+  React.useEffect(() => {
+    itemContext.setFocused(focused);
+  }, [focused, itemContext]);
 
   const handleFocus = React.useCallback(
     (event: NativeSyntheticEvent<TargetedEvent>) => {
@@ -329,6 +336,7 @@ export function useAccordionHeader() {
   return {
     state,
     open: itemContext.open,
+    focused: itemContext.focused,
     disabled: itemContext.disabled,
     index: itemContext.index,
   };

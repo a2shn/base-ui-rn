@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
-import { render } from '@testing-library/react-native';
+import { Text, View, Platform } from 'react-native';
+import { render, fireEvent } from '@testing-library/react-native';
 import {
   AccordionRoot,
   AccordionItem,
@@ -176,5 +176,119 @@ describe('Accordion - Rendering', () => {
     );
     expect(getByText('Content 1')).toBeDefined();
     expect(getByText('Content 2')).toBeDefined();
+  });
+
+  it('applies zIndex: 1 to Header and Trigger when open', () => {
+    const { getByTestId } = render(
+      <AccordionRoot defaultValue='item-1'>
+        <AccordionItem value='item-1' testID='item'>
+          <AccordionHeader testID='header'>
+            <AccordionTrigger testID='trigger'>
+              <Text>Item 1</Text>
+            </AccordionTrigger>
+          </AccordionHeader>
+          <AccordionPanel>
+            <Text>Content 1</Text>
+          </AccordionPanel>
+        </AccordionItem>
+      </AccordionRoot>,
+    );
+
+    const item = getByTestId('item');
+    const header = getByTestId('header');
+    const trigger = getByTestId('trigger');
+
+    expect(item.props.style).not.toEqual(
+      expect.arrayContaining([expect.objectContaining({ zIndex: 1 })]),
+    );
+
+    if (Platform.OS === 'web') {
+      expect(header.props.style).toEqual(
+        expect.arrayContaining([expect.objectContaining({ zIndex: 1 })]),
+      );
+      expect(trigger.props.style).toEqual(
+        expect.arrayContaining([expect.objectContaining({ zIndex: 1 })]),
+      );
+    } else {
+      expect(header.props.style).not.toEqual(
+        expect.arrayContaining([expect.objectContaining({ zIndex: 1 })]),
+      );
+      expect(trigger.props.style).not.toEqual(
+        expect.arrayContaining([expect.objectContaining({ zIndex: 1 })]),
+      );
+    }
+  });
+
+  it('does not apply zIndex: 1 when closed', () => {
+    const { getByTestId } = render(
+      <AccordionRoot>
+        <AccordionItem value='item-1' testID='item'>
+          <AccordionHeader testID='header'>
+            <AccordionTrigger testID='trigger'>
+              <Text>Item 1</Text>
+            </AccordionTrigger>
+          </AccordionHeader>
+          <AccordionPanel>
+            <Text>Content 1</Text>
+          </AccordionPanel>
+        </AccordionItem>
+      </AccordionRoot>,
+    );
+
+    const item = getByTestId('item');
+    const header = getByTestId('header');
+    const trigger = getByTestId('trigger');
+
+    expect(item.props.style).not.toEqual(
+      expect.arrayContaining([expect.objectContaining({ zIndex: 1 })]),
+    );
+    expect(header.props.style).not.toEqual(
+      expect.arrayContaining([expect.objectContaining({ zIndex: 1 })]),
+    );
+    expect(trigger.props.style).not.toEqual(
+      expect.arrayContaining([expect.objectContaining({ zIndex: 1 })]),
+    );
+  });
+
+  it('elevates Item, Header and Trigger when focused', () => {
+    const { getByTestId } = render(
+      <AccordionRoot>
+        <AccordionItem value='item-1' testID='item'>
+          <AccordionHeader testID='header'>
+            <AccordionTrigger testID='trigger'>
+              <Text>Item 1</Text>
+            </AccordionTrigger>
+          </AccordionHeader>
+        </AccordionItem>
+      </AccordionRoot>,
+    );
+
+    const item = getByTestId('item');
+    const header = getByTestId('header');
+    const trigger = getByTestId('trigger');
+
+    fireEvent(trigger, 'focus');
+
+    if (Platform.OS === 'web') {
+      expect(item.props.style).toEqual(
+        expect.arrayContaining([expect.objectContaining({ zIndex: 1 })]),
+      );
+      expect(header.props.style).toEqual(
+        expect.arrayContaining([expect.objectContaining({ zIndex: 1 })]),
+      );
+      expect(trigger.props.style).toEqual(
+        expect.arrayContaining([expect.objectContaining({ zIndex: 1 })]),
+      );
+    } else {
+      expect(item.props.style).not.toEqual(
+        expect.arrayContaining([expect.objectContaining({ zIndex: 1 })]),
+      );
+      expect(header.props.style).not.toEqual(
+        expect.arrayContaining([expect.objectContaining({ zIndex: 1 })]),
+      );
+      expect(trigger.props.style).not.toEqual(
+        expect.arrayContaining([expect.objectContaining({ zIndex: 1 })]),
+      );
+    }
   });
 });

@@ -1,11 +1,7 @@
 import * as React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import {
-  Tabs,
-  type TabState,
-  type TabsIndicatorState,
-} from '@base-ui-rn/tabs';
-import { Gallery, Section } from '@base-ui-rn/playbook';
+import { Tabs, type TabState, type TabsIndicatorState } from '@base-ui-rn/tabs';
+import { Gallery, Section, theme } from '@base-ui-rn/playbook';
 
 export function TabsPlaybook() {
   return (
@@ -44,13 +40,13 @@ export function TabsPlaybook() {
               <Tabs.Indicator style={getIndicatorStyle} />
             </Tabs.List>
             <Tabs.Panel value='tab-1' style={styles.panel}>
-              <Text>Overview content</Text>
+              <Text style={styles.panelText}>Overview content</Text>
             </Tabs.Panel>
             <Tabs.Panel value='tab-2' style={styles.panel}>
-              <Text>Projects content</Text>
+              <Text style={styles.panelText}>Projects content</Text>
             </Tabs.Panel>
             <Tabs.Panel value='tab-3' style={styles.panel}>
-              <Text>Account content</Text>
+              <Text style={styles.panelText}>Account content</Text>
             </Tabs.Panel>
           </Tabs.Root>
         </View>
@@ -59,8 +55,8 @@ export function TabsPlaybook() {
       <Section title='Vertical'>
         <View style={styles.container}>
           <Tabs.Root orientation='vertical' defaultValue='tab-1'>
-            <View style={{ flexDirection: 'row', gap: 20 }}>
-              <Tabs.List style={[styles.list, { flexDirection: 'column' }]}>
+            <View style={styles.verticalWrapper}>
+              <Tabs.List style={styles.verticalList}>
                 <Tabs.Tab value='tab-1' style={getTabStyle}>
                   {({ active }) => (
                     <Text
@@ -81,12 +77,12 @@ export function TabsPlaybook() {
                 </Tabs.Tab>
                 <Tabs.Indicator style={getVerticalIndicatorStyle} />
               </Tabs.List>
-              <View style={{ flex: 1 }}>
+              <View style={styles.flex1}>
                 <Tabs.Panel value='tab-1' style={styles.panel}>
-                  <Text>Vertical Panel 1</Text>
+                  <Text style={styles.panelText}>Vertical Panel 1</Text>
                 </Tabs.Panel>
                 <Tabs.Panel value='tab-2' style={styles.panel}>
-                  <Text>Vertical Panel 2</Text>
+                  <Text style={styles.panelText}>Vertical Panel 2</Text>
                 </Tabs.Panel>
               </View>
             </View>
@@ -100,52 +96,69 @@ export function TabsPlaybook() {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    padding: 20,
+    padding: theme.spacing.xl,
     alignSelf: 'center',
   },
   list: {
     flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    marginBottom: 10,
+    backgroundColor: theme.colors.bgCanvas,
+    borderRadius: theme.radius.md,
+    padding: theme.spacing.xs,
+    gap: theme.spacing.xs,
+  },
+  verticalWrapper: {
+    flexDirection: 'row',
+    gap: theme.spacing.xl,
+  },
+  verticalList: {
+    flexDirection: 'column',
+    backgroundColor: theme.colors.bgCanvas,
+    borderRadius: theme.radius.md,
+    padding: theme.spacing.xs,
+    gap: theme.spacing.xs,
   },
   tab: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
+    borderRadius: theme.radius.sm + 2,
   },
   tabText: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: theme.font.size.md,
+    color: theme.colors.textSecondary,
   },
   activeTabText: {
-    color: '#0071E3',
-    fontWeight: '600',
+    color: theme.colors.textPrimary,
+    fontWeight: theme.font.weight.semibold,
   },
   panel: {
-    padding: 20,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 8,
+    padding: theme.spacing.xl,
+    backgroundColor: theme.colors.bgCanvas,
+    borderRadius: theme.radius.md,
     minHeight: 100,
+    marginTop: theme.spacing.md,
+  },
+  panelText: {
+    color: theme.colors.textPrimary,
+  },
+  flex1: {
+    flex: 1,
   },
   indicator: {
     position: 'absolute',
-    backgroundColor: '#0071E3',
+    backgroundColor: theme.colors.border, // Or another suitable dark color
   },
 });
 
 function getTabStyle({ active }: TabState) {
-  return [
-    styles.tab,
-    active && { borderBottomWidth: 2, borderBottomColor: 'transparent' },
-  ];
+  return [styles.tab, active && { backgroundColor: theme.colors.border }];
 }
 
 function getIndicatorStyle(state: TabsIndicatorState) {
   return [
     styles.indicator,
     {
-      bottom: -1,
-      height: 2,
+      bottom: 0,
+      height: 0, // Hidden for this style
       width: state['--active-tab-width'],
       transform: [{ translateX: state['--active-tab-left'] ?? 0 }],
     },
@@ -156,8 +169,8 @@ function getVerticalIndicatorStyle(state: TabsIndicatorState) {
   return [
     styles.indicator,
     {
-      right: -1,
-      width: 2,
+      right: 0,
+      width: 0, // Hidden for this style
       height: state['--active-tab-height'],
       transform: [{ translateY: state['--active-tab-top'] ?? 0 }],
     },

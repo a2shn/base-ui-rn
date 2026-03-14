@@ -6,6 +6,7 @@ import {
   Section,
   usePlaybookToggles,
   LiveConsole,
+  theme,
 } from '@base-ui-rn/playbook';
 
 export function TogglePlaybook() {
@@ -31,7 +32,7 @@ export function TogglePlaybook() {
           testID='toggle-uncontrolled'
           style={getToggleStyle}
         >
-          <Text>Notifications</Text>
+          <Text style={styles.text}>Notifications</Text>
         </Toggle>
       </Section>
 
@@ -44,7 +45,9 @@ export function TogglePlaybook() {
           testID='toggle-dark-mode'
           style={getToggleStyle}
         >
-          <Text>{darkMode.value ? 'ON' : 'OFF'}</Text>
+          <Text style={styles.text}>
+            {darkMode.value ? 'ON' : 'OFF'}
+          </Text>
         </Toggle>
         <LiveConsole title='darkMode' state={darkMode} />
       </Section>
@@ -56,7 +59,7 @@ export function TogglePlaybook() {
           testID='toggle-disabled'
           style={[styles.toggleBase, styles.disabled]}
         >
-          <Text>Disabled</Text>
+          <Text style={styles.text}>Disabled</Text>
         </Toggle>
       </Section>
 
@@ -73,7 +76,9 @@ export function TogglePlaybook() {
           accessibilityLabel='Agree Toggle'
           style={getToggleStyle}
         >
-          <Text>{loading.value ? 'Applying...' : 'Agree'}</Text>
+          <Text style={styles.text}>
+            {loading.value ? 'Applying...' : 'Agree'}
+          </Text>
         </Toggle>
 
         <LiveConsole title='loading' state={loading} testID='loading-console' />
@@ -89,17 +94,22 @@ export function TogglePlaybook() {
 
 const styles = StyleSheet.create({
   toggleBase: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    backgroundColor: '#f0f0f0',
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.xl,
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.colors.border,
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
   },
+  text: {
+    color: theme.colors.textPrimary,
+    fontSize: theme.font.size.md,
+    fontWeight: theme.font.weight.medium,
+  },
   pressed: {
     opacity: 0.7,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: '#3D3D3D',
   },
   disabled: {
     opacity: 0.5,

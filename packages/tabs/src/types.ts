@@ -28,9 +28,7 @@ export interface TabsRootState {
 }
 
 export interface TabsRootProps
-  extends
-    Omit<ViewProps, 'children' | 'style'>,
-    WebTabsRootAccessibilityProps {
+  extends Omit<ViewProps, 'children' | 'style'>, WebTabsRootAccessibilityProps {
   /**
    * The content of the tabs.
    */
@@ -76,9 +74,7 @@ export interface TabsListState {
 }
 
 export interface TabsListProps
-  extends
-    Omit<ViewProps, 'children' | 'style'>,
-    WebTabsListAccessibilityProps {
+  extends Omit<ViewProps, 'children' | 'style'>, WebTabsListAccessibilityProps {
   /**
    * The content of the tabs list.
    */
@@ -106,7 +102,8 @@ export interface TabState {
 }
 
 export interface TabProps
-  extends Omit<PressableProps, 'children' | 'style'>,
+  extends
+    Omit<PressableProps, 'children' | 'style'>,
     WebTabsTabAccessibilityProps {
   /**
    * The content of the tab.

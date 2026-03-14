@@ -3,6 +3,7 @@ export { Section } from './Section';
 export { DebugTable } from './DebugTable';
 export { usePlaybookToggles, LiveConsole } from './utils/usePlaybookToggle';
 export { PlaybookApp, type PlaybookConfig } from './Playbook';
+export { theme, type Theme } from './styles/theme';
 export {
   iconMap,
   getIconForComponent,

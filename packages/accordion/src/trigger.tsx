@@ -2,6 +2,7 @@ import * as React from 'react';
 import {
   Pressable,
   View,
+  Platform,
   type PressableProps,
   type NativeSyntheticEvent,
 } from 'react-native';
@@ -54,6 +55,7 @@ export const AccordionTrigger = React.forwardRef<View, AccordionTriggerProps>(
       handleKeyPress,
       handleFocus,
       handleBlur,
+      focused,
       focusVisible,
       state,
       open,
@@ -74,6 +76,9 @@ export const AccordionTrigger = React.forwardRef<View, AccordionTriggerProps>(
     const finalStyle = [
       resolvedStyle,
       !disableDefaultFocusRing && focusVisible && DEFAULT_FOCUS_RING_STYLE,
+      Platform.select({
+        web: open || focused || focusVisible ? { zIndex: 1 } : undefined,
+      }),
     ];
 
     return (

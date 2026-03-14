@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Progress, type ProgressState } from '@base-ui-rn/progress';
-import { Gallery, Section } from '@base-ui-rn/playbook';
+import { Gallery, Section, theme } from '@base-ui-rn/playbook';
 
 export function ProgressPlaybook() {
   const [value, setValue] = React.useState(0);
@@ -50,10 +50,7 @@ export function ProgressPlaybook() {
             </View>
             <Progress.Track style={styles.meterTrack}>
               <Progress.Indicator
-                style={[
-                  styles.meterIndicator,
-                  { width: '30%', backgroundColor: '#8B5CF6' },
-                ]}
+                style={[styles.meterIndicator, styles.indicatorIndeterminate]}
               />
             </Progress.Track>
           </Progress.Root>
@@ -79,7 +76,7 @@ export function ProgressPlaybook() {
             </View>
             <Progress.Track style={styles.meterTrack}>
               <Progress.Indicator
-                style={[styles.meterIndicator, { backgroundColor: '#10B981' }]}
+                style={[styles.meterIndicator, styles.indicatorSuccess]}
               />
             </Progress.Track>
           </Progress.Root>
@@ -91,17 +88,12 @@ export function ProgressPlaybook() {
           <Progress.Root value={value} style={styles.meterRoot}>
             {(state) => (
               <>
-                <Progress.Label
-                  style={getProgressLabelStyle(state)}
-                >
+                <Progress.Label style={getProgressLabelStyle(state)}>
                   {state.isComplete ? '✓ Completed' : 'Processing...'}
                 </Progress.Label>
                 <Progress.Track style={styles.meterTrack}>
                   <Progress.Indicator
-                    style={[
-                      styles.meterIndicator,
-                      { backgroundColor: '#059669' },
-                    ]}
+                    style={[styles.meterIndicator, styles.indicatorComplete]}
                   />
                 </Progress.Track>
               </>
@@ -118,14 +110,14 @@ export function ProgressPlaybook() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
-    gap: 12,
+    padding: theme.spacing.md,
+    gap: theme.spacing.md,
     alignItems: 'center',
     alignSelf: 'center',
   },
   meterRoot: {
     width: 200,
-    gap: 8,
+    gap: theme.spacing.sm,
   },
   meterHeader: {
     flexDirection: 'row',
@@ -133,34 +125,46 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   meterLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#111',
+    fontSize: theme.font.size.md,
+    fontWeight: theme.font.weight.medium,
+    color: theme.colors.textPrimary,
   },
   meterValue: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: theme.font.size.md,
+    color: theme.colors.textSecondary,
   },
   meterTrack: {
     height: 8,
     width: '100%',
-    backgroundColor: '#eee',
-    borderRadius: 4,
+    backgroundColor: theme.colors.bgCanvas,
+    borderRadius: theme.radius.sm,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: theme.colors.border,
   },
   meterIndicator: {
     height: '100%',
     width: '100%',
-    backgroundColor: '#0071E3',
+    backgroundColor: '#4A90D9', // Accent color
+  },
+  indicatorIndeterminate: {
+    width: '30%',
+    backgroundColor: '#8B5CF6',
+  },
+  indicatorSuccess: {
+    backgroundColor: '#10B981',
+  },
+  indicatorComplete: {
+    backgroundColor: '#059669',
   },
   hint: {
-    fontSize: 12,
-    color: '#666',
+    fontSize: theme.font.size.xs,
+    color: theme.colors.textMuted,
     textAlign: 'center',
   },
   complete: {
-    color: '#059669',
-    fontWeight: 'bold',
+    color: '#10B981',
+    fontWeight: theme.font.weight.bold,
   },
 });
 

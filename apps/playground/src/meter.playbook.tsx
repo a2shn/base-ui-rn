@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Meter } from '@base-ui-rn/meter';
-import { Gallery, Section } from '@base-ui-rn/playbook';
+import { Gallery, Section, theme } from '@base-ui-rn/playbook';
 
 export function MeterPlaybook() {
   return (
@@ -31,7 +31,7 @@ export function MeterPlaybook() {
             </View>
             <Meter.Track style={styles.meterTrack}>
               <Meter.Indicator
-                style={[styles.meterIndicator, { backgroundColor: '#10B981' }]}
+                style={[styles.meterIndicator, styles.indicatorSuccess]}
               />
             </Meter.Track>
           </Meter.Root>
@@ -52,7 +52,7 @@ export function MeterPlaybook() {
             </View>
             <Meter.Track style={styles.meterTrack}>
               <Meter.Indicator
-                style={[styles.meterIndicator, { backgroundColor: '#F59E0B' }]}
+                style={[styles.meterIndicator, styles.indicatorWarning]}
               />
             </Meter.Track>
           </Meter.Root>
@@ -72,7 +72,7 @@ export function MeterPlaybook() {
             </View>
             <Meter.Track style={styles.meterTrack}>
               <Meter.Indicator
-                style={[styles.meterIndicator, { backgroundColor: '#EF4444' }]}
+                style={[styles.meterIndicator, styles.indicatorCritical]}
               />
             </Meter.Track>
           </Meter.Root>
@@ -87,14 +87,14 @@ export function MeterPlaybook() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
-    gap: 12,
+    padding: theme.spacing.md,
+    gap: theme.spacing.md,
     alignItems: 'center',
     alignSelf: 'center',
   },
   meterRoot: {
     width: 200,
-    gap: 8,
+    gap: theme.spacing.sm,
   },
   meterHeader: {
     flexDirection: 'row',
@@ -102,29 +102,40 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   meterLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#111',
+    fontSize: theme.font.size.md,
+    fontWeight: theme.font.weight.medium,
+    color: theme.colors.textPrimary,
   },
   meterValue: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: theme.font.size.md,
+    color: theme.colors.textSecondary,
   },
   meterTrack: {
     height: 8,
     width: '100%',
-    backgroundColor: '#eee',
-    borderRadius: 4,
+    backgroundColor: theme.colors.bgCanvas,
+    borderRadius: theme.radius.sm,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: theme.colors.border,
   },
   meterIndicator: {
     height: '100%',
     width: '100%',
-    backgroundColor: '#0071E3',
+    backgroundColor: '#4A90D9', // Accent color
+  },
+  indicatorSuccess: {
+    backgroundColor: '#10B981',
+  },
+  indicatorWarning: {
+    backgroundColor: '#F59E0B',
+  },
+  indicatorCritical: {
+    backgroundColor: '#EF4444',
   },
   hint: {
-    fontSize: 12,
-    color: '#666',
+    fontSize: theme.font.size.xs,
+    color: theme.colors.textMuted,
     textAlign: 'center',
   },
 });

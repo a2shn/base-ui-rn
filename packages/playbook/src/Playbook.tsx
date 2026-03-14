@@ -82,7 +82,7 @@ export const PlaybookApp = ({ registry }: { registry: PlaybookConfig }) => {
         },
       ]}
     >
-      <StatusBar barStyle='dark-content' />
+      <StatusBar barStyle='light-content' />
 
       {!isHome && (
         <Button
@@ -124,7 +124,7 @@ export const PlaybookApp = ({ registry }: { registry: PlaybookConfig }) => {
               accessibilityHint='Filters the components list as you type'
               style={styles.searchInput}
               placeholder='Search components...'
-              placeholderTextColor={styles.searchInput.color}
+              placeholderTextColor={styles.emptyStateSubtext.color}
               value={searchQuery}
               onChangeText={setSearchQuery}
               onFocus={() => setIsSearchFocused(true)}

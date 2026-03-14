@@ -83,7 +83,7 @@ export const components = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.bg,
+    backgroundColor: colors.bgSecondary,
     borderRadius: radius.md,
     borderWidth: 1,
     borderColor: colors.border,
@@ -147,7 +147,7 @@ export const components = StyleSheet.create({
   },
 
   componentButton: {
-    backgroundColor: colors.bg,
+    backgroundColor: colors.bgSecondary,
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: colors.border,
@@ -180,7 +180,7 @@ export const components = StyleSheet.create({
     marginRight: spacing.md,
   },
   componentButtonPressed: {
-    backgroundColor: colors.bgSecondary,
+    backgroundColor: colors.bgCanvas,
   },
 
   backButton: {
@@ -235,7 +235,7 @@ export const components = StyleSheet.create({
 
   debugTable: {
     marginTop: spacing.xs,
-    backgroundColor: colors.textPrimary,
+    backgroundColor: colors.bg,
     borderRadius: radius.md,
     overflow: 'hidden',
   },

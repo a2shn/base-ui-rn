@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, Text, Platform, StyleSheet } from 'react-native';
-import { Gallery, Section } from '@base-ui-rn/playbook';
+import { Gallery, Section, theme } from '@base-ui-rn/playbook';
 import { Button } from '@base-ui-rn/button';
 import { Toggle } from '@base-ui-rn/toggle';
 import { Shortcut } from '@base-ui-rn/keyboard-shortcuts';
@@ -38,9 +38,7 @@ export const KeyboardShortcutsPlaybook = () => {
       <Section title='Global Shortcuts (Web Only)'>
         <View style={styles.container}>
           <Text style={styles.label}>{globalMessage}</Text>
-          <Text style={styles.hint}>
-            Try: Ctrl+K, Ctrl+Shift+L, or Escape
-          </Text>
+          <Text style={styles.hint}>Try: Ctrl+K, Ctrl+Shift+L, or Escape</Text>
 
           <Shortcut
             keys={['k']}
@@ -72,7 +70,9 @@ export const KeyboardShortcutsPlaybook = () => {
             style={styles.buttonBase}
           >
             {({ pressed }) => (
-              <Text style={{ opacity: pressed ? 0.5 : 1 }}>Save (Ctrl+S)</Text>
+              <Text style={[styles.textPrimary, pressed && styles.pressedOpacity]}>
+                Save (Ctrl+S)
+              </Text>
             )}
           </Button>
 
@@ -87,7 +87,7 @@ export const KeyboardShortcutsPlaybook = () => {
             }}
             style={[styles.buttonBase, styles.deleteButton]}
           >
-            <Text style={{ color: '#fff' }}>Delete (Ctrl+BS)</Text>
+            <Text style={styles.textPrimary}>Delete (Ctrl+BS)</Text>
           </Button>
         </View>
       </Section>
@@ -99,7 +99,12 @@ export const KeyboardShortcutsPlaybook = () => {
             style={styles.buttonBase}
           >
             {({ pressed }) => (
-              <Text style={{ fontWeight: pressed ? 'bold' : 'normal' }}>
+              <Text
+                style={[
+                  styles.textPrimary,
+                  { fontWeight: pressed ? theme.font.weight.bold : theme.font.weight.regular },
+                ]}
+              >
                 Bold (Ctrl+B)
               </Text>
             )}
@@ -114,7 +119,12 @@ export const KeyboardShortcutsPlaybook = () => {
             style={styles.buttonBase}
           >
             {({ pressed }) => (
-              <Text style={{ fontStyle: pressed ? 'italic' : 'normal' }}>
+              <Text
+                style={[
+                  styles.textPrimary,
+                  { fontStyle: pressed ? 'italic' : 'normal' },
+                ]}
+              >
                 Italic (Ctrl+I)
               </Text>
             )}
@@ -134,11 +144,9 @@ export const KeyboardShortcutsPlaybook = () => {
             }}
             style={[styles.buttonBase, styles.disabled]}
           >
-            <Text>Disabled (Ctrl+D)</Text>
+            <Text style={styles.textPrimary}>Disabled (Ctrl+D)</Text>
           </Button>
-          <Text style={styles.hint}>
-            Pressing Ctrl+D should do nothing.
-          </Text>
+          <Text style={styles.hint}>Pressing Ctrl+D should do nothing.</Text>
         </View>
       </Section>
     </Gallery>
@@ -147,34 +155,40 @@ export const KeyboardShortcutsPlaybook = () => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
-    gap: 12,
+    padding: theme.spacing.sm,
+    gap: theme.spacing.md,
     alignItems: 'center',
     alignSelf: 'center',
   },
   label: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#111',
+    fontSize: theme.font.size.md,
+    fontWeight: theme.font.weight.medium,
+    color: theme.colors.textPrimary,
     textAlign: 'center',
   },
   hint: {
-    fontSize: 12,
-    color: '#666',
+    fontSize: theme.font.size.xs,
+    color: theme.colors.textMuted,
     textAlign: 'center',
   },
   buttonBase: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    backgroundColor: '#f0f0f0',
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.xl,
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.colors.border,
     alignItems: 'center',
     justifyContent: 'center',
   },
   deleteButton: {
-    backgroundColor: '#FF3B30',
+    backgroundColor: theme.colors.borderLight,
   },
   disabled: {
+    opacity: 0.5,
+  },
+  textPrimary: {
+    color: theme.colors.textPrimary,
+  },
+  pressedOpacity: {
     opacity: 0.5,
   },
 });

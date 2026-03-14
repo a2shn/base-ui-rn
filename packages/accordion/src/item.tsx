@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View } from 'react-native';
+import { View, Platform } from 'react-native';
 import { AccordionItemContext } from './context';
 import type { AccordionItemProps } from './types';
 import { useAccordionItem } from './use-accordion';
@@ -35,30 +35,47 @@ export const AccordionItem = React.forwardRef<View, AccordionItemProps>(
       ...otherProps
     } = props;
 
-    const { value, open, disabled, index, registerTriggerRef, state } =
-      useAccordionItem(props);
+    const {
+      value,
+      open,
+      focused,
+      disabled,
+      index,
+      registerTriggerRef,
+      setFocused,
+      state,
+    } = useAccordionItem(props);
 
     const itemContextValue = React.useMemo(
       () => ({
         value,
         open,
         disabled,
+        focused,
         index,
         registerTriggerRef,
+        setFocused,
       }),
-      [value, open, disabled, index, registerTriggerRef],
+      [value, open, disabled, focused, index, registerTriggerRef, setFocused],
     );
 
     const resolvedStyle = typeof style === 'function' ? style(state) : style;
     const resolvedChildren =
       typeof children === 'function' ? children(state) : children;
 
+    const finalStyle = [
+      resolvedStyle,
+      Platform.select({
+        web: focused ? { zIndex: 1 } : undefined,
+      }),
+    ];
+
     return (
       <AccordionItemContext.Provider value={itemContextValue}>
         <View
           {...otherProps}
           ref={ref}
-          style={resolvedStyle}
+          style={finalStyle}
           aria-labelledby={ariaLabelledBy}
           aria-describedby={ariaDescribedBy}
           aria-details={ariaDetails}

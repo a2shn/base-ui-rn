@@ -29,6 +29,7 @@ export interface TabsContextValue {
     value: TabValue,
     event: NativeSyntheticEvent<KeyPressEventData>,
   ) => void;
+  onFocusChange?: (value: string) => void;
   getTabIndex: (value: TabValue) => number;
   tabMeasurements: Map<TabValue, TabMeasurement>;
   updateTabMeasurement: (value: TabValue, measurement: TabMeasurement) => void;

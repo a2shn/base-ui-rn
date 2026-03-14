@@ -2,24 +2,22 @@ import * as React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { FocusRing, type FocusState } from '@base-ui-rn/focus-ring';
 import { Button } from '@base-ui-rn/button';
-import { Gallery, Section } from '@base-ui-rn/playbook';
+import { Gallery, Section, theme } from '@base-ui-rn/playbook';
 
 export function FocusRingPlaybook() {
   return (
     <Gallery title='FocusRing'>
-      <Section title='Blue Outline'>
+      <Section title='Themed Outline'>
         <View style={styles.container}>
           <FocusRing>
             {({ focusVisible }) => (
-              <Button
-                style={getOutlineButtonStyle({ focusVisible })}
-              >
-                <Text>Focus Me</Text>
+              <Button style={getOutlineButtonStyle({ focusVisible })}>
+                <Text style={styles.textPrimary}>Focus Me</Text>
               </Button>
             )}
           </FocusRing>
           <Text style={styles.hint}>
-            Focus this button via keyboard to see the blue outline.
+            Focus this button via keyboard to see the themed outline.
           </Text>
         </View>
       </Section>
@@ -28,10 +26,8 @@ export function FocusRingPlaybook() {
         <View style={styles.container}>
           <FocusRing>
             {({ focused }) => (
-              <Button
-                style={getCustomButtonStyle({ focused })}
-              >
-                <Text style={{ color: focused ? '#fff' : '#000' }}>
+              <Button style={getCustomButtonStyle({ focused })}>
+                <Text style={focused ? styles.textPrimary : styles.textSecondary}>
                   {focused ? 'Focused' : 'Idle'}
                 </Text>
               </Button>
@@ -45,30 +41,36 @@ export function FocusRingPlaybook() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
-    gap: 12,
+    padding: theme.spacing.sm,
+    gap: theme.spacing.md,
     alignItems: 'center',
     alignSelf: 'center',
   },
   buttonBase: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    backgroundColor: '#f0f0f0',
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.xl,
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.colors.border,
     alignItems: 'center',
     justifyContent: 'center',
   },
   outline: {
-    borderColor: '#0071E3',
+    borderColor: theme.colors.textPrimary,
     borderWidth: 2,
   },
   focused: {
-    backgroundColor: '#0071E3',
+    backgroundColor: theme.colors.borderLight,
   },
   hint: {
-    fontSize: 12,
-    color: '#666',
+    fontSize: theme.font.size.xs,
+    color: theme.colors.textMuted,
     textAlign: 'center',
+  },
+  textPrimary: {
+    color: theme.colors.textPrimary,
+  },
+  textSecondary: {
+    color: theme.colors.textSecondary,
   },
 });
 
