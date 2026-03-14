@@ -15,8 +15,14 @@ import { KeyboardShortcutsPlaybook } from './src/keyboard-shortcuts.playbook';
 import { AccordionPlaybook } from './src/accordion.playbook';
 import { TabsPlaybook } from './src/tabs.playbook';
 import { SwitchPlaybook } from './src/switch.playbook';
+import { SliderPlaybook } from './src/slider.playbook';
 
 const REGISTRY: PlaybookConfig = {
+  Slider: {
+    title: 'Slider',
+    component: SliderPlaybook,
+    testID: 'slider',
+  },
   Switch: {
     title: 'Switch',
     component: SwitchPlaybook,
