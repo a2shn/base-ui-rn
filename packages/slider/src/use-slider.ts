@@ -57,10 +57,14 @@ export function useSlider(props: SliderRootProps) {
   const setValueAtIndex = React.useCallback(
     (index: number, rawValue: number) => {
       const next = [...current];
-      next[index] = clamp(rawValue, min, max);
+      const snapped = Math.round((rawValue - min) / step) * step + min;
+      // To avoid floating point precision issues like 31.000000000000004
+      const precision = step.toString().split('.')[1]?.length || 0;
+      const rounded = Number(snapped.toFixed(precision));
+      next[index] = clamp(rounded, min, max);
       emit(next);
     },
-    [current, min, max, emit],
+    [current, min, max, step, emit],
   );
 
   const stepBy = React.useCallback(
