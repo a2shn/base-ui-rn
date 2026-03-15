@@ -1,6 +1,10 @@
 import * as React from 'react';
 import { type NativeSyntheticEvent, View } from 'react-native';
-import { useKeyboardRange, type KeyPressEventData } from '@base-ui-rn/core';
+import {
+  useKeyboardRange,
+  type KeyPressEventData,
+  resolveTabIndex,
+} from '@base-ui-rn/core';
 import { useSliderContext } from './context';
 import type { SliderThumbProps } from './types';
 
@@ -28,6 +32,7 @@ export const SliderThumb = React.memo(
       accessibilityState,
       accessibilityHint,
       style,
+      tabIndex,
       'aria-label': ariaLabel,
       getAriaLabel,
       getAriaValueText,
@@ -39,6 +44,7 @@ export const SliderThumb = React.memo(
       useSliderContext();
     const isDisabled = state.disabled || disabled;
     const valueNow = state.value[index] ?? state.min;
+    const resolvedTabIndex = resolveTabIndex(!!isDisabled, tabIndex);
 
     const handleLayout = React.useCallback(
       (event: import('react-native').LayoutChangeEvent) => {
@@ -124,6 +130,9 @@ export const SliderThumb = React.memo(
         accessibilityValue={a11yValue}
         // @ts-expect-error onKeyPress is valid on Web but missing in RN View types
         onKeyPress={handleKeyPress as never}
+        tabIndex={resolvedTabIndex}
+        aria-orientation={state.orientation}
+        data-orientation={state.orientation}
         aria-valuemin={state.min}
         aria-valuemax={state.max}
         aria-valuenow={valueNow}

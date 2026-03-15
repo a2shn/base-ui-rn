@@ -56,8 +56,23 @@ export const SliderControl = React.memo(
      * Convert an absolute page position to a slider value.
      */
     const pagePositionToValue = React.useCallback(
-      (pageX: number, pageY: number): number => {
-        const { x, y, width, height } = layoutRef.current;
+      (pageX: number, pageY: number, target?: any): number => {
+        let { x, y, width, height } = layoutRef.current;
+
+        // Fallback for Web if layout hasn't been measured via onLayout yet
+        if (
+          width === 0 &&
+          target &&
+          typeof target.getBoundingClientRect === 'function'
+        ) {
+          const rect = target.getBoundingClientRect();
+          const win = typeof window !== 'undefined' ? (window as any) : null;
+          x = rect.left + (win?.scrollX ?? 0);
+          y = rect.top + (win?.scrollY ?? 0);
+          width = rect.width;
+          height = rect.height;
+        }
+
 
         if (isHorizontal) {
           const ratio = width > 0 ? (pageX - x) / width : 0;
@@ -108,8 +123,8 @@ export const SliderControl = React.memo(
         onPanResponderTerminationRequest: () => false,
 
         onPanResponderGrant: (evt) => {
-          const { pageX, pageY } = evt.nativeEvent;
-          const rawValue = pagePositionToValue(pageX, pageY);
+          const { pageX, pageY, target } = evt.nativeEvent;
+          const rawValue = pagePositionToValue(pageX, pageY, target as never);
           const index = closestThumbIndex(rawValue);
           activeIndexRef.current = index;
           setValueAtIndex(index, rawValue, 'drag');
@@ -117,8 +132,8 @@ export const SliderControl = React.memo(
 
         onPanResponderMove: (evt) => {
           if (activeIndexRef.current === -1) return;
-          const { pageX, pageY } = evt.nativeEvent;
-          const rawValue = pagePositionToValue(pageX, pageY);
+          const { pageX, pageY, target } = evt.nativeEvent;
+          const rawValue = pagePositionToValue(pageX, pageY, target as never);
           setValueAtIndex(activeIndexRef.current, rawValue, 'drag');
         },
 
@@ -148,6 +163,21 @@ export const SliderControl = React.memo(
         {...panResponder.panHandlers}
         ref={ref}
         onLayout={handleLayout}
+        // @ts-expect-error onPointerDown is Web only
+        onPointerDown={(e: React.PointerEvent) => {
+          if (state.disabled) return;
+          // Only handle direct clicks on the control/track that aren't already handled by thumbs
+          if (e.target !== e.currentTarget) return;
+
+          const rawValue = pagePositionToValue(
+            e.pageX,
+            e.pageY,
+            e.currentTarget as never,
+          );
+          const index = closestThumbIndex(rawValue);
+          setValueAtIndex(index, rawValue, 'track-press');
+          commitValue('track-press');
+        }}
         style={resolvedStyle}
       />
     );
