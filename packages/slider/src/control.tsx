@@ -110,8 +110,11 @@ export const SliderControl = React.memo(
 
       const pan = Gesture.Pan()
         .enabled(!state.disabled)
-        .minDistance(0)
         .shouldCancelWhenOutside(false)
+        .manualActivation(true)
+        .onTouchesDown((_evt, stateManager) => {
+          stateManager.activate();
+        })
         .onStart((evt) => {
           runOnJS(updateValue)(evt.absoluteX, evt.absoluteY);
         })
@@ -124,14 +127,6 @@ export const SliderControl = React.memo(
         .onFinalize(() => {
           runOnJS(resetActiveIndex)();
         });
-
-      // Force the gesture to activate immediately along its main axis
-      // to prevent parent ScrollViews from stealing the interaction
-      if (state.orientation === 'horizontal') {
-        pan.activeOffsetX([-1, 1]);
-      } else {
-        pan.activeOffsetY([-1, 1]);
-      }
 
       return pan;
     }, [
