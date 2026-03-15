@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { render } from '@testing-library/react-native';
-import { fireKeyPress } from '@base-ui-rn/test-utils';
+import { render, fireEvent } from '@testing-library/react-native';
 import { Slider } from '../index';
 
 describe('Slider keyboard', () => {
-  it('increments on Enter/Space activation keys', () => {
+  it('increments on ArrowRight/ArrowUp keys', () => {
     const { getByLabelText, getByText } = render(
       <Slider.Root defaultValue={1}>
         <Slider.Value />
@@ -13,8 +12,8 @@ describe('Slider keyboard', () => {
     );
 
     const thumb = getByLabelText('Volume thumb');
-    fireKeyPress(thumb, 'Enter');
-    fireKeyPress(thumb, ' ');
+    fireEvent(thumb, 'keyPress', { nativeEvent: { key: 'ArrowRight' } });
+    fireEvent(thumb, 'keyPress', { nativeEvent: { key: 'ArrowUp' } });
 
     expect(getByText('3')).toBeTruthy();
   });
