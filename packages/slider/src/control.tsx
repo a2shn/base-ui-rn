@@ -111,6 +111,7 @@ export const SliderControl = React.memo(
       return Gesture.Pan()
         .enabled(!state.disabled)
         .minDistance(0)
+        .shouldCancelWhenOutside(false)
         .onStart((evt) => {
           runOnJS(updateValue)(evt.absoluteX, evt.absoluteY);
         })
