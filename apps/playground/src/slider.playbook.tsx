@@ -1,66 +1,97 @@
 import * as React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import { Slider, type SliderState } from '@base-ui-rn/slider';
+import { View, Text, StyleSheet } from 'react-native';
+import {
+  Slider,
+  type SliderThumbState,
+} from '@base-ui-rn/slider';
 import { Gallery, Section, theme } from '@base-ui-rn/playbook';
 
 export function SliderPlaybook() {
+  const [value, setValue] = React.useState(25);
+  const [rangeValue, setRangeValue] = React.useState<number[]>([20, 70]);
+
   return (
     <Gallery title='Slider'>
       <Section title='Basic'>
         <View style={styles.container}>
-          <Slider.Root defaultValue={25}>
+          <Slider.Root
+            value={value}
+            onValueChange={(nextValue) => {
+              if (typeof nextValue === 'number') {
+                setValue(nextValue);
+              }
+            }}
+            style={styles.root}
+          >
             <Slider.Label style={styles.label}>Volume</Slider.Label>
             <Slider.Control style={styles.control}>
               <Slider.Track style={styles.track}>
                 <Slider.Indicator style={styles.indicator} />
-                <Slider.Thumb style={styles.thumb} />
+                <Slider.Thumb aria-label='Volume' style={getThumbStyle} />
               </Slider.Track>
             </Slider.Control>
-            <Slider.Value />
+            <Slider.Value style={styles.value}>
+              {(_formatted, values) => `${values[0]}%`}
+            </Slider.Value>
           </Slider.Root>
         </View>
       </Section>
 
       <Section title='Range'>
         <View style={styles.container}>
-          <Slider.Root defaultValue={[25, 75]}>
-            <Slider.Label style={styles.label}>Price Range</Slider.Label>
+          <Slider.Root
+            value={rangeValue}
+            onValueChange={(nextValue) => {
+              if (Array.isArray(nextValue)) {
+                setRangeValue(nextValue);
+              }
+            }}
+            style={styles.root}
+          >
+            <Slider.Label style={styles.label}>Price range</Slider.Label>
             <Slider.Control style={styles.control}>
               <Slider.Track style={styles.track}>
                 <Slider.Indicator style={styles.indicator} />
-                <Slider.Thumb index={0} style={styles.thumb} />
-                <Slider.Thumb index={1} style={styles.thumb} />
+
+                <Slider.Thumb
+                  index={0}
+                  aria-label='Minimum price'
+                  style={getThumbStyle}
+                />
+                <Slider.Thumb
+                  index={1}
+                  aria-label='Maximum price'
+                  style={getThumbStyle}
+                />
               </Slider.Track>
             </Slider.Control>
-            <Slider.Value />
+            <Slider.Value style={styles.value}>
+              {(formattedValues) =>
+                `$${formattedValues[0]} - $${formattedValues[1]}`
+              }
+            </Slider.Value>
           </Slider.Root>
         </View>
       </Section>
 
-      <Section title='Vertical'>
-        <View style={[styles.container, { height: 200 }]}>
-          <Slider.Root defaultValue={50} orientation='vertical'>
-            <Slider.Control style={[styles.control, styles.controlVertical]}>
-              <Slider.Track style={[styles.track, styles.trackVertical]}>
-                <Slider.Indicator style={styles.indicator} />
-                <Slider.Thumb style={styles.thumb} />
-              </Slider.Track>
-            </Slider.Control>
-          </Slider.Root>
-        </View>
-      </Section>
-
-      <Section title='Custom Step (10)'>
+      <Section title='Disabled'>
         <View style={styles.container}>
-          <Slider.Root defaultValue={40} step={10}>
+          <Slider.Root defaultValue={40} disabled style={styles.root}>
+            <Slider.Label style={styles.label}>Disabled slider</Slider.Label>
             <Slider.Control style={styles.control}>
               <Slider.Track style={styles.track}>
                 <Slider.Indicator style={styles.indicator} />
-                <Slider.Thumb style={styles.thumb} />
+                <Slider.Thumb
+                  aria-label='Disabled value'
+                  style={getThumbStyle}
+                />
               </Slider.Track>
             </Slider.Control>
-            <Slider.Value />
+            <Slider.Value style={styles.value} />
           </Slider.Root>
+          <Text style={styles.hint}>
+            Keyboard and pointer interactions are blocked.
+          </Text>
         </View>
       </Section>
     </Gallery>
@@ -69,51 +100,62 @@ export function SliderPlaybook() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: theme.spacing.lg,
     width: '100%',
-    alignItems: 'center',
     alignSelf: 'center',
+    padding: theme.spacing.lg,
+  },
+  root: {
+    gap: theme.spacing.sm,
   },
   label: {
     fontSize: theme.font.size.md,
     color: theme.colors.textPrimary,
-    marginBottom: theme.spacing.sm,
+    fontWeight: theme.font.weight.medium,
+  },
+  value: {
+    fontSize: theme.font.size.sm,
+    color: theme.colors.textSecondary,
   },
   control: {
-    width: 200,
-    height: 40,
+    width: '100%',
+    height: 32,
     justifyContent: 'center',
   },
-  controlVertical: {
-    width: 40,
-    height: '100%',
-    alignItems: 'center',
-  },
   track: {
-    height: 4,
+    height: 6,
     width: '100%',
-    backgroundColor: theme.colors.border,
-    borderRadius: 2,
-  },
-  trackVertical: {
-    width: 4,
-    height: '100%',
+    borderRadius: 999,
+    backgroundColor: theme.colors.bgCanvas,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    justifyContent: 'center',
   },
   indicator: {
-    backgroundColor: '#0A7EA4',
-    borderRadius: 2,
+    borderRadius: 999,
+    backgroundColor: '#4A90D9',
   },
   thumb: {
     width: 20,
     height: 20,
-    borderRadius: 10,
-    backgroundColor: '#FFFFFF',
+    borderRadius: 999,
     borderWidth: 1,
-    borderColor: theme.colors.border,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
+    borderColor: '#23527C',
+    backgroundColor: '#FFFFFF',
+  },
+  thumbDisabled: {
+    opacity: 0.6,
+    borderColor: theme.colors.textMuted,
+  },
+  hint: {
+    marginTop: theme.spacing.sm,
+    color: theme.colors.textMuted,
+    fontSize: theme.font.size.xs,
   },
 });
+
+
+function getThumbStyle(state: SliderThumbState) {
+  return state.disabled
+    ? { ...styles.thumb, ...styles.thumbDisabled }
+    : styles.thumb;
+}

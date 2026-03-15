@@ -14,20 +14,9 @@ import { ProgressPlaybook } from './src/progress.playbook';
 import { KeyboardShortcutsPlaybook } from './src/keyboard-shortcuts.playbook';
 import { AccordionPlaybook } from './src/accordion.playbook';
 import { TabsPlaybook } from './src/tabs.playbook';
-import { SwitchPlaybook } from './src/switch.playbook';
 import { SliderPlaybook } from './src/slider.playbook';
 
 const REGISTRY: PlaybookConfig = {
-  Slider: {
-    title: 'Slider',
-    component: SliderPlaybook,
-    testID: 'slider',
-  },
-  Switch: {
-    title: 'Switch',
-    component: SwitchPlaybook,
-    testID: 'switch',
-  },
   Toggle: {
     title: 'Toggle',
     component: TogglePlaybook,
@@ -82,6 +71,11 @@ const REGISTRY: PlaybookConfig = {
     title: 'Tabs',
     component: TabsPlaybook,
     testID: 'tabs',
+  },
+  Slider: {
+    title: 'Slider',
+    component: SliderPlaybook,
+    testID: 'slider',
   },
 };
 

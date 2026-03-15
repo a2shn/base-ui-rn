@@ -1,88 +1,51 @@
 import * as React from 'react';
-import { View, type ViewStyle } from 'react-native';
-import type { SliderIndicatorProps } from './types';
+import { View } from 'react-native';
 import { useSliderContext } from './context';
+import type { SliderPartProps } from './types';
 
 /**
- * Visualizes the slider's current value range.
+ * Visual indicator that fills according to the slider value.
  *
- * Automatically applies positioning and sizing based on the slider state.
+ * For range sliders, the first and last values are used to calculate the
+ * indicator start and end positions.
  *
  * @example
  * ```tsx
- * <Slider.Indicator style={{ backgroundColor: 'blue' }} />
+ * <Slider.Track>
+ *   <Slider.Indicator />
+ * </Slider.Track>
  * ```
  */
-export const SliderIndicator = React.forwardRef<View, SliderIndicatorProps>(
-  (props, ref) => {
-    const { children, style, ...otherViewProps } = props;
-    const context = useSliderContext();
+export const SliderIndicator = React.memo(
+  React.forwardRef<View, SliderPartProps>(function SliderIndicator(
+    { style, ...props },
+    ref,
+  ) {
+    const { state } = useSliderContext();
 
-    const indicatorStyle = React.useMemo<ViewStyle>(() => {
-      const isHorizontal = context.orientation === 'horizontal';
-      const isEdge = context.thumbAlignment === 'edge';
-      const start =
-        context.percentages.length > 1 ? Math.min(...context.percentages) : 0;
-      const end = Math.max(...context.percentages);
-      const size = end - start;
+    const minValue = state.value[0] ?? state.min;
+    const maxValue = state.value[state.value.length - 1] ?? state.max;
+    const range = state.max - state.min || 1;
+    const start = ((minValue - state.min) / range) * 100;
+    const end = ((maxValue - state.min) / range) * 100;
 
-      if (isHorizontal) {
-        if (isEdge && context.thumbSize > 0) {
-          // For 'edge' alignment, we need to adjust the indicator to match the thumb centers.
-          // The thumb centers move within a range of (trackWidth - thumbSize).
-          // Indicator start = (start/100) * (trackWidth - thumbSize) + thumbSize/2
-          // But we use percentage positioning for indicator too.
-          return {
+    const dynamicStyle: import('react-native').ViewStyle =
+      state.orientation === 'horizontal'
+        ? {
             position: 'absolute',
-            left: `${start}%`,
-            width: `${size}%`,
-            height: '100%',
-            marginLeft:
-              context.thumbSize / 2 - (start / 100) * context.thumbSize,
-            marginRight:
-              -(context.thumbSize / 2) + (end / 100) * context.thumbSize,
-            // A simpler way to handle width adjustment with margins:
-            // The indicator's visual width needs to shrink by context.thumbSize * (size / 100)
-            // but margin-based width adjustment in absolute positioning is tricky.
-            // Let's use scale or just standard centers.
+            left: `${start}%` as never,
+            width: `${Math.max(end - start, 0)}%` as never,
+          }
+        : {
+            position: 'absolute',
+            bottom: `${start}%` as never,
+            height: `${Math.max(end - start, 0)}%` as never,
           };
-        }
-        return {
-          position: 'absolute',
-          left: `${start}%`,
-          width: `${size}%`,
-          height: '100%',
-        };
-      }
 
-      return {
-        position: 'absolute',
-        bottom: `${start}%`,
-        height: `${size}%`,
-        width: '100%',
-      };
-    }, [
-      context.percentages,
-      context.orientation,
-      context.thumbAlignment,
-      context.thumbSize,
-    ]);
+    const resolvedStyle = typeof style === 'function' ? style(state) : style;
 
-    const resolvedChildren =
-      typeof children === 'function' ? children(context) : children;
-
-    return (
-      <View
-        {...otherViewProps}
-        ref={ref}
-        style={[indicatorStyle, style]}
-        data-orientation={context.orientation}
-        data-disabled={context.disabled ? 'true' : undefined}
-      >
-        {resolvedChildren}
-      </View>
-    );
-  },
+    return <View {...props} ref={ref} style={[dynamicStyle, resolvedStyle]} />;
+  }),
 );
 
 SliderIndicator.displayName = 'Slider.Indicator';

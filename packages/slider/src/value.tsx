@@ -1,46 +1,37 @@
 import * as React from 'react';
-import { View, Text } from 'react-native';
-import type { SliderValueProps } from './types';
+import { Text } from 'react-native';
 import { useSliderContext } from './context';
+import type { SliderValueProps } from './types';
 
 /**
- * Displays the current value(s) of the Slider.
+ * Text output for the current slider value.
+ *
+ * By default it renders comma-separated values for range sliders and supports
+ * a render function for custom formatting.
  *
  * @example
  * ```tsx
- * <Slider.Value />
+ * <Slider.Root>
+ *   <Slider.Value />
+ * </Slider.Root>
  * ```
  */
-export const SliderValue = React.forwardRef<View, SliderValueProps>(
-  (props, ref) => {
-    const { children, style, format, locale, ...otherViewProps } = props;
-    const context = useSliderContext();
-
-    const formattedValues = React.useMemo(() => {
-      const formatter = new Intl.NumberFormat(locale, format);
-      return context.values.map((v) => formatter.format(v));
-    }, [context.values, locale, format]);
-
-    const content = React.useMemo(() => {
-      if (typeof children === 'function') {
-        return children(formattedValues, context.values);
-      }
-      return <Text>{formattedValues.join(' - ')}</Text>;
-    }, [children, formattedValues, context.values]);
+export const SliderValue = React.memo(
+  React.forwardRef<Text, SliderValueProps>(function SliderValue(
+    { children, ...props },
+    ref,
+  ) {
+    const { state } = useSliderContext();
+    const formatted = state.value.map((item) => item.toString());
 
     return (
-      <View
-        {...otherViewProps}
-        ref={ref}
-        style={style}
-        data-dragging={context.draggingIndex !== -1 ? 'true' : undefined}
-        data-orientation={context.orientation}
-        data-disabled={context.disabled ? 'true' : undefined}
-      >
-        {content}
-      </View>
+      <Text {...props} ref={ref}>
+        {typeof children === 'function'
+          ? children(formatted, state.value)
+          : (children ?? formatted.join(', '))}
+      </Text>
     );
-  },
+  }),
 );
 
 SliderValue.displayName = 'Slider.Value';

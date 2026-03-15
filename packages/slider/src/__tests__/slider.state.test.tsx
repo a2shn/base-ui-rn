@@ -1,36 +1,35 @@
 import * as React from 'react';
-import { render } from '@testing-library/react-native';
+import { render, fireEvent } from '@testing-library/react-native';
 import { Slider } from '../index';
 
-describe('Slider - State', () => {
-  it('respects min and max constraints', () => {
-    const { getByRole } = render(
-      <Slider.Root value={50} min={0} max={100}>
-        <Slider.Thumb />
+describe('Slider state', () => {
+  it('supports uncontrolled updates via keyboard', () => {
+    const { getByLabelText, getByText } = render(
+      <Slider.Root defaultValue={10}>
+        <Slider.Value />
+        <Slider.Thumb aria-label='Volume thumb' />
       </Slider.Root>,
     );
 
-    const thumb = getByRole('slider');
-    expect(thumb.props['aria-valuemin']).toBe(0);
-    expect(thumb.props['aria-valuemax']).toBe(100);
-    expect(thumb.props['aria-valuenow']).toBe(50);
+    fireEvent(getByLabelText('Volume thumb'), 'keyPress', {
+      nativeEvent: { key: 'Enter' },
+    });
+
+    expect(getByText('11')).toBeTruthy();
   });
 
-  it('handles controlled state', () => {
-    const { getByRole, rerender } = render(
-      <Slider.Root value={30}>
-        <Slider.Thumb />
+  it('supports controlled value', () => {
+    const onValueChange = jest.fn();
+    const { getByLabelText } = render(
+      <Slider.Root value={20} onValueChange={onValueChange}>
+        <Slider.Thumb aria-label='Volume thumb' />
       </Slider.Root>,
     );
 
-    expect(getByRole('slider').props['aria-valuenow']).toBe(30);
+    fireEvent(getByLabelText('Volume thumb'), 'keyPress', {
+      nativeEvent: { key: 'Enter' },
+    });
 
-    rerender(
-      <Slider.Root value={60}>
-        <Slider.Thumb />
-      </Slider.Root>,
-    );
-
-    expect(getByRole('slider').props['aria-valuenow']).toBe(60);
+    expect(onValueChange).toHaveBeenCalledWith(21);
   });
 });

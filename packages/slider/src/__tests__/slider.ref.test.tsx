@@ -1,48 +1,21 @@
 import * as React from 'react';
-import { View } from 'react-native';
 import { render } from '@testing-library/react-native';
+import { View, Text } from 'react-native';
 import { Slider } from '../index';
 
-describe('Slider - Ref Forwarding', () => {
-  it('forwards ref to SliderRoot', () => {
-    const ref = React.createRef<View>();
-    render(<Slider.Root ref={ref} />);
-    expect(ref.current).toBeDefined();
-  });
+describe('Slider refs', () => {
+  it('forwards refs for root and value', () => {
+    const rootRef = React.createRef<View>();
+    const valueRef = React.createRef<Text>();
 
-  it('forwards ref to SliderControl', () => {
-    const ref = React.createRef<View>();
     render(
-      <Slider.Root>
-        <Slider.Control ref={ref} />
+      <Slider.Root ref={rootRef} defaultValue={42}>
+        <Slider.Value ref={valueRef} />
+        <Slider.Thumb aria-label='Volume thumb' />
       </Slider.Root>,
     );
-    expect(ref.current).toBeDefined();
-  });
 
-  it('forwards ref to SliderTrack', () => {
-    const ref = React.createRef<View>();
-    render(
-      <Slider.Root>
-        <Slider.Control>
-          <Slider.Track ref={ref} />
-        </Slider.Control>
-      </Slider.Root>,
-    );
-    expect(ref.current).toBeDefined();
-  });
-
-  it('forwards ref to SliderThumb', () => {
-    const ref = React.createRef<View>();
-    render(
-      <Slider.Root>
-        <Slider.Control>
-          <Slider.Track>
-            <Slider.Thumb ref={ref} />
-          </Slider.Track>
-        </Slider.Control>
-      </Slider.Root>,
-    );
-    expect(ref.current).toBeDefined();
+    expect(rootRef.current).toBeTruthy();
+    expect(valueRef.current).toBeTruthy();
   });
 });

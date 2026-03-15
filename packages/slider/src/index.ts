@@ -1,29 +1,37 @@
-import { SliderRoot } from './root';
-import { SliderLabel } from './label';
-import { SliderValue } from './value';
+import { SliderRoot } from './slider';
 import { SliderControl } from './control';
 import { SliderTrack } from './track';
 import { SliderIndicator } from './indicator';
 import { SliderThumb } from './thumb';
+import { SliderLabel } from './label';
+import { SliderValue } from './value';
 
 export const Slider = {
   Root: SliderRoot,
-  Label: SliderLabel,
-  Value: SliderValue,
   Control: SliderControl,
   Track: SliderTrack,
   Indicator: SliderIndicator,
   Thumb: SliderThumb,
+  Label: SliderLabel,
+  Value: SliderValue,
 };
 
 export {
   SliderRoot,
-  SliderLabel,
-  SliderValue,
   SliderControl,
   SliderTrack,
   SliderIndicator,
   SliderThumb,
+  SliderLabel,
+  SliderValue,
 };
 
-export * from './types';
+export type {
+  SliderRootProps,
+  SliderPartProps,
+  SliderThumbProps,
+  SliderLabelProps,
+  SliderValueProps,
+  SliderState,
+  SliderThumbState,
+} from './types';

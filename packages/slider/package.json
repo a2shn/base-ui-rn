@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@base-ui-rn/core": "workspace:*",
-    "@base-ui-rn/focus-ring": "workspace:*",
-    "@base-ui-rn/keyboard-shortcuts": "workspace:*"
+    "react-native-gesture-handler": "^2.30.0",
+    "react-native-reanimated": "^4.2.2"
   },
   "peerDependencies": {
     "react": ">=19.1.0",
