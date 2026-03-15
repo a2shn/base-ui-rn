@@ -42,7 +42,7 @@ describe('Slider keyboard navigation', () => {
   });
 
   it('blocks navigation when disabled', () => {
-     const { getByLabelText } = render(
+    const { getByLabelText } = render(
       <Slider.Root defaultValue={50} disabled>
         <Slider.Thumb aria-label='Volume thumb' />
       </Slider.Root>,

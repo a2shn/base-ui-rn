@@ -43,8 +43,12 @@ describe('Slider accessibility', () => {
   });
 
   it('provides formatted value text', () => {
-     const { getByLabelText } = render(
-      <Slider.Root defaultValue={50} locale='en-US' format={{ style: 'currency', currency: 'USD' }}>
+    const { getByLabelText } = render(
+      <Slider.Root
+        defaultValue={50}
+        locale='en-US'
+        format={{ style: 'currency', currency: 'USD' }}
+      >
         <Slider.Thumb aria-label='Price thumb' />
       </Slider.Root>,
     );

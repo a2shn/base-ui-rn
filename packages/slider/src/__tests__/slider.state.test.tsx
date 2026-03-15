@@ -36,8 +36,8 @@ describe('Slider state', () => {
   it('respects minStepsBetweenValues when moving thumb 0 right', () => {
     const onValueChange = jest.fn();
     const { getByLabelText } = render(
-      <Slider.Root 
-        defaultValue={[10, 20]} 
+      <Slider.Root
+        defaultValue={[10, 20]}
         minStepsBetweenValues={5}
         thumbCollisionBehavior='none'
         onValueChange={onValueChange}
@@ -63,8 +63,8 @@ describe('Slider state', () => {
   it('pushes other thumbs when thumbCollisionBehavior="push"', () => {
     const onValueChange = jest.fn();
     const { getByLabelText } = render(
-      <Slider.Root 
-        defaultValue={[10, 20]} 
+      <Slider.Root
+        defaultValue={[10, 20]}
         thumbCollisionBehavior='push'
         minStepsBetweenValues={5}
         onValueChange={onValueChange}
@@ -86,8 +86,8 @@ describe('Slider state', () => {
   it('enforces fixed distance with stepBetweenValues', () => {
     const onValueChange = jest.fn();
     const { getByLabelText } = render(
-      <Slider.Root 
-        defaultValue={[10, 20, 30]} 
+      <Slider.Root
+        defaultValue={[10, 20, 30]}
         stepBetweenValues={10}
         onValueChange={onValueChange}
       >
@@ -97,19 +97,22 @@ describe('Slider state', () => {
 
     const thumb1 = getByLabelText('Thumb 1');
 
-    // Move thumb 1 from 20 to 25. 
+    // Move thumb 1 from 20 to 25.
     // Thumb 0 should pull to 15, Thumb 2 should push to 35.
     for (let i = 0; i < 5; i++) {
-        fireEvent(thumb1, 'keyPress', { nativeEvent: { key: 'ArrowRight' } });
+      fireEvent(thumb1, 'keyPress', { nativeEvent: { key: 'ArrowRight' } });
     }
-    expect(onValueChange).toHaveBeenLastCalledWith([15, 25, 35], expect.anything());
+    expect(onValueChange).toHaveBeenLastCalledWith(
+      [15, 25, 35],
+      expect.anything(),
+    );
   });
 
   it('shifts entire chain at bounds with stepBetweenValues', () => {
     const onValueChange = jest.fn();
     const { getByLabelText } = render(
-      <Slider.Root 
-        defaultValue={[80, 90, 100]} 
+      <Slider.Root
+        defaultValue={[80, 90, 100]}
         min={0}
         max={100}
         stepBetweenValues={10}
@@ -124,12 +127,12 @@ describe('Slider state', () => {
     const thumb0 = getByLabelText('Thumb 0');
 
     // Current: [80, 90, 100]
-    // Move thumb 0 from 80 to 81. 
+    // Move thumb 0 from 80 to 81.
     // Chain would be [81, 91, 101] which overflows max 100.
     // Chain should shift back to [80, 90, 100].
     fireEvent(thumb0, 'keyPress', { nativeEvent: { key: 'ArrowRight' } });
-    
-    // If it was successful, it would have called onValueChange. 
+
+    // If it was successful, it would have called onValueChange.
     // Since it's blocked, it might not have been called or called with same values.
     // In our implementation, emit is only called if values changed.
     expect(onValueChange).not.toHaveBeenCalled();

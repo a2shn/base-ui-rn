@@ -10,7 +10,9 @@ import {
   type KeyPressEventData,
   resolveTabIndex,
   mergeRefs,
+  DEFAULT_FOCUS_RING_STYLE,
 } from '@base-ui-rn/core';
+import { FocusRing, type FocusRingRenderProps } from '@base-ui-rn/focus-ring';
 import { useSliderContext } from './context';
 import type { SliderThumbProps } from './types';
 
@@ -24,6 +26,7 @@ export const SliderThumb = React.memo(
       disabled,
       onKeyPress,
       onLayout,
+      disableDefaultFocusRing = false,
       accessibilityRole = 'adjustable',
       accessibilityState,
       accessibilityHint,
@@ -96,12 +99,10 @@ export const SliderThumb = React.memo(
 
     const handleKeyPress = React.useCallback(
       (event: NativeSyntheticEvent<KeyPressEventData>) => {
-        if (!isWeb) {
-          handleKeyboardRange(event);
-        }
+        handleKeyboardRange(event);
         onKeyPress?.(event);
       },
-      [isWeb, handleKeyboardRange, onKeyPress],
+      [handleKeyboardRange, onKeyPress],
     );
 
     const range = state.max - state.min || 1;
@@ -151,61 +152,79 @@ export const SliderThumb = React.memo(
       : { min: state.min, max: state.max, now: valueNow };
 
     return (
-      <View
-        {...props}
-        ref={mergedRef}
-        onLayout={handleLayout}
-        accessible
-        role={accessibilityRole as never}
-        accessibilityRole={accessibilityRole}
-        accessibilityLabel={resolvedAriaLabel}
-        accessibilityHint={accessibilityHint}
-        accessibilityState={{ disabled: isDisabled, ...accessibilityState }}
-        accessibilityValue={a11yValue}
-        // @ts-expect-error onKeyPress is valid on Web but missing in RN View types
-        onKeyPress={handleKeyPress as never}
-        tabIndex={isWeb ? -1 : resolvedTabIndex}
-        aria-orientation={state.orientation}
-        data-orientation={state.orientation}
-        aria-valuemin={state.min}
-        aria-valuemax={state.max}
-        aria-valuenow={valueNow}
-        aria-valuetext={resolvedAriaValueText}
-        pointerEvents={isWeb ? 'none' : 'auto'}
-        style={[
-          dynamicStyle,
-          typeof style === 'function'
-            ? style({ ...state, index, valueNow })
-            : style,
-        ]}
-      >
-        {isWeb && (
-          <input
-            type='range'
-            min={state.min}
-            max={state.max}
-            step={state.step}
-            value={valueNow}
-            disabled={isDisabled}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setValueAtIndex(
-                index,
-                parseFloat(e.target.value),
-                'input-change',
-              );
+      <FocusRing>
+        {({ focusVisible }: FocusRingRenderProps) => (
+          <View
+            {...props}
+            ref={mergedRef}
+            onLayout={handleLayout}
+            accessible
+            role={accessibilityRole as never}
+            accessibilityRole={accessibilityRole}
+            accessibilityLabel={resolvedAriaLabel}
+            accessibilityHint={accessibilityHint}
+            accessibilityState={{ disabled: isDisabled, ...accessibilityState }}
+            accessibilityValue={a11yValue}
+            accessibilityActions={[
+              { name: 'increment', label: 'increment' },
+              { name: 'decrement', label: 'decrement' },
+            ]}
+            onAccessibilityAction={(event) => {
+              if (event.nativeEvent.actionName === 'increment') {
+                stepBy(index, 1);
+              } else if (event.nativeEvent.actionName === 'decrement') {
+                stepBy(index, -1);
+              }
             }}
-            tabIndex={resolvedTabIndex}
-            aria-label={resolvedAriaLabel}
+            // @ts-expect-error onKeyPress is valid on Web but missing in RN View types
+            onKeyPress={handleKeyPress as never}
+            tabIndex={isWeb ? -1 : resolvedTabIndex}
+            aria-orientation={state.orientation}
+            data-orientation={state.orientation}
+            aria-valuemin={state.min}
+            aria-valuemax={state.max}
+            aria-valuenow={valueNow}
             aria-valuetext={resolvedAriaValueText}
-            style={
-              {
-                ...StyleSheet.flatten(styles.input),
-                pointerEvents: 'auto',
-              } as React.CSSProperties
-            }
-          />
+            pointerEvents={isWeb ? 'none' : 'auto'}
+            style={[
+              dynamicStyle,
+              typeof style === 'function'
+                ? style({ ...state, index, valueNow, focusVisible })
+                : style,
+              !disableDefaultFocusRing &&
+                focusVisible &&
+                DEFAULT_FOCUS_RING_STYLE,
+            ]}
+          >
+            {isWeb && (
+              <input
+                type='range'
+                min={state.min}
+                max={state.max}
+                step={state.step}
+                value={valueNow}
+                disabled={isDisabled}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setValueAtIndex(
+                    index,
+                    parseFloat(e.target.value),
+                    'input-change',
+                  );
+                }}
+                tabIndex={resolvedTabIndex}
+                aria-label={resolvedAriaLabel}
+                aria-valuetext={resolvedAriaValueText}
+                style={
+                  {
+                    ...StyleSheet.flatten(styles.input),
+                    pointerEvents: 'auto',
+                  } as React.CSSProperties
+                }
+              />
+            )}
+          </View>
         )}
-      </View>
+      </FocusRing>
     );
   }),
 );

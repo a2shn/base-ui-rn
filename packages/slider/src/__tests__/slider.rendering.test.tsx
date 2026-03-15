@@ -26,9 +26,7 @@ describe('Slider rendering', () => {
   it('renders Slider.Value with multiple thumbs', () => {
     const { getByText } = render(
       <Slider.Root defaultValue={[10, 50, 90]}>
-        <Slider.Value>
-          {(formatted) => formatted.join(' - ')}
-        </Slider.Value>
+        <Slider.Value>{(formatted) => formatted.join(' - ')}</Slider.Value>
         <Slider.Thumb index={0} aria-label='T1' />
         <Slider.Thumb index={1} aria-label='T2' />
         <Slider.Thumb index={2} aria-label='T3' />
@@ -40,13 +38,15 @@ describe('Slider rendering', () => {
 
   it('applies custom style functions based on state', () => {
     const { getByTestId } = render(
-      <Slider.Root 
+      <Slider.Root
         defaultValue={50}
-        style={(state) => ({ backgroundColor: state.disabled ? 'grey' : 'blue' })}
+        style={(state) => ({
+          backgroundColor: state.disabled ? 'grey' : 'blue',
+        })}
         testID='root'
       >
         <Slider.Thumb aria-label='Thumb' />
-      </Slider.Root>
+      </Slider.Root>,
     );
 
     const root = getByTestId('root');

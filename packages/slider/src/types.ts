@@ -72,6 +72,7 @@ export interface SliderPartProps
 export interface SliderThumbState extends SliderState {
   index: number;
   valueNow: number;
+  focusVisible: boolean;
 }
 
 export interface SliderThumbProps
@@ -90,6 +91,7 @@ export interface SliderThumbProps
   disabled?: boolean;
   onPress?: (event: GestureResponderEvent) => void;
   onKeyPress?: (event: NativeSyntheticEvent<KeyPressEventData>) => void;
+  disableDefaultFocusRing?: boolean;
   style?: ViewStyle | ((state: SliderThumbState) => ViewStyle | undefined);
 }
 
