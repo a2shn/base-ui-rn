@@ -25,7 +25,7 @@ export const SliderControl = React.memo(
     { style, onLayout, ...props },
     ref,
   ) {
-    const { state, setValueAtIndex } = useSliderContext();
+    const { state, setValueAtIndex, commitValue } = useSliderContext();
     const isHorizontal = state.orientation === 'horizontal';
 
     // Cache layout so we can compute values from gesture positions
@@ -100,15 +100,17 @@ export const SliderControl = React.memo(
         if (activeIndexRef.current === -1) {
           activeIndexRef.current = closestThumbIndex(rawValue);
         }
-        setValueAtIndex(activeIndexRef.current, rawValue);
+        setValueAtIndex(activeIndexRef.current, rawValue, 'drag');
       };
 
       const resetActiveIndex = () => {
         activeIndexRef.current = -1;
+        commitValue('drag');
       };
 
       return Gesture.Pan()
         .enabled(!state.disabled)
+        .minDistance(0)
         .onStart((evt) => {
           runOnJS(updateValue)(evt.absoluteX, evt.absoluteY);
         })
@@ -126,6 +128,7 @@ export const SliderControl = React.memo(
       pagePositionToValue,
       closestThumbIndex,
       setValueAtIndex,
+      commitValue,
     ]);
 
     const resolvedStyle = typeof style === 'function' ? style(state) : style;
