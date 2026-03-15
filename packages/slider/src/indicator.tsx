@@ -23,7 +23,8 @@ export const SliderIndicator = React.memo(
   ) {
     const { state } = useSliderContext();
 
-    const minValue = state.value[0] ?? state.min;
+    const isRange = state.value.length > 1;
+    const minValue = isRange ? (state.value[0] ?? state.min) : state.min;
     const maxValue = state.value[state.value.length - 1] ?? state.max;
     const range = state.max - state.min || 1;
     const start = ((minValue - state.min) / range) * 100;
@@ -35,11 +36,13 @@ export const SliderIndicator = React.memo(
             position: 'absolute',
             left: `${start}%` as never,
             width: `${Math.max(end - start, 0)}%` as never,
+            height: '100%',
           }
         : {
             position: 'absolute',
             bottom: `${start}%` as never,
             height: `${Math.max(end - start, 0)}%` as never,
+            width: '100%',
           };
 
     const resolvedStyle = typeof style === 'function' ? style(state) : style;

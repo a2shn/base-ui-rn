@@ -208,6 +208,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   indicator: {
+    height: '100%',
     borderRadius: 999,
     backgroundColor: '#4A90D9',
   },

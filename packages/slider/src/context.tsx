@@ -6,7 +6,7 @@ interface SliderContextValue {
   setValueAtIndex: (
     index: number,
     next: number,
-    reason: 'drag' | 'track-press' | 'keyboard',
+    reason: CommitEventDetails['reason'],
   ) => void;
   stepBy: (index: number, delta: number) => void;
   commitValue: (reason: CommitEventDetails['reason']) => void;

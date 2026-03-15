@@ -60,21 +60,35 @@ export const SliderRoot = React.memo(
       typeof children === 'function' ? children(state) : children;
     const resolvedStyle = typeof style === 'function' ? style(state) : style;
 
+    const contextValue = React.useMemo(
+      () => ({
+        state,
+        setValueAtIndex,
+        stepBy,
+        commitValue,
+        locale,
+        format,
+        largeStep,
+        thumbAlignment,
+        setTrackSize,
+        setThumbSize,
+      }),
+      [
+        state,
+        setValueAtIndex,
+        stepBy,
+        commitValue,
+        locale,
+        format,
+        largeStep,
+        thumbAlignment,
+        setTrackSize,
+        setThumbSize,
+      ],
+    );
+
     return (
-      <SliderContext.Provider
-        value={{
-          state,
-          setValueAtIndex,
-          stepBy,
-          commitValue,
-          locale,
-          format,
-          largeStep,
-          thumbAlignment,
-          setTrackSize,
-          setThumbSize,
-        }}
-      >
+      <SliderContext.Provider value={contextValue}>
         <View
           {...otherProps}
           ref={ref}

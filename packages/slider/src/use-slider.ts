@@ -39,21 +39,16 @@ export function useSlider(props: SliderRootProps) {
     orientation = 'horizontal',
   } = props;
 
-  const [trackSize, setTrackSize] = React.useState(0);
-  const [thumbSize, setThumbSize] = React.useState(0);
-
   // Use refs for physical sizes to avoid stale closure issues in rapid updates
   const trackSizeRef = React.useRef(0);
   const thumbSizeRef = React.useRef(0);
 
   const handleSetTrackSize = React.useCallback((size: number) => {
     trackSizeRef.current = size;
-    setTrackSize(size);
   }, []);
 
   const handleSetThumbSize = React.useCallback((size: number) => {
     thumbSizeRef.current = size;
-    setThumbSize(size);
   }, []);
 
   const isControlled = value !== undefined;
@@ -73,6 +68,12 @@ export function useSlider(props: SliderRootProps) {
   const currentRef = React.useRef(current);
   currentRef.current = current;
 
+  // Stable refs for callback props to avoid re-creating handlers
+  const onValueChangeRef = React.useRef(onValueChange);
+  onValueChangeRef.current = onValueChange;
+  const onValueCommittedRef = React.useRef(onValueCommitted);
+  onValueCommittedRef.current = onValueCommitted;
+
   const emit = React.useCallback(
     (
       next: number[],
@@ -82,18 +83,25 @@ export function useSlider(props: SliderRootProps) {
       if (!isControlled) {
         setUncontrolled(next);
       }
-      onValueChange?.(next.length === 1 ? next[0] : next, { reason });
+      onValueChangeRef.current?.(next.length === 1 ? next[0] : next, {
+        reason,
+      });
     },
-    [isControlled, onValueChange],
+    [isControlled],
   );
 
   const commitValue = React.useCallback(
     (reason: 'drag' | 'track-press' | 'keyboard' | 'none' | 'input-change') => {
-      onValueCommitted?.(currentRef.current.length === 1 ? currentRef.current[0] : currentRef.current, {
-        reason,
-      });
+      onValueCommittedRef.current?.(
+        currentRef.current.length === 1
+          ? currentRef.current[0]
+          : currentRef.current,
+        {
+          reason,
+        },
+      );
     },
-    [onValueCommitted],
+    [],
   );
 
   const setValueAtIndex = React.useCallback(
@@ -112,12 +120,12 @@ export function useSlider(props: SliderRootProps) {
       const rounded = Number(snapped.toFixed(precision));
       const newValue = clamp(rounded, min, max);
 
-      let minDistance =
-        (stepBetweenValues ?? minStepsBetweenValues) * step;
+      let minDistance = (stepBetweenValues ?? minStepsBetweenValues) * step;
 
       const isWeb = Platform.OS === 'web';
       const shouldApplyPhysicalDistance =
-        thumbAlignment === 'edge' || (thumbAlignment === 'edge-client-only' && !isWeb);
+        thumbAlignment === 'edge' ||
+        (thumbAlignment === 'edge-client-only' && !isWeb);
 
       if (
         shouldApplyPhysicalDistance &&
@@ -157,6 +165,7 @@ export function useSlider(props: SliderRootProps) {
       max,
       step,
       minStepsBetweenValues,
+      stepBetweenValues,
       thumbCollisionBehavior,
       thumbAlignment,
       emit,
@@ -165,19 +174,26 @@ export function useSlider(props: SliderRootProps) {
 
   const stepBy = React.useCallback(
     (index: number, delta: number) => {
-      setValueAtIndex(index, currentRef.current[index] + delta * step, 'keyboard');
+      setValueAtIndex(
+        index,
+        currentRef.current[index] + delta * step,
+        'keyboard',
+      );
     },
     [step, setValueAtIndex],
   );
 
-  const state: SliderState = {
-    value: current,
-    min,
-    max,
-    step,
-    disabled,
-    orientation,
-  };
+  const state: SliderState = React.useMemo(
+    () => ({
+      value: current,
+      min,
+      max,
+      step,
+      disabled,
+      orientation,
+    }),
+    [current, min, max, step, disabled, orientation],
+  );
 
   return {
     state,

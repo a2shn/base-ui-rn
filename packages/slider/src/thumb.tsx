@@ -58,13 +58,15 @@ export const SliderThumb = React.memo(
       (event: import('react-native').LayoutChangeEvent) => {
         const { width, height } = event.nativeEvent.layout;
         setThumbSize(state.orientation === 'horizontal' ? width : height);
-        
+
         if (!isWeb) {
-          (innerRef.current as unknown as View).measureInWindow((_x, _y, w, h) => {
-            setThumbSize(state.orientation === 'horizontal' ? w : h);
-          });
+          (innerRef.current as unknown as View).measureInWindow(
+            (_x, _y, w, h) => {
+              setThumbSize(state.orientation === 'horizontal' ? w : h);
+            },
+          );
         }
-        
+
         onLayout?.(event);
       },
       [setThumbSize, state.orientation, onLayout, isWeb],
@@ -75,7 +77,9 @@ export const SliderThumb = React.memo(
       const el = (innerRef.current as unknown as HTMLElement) ?? null;
       if (el?.getBoundingClientRect) {
         const rect = el.getBoundingClientRect();
-        setThumbSize(state.orientation === 'horizontal' ? rect.width : rect.height);
+        setThumbSize(
+          state.orientation === 'horizontal' ? rect.width : rect.height,
+        );
       }
     }, [isWeb, state.orientation, setThumbSize]);
 
@@ -124,12 +128,17 @@ export const SliderThumb = React.memo(
       }
     }, [state.orientation, percent, thumbAlignment]);
 
-    const formattedValue = React.useMemo(() => {
-      if (format || locale) {
-        return new Intl.NumberFormat(locale, format).format(valueNow);
+    const formatter = React.useMemo(() => {
+      try {
+        return new Intl.NumberFormat(locale, format);
+      } catch {
+        return null;
       }
-      return valueNow.toString();
-    }, [valueNow, format, locale]);
+    }, [locale, format]);
+
+    const formattedValue = React.useMemo(() => {
+      return formatter ? formatter.format(valueNow) : valueNow.toString();
+    }, [formatter, valueNow]);
 
     const resolvedAriaLabel = getAriaLabel ? getAriaLabel(index) : ariaLabel;
     const resolvedAriaValueText = getAriaValueText
@@ -178,10 +187,10 @@ export const SliderThumb = React.memo(
             step={state.step}
             value={valueNow}
             disabled={isDisabled}
-            onChange={(e) => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setValueAtIndex(
                 index,
-                parseFloat((e.target as any).value),
+                parseFloat(e.target.value),
                 'input-change',
               );
             }}
@@ -192,7 +201,7 @@ export const SliderThumb = React.memo(
               {
                 ...StyleSheet.flatten(styles.input),
                 pointerEvents: 'auto',
-              } as any
+              } as React.CSSProperties
             }
           />
         )}

@@ -35,7 +35,12 @@ export const SliderControl = React.memo(
           (
             event.target as unknown as {
               measureInWindow: (
-                cb: (x: number, y: number, width: number, height: number) => void,
+                cb: (
+                  x: number,
+                  y: number,
+                  width: number,
+                  height: number,
+                ) => void,
               ) => void;
             }
           ).measureInWindow(
@@ -238,7 +243,10 @@ export const SliderControl = React.memo(
         ref={mergedRef}
         onLayout={handleLayout}
         style={[
-          isWeb && ({ touchAction: 'none' } as any),
+          isWeb && {
+            // @ts-expect-error touchAction is valid on Web but missing in RN types
+            touchAction: 'none',
+          },
           resolvedStyle,
         ]}
       />
