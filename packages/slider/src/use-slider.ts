@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Platform } from 'react-native';
 import { clamp } from '@base-ui-rn/core';
 import type { SliderRootProps, SliderState, SliderValue } from './types';
 import { calculateNextValues } from './collision';
@@ -40,6 +41,20 @@ export function useSlider(props: SliderRootProps) {
   const [trackSize, setTrackSize] = React.useState(0);
   const [thumbSize, setThumbSize] = React.useState(0);
 
+  // Use refs for physical sizes to avoid stale closure issues in rapid updates
+  const trackSizeRef = React.useRef(0);
+  const thumbSizeRef = React.useRef(0);
+
+  const handleSetTrackSize = React.useCallback((size: number) => {
+    trackSizeRef.current = size;
+    setTrackSize(size);
+  }, []);
+
+  const handleSetThumbSize = React.useCallback((size: number) => {
+    thumbSizeRef.current = size;
+    setThumbSize(size);
+  }, []);
+
   const isControlled = value !== undefined;
   const [uncontrolled, setUncontrolled] = React.useState<number[]>(() =>
     normalizeValue(defaultValue, min).map((item) => clamp(item, min, max)),
@@ -53,11 +68,16 @@ export function useSlider(props: SliderRootProps) {
     [isControlled, value, uncontrolled, min, max],
   );
 
+  // Critical: Synchronous ref to track current values during rapid dragging
+  const currentRef = React.useRef(current);
+  currentRef.current = current;
+
   const emit = React.useCallback(
     (
       next: number[],
       reason: 'drag' | 'track-press' | 'keyboard' | 'none' | 'input-change',
     ) => {
+      currentRef.current = next; // Update immediately
       if (!isControlled) {
         setUncontrolled(next);
       }
@@ -68,11 +88,11 @@ export function useSlider(props: SliderRootProps) {
 
   const commitValue = React.useCallback(
     (reason: 'drag' | 'track-press' | 'keyboard' | 'none' | 'input-change') => {
-      onValueCommitted?.(current.length === 1 ? current[0] : current, {
+      onValueCommitted?.(currentRef.current.length === 1 ? currentRef.current[0] : currentRef.current, {
         reason,
       });
     },
-    [current, onValueCommitted],
+    [onValueCommitted],
   );
 
   const setValueAtIndex = React.useCallback(
@@ -87,17 +107,23 @@ export function useSlider(props: SliderRootProps) {
         | 'input-change' = 'none',
     ) => {
       const snapped = Math.round((rawValue - min) / step) * step + min;
-      // To avoid floating point precision issues like 31.000000000000004
       const precision = step.toString().split('.')[1]?.length || 0;
       const rounded = Number(snapped.toFixed(precision));
       const newValue = clamp(rounded, min, max);
 
       let minDistance = minStepsBetweenValues * step;
 
-      // When using 'edge' alignment, we want to prevent thumbs from overlapping
-      // visually by ensuring their values are separated by at least their physical width.
-      if (thumbAlignment === 'edge' && trackSize > 0 && thumbSize > 0) {
-        const physicalMinDistance = (thumbSize / trackSize) * (max - min);
+      const isWeb = Platform.OS === 'web';
+      const shouldApplyPhysicalDistance =
+        thumbAlignment === 'edge' || (thumbAlignment === 'edge-client-only' && !isWeb);
+
+      if (
+        shouldApplyPhysicalDistance &&
+        trackSizeRef.current > 0 &&
+        thumbSizeRef.current > 0
+      ) {
+        const physicalMinDistance =
+          (thumbSizeRef.current / trackSizeRef.current) * (max - min);
         minDistance = Math.max(minDistance, physicalMinDistance);
       }
 
@@ -108,35 +134,34 @@ export function useSlider(props: SliderRootProps) {
       const next = calculateNextValues({
         index,
         newValue,
-        currentValues: current,
+        currentValues: currentRef.current,
         min,
         max,
         minDistance,
         behavior: thumbCollisionBehavior,
       });
 
-      if (next.some((v, i) => v !== current[i])) {
-        // Final precision rounding for all values before emitting
+      if (next.some((v, i) => v !== currentRef.current[i])) {
         const finalNext = next.map((v) => Number(v.toFixed(precision)));
         emit(finalNext, reason);
       }
     },
     [
-      current,
       min,
       max,
       step,
       minStepsBetweenValues,
       thumbCollisionBehavior,
+      thumbAlignment,
       emit,
     ],
   );
 
   const stepBy = React.useCallback(
     (index: number, delta: number) => {
-      setValueAtIndex(index, current[index] + delta * step, 'keyboard');
+      setValueAtIndex(index, currentRef.current[index] + delta * step, 'keyboard');
     },
-    [current, setValueAtIndex, step],
+    [step, setValueAtIndex],
   );
 
   const state: SliderState = {
@@ -157,7 +182,7 @@ export function useSlider(props: SliderRootProps) {
     format,
     largeStep,
     thumbAlignment,
-    setTrackSize,
-    setThumbSize,
+    setTrackSize: handleSetTrackSize,
+    setThumbSize: handleSetThumbSize,
   };
 }

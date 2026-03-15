@@ -1,25 +1,21 @@
 import * as React from 'react';
-import { type NativeSyntheticEvent, View } from 'react-native';
+import {
+  type NativeSyntheticEvent,
+  View,
+  Platform,
+  StyleSheet,
+} from 'react-native';
 import {
   useKeyboardRange,
   type KeyPressEventData,
   resolveTabIndex,
+  mergeRefs,
 } from '@base-ui-rn/core';
 import { useSliderContext } from './context';
 import type { SliderThumbProps } from './types';
 
 /**
  * Draggable handle that controls a slider value.
- *
- * Supports keyboard adjustment and exposes adjustable semantics for screen
- * readers and web assistive technologies.
- *
- * @example
- * ```tsx
- * <Slider.Track>
- *   <Slider.Thumb aria-label='Volume' />
- * </Slider.Track>
- * ```
  */
 export const SliderThumb = React.memo(
   React.forwardRef<View, SliderThumbProps>(function SliderThumb(
@@ -40,20 +36,48 @@ export const SliderThumb = React.memo(
     },
     ref,
   ) {
-    const { state, stepBy, largeStep, locale, format, setThumbSize } =
-      useSliderContext();
+    const {
+      state,
+      setValueAtIndex,
+      stepBy,
+      largeStep,
+      locale,
+      format,
+      setThumbSize,
+      thumbAlignment,
+    } = useSliderContext();
     const isDisabled = state.disabled || disabled;
     const valueNow = state.value[index] ?? state.min;
     const resolvedTabIndex = resolveTabIndex(!!isDisabled, tabIndex);
+    const isWeb = Platform.OS === 'web';
+
+    const innerRef = React.useRef<View>(null);
+    const mergedRef = React.useMemo(() => mergeRefs(ref, innerRef), [ref]);
 
     const handleLayout = React.useCallback(
       (event: import('react-native').LayoutChangeEvent) => {
         const { width, height } = event.nativeEvent.layout;
         setThumbSize(state.orientation === 'horizontal' ? width : height);
+        
+        if (!isWeb) {
+          (innerRef.current as unknown as View).measureInWindow((_x, _y, w, h) => {
+            setThumbSize(state.orientation === 'horizontal' ? w : h);
+          });
+        }
+        
         onLayout?.(event);
       },
-      [setThumbSize, state.orientation, onLayout],
+      [setThumbSize, state.orientation, onLayout, isWeb],
     );
+
+    React.useEffect(() => {
+      if (!isWeb) return;
+      const el = (innerRef.current as unknown as HTMLElement) ?? null;
+      if (el?.getBoundingClientRect) {
+        const rect = el.getBoundingClientRect();
+        setThumbSize(state.orientation === 'horizontal' ? rect.width : rect.height);
+      }
+    }, [isWeb, state.orientation, setThumbSize]);
 
     const handleKeyboardRange = useKeyboardRange({
       onIncrement: () => stepBy(index, 1),
@@ -68,15 +92,16 @@ export const SliderThumb = React.memo(
 
     const handleKeyPress = React.useCallback(
       (event: NativeSyntheticEvent<KeyPressEventData>) => {
-        handleKeyboardRange(event);
+        if (!isWeb) {
+          handleKeyboardRange(event);
+        }
         onKeyPress?.(event);
       },
-      [handleKeyboardRange, onKeyPress],
+      [isWeb, handleKeyboardRange, onKeyPress],
     );
 
     const range = state.max - state.min || 1;
     const percent = ((valueNow - state.min) / range) * 100;
-    const { thumbAlignment } = useSliderContext();
 
     const dynamicStyle = React.useMemo((): import('react-native').ViewStyle => {
       const isHorizontal = state.orientation === 'horizontal';
@@ -119,7 +144,7 @@ export const SliderThumb = React.memo(
     return (
       <View
         {...props}
-        ref={ref}
+        ref={mergedRef}
         onLayout={handleLayout}
         accessible
         role={accessibilityRole as never}
@@ -130,22 +155,65 @@ export const SliderThumb = React.memo(
         accessibilityValue={a11yValue}
         // @ts-expect-error onKeyPress is valid on Web but missing in RN View types
         onKeyPress={handleKeyPress as never}
-        tabIndex={resolvedTabIndex}
+        tabIndex={isWeb ? -1 : resolvedTabIndex}
         aria-orientation={state.orientation}
         data-orientation={state.orientation}
         aria-valuemin={state.min}
         aria-valuemax={state.max}
         aria-valuenow={valueNow}
         aria-valuetext={resolvedAriaValueText}
+        pointerEvents={isWeb ? 'none' : 'auto'}
         style={[
           dynamicStyle,
           typeof style === 'function'
             ? style({ ...state, index, valueNow })
             : style,
         ]}
-      />
+      >
+        {isWeb && (
+          <input
+            type='range'
+            min={state.min}
+            max={state.max}
+            step={state.step}
+            value={valueNow}
+            disabled={isDisabled}
+            onChange={(e) => {
+              setValueAtIndex(
+                index,
+                parseFloat((e.target as any).value),
+                'input-change',
+              );
+            }}
+            tabIndex={resolvedTabIndex}
+            aria-label={resolvedAriaLabel}
+            aria-valuetext={resolvedAriaValueText}
+            style={
+              {
+                ...StyleSheet.flatten(styles.input),
+                pointerEvents: 'auto',
+              } as any
+            }
+          />
+        )}
+      </View>
     );
   }),
 );
+
+const styles = StyleSheet.create({
+  input: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    opacity: 0,
+    // @ts-expect-error inherit is valid on Web but missing in RN types
+    cursor: 'inherit',
+    margin: 0,
+    padding: 0,
+  },
+});
 
 SliderThumb.displayName = 'Slider.Thumb';

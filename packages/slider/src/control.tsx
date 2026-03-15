@@ -1,22 +1,16 @@
 import * as React from 'react';
-import { View, PanResponder, type LayoutChangeEvent } from 'react-native';
+import {
+  View,
+  PanResponder,
+  Platform,
+  type LayoutChangeEvent,
+} from 'react-native';
+import { mergeRefs } from '@base-ui-rn/core';
 import { useSliderContext } from './context';
 import type { SliderPartProps } from './types';
 
 /**
  * Interactive container that wraps the slider track.
- *
- * Handles all pointer/touch gestures: tap to set value, drag to scrub.
- * Measures its own layout so thumbs can convert % positions to px.
- *
- * @example
- * ```tsx
- * <Slider.Root>
- *   <Slider.Control>
- *     <Slider.Track />
- *   </Slider.Control>
- * </Slider.Root>
- * ```
  */
 export const SliderControl = React.memo(
   React.forwardRef<View, SliderPartProps>(function SliderControl(
@@ -26,66 +20,33 @@ export const SliderControl = React.memo(
     const { state, setValueAtIndex, commitValue, setTrackSize } =
       useSliderContext();
     const isHorizontal = state.orientation === 'horizontal';
+    const isWeb = Platform.OS === 'web';
 
-    // Cache layout so we can compute values from gesture positions
     const layoutRef = React.useRef({ x: 0, y: 0, width: 0, height: 0 });
+    const innerRef = React.useRef<View>(null);
+    const mergedRef = React.useMemo(() => mergeRefs(ref, innerRef), [ref]);
 
     const handleLayout = React.useCallback(
       (event: LayoutChangeEvent) => {
         const { width, height } = event.nativeEvent.layout;
         setTrackSize(isHorizontal ? width : height);
 
-        // We need measureInWindow for absolute page coordinates
-        (
-          event.target as unknown as {
-            measureInWindow: (
-              cb: (x: number, y: number, width: number, height: number) => void,
-            ) => void;
-          }
-        ).measureInWindow(
-          (x: number, y: number, width: number, height: number) => {
-            layoutRef.current = { x, y, width, height };
-          },
-        );
+        if (!isWeb) {
+          (
+            event.target as unknown as {
+              measureInWindow: (
+                cb: (x: number, y: number, width: number, height: number) => void,
+              ) => void;
+            }
+          ).measureInWindow(
+            (x: number, y: number, width: number, height: number) => {
+              layoutRef.current = { ...layoutRef.current, x, y, width, height };
+            },
+          );
+        }
         onLayout?.(event);
       },
-      [onLayout],
-    );
-
-    /**
-     * Convert an absolute page position to a slider value.
-     */
-    const pagePositionToValue = React.useCallback(
-      (pageX: number, pageY: number, target?: any): number => {
-        let { x, y, width, height } = layoutRef.current;
-
-        // Fallback for Web if layout hasn't been measured via onLayout yet
-        if (
-          width === 0 &&
-          target &&
-          typeof target.getBoundingClientRect === 'function'
-        ) {
-          const rect = target.getBoundingClientRect();
-          const win = typeof window !== 'undefined' ? (window as any) : null;
-          x = rect.left + (win?.scrollX ?? 0);
-          y = rect.top + (win?.scrollY ?? 0);
-          width = rect.width;
-          height = rect.height;
-        }
-
-
-        if (isHorizontal) {
-          const ratio = width > 0 ? (pageX - x) / width : 0;
-          const clamped = Math.min(Math.max(ratio, 0), 1);
-          return state.min + clamped * (state.max - state.min);
-        } else {
-          // Vertical: bottom = min, top = max
-          const ratio = height > 0 ? 1 - (pageY - y) / height : 0;
-          const clamped = Math.min(Math.max(ratio, 0), 1);
-          return state.min + clamped * (state.max - state.min);
-        }
-      },
-      [isHorizontal, state.min, state.max],
+      [isHorizontal, isWeb, setTrackSize, onLayout],
     );
 
     /**
@@ -108,77 +69,149 @@ export const SliderControl = React.memo(
       [state.value],
     );
 
-    // Track which thumb is being dragged across the gesture lifecycle
+    /**
+     * Convert absolute coordinates to a slider value.
+     */
+    const getSliderValue = React.useCallback(
+      (clientX: number, clientY: number, target: HTMLElement): number => {
+        const rect = target.getBoundingClientRect();
+        const { min, max } = state;
+
+        if (isHorizontal) {
+          const ratio = rect.width > 0 ? (clientX - rect.left) / rect.width : 0;
+          const clamped = Math.min(Math.max(ratio, 0), 1);
+          return min + clamped * (max - min);
+        } else {
+          const ratio =
+            rect.height > 0 ? 1 - (clientY - rect.top) / rect.height : 0;
+          const clamped = Math.min(Math.max(ratio, 0), 1);
+          return min + clamped * (max - min);
+        }
+      },
+      [isHorizontal, state.min, state.max],
+    );
+
+    // Refs for stable callbacks
     const activeIndexRef = React.useRef(-1);
+    const setValueAtIndexRef = React.useRef(setValueAtIndex);
+    setValueAtIndexRef.current = setValueAtIndex;
+    const commitValueRef = React.useRef(commitValue);
+    commitValueRef.current = commitValue;
+    const closestThumbIndexRef = React.useRef(closestThumbIndex);
+    closestThumbIndexRef.current = closestThumbIndex;
+    const getSliderValueRef = React.useRef(getSliderValue);
+    getSliderValueRef.current = getSliderValue;
 
+    // --- WEB DRAGGING (Pointer API) ---
+    React.useEffect(() => {
+      if (!isWeb) return;
+
+      const el = (innerRef.current as unknown as HTMLElement) ?? null;
+      if (!el) return;
+
+      const onPointerDown = (e: PointerEvent) => {
+        if (state.disabled) return;
+        e.preventDefault();
+        
+        // Capture pointer to handle dragging outside bounds
+        if (typeof el.setPointerCapture === 'function') {
+          el.setPointerCapture(e.pointerId);
+        }
+
+        const rawValue = getSliderValueRef.current(e.clientX, e.clientY, el);
+        const index = closestThumbIndexRef.current(rawValue);
+        activeIndexRef.current = index;
+        setValueAtIndexRef.current(index, rawValue, 'drag');
+      };
+
+      const onPointerMove = (e: PointerEvent) => {
+        if (activeIndexRef.current === -1) return;
+        const rawValue = getSliderValueRef.current(e.clientX, e.clientY, el);
+        setValueAtIndexRef.current(activeIndexRef.current, rawValue, 'drag');
+      };
+
+      const onPointerUp = (e: PointerEvent) => {
+        if (activeIndexRef.current === -1) return;
+        
+        if (typeof el.releasePointerCapture === 'function') {
+          el.releasePointerCapture(e.pointerId);
+        }
+
+        activeIndexRef.current = -1;
+        commitValueRef.current('drag');
+      };
+
+      el.addEventListener('pointerdown', onPointerDown);
+      el.addEventListener('pointermove', onPointerMove);
+      el.addEventListener('pointerup', onPointerUp);
+      el.addEventListener('pointercancel', onPointerUp);
+
+      return () => {
+        el.removeEventListener('pointerdown', onPointerDown);
+        el.removeEventListener('pointermove', onPointerMove);
+        el.removeEventListener('pointerup', onPointerUp);
+        el.removeEventListener('pointercancel', onPointerUp);
+      };
+    }, [isWeb, state.disabled]);
+
+    // --- NATIVE DRAGGING (PanResponder) ---
     const panResponder = React.useMemo(() => {
+      if (isWeb) return null;
+
+      const pageToValue = (pageX: number, pageY: number) => {
+        const { x, y, width, height } = layoutRef.current;
+        const { min, max } = state;
+        if (isHorizontal) {
+          const ratio = width > 0 ? (pageX - x) / width : 0;
+          const clamped = Math.min(Math.max(ratio, 0), 1);
+          return min + clamped * (max - min);
+        } else {
+          const ratio = height > 0 ? 1 - (pageY - y) / height : 0;
+          const clamped = Math.min(Math.max(ratio, 0), 1);
+          return min + clamped * (max - min);
+        }
+      };
+
       return PanResponder.create({
-        // Ask to be the responder:
         onStartShouldSetPanResponder: () => !state.disabled,
-        onStartShouldSetPanResponderCapture: () => !state.disabled,
         onMoveShouldSetPanResponder: () => !state.disabled,
-        onMoveShouldSetPanResponderCapture: () => !state.disabled,
-
-        // CRITICAL: Once we have the gesture, DO NOT let ScrollView or anything else steal it!
         onPanResponderTerminationRequest: () => false,
-
         onPanResponderGrant: (evt) => {
-          const { pageX, pageY, target } = evt.nativeEvent;
-          const rawValue = pagePositionToValue(pageX, pageY, target as never);
+          const { pageX, pageY } = evt.nativeEvent;
+          const rawValue = pageToValue(pageX, pageY);
           const index = closestThumbIndex(rawValue);
           activeIndexRef.current = index;
           setValueAtIndex(index, rawValue, 'drag');
         },
-
         onPanResponderMove: (evt) => {
           if (activeIndexRef.current === -1) return;
-          const { pageX, pageY, target } = evt.nativeEvent;
-          const rawValue = pagePositionToValue(pageX, pageY, target as never);
+          const { pageX, pageY } = evt.nativeEvent;
+          const rawValue = pageToValue(pageX, pageY);
           setValueAtIndex(activeIndexRef.current, rawValue, 'drag');
         },
-
         onPanResponderRelease: () => {
           activeIndexRef.current = -1;
           commitValue('drag');
         },
-
         onPanResponderTerminate: () => {
           activeIndexRef.current = -1;
           commitValue('drag');
         },
       });
-    }, [
-      state.disabled,
-      pagePositionToValue,
-      closestThumbIndex,
-      setValueAtIndex,
-      commitValue,
-    ]);
+    }, [isWeb, isHorizontal, state.disabled, state.min, state.max, state.value, setValueAtIndex, commitValue, closestThumbIndex]);
 
     const resolvedStyle = typeof style === 'function' ? style(state) : style;
 
     return (
       <View
         {...props}
-        {...panResponder.panHandlers}
-        ref={ref}
+        {...(isWeb ? {} : panResponder?.panHandlers)}
+        ref={mergedRef}
         onLayout={handleLayout}
-        // @ts-expect-error onPointerDown is Web only
-        onPointerDown={(e: React.PointerEvent) => {
-          if (state.disabled) return;
-          // Only handle direct clicks on the control/track that aren't already handled by thumbs
-          if (e.target !== e.currentTarget) return;
-
-          const rawValue = pagePositionToValue(
-            e.pageX,
-            e.pageY,
-            e.currentTarget as never,
-          );
-          const index = closestThumbIndex(rawValue);
-          setValueAtIndex(index, rawValue, 'track-press');
-          commitValue('track-press');
-        }}
-        style={resolvedStyle}
+        style={[
+          isWeb && ({ touchAction: 'none' } as any),
+          resolvedStyle,
+        ]}
       />
     );
   }),
