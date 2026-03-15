@@ -25,7 +25,6 @@ export const SliderThumb = React.memo(
     {
       index = 0,
       disabled,
-      onPress,
       onKeyPress,
       accessibilityRole = 'adjustable',
       accessibilityState,

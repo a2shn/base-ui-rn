@@ -79,12 +79,16 @@ const REGISTRY: PlaybookConfig = {
   },
 };
 
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 export default function App() {
   return (
-    <SafeAreaProvider>
-      <ShortcutProvider>
-        <PlaybookApp registry={REGISTRY} />
-      </ShortcutProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <ShortcutProvider>
+          <PlaybookApp registry={REGISTRY} />
+        </ShortcutProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

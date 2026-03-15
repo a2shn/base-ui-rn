@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { resolveTabIndex } from '@base-ui-rn/core';
 import { SliderContext } from './context';
 import type { SliderRootProps } from './types';
@@ -43,40 +42,52 @@ export const SliderRoot = React.memo(
       ...otherProps
     } = props;
 
-    const { state, setValueAtIndex, stepBy } = useSlider(props);
+    const {
+      state,
+      setValueAtIndex,
+      stepBy,
+      commitValue,
+      locale,
+      format,
+      largeStep,
+      thumbAlignment,
+    } = useSlider(props);
     const resolvedChildren =
       typeof children === 'function' ? children(state) : children;
     const resolvedStyle = typeof style === 'function' ? style(state) : style;
 
     return (
-      <SliderContext.Provider value={{ state, setValueAtIndex, stepBy }}>
-        <GestureHandlerRootView style={resolvedStyle}>
-          <View
-            {...otherProps}
-            ref={ref}
-            accessible
-            role={accessibilityRole as never}
-            accessibilityRole={accessibilityRole}
-            accessibilityState={{ disabled, ...accessibilityState }}
-            tabIndex={resolveTabIndex(disabled, tabIndex)}
-            aria-disabled={ariaDisabled ?? disabled}
-            aria-labelledby={ariaLabelledBy}
-            aria-describedby={ariaDescribedBy}
-            aria-details={ariaDetails}
-            aria-expanded={ariaExpanded}
-            aria-busy={ariaBusy}
-            aria-hidden={ariaHidden}
-            style={[
-              resolvedStyle,
-              {
-                flex: (resolvedStyle as { flex?: number })?.flex,
-                width: '100%',
-              },
-            ]}
-          >
-            {resolvedChildren}
-          </View>
-        </GestureHandlerRootView>
+      <SliderContext.Provider
+        value={{
+          state,
+          setValueAtIndex,
+          stepBy,
+          commitValue,
+          locale,
+          format,
+          largeStep,
+          thumbAlignment,
+        }}
+      >
+        <View
+          {...otherProps}
+          ref={ref}
+          accessible
+          role={accessibilityRole as never}
+          accessibilityRole={accessibilityRole}
+          accessibilityState={{ disabled, ...accessibilityState }}
+          tabIndex={resolveTabIndex(disabled, tabIndex)}
+          aria-disabled={ariaDisabled ?? disabled}
+          aria-labelledby={ariaLabelledBy}
+          aria-describedby={ariaDescribedBy}
+          aria-details={ariaDetails}
+          aria-expanded={ariaExpanded}
+          aria-busy={ariaBusy}
+          aria-hidden={ariaHidden}
+          style={resolvedStyle}
+        >
+          {resolvedChildren}
+        </View>
       </SliderContext.Provider>
     );
   }),

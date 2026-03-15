@@ -110,11 +110,15 @@ export const SliderControl = React.memo(
 
       const pan = Gesture.Pan()
         .enabled(!state.disabled)
-        .shouldCancelWhenOutside(false)
-        .manualActivation(true)
-        .onTouchesDown((_evt, stateManager) => {
-          stateManager.activate();
-        })
+        .shouldCancelWhenOutside(false);
+
+      if (state.orientation === 'horizontal') {
+        pan.activeOffsetX([-10, 10]).failOffsetY([-10, 10]);
+      } else {
+        pan.activeOffsetY([-10, 10]).failOffsetX([-10, 10]);
+      }
+
+      pan
         .onStart((evt) => {
           runOnJS(updateValue)(evt.absoluteX, evt.absoluteY);
         })
