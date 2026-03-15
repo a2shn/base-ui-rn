@@ -1,10 +1,19 @@
 import * as React from 'react';
-import type { SliderState } from './types';
+import type { SliderState, CommitEventDetails } from './types';
 
 interface SliderContextValue {
   state: SliderState;
-  setValueAtIndex: (index: number, next: number) => void;
+  setValueAtIndex: (
+    index: number,
+    next: number,
+    reason: 'drag' | 'track-press' | 'keyboard',
+  ) => void;
   stepBy: (index: number, delta: number) => void;
+  commitValue: (reason: CommitEventDetails['reason']) => void;
+  locale?: Intl.LocalesArgument;
+  format?: Intl.NumberFormatOptions;
+  thumbAlignment?: 'center' | 'edge' | 'edge-client-only';
+  largeStep: number;
 }
 
 export const SliderContext = React.createContext<SliderContextValue | null>(

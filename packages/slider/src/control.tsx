@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { View, type LayoutChangeEvent } from 'react-native';
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
-import { runOnJS } from 'react-native-reanimated';
+import { View, PanResponder, type LayoutChangeEvent } from 'react-native';
 import { useSliderContext } from './context';
 import type { SliderPartProps } from './types';
 
@@ -94,45 +92,42 @@ export const SliderControl = React.memo(
     // Track which thumb is being dragged across the gesture lifecycle
     const activeIndexRef = React.useRef(-1);
 
-    const gesture = React.useMemo(() => {
-      const updateValue = (absoluteX: number, absoluteY: number) => {
-        const rawValue = pagePositionToValue(absoluteX, absoluteY);
-        if (activeIndexRef.current === -1) {
-          activeIndexRef.current = closestThumbIndex(rawValue);
-        }
-        setValueAtIndex(activeIndexRef.current, rawValue, 'drag');
-      };
+    const panResponder = React.useMemo(() => {
+      return PanResponder.create({
+        // Ask to be the responder:
+        onStartShouldSetPanResponder: () => !state.disabled,
+        onStartShouldSetPanResponderCapture: () => !state.disabled,
+        onMoveShouldSetPanResponder: () => !state.disabled,
+        onMoveShouldSetPanResponderCapture: () => !state.disabled,
 
-      const resetActiveIndex = () => {
-        activeIndexRef.current = -1;
-        commitValue('drag');
-      };
+        // CRITICAL: Once we have the gesture, DO NOT let ScrollView or anything else steal it!
+        onPanResponderTerminationRequest: () => false,
 
-      const pan = Gesture.Pan()
-        .enabled(!state.disabled)
-        .shouldCancelWhenOutside(false);
+        onPanResponderGrant: (evt) => {
+          const { pageX, pageY } = evt.nativeEvent;
+          const rawValue = pagePositionToValue(pageX, pageY);
+          const index = closestThumbIndex(rawValue);
+          activeIndexRef.current = index;
+          setValueAtIndex(index, rawValue, 'drag');
+        },
 
-      if (state.orientation === 'horizontal') {
-        pan.activeOffsetX([-10, 10]).failOffsetY([-10, 10]);
-      } else {
-        pan.activeOffsetY([-10, 10]).failOffsetX([-10, 10]);
-      }
+        onPanResponderMove: (evt) => {
+          if (activeIndexRef.current === -1) return;
+          const { pageX, pageY } = evt.nativeEvent;
+          const rawValue = pagePositionToValue(pageX, pageY);
+          setValueAtIndex(activeIndexRef.current, rawValue, 'drag');
+        },
 
-      pan
-        .onStart((evt) => {
-          runOnJS(updateValue)(evt.absoluteX, evt.absoluteY);
-        })
-        .onUpdate((evt) => {
-          runOnJS(updateValue)(evt.absoluteX, evt.absoluteY);
-        })
-        .onEnd(() => {
-          runOnJS(resetActiveIndex)();
-        })
-        .onFinalize(() => {
-          runOnJS(resetActiveIndex)();
-        });
+        onPanResponderRelease: () => {
+          activeIndexRef.current = -1;
+          commitValue('drag');
+        },
 
-      return pan;
+        onPanResponderTerminate: () => {
+          activeIndexRef.current = -1;
+          commitValue('drag');
+        },
+      });
     }, [
       state.disabled,
       pagePositionToValue,
@@ -144,14 +139,13 @@ export const SliderControl = React.memo(
     const resolvedStyle = typeof style === 'function' ? style(state) : style;
 
     return (
-      <GestureDetector gesture={gesture}>
-        <View
-          {...props}
-          ref={ref}
-          onLayout={handleLayout}
-          style={resolvedStyle}
-        />
-      </GestureDetector>
+      <View
+        {...props}
+        {...panResponder.panHandlers}
+        ref={ref}
+        onLayout={handleLayout}
+        style={resolvedStyle}
+      />
     );
   }),
 );

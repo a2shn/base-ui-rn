@@ -21,8 +21,15 @@ export const SliderValue = React.memo(
     { children, ...props },
     ref,
   ) {
-    const { state } = useSliderContext();
-    const formatted = state.value.map((item) => item.toString());
+    const { state, locale, format } = useSliderContext();
+
+    const formatted = React.useMemo(() => {
+      const formatter =
+        locale || format ? new Intl.NumberFormat(locale, format) : undefined;
+      return state.value.map((item) =>
+        formatter ? formatter.format(item) : item.toString(),
+      );
+    }, [state.value, locale, format]);
 
     return (
       <Text {...props} ref={ref}>

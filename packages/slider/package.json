@@ -11,9 +11,7 @@
     "lint": "eslint . --fix && tsc --noEmit"
   },
   "dependencies": {
-    "@base-ui-rn/core": "workspace:*",
-    "react-native-gesture-handler": "^2.30.0",
-    "react-native-reanimated": "^4.2.2"
+    "@base-ui-rn/core": "workspace:*"
   },
   "peerDependencies": {
     "react": ">=19.1.0",
