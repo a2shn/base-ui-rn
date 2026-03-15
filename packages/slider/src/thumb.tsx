@@ -1,23 +1,11 @@
 import * as React from 'react';
-import {
-  Pressable,
-  type PressableProps,
-  type NativeSyntheticEvent,
-  type View,
-} from 'react-native';
+import { type NativeSyntheticEvent, View } from 'react-native';
 import {
   useKeyboardActivation,
   type KeyPressEventData,
 } from '@base-ui-rn/core';
 import { useSliderContext } from './context';
 import type { SliderThumbProps } from './types';
-
-const PressableWithKeyPress =
-  Pressable as unknown as React.ForwardRefExoticComponent<
-    PressableProps & {
-      onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
-    } & React.RefAttributes<View>
-  >;
 
 /**
  * Draggable handle that controls a slider value.
@@ -44,11 +32,13 @@ export const SliderThumb = React.memo(
       accessibilityHint,
       style,
       'aria-label': ariaLabel,
+      getAriaLabel,
+      getAriaValueText,
       ...props
     },
     ref,
   ) {
-    const { state, stepBy } = useSliderContext();
+    const { state, stepBy, largeStep, locale, format } = useSliderContext();
     const isDisabled = state.disabled || disabled;
     const valueNow = state.value[index] ?? state.min;
 
@@ -60,10 +50,29 @@ export const SliderThumb = React.memo(
     const handleKeyPress = React.useCallback(
       (event: NativeSyntheticEvent<KeyPressEventData>) => {
         const key = event.nativeEvent.key;
+        // React Native KeyPressEventData does not have shiftKey
+
         if (key === 'ArrowLeft' || key === 'ArrowDown') {
           event.preventDefault?.();
           if (!isDisabled) {
             stepBy(index, -1);
+          }
+          return;
+        }
+        if (key === 'ArrowRight' || key === 'ArrowUp') {
+          // Native handles normal increase via activateIncrease
+        }
+        if (key === 'PageUp') {
+          event.preventDefault?.();
+          if (!isDisabled) {
+            stepBy(index, largeStep);
+          }
+          return;
+        }
+        if (key === 'PageDown') {
+          event.preventDefault?.();
+          if (!isDisabled) {
+            stepBy(index, -largeStep);
           }
           return;
         }
@@ -85,7 +94,7 @@ export const SliderThumb = React.memo(
         activateIncrease(event);
         onKeyPress?.(event);
       },
-      [activateIncrease, index, isDisabled, onKeyPress, stepBy],
+      [activateIncrease, index, isDisabled, onKeyPress, stepBy, largeStep],
     );
 
     const range = state.max - state.min || 1;
@@ -104,22 +113,40 @@ export const SliderThumb = React.memo(
             transform: [{ translateY: '50%' } as never],
           };
 
+    const formattedValue = React.useMemo(() => {
+      if (format || locale) {
+        return new Intl.NumberFormat(locale, format).format(valueNow);
+      }
+      return valueNow.toString();
+    }, [valueNow, format, locale]);
+
+    const resolvedAriaLabel = getAriaLabel ? getAriaLabel(index) : ariaLabel;
+    const resolvedAriaValueText = getAriaValueText
+      ? getAriaValueText(formattedValue, valueNow, index)
+      : formattedValue;
+
+    const hasCustomText = getAriaValueText || format || locale;
+    const a11yValue = hasCustomText
+      ? { text: resolvedAriaValueText }
+      : { min: state.min, max: state.max, now: valueNow };
+
     return (
-      <PressableWithKeyPress
+      <View
         {...props}
         ref={ref}
         accessible
         role={accessibilityRole as never}
         accessibilityRole={accessibilityRole}
-        accessibilityLabel={ariaLabel}
+        accessibilityLabel={resolvedAriaLabel}
         accessibilityHint={accessibilityHint}
         accessibilityState={{ disabled: isDisabled, ...accessibilityState }}
-        onPress={onPress}
-        onKeyPress={handleKeyPress}
+        accessibilityValue={a11yValue}
+        // @ts-expect-error onKeyPress is valid on Web but missing in RN View types
+        onKeyPress={handleKeyPress as never}
         aria-valuemin={state.min}
         aria-valuemax={state.max}
         aria-valuenow={valueNow}
-        accessibilityValue={{ min: state.min, max: state.max, now: valueNow }}
+        aria-valuetext={resolvedAriaValueText}
         style={[
           dynamicStyle,
           typeof style === 'function'
