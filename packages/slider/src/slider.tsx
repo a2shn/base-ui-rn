@@ -39,6 +39,8 @@ export const SliderRoot = React.memo(
       'aria-expanded': ariaExpanded,
       'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      minStepsBetweenValues,
+      stepBetweenValues,
       ...otherProps
     } = props;
 
@@ -88,6 +90,10 @@ export const SliderRoot = React.memo(
           aria-expanded={ariaExpanded}
           aria-busy={ariaBusy}
           aria-hidden={ariaHidden}
+          data-orientation={state.orientation}
+          data-disabled={disabled}
+          data-min-steps-between-values={minStepsBetweenValues}
+          data-step-between-values={stepBetweenValues}
           style={resolvedStyle}
         >
           {resolvedChildren}

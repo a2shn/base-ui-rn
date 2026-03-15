@@ -72,23 +72,36 @@ export const SliderControl = React.memo(
     /**
      * Convert absolute coordinates to a slider value.
      */
-    const getSliderValue = React.useCallback(
-      (clientX: number, clientY: number, target: HTMLElement): number => {
-        const rect = target.getBoundingClientRect();
+    const pagePositionToValue = React.useCallback(
+      (pageX: number, pageY: number, target: HTMLElement): number => {
         const { min, max } = state;
 
-        if (isHorizontal) {
-          const ratio = rect.width > 0 ? (clientX - rect.left) / rect.width : 0;
-          const clamped = Math.min(Math.max(ratio, 0), 1);
-          return min + clamped * (max - min);
+        if (isWeb) {
+          const rect = target.getBoundingClientRect();
+          if (isHorizontal) {
+            const ratio = rect.width > 0 ? (pageX - rect.left) / rect.width : 0;
+            const clamped = Math.min(Math.max(ratio, 0), 1);
+            return min + clamped * (max - min);
+          } else {
+            const ratio =
+              rect.height > 0 ? 1 - (pageY - rect.top) / rect.height : 0;
+            const clamped = Math.min(Math.max(ratio, 0), 1);
+            return min + clamped * (max - min);
+          }
         } else {
-          const ratio =
-            rect.height > 0 ? 1 - (clientY - rect.top) / rect.height : 0;
-          const clamped = Math.min(Math.max(ratio, 0), 1);
-          return min + clamped * (max - min);
+          const { x, y, width, height } = layoutRef.current;
+          if (isHorizontal) {
+            const ratio = width > 0 ? (pageX - x) / width : 0;
+            const clamped = Math.min(Math.max(ratio, 0), 1);
+            return min + clamped * (max - min);
+          } else {
+            const ratio = height > 0 ? 1 - (pageY - y) / height : 0;
+            const clamped = Math.min(Math.max(ratio, 0), 1);
+            return min + clamped * (max - min);
+          }
         }
       },
-      [isHorizontal, state.min, state.max],
+      [isHorizontal, isWeb, state.min, state.max],
     );
 
     // Refs for stable callbacks
@@ -99,8 +112,8 @@ export const SliderControl = React.memo(
     commitValueRef.current = commitValue;
     const closestThumbIndexRef = React.useRef(closestThumbIndex);
     closestThumbIndexRef.current = closestThumbIndex;
-    const getSliderValueRef = React.useRef(getSliderValue);
-    getSliderValueRef.current = getSliderValue;
+    const pagePositionToValueRef = React.useRef(pagePositionToValue);
+    pagePositionToValueRef.current = pagePositionToValue;
 
     // --- WEB DRAGGING (Pointer API) ---
     React.useEffect(() => {
@@ -112,13 +125,17 @@ export const SliderControl = React.memo(
       const onPointerDown = (e: PointerEvent) => {
         if (state.disabled) return;
         e.preventDefault();
-        
+
         // Capture pointer to handle dragging outside bounds
         if (typeof el.setPointerCapture === 'function') {
           el.setPointerCapture(e.pointerId);
         }
 
-        const rawValue = getSliderValueRef.current(e.clientX, e.clientY, el);
+        const rawValue = pagePositionToValueRef.current(
+          e.clientX,
+          e.clientY,
+          el,
+        );
         const index = closestThumbIndexRef.current(rawValue);
         activeIndexRef.current = index;
         setValueAtIndexRef.current(index, rawValue, 'drag');
@@ -126,13 +143,17 @@ export const SliderControl = React.memo(
 
       const onPointerMove = (e: PointerEvent) => {
         if (activeIndexRef.current === -1) return;
-        const rawValue = getSliderValueRef.current(e.clientX, e.clientY, el);
+        const rawValue = pagePositionToValueRef.current(
+          e.clientX,
+          e.clientY,
+          el,
+        );
         setValueAtIndexRef.current(activeIndexRef.current, rawValue, 'drag');
       };
 
       const onPointerUp = (e: PointerEvent) => {
         if (activeIndexRef.current === -1) return;
-        
+
         if (typeof el.releasePointerCapture === 'function') {
           el.releasePointerCapture(e.pointerId);
         }
@@ -158,47 +179,55 @@ export const SliderControl = React.memo(
     const panResponder = React.useMemo(() => {
       if (isWeb) return null;
 
-      const pageToValue = (pageX: number, pageY: number) => {
-        const { x, y, width, height } = layoutRef.current;
-        const { min, max } = state;
-        if (isHorizontal) {
-          const ratio = width > 0 ? (pageX - x) / width : 0;
-          const clamped = Math.min(Math.max(ratio, 0), 1);
-          return min + clamped * (max - min);
-        } else {
-          const ratio = height > 0 ? 1 - (pageY - y) / height : 0;
-          const clamped = Math.min(Math.max(ratio, 0), 1);
-          return min + clamped * (max - min);
-        }
-      };
-
       return PanResponder.create({
         onStartShouldSetPanResponder: () => !state.disabled,
+        onStartShouldSetPanResponderCapture: () => !state.disabled,
         onMoveShouldSetPanResponder: () => !state.disabled,
+        onMoveShouldSetPanResponderCapture: () => !state.disabled,
         onPanResponderTerminationRequest: () => false,
+
         onPanResponderGrant: (evt) => {
-          const { pageX, pageY } = evt.nativeEvent;
-          const rawValue = pageToValue(pageX, pageY);
-          const index = closestThumbIndex(rawValue);
+          const { pageX, pageY, target } = evt.nativeEvent;
+          const rawValue = pagePositionToValueRef.current(
+            pageX,
+            pageY,
+            target as never,
+          );
+          const index = closestThumbIndexRef.current(rawValue);
           activeIndexRef.current = index;
-          setValueAtIndex(index, rawValue, 'drag');
+          setValueAtIndexRef.current(index, rawValue, 'drag');
         },
+
         onPanResponderMove: (evt) => {
           if (activeIndexRef.current === -1) return;
-          const { pageX, pageY } = evt.nativeEvent;
-          const rawValue = pageToValue(pageX, pageY);
-          setValueAtIndex(activeIndexRef.current, rawValue, 'drag');
+          const { pageX, pageY, target } = evt.nativeEvent;
+          const rawValue = pagePositionToValueRef.current(
+            pageX,
+            pageY,
+            target as never,
+          );
+          setValueAtIndexRef.current(activeIndexRef.current, rawValue, 'drag');
         },
+
         onPanResponderRelease: () => {
           activeIndexRef.current = -1;
-          commitValue('drag');
+          commitValueRef.current('drag');
         },
+
         onPanResponderTerminate: () => {
           activeIndexRef.current = -1;
-          commitValue('drag');
+          commitValueRef.current('drag');
         },
       });
-    }, [isWeb, isHorizontal, state.disabled, state.min, state.max, state.value, setValueAtIndex, commitValue, closestThumbIndex]);
+    }, [
+      isWeb,
+      state.disabled,
+      activeIndexRef,
+      pagePositionToValueRef,
+      closestThumbIndexRef,
+      setValueAtIndexRef,
+      commitValueRef,
+    ]);
 
     const resolvedStyle = typeof style === 'function' ? style(state) : style;
 

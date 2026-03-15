@@ -9,6 +9,7 @@ export interface CollisionOptions {
   min: number;
   max: number;
   minDistance: number;
+  stepBetweenValues?: number;
   behavior: CollisionBehavior;
 }
 
@@ -17,9 +18,49 @@ export interface CollisionOptions {
  * This implementation focuses on predictability and stability, especially near bounds.
  */
 export function calculateNextValues(options: CollisionOptions): number[] {
-  const { index, newValue, currentValues, min, max, minDistance, behavior } =
-    options;
+  const {
+    index,
+    newValue,
+    currentValues,
+    min,
+    max,
+    minDistance,
+    stepBetweenValues,
+    behavior,
+  } = options;
   const next = [...currentValues];
+
+  if (stepBetweenValues !== undefined) {
+    next[index] = clamp(newValue, min, max);
+
+    // Enforce fixed distance: Pull/push all other thumbs relative to the moved one
+    // Spread right
+    for (let i = index + 1; i < next.length; i++) {
+      next[i] = next[i - 1] + stepBetweenValues;
+    }
+    // Spread left
+    for (let i = index - 1; i >= 0; i--) {
+      next[i] = next[i + 1] - stepBetweenValues;
+    }
+
+    // Handle bounds: if the whole chain is out of bounds, shift it back
+    if (next[next.length - 1] > max) {
+      const overflow = next[next.length - 1] - max;
+      for (let i = 0; i < next.length; i++) {
+        next[i] -= overflow;
+      }
+    }
+    if (next[0] < min) {
+      const underflow = min - next[0];
+      for (let i = 0; i < next.length; i++) {
+        next[i] += underflow;
+      }
+    }
+
+    // Final bound check to ensure no thumb is outside [min, max]
+    // (though the logic above should prevent it unless the chain is wider than the track)
+    return next.map((v) => clamp(v, min, max));
+  }
 
   if (behavior === 'swap') {
     next[index] = clamp(newValue, min, max);

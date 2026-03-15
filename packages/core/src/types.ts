@@ -236,6 +236,14 @@ export type WebSliderRootAccessibilityProps = WebAccessibilityProps & {
    * Present when the slider is disabled.
    */
   'data-disabled'?: boolean;
+  /**
+   * The minimum number of steps between thumbs.
+   */
+  'data-min-steps-between-values'?: number;
+  /**
+   * The fixed number of steps between thumbs.
+   */
+  'data-step-between-values'?: number;
 };
 
 /**

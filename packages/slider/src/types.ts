@@ -52,6 +52,7 @@ export interface SliderRootProps
   step?: number;
   largeStep?: number;
   minStepsBetweenValues?: number;
+  stepBetweenValues?: number;
   locale?: Intl.LocalesArgument;
   format?: Intl.NumberFormatOptions;
   thumbAlignment?: 'center' | 'edge' | 'edge-client-only';

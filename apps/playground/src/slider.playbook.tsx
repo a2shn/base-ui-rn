@@ -10,6 +10,7 @@ export function SliderPlaybook() {
   const [value, setValue] = React.useState(25);
   const [rangeValue, setRangeValue] = React.useState<number[]>([20, 70]);
   const [pushValue, setPushValue] = React.useState<number[]>([10, 20, 30, 40]);
+  const [fixedValue, setFixedValue] = React.useState<number[]>([20, 40, 60]);
 
   return (
     <Gallery title='Slider'>
@@ -109,6 +110,43 @@ export function SliderPlaybook() {
           </Slider.Root>
           <Text style={styles.hint}>
             Thumbs push each other and maintain a minimum distance of 5 steps.
+          </Text>
+        </View>
+      </Section>
+
+      <Section title='Fixed Step Behavior'>
+        <View style={styles.container}>
+          <Slider.Root
+            value={fixedValue}
+            stepBetweenValues={20}
+            onValueChange={(nextValue) => {
+              if (Array.isArray(nextValue)) {
+                setFixedValue(nextValue);
+              }
+            }}
+            style={styles.root}
+          >
+            <Slider.Label style={styles.label}>Fixed-distance chain</Slider.Label>
+            <Slider.Control style={styles.control}>
+              <Slider.Track style={styles.track}>
+                <Slider.Indicator style={styles.indicator} />
+                {fixedValue.map((_, i) => (
+                  <Slider.Thumb
+                    key={i}
+                    index={i}
+                    aria-label={`Thumb ${i + 1}`}
+                    style={getThumbStyle}
+                  />
+                ))}
+              </Slider.Track>
+            </Slider.Control>
+            <Slider.Value style={styles.value}>
+              {(formattedValues) => formattedValues.join(' | ')}
+            </Slider.Value>
+          </Slider.Root>
+          <Text style={styles.hint}>
+            Thumbs maintain a fixed distance of exactly 20 steps. Moving one
+            pulls or pushes the others.
           </Text>
         </View>
       </Section>

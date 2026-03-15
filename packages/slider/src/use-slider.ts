@@ -30,6 +30,7 @@ export function useSlider(props: SliderRootProps) {
     step = 1,
     largeStep = 10,
     minStepsBetweenValues = 0,
+    stepBetweenValues,
     thumbCollisionBehavior = 'push',
     thumbAlignment = 'center',
     locale,
@@ -111,7 +112,8 @@ export function useSlider(props: SliderRootProps) {
       const rounded = Number(snapped.toFixed(precision));
       const newValue = clamp(rounded, min, max);
 
-      let minDistance = minStepsBetweenValues * step;
+      let minDistance =
+        (stepBetweenValues ?? minStepsBetweenValues) * step;
 
       const isWeb = Platform.OS === 'web';
       const shouldApplyPhysicalDistance =
@@ -138,6 +140,10 @@ export function useSlider(props: SliderRootProps) {
         min,
         max,
         minDistance,
+        stepBetweenValues:
+          stepBetweenValues !== undefined
+            ? stepBetweenValues * step
+            : undefined,
         behavior: thumbCollisionBehavior,
       });
 
