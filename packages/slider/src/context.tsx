@@ -14,6 +14,8 @@ interface SliderContextValue {
   format?: Intl.NumberFormatOptions;
   thumbAlignment?: 'center' | 'edge' | 'edge-client-only';
   largeStep: number;
+  setTrackSize: (size: number) => void;
+  setThumbSize: (size: number) => void;
 }
 
 export const SliderContext = React.createContext<SliderContextValue | null>(

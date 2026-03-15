@@ -2,6 +2,7 @@
 export type {
   KeyPressEventData,
   WebAccessibilityProps,
+  WebRangeAccessibilityProps,
   WebToggleAccessibilityProps,
   WebToggleGroupAccessibilityProps,
   WebProgressAccessibilityProps,
@@ -11,6 +12,8 @@ export type {
   WebAccordionTriggerAccessibilityProps,
   WebAccordionPanelAccessibilityProps,
   WebMeterAccessibilityProps,
+  WebSliderRootAccessibilityProps,
+  WebSliderThumbAccessibilityProps,
   WebTabsRootAccessibilityProps,
   WebTabsListAccessibilityProps,
   WebTabsTabAccessibilityProps,
@@ -41,9 +44,16 @@ export {
   resolveDataPressed,
 } from './accessibility';
 
-// Keyboard navigation
-export { useKeyboardNavigation, useKeyboardActivation } from './keyboard';
-export type { KeyboardDirection, KeyboardNavigationOptions } from './keyboard';
+export {
+  useKeyboardNavigation,
+  useKeyboardActivation,
+  useKeyboardRange,
+} from './keyboard';
+export type {
+  KeyboardDirection,
+  KeyboardNavigationOptions,
+  KeyboardRangeOptions,
+} from './keyboard';
 
 // Utils
-export { mergeRefs } from './utils';
+export { mergeRefs, clamp } from './utils';

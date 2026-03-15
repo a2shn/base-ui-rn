@@ -9,6 +9,8 @@ import type {
 import type {
   KeyPressEventData,
   WebAccessibilityProps,
+  WebSliderRootAccessibilityProps,
+  WebSliderThumbAccessibilityProps,
 } from '@base-ui-rn/core';
 
 export type SliderValue = number | number[];
@@ -31,7 +33,9 @@ export interface SliderState {
 }
 
 export interface SliderRootProps
-  extends Omit<ViewProps, 'children' | 'style'>, WebAccessibilityProps {
+  extends
+    Omit<ViewProps, 'children' | 'style'>,
+    WebSliderRootAccessibilityProps {
   name?: string;
   value?: SliderValue;
   defaultValue?: SliderValue;
@@ -72,7 +76,7 @@ export interface SliderThumbState extends SliderState {
 export interface SliderThumbProps
   extends
     Omit<ViewProps, 'style' | 'disabled' | 'onKeyPress'>,
-    WebAccessibilityProps {
+    WebSliderThumbAccessibilityProps {
   index?: number;
   'aria-label'?: string;
   accessibilityHint?: string;

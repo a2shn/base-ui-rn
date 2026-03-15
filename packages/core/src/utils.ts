@@ -1,6 +1,12 @@
 import * as React from 'react';
 
 /**
+ * Clamps a value between a minimum and maximum bound.
+ */
+export const clamp = (value: number, min: number, max: number) =>
+  Math.min(Math.max(value, min), max);
+
+/**
  * Merges multiple refs into a single ref callback.
  *
  * @param refs - The refs to merge. Can be function refs or object refs.

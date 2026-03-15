@@ -1,9 +1,6 @@
 import * as React from 'react';
 import { type NativeSyntheticEvent, View } from 'react-native';
-import {
-  useKeyboardActivation,
-  type KeyPressEventData,
-} from '@base-ui-rn/core';
+import { useKeyboardRange, type KeyPressEventData } from '@base-ui-rn/core';
 import { useSliderContext } from './context';
 import type { SliderThumbProps } from './types';
 
@@ -26,6 +23,7 @@ export const SliderThumb = React.memo(
       index = 0,
       disabled,
       onKeyPress,
+      onLayout,
       accessibilityRole = 'adjustable',
       accessibilityState,
       accessibilityHint,
@@ -37,80 +35,63 @@ export const SliderThumb = React.memo(
     },
     ref,
   ) {
-    const { state, stepBy, largeStep, locale, format } = useSliderContext();
+    const { state, stepBy, largeStep, locale, format, setThumbSize } =
+      useSliderContext();
     const isDisabled = state.disabled || disabled;
     const valueNow = state.value[index] ?? state.min;
 
-    const activateIncrease = useKeyboardActivation(
-      () => stepBy(index, 1),
-      isDisabled,
+    const handleLayout = React.useCallback(
+      (event: import('react-native').LayoutChangeEvent) => {
+        const { width, height } = event.nativeEvent.layout;
+        setThumbSize(state.orientation === 'horizontal' ? width : height);
+        onLayout?.(event);
+      },
+      [setThumbSize, state.orientation, onLayout],
     );
+
+    const handleKeyboardRange = useKeyboardRange({
+      onIncrement: () => stepBy(index, 1),
+      onDecrement: () => stepBy(index, -1),
+      onPageUp: () => stepBy(index, largeStep),
+      onPageDown: () => stepBy(index, -largeStep),
+      onHome: () => stepBy(index, -100000), // Min
+      onEnd: () => stepBy(index, 100000), // Max
+      disabled: isDisabled,
+      orientation: state.orientation,
+    });
 
     const handleKeyPress = React.useCallback(
       (event: NativeSyntheticEvent<KeyPressEventData>) => {
-        const key = event.nativeEvent.key;
-        // React Native KeyPressEventData does not have shiftKey
-
-        if (key === 'ArrowLeft' || key === 'ArrowDown') {
-          event.preventDefault?.();
-          if (!isDisabled) {
-            stepBy(index, -1);
-          }
-          return;
-        }
-        if (key === 'ArrowRight' || key === 'ArrowUp') {
-          // Native handles normal increase via activateIncrease
-        }
-        if (key === 'PageUp') {
-          event.preventDefault?.();
-          if (!isDisabled) {
-            stepBy(index, largeStep);
-          }
-          return;
-        }
-        if (key === 'PageDown') {
-          event.preventDefault?.();
-          if (!isDisabled) {
-            stepBy(index, -largeStep);
-          }
-          return;
-        }
-        if (key === 'Home') {
-          event.preventDefault?.();
-          if (!isDisabled) {
-            stepBy(index, -100000);
-          }
-          return;
-        }
-        if (key === 'End') {
-          event.preventDefault?.();
-          if (!isDisabled) {
-            stepBy(index, 100000);
-          }
-          return;
-        }
-
-        activateIncrease(event);
+        handleKeyboardRange(event);
         onKeyPress?.(event);
       },
-      [activateIncrease, index, isDisabled, onKeyPress, stepBy, largeStep],
+      [handleKeyboardRange, onKeyPress],
     );
 
     const range = state.max - state.min || 1;
     const percent = ((valueNow - state.min) / range) * 100;
+    const { thumbAlignment } = useSliderContext();
 
-    const dynamicStyle: import('react-native').ViewStyle =
-      state.orientation === 'horizontal'
-        ? {
-            position: 'absolute',
-            left: `${percent}%` as never,
-            transform: [{ translateX: '-50%' } as never],
-          }
-        : {
-            position: 'absolute',
-            bottom: `${percent}%` as never,
-            transform: [{ translateY: '50%' } as never],
-          };
+    const dynamicStyle = React.useMemo((): import('react-native').ViewStyle => {
+      const isHorizontal = state.orientation === 'horizontal';
+      const isEdge = thumbAlignment === 'edge';
+
+      if (isHorizontal) {
+        return {
+          position: 'absolute',
+          left: `${percent}%` as never,
+          transform: [
+            { translateX: isEdge ? `${-percent}%` : '-50%' } as never,
+          ],
+        };
+      } else {
+        return {
+          position: 'absolute',
+          bottom: `${percent}%` as never,
+          transform: [{ translateY: isEdge ? `${percent}%` : '50%' } as never],
+        };
+      }
+    }, [state.orientation, percent, thumbAlignment]);
 
     const formattedValue = React.useMemo(() => {
       if (format || locale) {
@@ -133,6 +114,7 @@ export const SliderThumb = React.memo(
       <View
         {...props}
         ref={ref}
+        onLayout={handleLayout}
         accessible
         role={accessibilityRole as never}
         accessibilityRole={accessibilityRole}

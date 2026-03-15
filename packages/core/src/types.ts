@@ -104,21 +104,9 @@ export type WebSeparatorAccessibilityProps = WebAccessibilityProps & {
 };
 
 /**
- * Web-specific accessibility props for Progress.
+ * Web-specific accessibility props for range-like components (Slider, Meter, Progress).
  */
-export type WebProgressAccessibilityProps = WebAccessibilityProps & {
-  /**
-   * Present when the progress has completed.
-   */
-  'data-complete'?: '';
-  /**
-   * Present when the progress is in indeterminate state.
-   */
-  'data-indeterminate'?: '';
-  /**
-   * Present while the progress is progressing.
-   */
-  'data-progressing'?: '';
+export type WebRangeAccessibilityProps = WebAccessibilityProps & {
   /**
    * Defines the maximum allowed value for a range widget.
    */
@@ -135,6 +123,24 @@ export type WebProgressAccessibilityProps = WebAccessibilityProps & {
    * Defines the human readable text alternative of aria-valuenow for a range widget.
    */
   'aria-valuetext'?: string;
+};
+
+/**
+ * Web-specific accessibility props for Progress.
+ */
+export type WebProgressAccessibilityProps = WebRangeAccessibilityProps & {
+  /**
+   * Present when the progress has completed.
+   */
+  'data-complete'?: '';
+  /**
+   * Present when the progress is in indeterminate state.
+   */
+  'data-indeterminate'?: '';
+  /**
+   * Present while the progress is progressing.
+   */
+  'data-progressing'?: '';
 };
 
 /**
@@ -216,23 +222,38 @@ export type WebAccordionPanelAccessibilityProps = WebAccessibilityProps & {
 /**
  * Web-specific accessibility props for Meter.
  */
-export type WebMeterAccessibilityProps = WebAccessibilityProps & {
+export type WebMeterAccessibilityProps = WebRangeAccessibilityProps;
+
+/**
+ * Web-specific accessibility props for Slider Root.
+ */
+export type WebSliderRootAccessibilityProps = WebAccessibilityProps & {
   /**
-   * Defines the maximum allowed value for a range widget.
+   * Indicates the orientation of the slider.
    */
-  'aria-valuemax'?: number;
+  'data-orientation'?: 'horizontal' | 'vertical';
   /**
-   * Defines the minimum allowed value for a range widget.
+   * Present when the slider is disabled.
    */
-  'aria-valuemin'?: number;
+  'data-disabled'?: boolean;
+};
+
+/**
+ * Web-specific accessibility props for Slider Thumb.
+ */
+export type WebSliderThumbAccessibilityProps = WebRangeAccessibilityProps & {
   /**
-   * Defines the current value for a range widget.
+   * Indicates the orientation of the slider for assistive technologies.
    */
-  'aria-valuenow'?: number;
+  'aria-orientation'?: 'horizontal' | 'vertical';
   /**
-   * Defines the human readable text alternative of aria-valuenow for a range widget.
+   * Indicates the orientation of the slider.
    */
-  'aria-valuetext'?: string;
+  'data-orientation'?: 'horizontal' | 'vertical';
+  /**
+   * Present when the slider is disabled.
+   */
+  'data-disabled'?: boolean;
 };
 
 /**

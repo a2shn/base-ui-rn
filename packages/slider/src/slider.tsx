@@ -51,6 +51,8 @@ export const SliderRoot = React.memo(
       format,
       largeStep,
       thumbAlignment,
+      setTrackSize,
+      setThumbSize,
     } = useSlider(props);
     const resolvedChildren =
       typeof children === 'function' ? children(state) : children;
@@ -67,6 +69,8 @@ export const SliderRoot = React.memo(
           format,
           largeStep,
           thumbAlignment,
+          setTrackSize,
+          setThumbSize,
         }}
       >
         <View

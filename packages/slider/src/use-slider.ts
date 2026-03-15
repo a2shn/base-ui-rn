@@ -1,8 +1,7 @@
 import * as React from 'react';
+import { clamp } from '@base-ui-rn/core';
 import type { SliderRootProps, SliderState, SliderValue } from './types';
-
-const clamp = (value: number, min: number, max: number) =>
-  Math.min(Math.max(value, min), max);
+import { calculateNextValues } from './collision';
 
 const normalizeValue = (value: SliderValue | undefined, min: number) => {
   if (Array.isArray(value)) {
@@ -37,6 +36,9 @@ export function useSlider(props: SliderRootProps) {
     disabled = false,
     orientation = 'horizontal',
   } = props;
+
+  const [trackSize, setTrackSize] = React.useState(0);
+  const [thumbSize, setThumbSize] = React.useState(0);
 
   const isControlled = value !== undefined;
   const [uncontrolled, setUncontrolled] = React.useState<number[]>(() =>
@@ -84,45 +86,39 @@ export function useSlider(props: SliderRootProps) {
         | 'none'
         | 'input-change' = 'none',
     ) => {
-      let next = [...current];
       const snapped = Math.round((rawValue - min) / step) * step + min;
       // To avoid floating point precision issues like 31.000000000000004
       const precision = step.toString().split('.')[1]?.length || 0;
       const rounded = Number(snapped.toFixed(precision));
-      let newValue = clamp(rounded, min, max);
+      const newValue = clamp(rounded, min, max);
 
-      const minDistance = minStepsBetweenValues * step;
+      let minDistance = minStepsBetweenValues * step;
 
-      if (thumbCollisionBehavior === 'none') {
-        if (index > 0) {
-          newValue = Math.max(newValue, next[index - 1] + minDistance);
-        }
-        if (index < next.length - 1) {
-          newValue = Math.min(newValue, next[index + 1] - minDistance);
-        }
-        next[index] = newValue;
-      } else if (thumbCollisionBehavior === 'push') {
-        next[index] = newValue;
-        // push left
-        for (let i = index - 1; i >= 0; i--) {
-          if (next[i + 1] - next[i] < minDistance) {
-            next[i] = next[i + 1] - minDistance;
-          }
-        }
-        // push right
-        for (let i = index + 1; i < next.length; i++) {
-          if (next[i] - next[i - 1] < minDistance) {
-            next[i] = next[i - 1] + minDistance;
-          }
-        }
-        next = next.map((v) => clamp(v, min, max));
-      } else if (thumbCollisionBehavior === 'swap') {
-        next[index] = newValue;
-        next.sort((a, b) => a - b);
+      // When using 'edge' alignment, we want to prevent thumbs from overlapping
+      // visually by ensuring their values are separated by at least their physical width.
+      if (thumbAlignment === 'edge' && trackSize > 0 && thumbSize > 0) {
+        const physicalMinDistance = (thumbSize / trackSize) * (max - min);
+        minDistance = Math.max(minDistance, physicalMinDistance);
       }
 
+      if (thumbCollisionBehavior === 'push' && minDistance === 0) {
+        minDistance = step;
+      }
+
+      const next = calculateNextValues({
+        index,
+        newValue,
+        currentValues: current,
+        min,
+        max,
+        minDistance,
+        behavior: thumbCollisionBehavior,
+      });
+
       if (next.some((v, i) => v !== current[i])) {
-        emit(next, reason);
+        // Final precision rounding for all values before emitting
+        const finalNext = next.map((v) => Number(v.toFixed(precision)));
+        emit(finalNext, reason);
       }
     },
     [
@@ -161,5 +157,7 @@ export function useSlider(props: SliderRootProps) {
     format,
     largeStep,
     thumbAlignment,
+    setTrackSize,
+    setThumbSize,
   };
 }

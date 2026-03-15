@@ -23,7 +23,8 @@ export const SliderControl = React.memo(
     { style, onLayout, ...props },
     ref,
   ) {
-    const { state, setValueAtIndex, commitValue } = useSliderContext();
+    const { state, setValueAtIndex, commitValue, setTrackSize } =
+      useSliderContext();
     const isHorizontal = state.orientation === 'horizontal';
 
     // Cache layout so we can compute values from gesture positions
@@ -31,6 +32,9 @@ export const SliderControl = React.memo(
 
     const handleLayout = React.useCallback(
       (event: LayoutChangeEvent) => {
+        const { width, height } = event.nativeEvent.layout;
+        setTrackSize(isHorizontal ? width : height);
+
         // We need measureInWindow for absolute page coordinates
         (
           event.target as unknown as {

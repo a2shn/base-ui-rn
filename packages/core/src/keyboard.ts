@@ -59,6 +59,112 @@ export function useKeyboardActivation(
   );
 }
 
+export interface KeyboardRangeOptions {
+  /**
+   * Callback fired for incrementing the value by a small step.
+   */
+  onIncrement?: () => void;
+  /**
+   * Callback fired for decrementing the value by a small step.
+   */
+  onDecrement?: () => void;
+  /**
+   * Callback fired for incrementing the value by a large step.
+   */
+  onPageUp?: () => void;
+  /**
+   * Callback fired for decrementing the value by a large step.
+   */
+  onPageDown?: () => void;
+  /**
+   * Callback fired for setting the value to its minimum.
+   */
+  onHome?: () => void;
+  /**
+   * Callback fired for setting the value to its maximum.
+   */
+  onEnd?: () => void;
+  /**
+   * Whether the component is disabled.
+   * @default false
+   */
+  disabled?: boolean;
+  /**
+   * The orientation of the range widget.
+   * @default 'horizontal'
+   */
+  orientation?: 'horizontal' | 'vertical';
+}
+
+/**
+ * A hook that handles keyboard interactions for range-like components (Slider, Meter, Progress).
+ * Follows WAI-ARIA slider design pattern.
+ *
+ * @param options Keyboard range options.
+ * @returns A generic onKeyPress handler.
+ */
+export function useKeyboardRange(options: KeyboardRangeOptions) {
+  const {
+    onIncrement,
+    onDecrement,
+    onPageUp,
+    onPageDown,
+    onHome,
+    onEnd,
+    disabled = false,
+    orientation = 'horizontal',
+  } = options;
+
+  return React.useCallback(
+    (e: NativeSyntheticEvent<KeyPressEventData> | KeyboardEvent) => {
+      if (disabled) return;
+
+      const nativeEvent = (e as NativeSyntheticEvent<KeyPressEventData>)
+        .nativeEvent;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const key = nativeEvent?.key || (e as any).key;
+      if (!key) return;
+
+      let handled = false;
+
+      // ARIA: ArrowRight/Up increment, ArrowLeft/Down decrement regardless of orientation.
+      if (key === 'ArrowRight' || key === 'ArrowUp') {
+        onIncrement?.();
+        handled = true;
+      } else if (key === 'ArrowLeft' || key === 'ArrowDown') {
+        onDecrement?.();
+        handled = true;
+      } else if (key === 'PageUp') {
+        onPageUp?.();
+        handled = true;
+      } else if (key === 'PageDown') {
+        onPageDown?.();
+        handled = true;
+      } else if (key === 'Home') {
+        onHome?.();
+        handled = true;
+      } else if (key === 'End') {
+        onEnd?.();
+        handled = true;
+      }
+
+      if (handled && e.preventDefault) {
+        e.preventDefault();
+      }
+    },
+    [
+      onIncrement,
+      onDecrement,
+      onPageUp,
+      onPageDown,
+      onHome,
+      onEnd,
+      disabled,
+      orientation,
+    ],
+  );
+}
+
 /**
  * A modular hook for managing keyboard navigation within a group of elements.
  *

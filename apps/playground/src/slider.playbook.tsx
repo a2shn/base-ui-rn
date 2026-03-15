@@ -9,6 +9,7 @@ import { Gallery, Section, theme } from '@base-ui-rn/playbook';
 export function SliderPlaybook() {
   const [value, setValue] = React.useState(25);
   const [rangeValue, setRangeValue] = React.useState<number[]>([20, 70]);
+  const [pushValue, setPushValue] = React.useState<number[]>([10, 20, 30, 40]);
 
   return (
     <Gallery title='Slider'>
@@ -71,6 +72,44 @@ export function SliderPlaybook() {
               }
             </Slider.Value>
           </Slider.Root>
+        </View>
+      </Section>
+
+      <Section title='Push Behavior'>
+        <View style={styles.container}>
+          <Slider.Root
+            value={pushValue}
+            thumbCollisionBehavior='push'
+            minStepsBetweenValues={5}
+            thumbAlignment='edge'
+            onValueChange={(nextValue) => {
+              if (Array.isArray(nextValue)) {
+                setPushValue(nextValue);
+              }
+            }}
+            style={styles.root}
+          >
+            <Slider.Label style={styles.label}>Multi-thumb push</Slider.Label>
+            <Slider.Control style={styles.control}>
+              <Slider.Track style={styles.track}>
+                <Slider.Indicator style={styles.indicator} />
+                {pushValue.map((_, i) => (
+                  <Slider.Thumb
+                    key={i}
+                    index={i}
+                    aria-label={`Thumb ${i + 1}`}
+                    style={getThumbStyle}
+                  />
+                ))}
+              </Slider.Track>
+            </Slider.Control>
+            <Slider.Value style={styles.value}>
+              {(formattedValues) => formattedValues.join(' | ')}
+            </Slider.Value>
+          </Slider.Root>
+          <Text style={styles.hint}>
+            Thumbs push each other and maintain a minimum distance of 5 steps.
+          </Text>
         </View>
       </Section>
 
