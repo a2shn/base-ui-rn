@@ -56,4 +56,37 @@ describe('Slider accessibility', () => {
     const thumb = getByLabelText('Price thumb');
     expect(thumb.props['aria-valuetext']).toBe('$50.00');
   });
+
+  it('applies data-attributes to the root', () => {
+    const { getByTestId } = render(
+      <Slider.Root 
+        defaultValue={50} 
+        disabled 
+        orientation='vertical'
+        minStepsBetweenValues={5}
+        stepBetweenValues={10}
+        testID='root'
+      >
+        <Slider.Thumb aria-label='Thumb' />
+      </Slider.Root>
+    );
+
+    const root = getByTestId('root');
+    expect(root.props['data-orientation']).toBe('vertical');
+    expect(root.props['data-disabled']).toBe(true);
+    expect(root.props['data-min-steps-between-values']).toBe(5);
+    expect(root.props['data-step-between-values']).toBe(10);
+  });
+
+  it('applies data-attributes to the thumb', () => {
+    const { getByLabelText } = render(
+      <Slider.Root defaultValue={50} disabled>
+        <Slider.Thumb aria-label='Thumb' />
+      </Slider.Root>
+    );
+
+    const thumb = getByLabelText('Thumb');
+    expect(thumb.props['data-orientation']).toBe('horizontal');
+    expect(thumb.props['data-disabled']).toBe(true);
+  });
 });

@@ -181,6 +181,7 @@ export const SliderThumb = React.memo(
             tabIndex={isWeb ? -1 : resolvedTabIndex}
             aria-orientation={state.orientation}
             data-orientation={state.orientation}
+            data-disabled={isDisabled}
             aria-valuemin={state.min}
             aria-valuemax={state.max}
             aria-valuenow={valueNow}
