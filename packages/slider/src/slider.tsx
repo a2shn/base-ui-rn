@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { resolveTabIndex } from '@base-ui-rn/core';
+import { resolveTabIndex, evaluate } from '@base-ui-rn/core';
 import { SliderContext } from './context';
 import type { SliderRootProps } from './types';
 import { useSlider } from './use-slider';
@@ -32,6 +32,8 @@ export const SliderRoot = React.memo(
       accessibilityState,
       style,
       tabIndex,
+      'aria-label': ariaLabel,
+      'aria-keyshortcuts': ariaKeyshortcuts,
       'aria-disabled': ariaDisabled,
       'aria-labelledby': ariaLabelledBy,
       'aria-describedby': ariaDescribedBy,
@@ -56,9 +58,6 @@ export const SliderRoot = React.memo(
       setTrackSize,
       setThumbSize,
     } = useSlider(props);
-    const resolvedChildren =
-      typeof children === 'function' ? children(state) : children;
-    const resolvedStyle = typeof style === 'function' ? style(state) : style;
 
     const contextValue = React.useMemo(
       () => ({
@@ -97,6 +96,8 @@ export const SliderRoot = React.memo(
           accessibilityRole={accessibilityRole}
           accessibilityState={{ disabled, ...accessibilityState }}
           tabIndex={resolveTabIndex(disabled, tabIndex)}
+          aria-label={ariaLabel}
+          aria-keyshortcuts={ariaKeyshortcuts}
           aria-disabled={ariaDisabled ?? disabled}
           aria-labelledby={ariaLabelledBy}
           aria-describedby={ariaDescribedBy}
@@ -108,9 +109,9 @@ export const SliderRoot = React.memo(
           data-disabled={disabled}
           data-min-steps-between-values={minStepsBetweenValues}
           data-step-between-values={stepBetweenValues}
-          style={resolvedStyle}
+          style={evaluate(style, state)}
         >
-          {resolvedChildren}
+          {evaluate(children, state)}
         </View>
       </SliderContext.Provider>
     );

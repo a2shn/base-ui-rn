@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { View, type ViewStyle } from 'react-native';
+import { evaluate } from '@base-ui-rn/core';
 import type { ProgressIndicatorProps } from './types';
 import { useProgressContext } from './progress-context';
 
@@ -29,8 +30,8 @@ export const ProgressIndicator = React.forwardRef<View, ProgressIndicatorProps>(
       'data-progressing': dataProgressing,
       ...other
     } = props;
-    const { percentage, isComplete, isIndeterminate, isProgressing } =
-      useProgressContext();
+    const context = useProgressContext();
+    const { percentage, isComplete, isIndeterminate, isProgressing } = context;
 
     const indicatorStyle = React.useMemo<ViewStyle>(() => {
       if (typeof percentage !== 'number') return {};
@@ -39,11 +40,13 @@ export const ProgressIndicator = React.forwardRef<View, ProgressIndicatorProps>(
       };
     }, [percentage]);
 
+    const resolvedStyle = evaluate(style, context);
+
     return (
       <View
         {...other}
         ref={ref}
-        style={[indicatorStyle, style]}
+        style={[indicatorStyle, resolvedStyle]}
         importantForAccessibility='no-hide-descendants'
         aria-labelledby={ariaLabelledBy}
         aria-describedby={ariaDescribedBy}

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
+import { evaluate } from '@base-ui-rn/core';
 import type { TabPanelProps } from './types';
 import { useTabPanel } from './use-tabs';
 
@@ -30,6 +31,8 @@ export const TabPanel = React.memo(
       'aria-expanded': ariaExpanded,
       'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'aria-disabled': ariaDisabled,
+      'aria-keyshortcuts': ariaKeyshortcuts,
       'data-hidden': dataHidden,
       'data-orientation': dataOrientation,
       'data-activation-direction': dataActivationDirection,
@@ -46,9 +49,8 @@ export const TabPanel = React.memo(
       return null;
     }
 
-    const resolvedChildren =
-      typeof children === 'function' ? children(state) : children;
-    const resolvedStyle = typeof style === 'function' ? style(state) : style;
+    const resolvedChildren = evaluate(children, state);
+    const resolvedStyle = evaluate(style, state);
 
     return (
       <View
@@ -64,6 +66,8 @@ export const TabPanel = React.memo(
         aria-expanded={ariaExpanded}
         aria-busy={ariaBusy}
         aria-hidden={ariaHidden ?? (state.hidden ? true : undefined)}
+        aria-disabled={ariaDisabled}
+        aria-keyshortcuts={ariaKeyshortcuts}
         data-hidden={dataHidden ?? (state.hidden ? 'true' : undefined)}
         data-orientation={dataOrientation ?? state.orientation}
         data-activation-direction={

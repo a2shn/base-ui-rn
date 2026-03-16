@@ -1,26 +1,14 @@
 // Types
 export type {
   KeyPressEventData,
-  WebAccessibilityProps,
-  WebRangeAccessibilityProps,
-  WebToggleAccessibilityProps,
-  WebToggleGroupAccessibilityProps,
-  WebProgressAccessibilityProps,
-  WebSeparatorAccessibilityProps,
-  WebAccordionRootAccessibilityProps,
-  WebAccordionItemAccessibilityProps,
-  WebAccordionTriggerAccessibilityProps,
-  WebAccordionPanelAccessibilityProps,
-  WebMeterAccessibilityProps,
-  WebSliderRootAccessibilityProps,
-  WebSliderThumbAccessibilityProps,
-  WebTabsRootAccessibilityProps,
-  WebTabsListAccessibilityProps,
-  WebTabsTabAccessibilityProps,
-  WebTabsIndicatorAccessibilityProps,
-  WebTabsPanelAccessibilityProps,
-  WebSwitchAccessibilityProps,
-  WebSwitchThumbAccessibilityProps,
+  ARIABaseProps,
+  ARIAFocusProps,
+  ARIALiveProps,
+  ARIATraitDisabled,
+  ARIATraitExpanded,
+  ARIATraitOrientation,
+  ARIATraitRange,
+  FocusVisibleProps,
   PressedChangeDetails,
 } from './types';
 
@@ -56,4 +44,13 @@ export type {
 } from './keyboard';
 
 // Utils
-export { mergeRefs, clamp } from './utils';
+export {
+  mergeRefs,
+  clamp,
+  resolveFocusRingStyle,
+  evaluate,
+  evaluateStyles,
+} from './utils';
+
+// Components
+export { PressableWithKeyPress } from './pressable';

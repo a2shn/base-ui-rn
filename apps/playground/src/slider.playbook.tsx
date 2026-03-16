@@ -1,26 +1,33 @@
 import * as React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { Slider, type SliderThumbState } from '@base-ui-rn/slider';
 import {
-  Slider,
-  type SliderThumbState,
-} from '@base-ui-rn/slider';
-import { Gallery, Section, theme } from '@base-ui-rn/playbook';
+  Gallery,
+  Section,
+  usePlaybookToggles,
+  LiveConsole,
+  theme,
+} from '@base-ui-rn/playbook';
 
 export function SliderPlaybook() {
-  const [value, setValue] = React.useState(25);
-  const [rangeValue, setRangeValue] = React.useState<number[]>([20, 70]);
-  const [pushValue, setPushValue] = React.useState<number[]>([10, 20, 30, 40]);
-  const [fixedValue, setFixedValue] = React.useState<number[]>([20, 40, 60]);
+  const { basicValue, independentValue, swapValue, pushValue, fixedValue } =
+    usePlaybookToggles({
+      basicValue: 25,
+      independentValue: [20, 50, 80] as number[],
+      swapValue: [20, 70] as number[],
+      pushValue: [10, 20, 30, 40] as number[],
+      fixedValue: [20, 40, 60] as number[],
+    });
 
   return (
     <Gallery title='Slider'>
-      <Section title='Basic'>
+      <Section title='Basic' showAllProps>
         <View style={styles.container}>
           <Slider.Root
-            value={value}
+            value={basicValue.value as number}
             onValueChange={(nextValue) => {
               if (typeof nextValue === 'number') {
-                setValue(nextValue);
+                basicValue.setValue(nextValue);
               }
             }}
             style={styles.root}
@@ -32,24 +39,62 @@ export function SliderPlaybook() {
                 <Slider.Thumb aria-label='Volume' style={getThumbStyle} />
               </Slider.Track>
             </Slider.Control>
-            <Slider.Value style={styles.value}>
-              {(_formatted, values) => `${values[0]}%`}
-            </Slider.Value>
           </Slider.Root>
+          <LiveConsole title='basicValue' state={basicValue} />
         </View>
       </Section>
 
-      <Section title='Range'>
+      <Section title='Independent (None)'>
         <View style={styles.container}>
           <Slider.Root
-            value={rangeValue}
+            value={independentValue.value as number[]}
             onValueChange={(nextValue) => {
               if (Array.isArray(nextValue)) {
-                setRangeValue(nextValue);
+                independentValue.setValue(nextValue);
               }
             }}
             style={styles.root}
-            thumbCollisionBehavior="swap"
+            thumbCollisionBehavior='none'
+          >
+            <Slider.Label style={styles.label}>
+              Multi-thumb Overlap
+            </Slider.Label>
+            <Slider.Control style={styles.control}>
+              <Slider.Track style={styles.track}>
+                <Slider.Indicator style={styles.indicator} />
+
+                {(independentValue.value as number[]).map((_, i) => (
+                  <Slider.Thumb
+                    key={i}
+                    index={i}
+                    aria-label={`Thumb ${i + 1}`}
+                    style={getThumbStyle}
+                  />
+                ))}
+              </Slider.Track>
+            </Slider.Control>
+            <Slider.Value style={styles.value}>
+              {(formattedValues) => formattedValues.join(' | ')}
+            </Slider.Value>
+          </Slider.Root>
+          <Text style={styles.hint}>
+            Thumbs can pass through and overlap each other freely.
+          </Text>
+          <LiveConsole title='independentValue' state={independentValue} />
+        </View>
+      </Section>
+
+      <Section title='Swap Behavior'>
+        <View style={styles.container}>
+          <Slider.Root
+            value={swapValue.value as number[]}
+            onValueChange={(nextValue) => {
+              if (Array.isArray(nextValue)) {
+                swapValue.setValue(nextValue);
+              }
+            }}
+            style={styles.root}
+            thumbCollisionBehavior='swap'
           >
             <Slider.Label style={styles.label}>Price range</Slider.Label>
             <Slider.Control style={styles.control}>
@@ -74,19 +119,20 @@ export function SliderPlaybook() {
               }
             </Slider.Value>
           </Slider.Root>
+          <LiveConsole title='swapValue' state={swapValue} />
         </View>
       </Section>
 
       <Section title='Push Behavior'>
         <View style={styles.container}>
           <Slider.Root
-            value={pushValue}
+            value={pushValue.value as number[]}
             thumbCollisionBehavior='push'
             minStepsBetweenValues={5}
             thumbAlignment='edge'
             onValueChange={(nextValue) => {
               if (Array.isArray(nextValue)) {
-                setPushValue(nextValue);
+                pushValue.setValue(nextValue);
               }
             }}
             style={styles.root}
@@ -95,7 +141,7 @@ export function SliderPlaybook() {
             <Slider.Control style={styles.control}>
               <Slider.Track style={styles.track}>
                 <Slider.Indicator style={styles.indicator} />
-                {pushValue.map((_, i) => (
+                {(pushValue.value as number[]).map((_, i) => (
                   <Slider.Thumb
                     key={i}
                     index={i}
@@ -112,26 +158,29 @@ export function SliderPlaybook() {
           <Text style={styles.hint}>
             Thumbs push each other and maintain a minimum distance of 5 steps.
           </Text>
+          <LiveConsole title='pushValue' state={pushValue} />
         </View>
       </Section>
 
       <Section title='Fixed Step Behavior'>
         <View style={styles.container}>
           <Slider.Root
-            value={fixedValue}
+            value={fixedValue.value as number[]}
             stepBetweenValues={20}
             onValueChange={(nextValue) => {
               if (Array.isArray(nextValue)) {
-                setFixedValue(nextValue);
+                fixedValue.setValue(nextValue);
               }
             }}
             style={styles.root}
           >
-            <Slider.Label style={styles.label}>Fixed-distance chain</Slider.Label>
+            <Slider.Label style={styles.label}>
+              Fixed-distance chain
+            </Slider.Label>
             <Slider.Control style={styles.control}>
               <Slider.Track style={styles.track}>
                 <Slider.Indicator style={styles.indicator} />
-                {fixedValue.map((_, i) => (
+                {(fixedValue.value as number[]).map((_, i) => (
                   <Slider.Thumb
                     key={i}
                     index={i}
@@ -149,6 +198,7 @@ export function SliderPlaybook() {
             Thumbs maintain a fixed distance of exactly 20 steps. Moving one
             pulls or pushes the others.
           </Text>
+          <LiveConsole title='fixedValue' state={fixedValue} />
         </View>
       </Section>
 
@@ -181,6 +231,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignSelf: 'center',
     padding: theme.spacing.lg,
+    gap: theme.spacing.md,
   },
   root: {
     gap: theme.spacing.sm,
@@ -226,12 +277,10 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.textMuted,
   },
   hint: {
-    marginTop: theme.spacing.sm,
     color: theme.colors.textMuted,
     fontSize: theme.font.size.xs,
   },
 });
-
 
 function getThumbStyle(state: SliderThumbState) {
   return state.disabled

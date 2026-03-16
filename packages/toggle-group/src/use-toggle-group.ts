@@ -6,6 +6,11 @@ import { useKeyboardNavigation } from '@base-ui-rn/core';
 import { useFocus } from '@base-ui-rn/focus-ring';
 import type { ToggleGroupProps, ToggleGroupState } from './types';
 
+/**
+ * Manages the state and logic for the ToggleGroup primitive.
+ * @param props The initialization properties.
+ * @returns State and event handlers for the component.
+ */
 export const useToggleGroup = ({
   value: controlledValue,
   defaultValue,

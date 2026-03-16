@@ -7,7 +7,12 @@ import type {
 import {
   type PressedChangeDetails,
   type KeyPressEventData,
-  type WebAccessibilityProps,
+  type FocusVisibleProps,
+  type ARIABaseProps,
+  type ARIAFocusProps,
+  type ARIALiveProps,
+  type ARIATraitDisabled,
+  type ARIATraitExpanded,
 } from '@base-ui-rn/core';
 import type { ShortcutConfig } from '@base-ui-rn/keyboard-shortcuts';
 
@@ -16,6 +21,15 @@ import type { ShortcutConfig } from '@base-ui-rn/keyboard-shortcuts';
  * Describes how the button was activated.
  */
 export type ButtonPressedChangeDetails = PressedChangeDetails;
+
+/**
+ * Web-specific accessibility props for Button.
+ */
+export type WebButtonAccessibilityProps = ARIABaseProps &
+  ARIAFocusProps &
+  ARIALiveProps &
+  ARIATraitDisabled &
+  ARIATraitExpanded;
 
 export interface ButtonState {
   /**
@@ -33,7 +47,10 @@ export interface ButtonState {
 }
 
 export interface ButtonProps
-  extends Omit<PressableProps, 'children' | 'style'>, WebAccessibilityProps {
+  extends
+    Omit<PressableProps, 'children' | 'style'>,
+    WebButtonAccessibilityProps,
+    FocusVisibleProps {
   /**
    * The content of the button.
    */
@@ -55,18 +72,6 @@ export interface ButtonProps
    * @default false
    */
   focusableWhenDisabled?: boolean;
-
-  /**
-   * Whether to force the focus-visible state.
-   * @default false
-   */
-  focusVisible?: boolean;
-
-  /**
-   * Whether to disable the default focus ring style.
-   * @default false
-   */
-  disableDefaultFocusRing?: boolean;
 
   /**
    * A short hint describing the result of the action.
@@ -96,7 +101,4 @@ export interface ButtonProps
   hitSlop?: PressableProps['hitSlop'];
 }
 
-export type {
-  KeyPressEventData,
-  WebAccessibilityProps,
-} from '@base-ui-rn/core';
+export type { KeyPressEventData };

@@ -17,10 +17,17 @@ import type { SliderValueProps } from './types';
  * ```
  */
 export const SliderValue = React.memo(
-  React.forwardRef<Text, SliderValueProps>(function SliderValue(
-    { children, ...props },
-    ref,
-  ) {
+  React.forwardRef<Text, SliderValueProps>(function SliderValue(props, ref) {
+    const {
+      children,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-busy': ariaBusy,
+      'aria-hidden': ariaHidden,
+      ...other
+    } = props;
     const { state, locale, format } = useSliderContext();
 
     const formatted = React.useMemo(() => {
@@ -32,7 +39,16 @@ export const SliderValue = React.memo(
     }, [state.value, locale, format]);
 
     return (
-      <Text {...props} ref={ref}>
+      <Text
+        {...other}
+        ref={ref}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
+        aria-busy={ariaBusy}
+        aria-hidden={ariaHidden}
+      >
         {typeof children === 'function'
           ? children(formatted, state.value)
           : (children ?? formatted.join(', '))}

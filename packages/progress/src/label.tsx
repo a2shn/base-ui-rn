@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Text } from 'react-native';
+import { evaluate } from '@base-ui-rn/core';
 import type { ProgressLabelProps } from './types';
 import { useProgressContext } from './progress-context';
 
@@ -18,6 +19,7 @@ export const ProgressLabel = React.forwardRef<Text, ProgressLabelProps>(
     const {
       children,
       nativeID,
+      style,
       'aria-labelledby': ariaLabelledBy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
@@ -29,14 +31,18 @@ export const ProgressLabel = React.forwardRef<Text, ProgressLabelProps>(
       'data-progressing': dataProgressing,
       ...other
     } = props;
-    const { labelId, isComplete, isIndeterminate, isProgressing } =
-      useProgressContext();
+    const context = useProgressContext();
+    const { labelId, isComplete, isIndeterminate, isProgressing } = context;
+
+    const resolvedChildren = evaluate(children, context);
+    const resolvedStyle = evaluate(style, context);
 
     return (
       <Text
         {...other}
         ref={ref}
         nativeID={nativeID ?? labelId}
+        style={resolvedStyle}
         aria-labelledby={ariaLabelledBy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
@@ -51,7 +57,7 @@ export const ProgressLabel = React.forwardRef<Text, ProgressLabelProps>(
             dataProgressing ?? (isProgressing ? '' : undefined),
         } as Record<string, unknown>)}
       >
-        {children}
+        {resolvedChildren}
       </Text>
     );
   },

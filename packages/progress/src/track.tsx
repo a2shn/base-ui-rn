@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
+import { evaluate } from '@base-ui-rn/core';
 import type { ProgressTrackProps } from './types';
 import { useProgressContext } from './progress-context';
 
@@ -17,6 +18,7 @@ export const ProgressTrack = React.forwardRef<View, ProgressTrackProps>(
   (props, ref) => {
     const {
       children,
+      style,
       'aria-labelledby': ariaLabelledBy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
@@ -28,13 +30,18 @@ export const ProgressTrack = React.forwardRef<View, ProgressTrackProps>(
       'data-progressing': dataProgressing,
       ...other
     } = props;
-    const { isComplete, isIndeterminate, isProgressing } = useProgressContext();
+    const context = useProgressContext();
+    const { isComplete, isIndeterminate, isProgressing } = context;
+
+    const resolvedChildren = evaluate(children, context);
+    const resolvedStyle = evaluate(style, context);
 
     return (
       <View
         {...other}
         ref={ref}
         importantForAccessibility='no-hide-descendants'
+        style={resolvedStyle}
         aria-labelledby={ariaLabelledBy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
@@ -49,7 +56,7 @@ export const ProgressTrack = React.forwardRef<View, ProgressTrackProps>(
             dataProgressing ?? (isProgressing ? '' : undefined),
         } as Record<string, unknown>)}
       >
-        {children}
+        {resolvedChildren}
       </View>
     );
   },

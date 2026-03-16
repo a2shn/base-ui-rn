@@ -2,6 +2,20 @@ import * as React from 'react';
 import { mergeAccessibilityState } from '@base-ui-rn/core';
 import type { ProgressRootProps, ProgressState } from './types';
 
+/**
+ * Custom hook to manage the state and accessibility of a progress bar.
+ *
+ * @param {object} props - The properties for the progress bar.
+ * @param {number | null | undefined} props.value - The current value of the progress bar.
+ * @param {number} props.min - The minimum value of the progress bar.
+ * @param {number} props.max - The maximum value of the progress bar.
+ * @param {ProgressRootProps['locale']} props.locale - The locale for formatting the value.
+ * @param {ProgressRootProps['format']} props.format - The options for formatting the value.
+ * @param {ProgressRootProps['aria-valuetext']} props.ariaValueTextProp - The accessible text for the current value.
+ * @param {ProgressRootProps['getAriaValueText']} props.getAriaValueText - A function to generate the accessible text for the current value.
+ * @param {ProgressRootProps['accessibilityState']} props.accessibilityState - The accessibility state of the progress bar.
+ * @returns {object} The state and properties for the progress bar.
+ */
 export const useProgress = ({
   value,
   min,

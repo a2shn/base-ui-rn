@@ -5,7 +5,7 @@ import {
   type TargetedEvent,
 } from 'react-native';
 import { ToggleGroupContext } from '@base-ui-rn/toggle';
-import { DEFAULT_FOCUS_RING_STYLE } from '@base-ui-rn/core';
+import { evaluate, evaluateStyles } from '@base-ui-rn/core';
 import { type ToggleGroupProps } from './types';
 import { useToggleGroup } from './use-toggle-group';
 
@@ -39,10 +39,13 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
       style,
       focusVisible: forceFocusVisible = false,
       disableDefaultFocusRing = false,
+      focusRingStyle,
       accessibilityRole,
       onFocus: onFocusProp,
       onBlur: onBlurProp,
       tabIndex,
+      'aria-label': ariaLabel,
+      'aria-keyshortcuts': ariaKeyshortcuts,
       'aria-disabled': ariaDisabled,
       'aria-orientation': ariaOrientationProp,
       'data-orientation': dataOrientation,
@@ -100,17 +103,6 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
       ],
     );
 
-    const resolvedStyle = typeof style === 'function' ? style(state) : style;
-    const resolvedChildren =
-      typeof children === 'function' ? children(state) : children;
-
-    const finalStyle = [
-      resolvedStyle,
-      !disableDefaultFocusRing &&
-        state.focusVisible &&
-        DEFAULT_FOCUS_RING_STYLE,
-    ];
-
     const handleFocus = (event: NativeSyntheticEvent<TargetedEvent>) => {
       onFocus();
       onFocusProp?.(event);
@@ -126,9 +118,14 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
         <View
           {...otherViewProps}
           ref={internalRef}
-          style={finalStyle}
+          style={evaluateStyles(style, state, {
+            disableDefaultFocusRing,
+            focusRingStyle,
+          })}
           role={(accessibilityRole ?? 'group') as unknown as 'checkbox'}
           tabIndex={tabIndex}
+          aria-label={ariaLabel}
+          aria-keyshortcuts={ariaKeyshortcuts}
           aria-disabled={ariaDisabled ?? disabled}
           aria-orientation={ariaOrientationProp ?? orientation}
           aria-labelledby={ariaLabelledBy}
@@ -143,7 +140,7 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
           data-disabled={dataDisabled ?? disabled}
           data-multiple={dataMultiple ?? multiple}
         >
-          {resolvedChildren}
+          {evaluate(children, state)}
         </View>
       </ToggleGroupContext.Provider>
     );

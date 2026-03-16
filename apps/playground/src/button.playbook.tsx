@@ -79,7 +79,7 @@ export function ButtonPlaybook() {
       <Section title='Custom Focus'>
         <Button
           disableDefaultFocusRing
-          onPress={() => {}}
+          onPress={() => { }}
           style={styles.buttonBase}
         >
           {({ focusVisible }) => (

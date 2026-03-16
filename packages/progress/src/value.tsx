@@ -17,6 +17,7 @@ export const ProgressValue = React.forwardRef<Text, ProgressValueProps>(
   (props, ref) => {
     const {
       children,
+      style,
       'aria-labelledby': ariaLabelledBy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
@@ -36,10 +37,14 @@ export const ProgressValue = React.forwardRef<Text, ProgressValueProps>(
       isProgressing,
     } = useProgressContext();
 
+    const resolvedStyle =
+      typeof style === 'function' ? style(formattedValue, value) : style;
+
     return (
       <Text
         {...other}
         ref={ref}
+        style={resolvedStyle}
         importantForAccessibility='no-hide-descendants'
         aria-labelledby={ariaLabelledBy}
         aria-describedby={ariaDescribedBy}

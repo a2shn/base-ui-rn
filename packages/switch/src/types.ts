@@ -7,10 +7,55 @@ import type {
 } from 'react-native';
 import type {
   KeyPressEventData,
-  WebAccessibilityProps,
-  WebSwitchAccessibilityProps,
-  WebSwitchThumbAccessibilityProps,
+  FocusVisibleProps,
+  ARIABaseProps,
+  ARIAFocusProps,
+  ARIALiveProps,
+  ARIATraitDisabled,
 } from '@base-ui-rn/core';
+
+/**
+ * Web-specific accessibility props for Switch Root.
+ */
+export type WebSwitchRootAccessibilityProps = ARIABaseProps &
+  ARIAFocusProps &
+  ARIALiveProps &
+  ARIATraitDisabled & {
+    /**
+     * Reflects checked state for the ARIA switch pattern on web.
+     */
+    'aria-checked'?: boolean | 'mixed';
+    /**
+     * Reflects read-only state for the ARIA switch pattern on web.
+     */
+    'aria-readonly'?: boolean;
+    /**
+     * Custom data attribute applied on web for CSS selectors and testing.
+     * Reflects the current checked state.
+     */
+    'data-checked'?: 'true';
+    /**
+     * Present when the switch is disabled.
+     */
+    'data-disabled'?: 'true';
+  };
+
+/**
+ * Web-specific accessibility props for Switch Thumb.
+ */
+export type WebSwitchThumbAccessibilityProps = ARIABaseProps &
+  ARIALiveProps &
+  ARIATraitDisabled & {
+    /**
+     * Custom data attribute applied on web for CSS selectors and testing.
+     * Reflects the current checked state.
+     */
+    'data-checked'?: 'true';
+    /**
+     * Present when the switch is disabled.
+     */
+    'data-disabled'?: 'true';
+  };
 
 export interface SwitchState {
   /**
@@ -38,7 +83,8 @@ export interface SwitchState {
 export interface SwitchRootProps
   extends
     Omit<PressableProps, 'children' | 'style'>,
-    WebSwitchAccessibilityProps {
+    WebSwitchRootAccessibilityProps,
+    FocusVisibleProps {
   /**
    * The content of the switch root.
    */
@@ -78,18 +124,6 @@ export interface SwitchRootProps
   readOnly?: boolean;
 
   /**
-   * Whether to force the focus-visible state.
-   * @default false
-   */
-  focusVisible?: boolean;
-
-  /**
-   * Whether to disable the default focus ring style.
-   * @default false
-   */
-  disableDefaultFocusRing?: boolean;
-
-  /**
    * Callback fired when a key is pressed.
    */
   onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
@@ -103,4 +137,4 @@ export interface SwitchThumbProps
   children?: React.ReactNode | ((state: SwitchState) => React.ReactNode);
 }
 
-export type { KeyPressEventData, WebAccessibilityProps };
+export type { KeyPressEventData };

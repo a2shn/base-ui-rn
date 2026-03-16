@@ -8,11 +8,105 @@ import type {
 } from 'react-native';
 import {
   type KeyPressEventData as CoreKeyPressEventData,
-  type WebAccordionRootAccessibilityProps,
-  type WebAccordionItemAccessibilityProps,
-  type WebAccordionTriggerAccessibilityProps,
-  type WebAccordionPanelAccessibilityProps,
+  type ARIABaseProps,
+  type ARIAFocusProps,
+  type ARIALiveProps,
+  type ARIATraitDisabled,
+  type ARIATraitExpanded,
+  type ARIATraitOrientation,
+  type FocusVisibleProps,
 } from '@base-ui-rn/core';
+
+/**
+ * Web-specific accessibility props for Accordion Root.
+ */
+export type WebAccordionRootAccessibilityProps = ARIABaseProps &
+  ARIAFocusProps &
+  ARIALiveProps &
+  ARIATraitDisabled &
+  ARIATraitOrientation & {
+    /**
+     * Indicates the orientation of the accordion.
+     */
+    'data-orientation'?: 'horizontal' | 'vertical';
+    /**
+     * Present when the accordion is disabled.
+     */
+    'data-disabled'?: 'true';
+  };
+
+/**
+ * Web-specific accessibility props for Accordion Item.
+ */
+export type WebAccordionItemAccessibilityProps = ARIABaseProps &
+  ARIAFocusProps &
+  ARIALiveProps &
+  ARIATraitDisabled & {
+    /**
+     * Present when the accordion item is open.
+     */
+    'data-open'?: 'true';
+    /**
+     * Present when the accordion item is disabled.
+     */
+    'data-disabled'?: 'true';
+    /**
+     * The index of the accordion item.
+     */
+    'data-index'?: number;
+  };
+
+/**
+ * Web-specific accessibility props for Accordion Trigger.
+ */
+export type WebAccordionTriggerAccessibilityProps = ARIABaseProps &
+  ARIAFocusProps &
+  ARIALiveProps &
+  ARIATraitDisabled &
+  ARIATraitExpanded & {
+    /**
+     * Present when the accordion panel is open.
+     */
+    'data-panel-open'?: 'true';
+    /**
+     * Present when the trigger is disabled.
+     */
+    'data-disabled'?: 'true';
+  };
+
+/**
+ * Web-specific accessibility props for Accordion Panel.
+ */
+export type WebAccordionPanelAccessibilityProps = ARIABaseProps &
+  ARIAFocusProps &
+  ARIALiveProps &
+  ARIATraitDisabled &
+  ARIATraitOrientation & {
+    /**
+     * Present when the accordion panel is open.
+     */
+    'data-open'?: 'true';
+    /**
+     * Indicates the orientation of the accordion.
+     */
+    'data-orientation'?: 'horizontal' | 'vertical';
+    /**
+     * Present when the accordion item is disabled.
+     */
+    'data-disabled'?: 'true';
+    /**
+     * The index of the accordion item.
+     */
+    'data-index'?: number;
+    /**
+     * Present when the panel is animating in.
+     */
+    'data-starting-style'?: '';
+    /**
+     * Present when the panel is animating out.
+     */
+    'data-ending-style'?: '';
+  };
 
 export type Orientation = 'vertical' | 'horizontal';
 
@@ -24,6 +118,7 @@ export interface AccordionRootState {
   orientation: Orientation;
   disabled: boolean;
   multiple: boolean;
+  focusVisible: boolean;
 }
 
 export interface AccordionItemState {
@@ -31,12 +126,14 @@ export interface AccordionItemState {
   disabled: boolean;
   index: number;
   value: string;
+  focusVisible: boolean;
 }
 
 export interface AccordionHeaderState {
   open: boolean;
   disabled: boolean;
   index: number;
+  focusVisible: boolean;
 }
 
 export interface AccordionTriggerState {
@@ -50,6 +147,7 @@ export interface AccordionPanelState {
   open: boolean;
   disabled: boolean;
   index: number;
+  focusVisible: boolean;
   /**
    * The accordion panel's height.
    */
@@ -74,7 +172,8 @@ export interface AccordionItemOpenChangeDetails {
 export interface AccordionRootProps
   extends
     Omit<ViewProps, 'children' | 'style'>,
-    WebAccordionRootAccessibilityProps {
+    WebAccordionRootAccessibilityProps,
+    FocusVisibleProps {
   /**
    * The content of the accordion.
    */
@@ -129,7 +228,8 @@ export interface AccordionRootProps
 export interface AccordionItemProps
   extends
     Omit<ViewProps, 'children' | 'style'>,
-    WebAccordionItemAccessibilityProps {
+    WebAccordionItemAccessibilityProps,
+    FocusVisibleProps {
   /**
    * The content of the accordion item.
    */
@@ -162,7 +262,8 @@ export interface AccordionItemProps
 export interface AccordionHeaderProps
   extends
     Omit<ViewProps, 'children' | 'style'>,
-    WebAccordionItemAccessibilityProps {
+    WebAccordionItemAccessibilityProps,
+    FocusVisibleProps {
   /**
    * The content of the accordion header.
    */
@@ -180,7 +281,8 @@ export interface AccordionHeaderProps
 export interface AccordionTriggerProps
   extends
     Omit<PressableProps, 'children' | 'style'>,
-    WebAccordionTriggerAccessibilityProps {
+    WebAccordionTriggerAccessibilityProps,
+    FocusVisibleProps {
   /**
    * The content of the accordion trigger.
    */
@@ -209,23 +311,13 @@ export interface AccordionTriggerProps
    * Callback fired when the trigger loses focus.
    */
   onBlur?: (e: NativeSyntheticEvent<TargetedEvent>) => void;
-  /**
-   * Whether the trigger should be in a focus-visible state.
-   * Useful for manual control of focus ring.
-   * @default false
-   */
-  focusVisible?: boolean;
-  /**
-   * Whether to disable the default focus ring style.
-   * @default false
-   */
-  disableDefaultFocusRing?: boolean;
 }
 
 export interface AccordionPanelProps
   extends
     Omit<ViewProps, 'children' | 'style'>,
-    WebAccordionPanelAccessibilityProps {
+    WebAccordionPanelAccessibilityProps,
+    FocusVisibleProps {
   /**
    * The content of the accordion panel.
    */

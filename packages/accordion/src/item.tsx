@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { View, Platform } from 'react-native';
+import { evaluate, evaluateStyles } from '@base-ui-rn/core';
 import { AccordionItemContext } from './context';
 import type { AccordionItemProps } from './types';
 import { useAccordionItem } from './use-accordion';
@@ -23,12 +24,18 @@ export const AccordionItem = React.forwardRef<View, AccordionItemProps>(
     const {
       children,
       style,
+      disableDefaultFocusRing = false,
+      focusRingStyle,
+      'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
       'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'aria-disabled': ariaDisabled,
+      'aria-keyshortcuts': ariaKeyshortcuts,
+      tabIndex,
       'data-open': dataOpen,
       'data-disabled': dataDisabled,
       'data-index': dataIndex,
@@ -39,10 +46,13 @@ export const AccordionItem = React.forwardRef<View, AccordionItemProps>(
       value,
       open,
       focused,
+      focusVisible,
       disabled,
       index,
       registerTriggerRef,
       setFocused,
+      handleFocus,
+      handleBlur,
       state,
     } = useAccordionItem(props);
 
@@ -59,14 +69,13 @@ export const AccordionItem = React.forwardRef<View, AccordionItemProps>(
       [value, open, disabled, focused, index, registerTriggerRef, setFocused],
     );
 
-    const resolvedStyle = typeof style === 'function' ? style(state) : style;
-    const resolvedChildren =
-      typeof children === 'function' ? children(state) : children;
-
     const finalStyle = [
-      resolvedStyle,
+      evaluateStyles(style, state, {
+        disableDefaultFocusRing,
+        focusRingStyle,
+      }),
       Platform.select({
-        web: focused ? { zIndex: 1 } : undefined,
+        web: focused || focusVisible ? { zIndex: 1 } : undefined,
       }),
     ];
 
@@ -75,18 +84,24 @@ export const AccordionItem = React.forwardRef<View, AccordionItemProps>(
         <View
           {...otherProps}
           ref={ref}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           style={finalStyle}
+          aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
           aria-describedby={ariaDescribedBy}
           aria-details={ariaDetails}
           aria-expanded={ariaExpanded ?? open}
           aria-busy={ariaBusy}
           aria-hidden={ariaHidden}
+          aria-disabled={ariaDisabled ?? (disabled ? true : undefined)}
+          aria-keyshortcuts={ariaKeyshortcuts}
+          tabIndex={tabIndex}
           data-open={dataOpen ?? (open ? 'true' : undefined)}
           data-disabled={dataDisabled ?? (disabled ? 'true' : undefined)}
           data-index={dataIndex ?? index}
         >
-          {resolvedChildren}
+          {evaluate(children, state)}
         </View>
       </AccordionItemContext.Provider>
     );

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { render, fireEvent, act } from '@testing-library/react-native';
+import { render, fireEvent } from '@testing-library/react-native';
 import { Slider } from '../index';
 
 describe('Slider state', () => {
@@ -141,29 +141,39 @@ describe('Slider state', () => {
   it('handles floating point steps correctly', () => {
     const onValueChange = jest.fn();
     const { getByLabelText } = render(
-      <Slider.Root defaultValue={0.1} step={0.1} min={0} max={1} onValueChange={onValueChange}>
+      <Slider.Root
+        defaultValue={0.1}
+        step={0.1}
+        min={0}
+        max={1}
+        onValueChange={onValueChange}
+      >
         <Slider.Thumb aria-label='Thumb' />
       </Slider.Root>,
     );
 
-    fireEvent(getByLabelText('Thumb'), 'keyPress', { nativeEvent: { key: 'ArrowRight' } });
+    fireEvent(getByLabelText('Thumb'), 'keyPress', {
+      nativeEvent: { key: 'ArrowRight' },
+    });
     expect(onValueChange).toHaveBeenCalledWith(0.2, expect.anything());
 
-    fireEvent(getByLabelText('Thumb'), 'keyPress', { nativeEvent: { key: 'ArrowRight' } });
+    fireEvent(getByLabelText('Thumb'), 'keyPress', {
+      nativeEvent: { key: 'ArrowRight' },
+    });
     expect(onValueChange).toHaveBeenCalledWith(0.3, expect.anything());
   });
 
   it('calls onValueCommitted after interaction', () => {
     const onValueCommitted = jest.fn();
-    const { getByLabelText, getByTestId } = render(
+    render(
       <Slider.Root defaultValue={50} onValueCommitted={onValueCommitted}>
         <Slider.Control testID='control'>
-            <Slider.Thumb aria-label='Thumb' />
+          <Slider.Thumb aria-label='Thumb' />
         </Slider.Control>
       </Slider.Root>,
     );
 
-    // PanResponder simulation is complex in RNTL, but we can call commitValue via context or 
+    // PanResponder simulation is complex in RNTL, but we can call commitValue via context or
     // test if it's called on certain events if they were implemented.
     // Since we don't have a direct 'release' event in View, we'll test the swap behavior instead.
   });
@@ -171,8 +181,8 @@ describe('Slider state', () => {
   it('handles "swap" behavior correctly by sorting values after a jump', () => {
     const onValueChange = jest.fn();
     const { getByLabelText } = render(
-      <Slider.Root 
-        defaultValue={[10, 20]} 
+      <Slider.Root
+        defaultValue={[10, 20]}
         thumbCollisionBehavior='swap'
         onValueChange={onValueChange}
       >
@@ -187,7 +197,7 @@ describe('Slider state', () => {
     // next = [25, 20].sort = [20, 25].
     fireEvent(thumb0, 'keyPress', { nativeEvent: { key: 'PageUp' } }); // largeStep is 10 by default
     fireEvent(thumb0, 'keyPress', { nativeEvent: { key: 'PageUp' } }); // another 10 steps -> 30.
-    
+
     // Default is 10 + 10 + 10 = 30. Initial 10 + 2*10 = 30.
     // [30, 20] -> [20, 30]
     expect(onValueChange).toHaveBeenLastCalledWith([20, 30], expect.anything());
@@ -196,8 +206,8 @@ describe('Slider state', () => {
   it('caps at neighbors when thumbCollisionBehavior="none"', () => {
     const onValueChange = jest.fn();
     const { getByLabelText } = render(
-      <Slider.Root 
-        defaultValue={[10, 20]} 
+      <Slider.Root
+        defaultValue={[10, 20]}
         thumbCollisionBehavior='none'
         onValueChange={onValueChange}
       >
@@ -210,26 +220,28 @@ describe('Slider state', () => {
 
     // Move thumb 0 towards 25. Behavior='none' means it caps at index 1 (20).
     for (let i = 0; i < 15; i++) {
-        fireEvent(thumb0, 'keyPress', { nativeEvent: { key: 'ArrowRight' } });
+      fireEvent(thumb0, 'keyPress', { nativeEvent: { key: 'ArrowRight' } });
     }
-    
+
     expect(onValueChange).toHaveBeenLastCalledWith([20, 20], expect.anything());
   });
 
   it('handles negative ranges correctly', () => {
     const onValueChange = jest.fn();
     const { getByLabelText } = render(
-      <Slider.Root 
-        defaultValue={-50} 
-        min={-100} 
-        max={0} 
+      <Slider.Root
+        defaultValue={-50}
+        min={-100}
+        max={0}
         onValueChange={onValueChange}
       >
         <Slider.Thumb aria-label='Thumb' />
       </Slider.Root>,
     );
 
-    fireEvent(getByLabelText('Thumb'), 'keyPress', { nativeEvent: { key: 'ArrowRight' } });
+    fireEvent(getByLabelText('Thumb'), 'keyPress', {
+      nativeEvent: { key: 'ArrowRight' },
+    });
     expect(onValueChange).toHaveBeenCalledWith(-49, expect.anything());
   });
 });

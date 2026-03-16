@@ -35,7 +35,10 @@ export function useTabsRoot(props: TabsRootProps) {
     orientation = 'horizontal',
     activateOnFocus = false,
     onFocusChange,
+    focusVisible: forceFocusVisible = false,
   } = props;
+
+  const { focusVisible } = useFocus({ focusVisible: forceFocusVisible });
 
   const [internalValue, setInternalValue] = React.useState<TabValue | null>(
     defaultValue ?? null,
@@ -146,6 +149,7 @@ export function useTabsRoot(props: TabsRootProps) {
     value: currentValue,
     orientation,
     activationDirection,
+    focusVisible,
   };
 
   return {
@@ -156,6 +160,7 @@ export function useTabsRoot(props: TabsRootProps) {
       activationDirection,
       onValueChange: handleValueChange,
       onFocusChange,
+      focusVisible,
       registerTab: (v: TabValue, ref: React.RefObject<View | null>) => {
         const unregNav = registerForNav(String(v), ref);
         const unregTab = registerTab(v, ref);
@@ -179,6 +184,7 @@ export function useTabsList() {
   const state: TabsListState = {
     orientation: context.orientation,
     activationDirection: context.activationDirection,
+    focusVisible: context.focusVisible ?? false,
   };
 
   return { state };
@@ -281,6 +287,7 @@ export function useTabsIndicator() {
   const state: TabsIndicatorState = {
     orientation: context.orientation,
     activationDirection: context.activationDirection,
+    focusVisible: context.focusVisible ?? false,
     '--active-tab-top': activeMeasurement?.y,
     '--active-tab-left': activeMeasurement?.x,
     '--active-tab-width': activeMeasurement?.width,
@@ -306,6 +313,7 @@ export function useTabPanel(props: TabPanelProps) {
     orientation: context.orientation,
     activationDirection: context.activationDirection,
     index,
+    focusVisible: context.focusVisible ?? false,
   };
 
   const shouldRender = active || keepMounted;

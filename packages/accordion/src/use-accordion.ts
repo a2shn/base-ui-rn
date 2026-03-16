@@ -35,6 +35,11 @@ function getValueArray(value: string | string[] | undefined): string[] {
   return Array.isArray(value) ? value : [value];
 }
 
+/**
+ * Manages the state and logic for the AccordionRoot primitive.
+ * @param props The initialization properties.
+ * @returns State and event handlers for the component.
+ */
 export function useAccordionRoot(props: AccordionRootProps) {
   const {
     defaultValue,
@@ -45,9 +50,14 @@ export function useAccordionRoot(props: AccordionRootProps) {
     orientation = 'vertical',
     loopFocus = true,
     onFocusChange,
+    focusVisible: forceFocusVisible = false,
   } = props;
 
   const baseId = useId();
+
+  const { focusVisible, onFocus, onBlur } = useFocus({
+    focusVisible: forceFocusVisible,
+  });
 
   const { registerItem: registerTrigger, handleKeyDown } =
     useKeyboardNavigation<View | null>({
@@ -141,6 +151,7 @@ export function useAccordionRoot(props: AccordionRootProps) {
     orientation,
     disabled,
     multiple,
+    focusVisible,
   };
 
   return {
@@ -156,17 +167,31 @@ export function useAccordionRoot(props: AccordionRootProps) {
     getItemRef,
     onTriggerKeyPress,
     state,
+    focusVisible,
+    handleFocus: onFocus,
+    handleBlur: onBlur,
   };
 }
 
+/**
+ * Manages the state and logic for the AccordionItem primitive.
+ * @param props The initialization properties.
+ * @returns State and event handlers for the component.
+ */
 export function useAccordionItem(props: AccordionItemProps) {
   const {
     value: valueProp,
     disabled = false,
     onOpenChange: onOpenChangeProp,
+    focusVisible: forceFocusVisible = false,
   } = props;
 
   const context = useAccordionContext();
+
+  const { focusVisible, onFocus, onBlur } = useFocus({
+    focusVisible: forceFocusVisible,
+  });
+
   const triggerRefRef = React.useRef<React.RefObject<View | null>>({
     current: null,
   });
@@ -187,7 +212,7 @@ export function useAccordionItem(props: AccordionItemProps) {
 
   const index = context.getItemIndex(value);
   const open = context.openItems.has(value);
-  const [focused, setFocused] = React.useState(false);
+  const [isFocused, setIsFocused] = React.useState(false);
 
   React.useEffect(() => {
     if (onOpenChangeProp) {
@@ -204,22 +229,31 @@ export function useAccordionItem(props: AccordionItemProps) {
     disabled: disabled || context.disabled,
     index,
     value,
+    focusVisible,
   };
 
   return {
     value,
     open,
-    focused,
+    focused: isFocused,
+    focusVisible,
     disabled: itemState.disabled,
     index,
     registerTriggerRef: (refItem: React.RefObject<View | null>) => {
       triggerRefRef.current = refItem;
     },
-    setFocused,
+    setFocused: setIsFocused,
+    handleFocus: onFocus,
+    handleBlur: onBlur,
     state: itemState,
   };
 }
 
+/**
+ * Manages the state and logic for the AccordionTrigger primitive.
+ * @param props The initialization properties.
+ * @returns State and event handlers for the component.
+ */
 export function useAccordionTrigger(props: AccordionTriggerProps) {
   const {
     disabled: disabledProp,
@@ -323,30 +357,55 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
     open: itemContext.open,
   };
 }
-
-export function useAccordionHeader() {
+/**
+ * Manages the state and logic for the AccordionHeader primitive.
+ * @param props The initialization properties.
+ * @returns State and event handlers for the component.
+ */
+export function useAccordionHeader(props: { focusVisible?: boolean }) {
   const itemContext = useAccordionItemContext();
+
+  const { focused, focusVisible, onFocus, onBlur } = useFocus({
+    focusVisible: props.focusVisible,
+  });
 
   const state: AccordionHeaderState = {
     open: itemContext.open,
     disabled: itemContext.disabled,
     index: itemContext.index,
+    focusVisible,
   };
 
   return {
     state,
     open: itemContext.open,
-    focused: itemContext.focused,
+    focused,
+    focusVisible,
     disabled: itemContext.disabled,
     index: itemContext.index,
+    handleFocus: onFocus,
+    handleBlur: onBlur,
   };
 }
 
+/**
+ * Manages the state and logic for the AccordionPanel primitive.
+ * @param props The initialization properties.
+ * @returns State and event handlers for the component.
+ */
 export function useAccordionPanel(props: AccordionPanelProps) {
-  const { keepMounted = false, hiddenUntilFound = false } = props;
+  const {
+    keepMounted = false,
+    hiddenUntilFound = false,
+    focusVisible: forceFocusVisible = false,
+  } = props;
 
   const context = useAccordionContext();
   const itemContext = useAccordionItemContext();
+
+  const { focused, focusVisible, onFocus, onBlur } = useFocus({
+    focusVisible: forceFocusVisible,
+  });
 
   const [contentHeight, setContentHeight] = React.useState<number | undefined>(
     undefined,
@@ -362,11 +421,11 @@ export function useAccordionPanel(props: AccordionPanelProps) {
   }, []);
 
   const shouldRender = keepMounted || hiddenUntilFound || itemContext.open;
-
   const state: AccordionPanelState = {
     open: itemContext.open,
     disabled: itemContext.disabled,
     index: itemContext.index,
+    focusVisible,
     '--accordion-panel-height': contentHeight,
     '--accordion-panel-width': contentWidth,
   };
@@ -379,5 +438,9 @@ export function useAccordionPanel(props: AccordionPanelProps) {
     orientation: context.orientation,
     disabled: itemContext.disabled,
     index: itemContext.index,
+    handleFocus: onFocus,
+    handleBlur: onBlur,
+    focused,
+    focusVisible,
   };
 }

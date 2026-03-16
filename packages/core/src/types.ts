@@ -1,21 +1,19 @@
+import { StyleProp, ViewStyle } from 'react-native';
+
 /**
  * Data structure for keyboard events.
  */
 export type KeyPressEventData = { key: string };
 
 /**
- * Web-specific accessibility and interactivity props.
- * Used for keyboard focus and ARIA attributes on web platforms.
- * @see https://www.w3.org/TR/wai-aria-1.2/
+ * Common labeling and description attributes.
  */
-export type WebAccessibilityProps = {
-  tabIndex?: 0 | -1;
-  'aria-disabled'?: boolean;
+export interface ARIABaseProps {
   /**
-   * Defines a keyboard shortcut that activates or focuses the element.
-   * @see https://www.w3.org/TR/wai-aria-1.2/#aria-keyshortcuts
+   * Defines a string value that labels the current element.
+   * @see https://www.w3.org/TR/wai-aria-1.2/#aria-label
    */
-  'aria-keyshortcuts'?: string;
+  'aria-label'?: string;
   /**
    * Identifies the element (or elements) that labels the current element.
    * @see https://www.w3.org/TR/wai-aria-1.2/#aria-labelledby
@@ -32,81 +30,75 @@ export type WebAccessibilityProps = {
    */
   'aria-details'?: string;
   /**
-   * Indicates whether an element, or another grouping element it controls, is currently expanded or collapsed.
-   * @see https://www.w3.org/TR/wai-aria-1.2/#aria-expanded
+   * Indicates whether the element is exposed to an accessibility API.
+   * @see https://www.w3.org/TR/wai-aria-1.2/#aria-hidden
    */
-  'aria-expanded'?: boolean;
+  'aria-hidden'?: boolean;
+}
+
+/**
+ * Attributes for components that can be focused.
+ */
+export interface ARIAFocusProps {
+  /**
+   * Indicates if the element can take input focus.
+   * @default 0 (on focusable roles)
+   */
+  tabIndex?: 0 | -1;
+  /**
+   * Defines a keyboard shortcut that activates or focuses the element.
+   * @see https://www.w3.org/TR/wai-aria-1.2/#aria-keyshortcuts
+   */
+  'aria-keyshortcuts'?: string;
+}
+
+/**
+ * Attributes for components that indicate a busy or live state.
+ */
+export interface ARIALiveProps {
   /**
    * Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user.
    * @see https://www.w3.org/TR/wai-aria-1.2/#aria-busy
    */
   'aria-busy'?: boolean;
-  /**
-   * Indicates whether the element is exposed to an accessibility API.
-   * @see https://www.w3.org/TR/wai-aria-1.2/#aria-hidden
-   */
-  'aria-hidden'?: boolean;
-};
+}
 
 /**
- * Extended web props that include toggle-specific attributes.
+ * Attributes for components that can be disabled.
  */
-export type WebToggleAccessibilityProps = WebAccessibilityProps & {
+export interface ARIATraitDisabled {
   /**
-   * Reflects pressed state for the ARIA button-toggle pattern on web.
-   * Automatically set when using role="button".
+   * Indicates that the element is perceivable but disabled, so it is not editable or otherwise operable.
+   * @see https://www.w3.org/TR/wai-aria-1.2/#aria-disabled
    */
-  'aria-pressed'?: boolean | 'mixed';
-  /**
-   * Custom data attribute applied on web for CSS selectors and testing.
-   * Reflects the current pressed state.
-   *
-   * @example
-   * [data-pressed="true"] { background: blue; }
-   */
-  'data-pressed'?: boolean;
-};
+  'aria-disabled'?: boolean;
+}
 
 /**
- * Web-specific accessibility props for ToggleGroup.
+ * Attributes for components that can be expanded or collapsed.
  */
-export type WebToggleGroupAccessibilityProps = WebAccessibilityProps & {
+export interface ARIATraitExpanded {
   /**
-   * Indicates the orientation of the toggle group.
+   * Indicates whether an element, or another grouping element it controls, is currently expanded or collapsed.
+   * @see https://www.w3.org/TR/wai-aria-1.2/#aria-expanded
    */
-  'data-orientation'?: 'horizontal' | 'vertical';
+  'aria-expanded'?: boolean;
+}
+
+/**
+ * Attributes for components that have a specific orientation.
+ */
+export interface ARIATraitOrientation {
   /**
-   * Present when the toggle group is disabled.
-   */
-  'data-disabled'?: boolean;
-  /**
-   * Present when the toggle group allows multiple buttons to be in the pressed state at the same time.
-   */
-  'data-multiple'?: boolean;
-  /**
-   * Indicates the orientation of the toggle group for assistive technologies.
+   * Indicates the orientation of the component for assistive technologies.
    */
   'aria-orientation'?: 'horizontal' | 'vertical';
-};
+}
 
 /**
- * Web-specific accessibility props for Separator.
+ * Attributes for components that represent a value within a range.
  */
-export type WebSeparatorAccessibilityProps = WebAccessibilityProps & {
-  /**
-   * Indicates the orientation of the separator.
-   */
-  'data-orientation'?: 'horizontal' | 'vertical';
-  /**
-   * Indicates the orientation of the separator for assistive technologies.
-   */
-  'aria-orientation'?: 'horizontal' | 'vertical';
-};
-
-/**
- * Web-specific accessibility props for range-like components (Slider, Meter, Progress).
- */
-export type WebRangeAccessibilityProps = WebAccessibilityProps & {
+export interface ARIATraitRange {
   /**
    * Defines the maximum allowed value for a range widget.
    */
@@ -123,270 +115,29 @@ export type WebRangeAccessibilityProps = WebAccessibilityProps & {
    * Defines the human readable text alternative of aria-valuenow for a range widget.
    */
   'aria-valuetext'?: string;
-};
+}
 
 /**
- * Web-specific accessibility props for Progress.
+ * Attributes for components that show a focus ring.
  */
-export type WebProgressAccessibilityProps = WebRangeAccessibilityProps & {
+export interface FocusVisibleProps {
   /**
-   * Present when the progress has completed.
+   * Whether to force the focus-visible state.
+   * Useful for manual control or debugging.
+   * @default false
    */
-  'data-complete'?: '';
+  focusVisible?: boolean;
   /**
-   * Present when the progress is in indeterminate state.
+   * Whether to disable the default focus ring style.
+   * @default false
    */
-  'data-indeterminate'?: '';
+  disableDefaultFocusRing?: boolean;
   /**
-   * Present while the progress is progressing.
+   * Custom style applied for the focus ring when visible.
+   * Overrides the default focus ring style.
    */
-  'data-progressing'?: '';
-};
-
-/**
- * Web-specific accessibility props for Accordion Root.
- */
-export type WebAccordionRootAccessibilityProps = WebAccessibilityProps & {
-  /**
-   * Indicates the orientation of the accordion.
-   */
-  'data-orientation'?: 'horizontal' | 'vertical';
-  /**
-   * Present when the accordion is disabled.
-   */
-  'data-disabled'?: 'true';
-};
-
-/**
- * Web-specific accessibility props for Accordion Item.
- */
-export type WebAccordionItemAccessibilityProps = WebAccessibilityProps & {
-  /**
-   * Present when the accordion item is open.
-   */
-  'data-open'?: 'true';
-  /**
-   * Present when the accordion item is disabled.
-   */
-  'data-disabled'?: 'true';
-  /**
-   * The index of the accordion item.
-   */
-  'data-index'?: number;
-};
-
-/**
- * Web-specific accessibility props for Accordion Trigger.
- */
-export type WebAccordionTriggerAccessibilityProps = WebAccessibilityProps & {
-  /**
-   * Present when the accordion panel is open.
-   */
-  'data-panel-open'?: 'true';
-  /**
-   * Present when the trigger is disabled.
-   */
-  'data-disabled'?: 'true';
-};
-
-/**
- * Web-specific accessibility props for Accordion Panel.
- */
-export type WebAccordionPanelAccessibilityProps = WebAccessibilityProps & {
-  /**
-   * Present when the accordion panel is open.
-   */
-  'data-open'?: 'true';
-  /**
-   * Indicates the orientation of the accordion.
-   */
-  'data-orientation'?: 'horizontal' | 'vertical';
-  /**
-   * Present when the accordion item is disabled.
-   */
-  'data-disabled'?: 'true';
-  /**
-   * The index of the accordion item.
-   */
-  'data-index'?: number;
-  /**
-   * Present when the panel is animating in.
-   */
-  'data-starting-style'?: '';
-  /**
-   * Present when the panel is animating out.
-   */
-  'data-ending-style'?: '';
-};
-
-/**
- * Web-specific accessibility props for Meter.
- */
-export type WebMeterAccessibilityProps = WebRangeAccessibilityProps;
-
-/**
- * Web-specific accessibility props for Slider Root.
- */
-export type WebSliderRootAccessibilityProps = WebAccessibilityProps & {
-  /**
-   * Indicates the orientation of the slider.
-   */
-  'data-orientation'?: 'horizontal' | 'vertical';
-  /**
-   * Present when the slider is disabled.
-   */
-  'data-disabled'?: boolean;
-  /**
-   * The minimum number of steps between thumbs.
-   */
-  'data-min-steps-between-values'?: number;
-  /**
-   * The fixed number of steps between thumbs.
-   */
-  'data-step-between-values'?: number;
-};
-
-/**
- * Web-specific accessibility props for Slider Thumb.
- */
-export type WebSliderThumbAccessibilityProps = WebRangeAccessibilityProps & {
-  /**
-   * Indicates the orientation of the slider for assistive technologies.
-   */
-  'aria-orientation'?: 'horizontal' | 'vertical';
-  /**
-   * Indicates the orientation of the slider.
-   */
-  'data-orientation'?: 'horizontal' | 'vertical';
-  /**
-   * Present when the slider is disabled.
-   */
-  'data-disabled'?: boolean;
-};
-
-/**
- * Web-specific accessibility props for Tabs Root.
- */
-export type WebTabsRootAccessibilityProps = WebAccessibilityProps & {
-  /**
-   * Indicates the orientation of the tabs.
-   */
-  'data-orientation'?: 'horizontal' | 'vertical';
-  /**
-   * Indicates the direction of the activation.
-   */
-  'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
-};
-
-/**
- * Web-specific accessibility props for Tabs List.
- */
-export type WebTabsListAccessibilityProps = WebAccessibilityProps & {
-  /**
-   * Indicates the orientation of the tabs.
-   */
-  'data-orientation'?: 'horizontal' | 'vertical';
-  /**
-   * Indicates the direction of the activation.
-   */
-  'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
-};
-
-/**
- * Web-specific accessibility props for Tabs Tab.
- */
-export type WebTabsTabAccessibilityProps = WebAccessibilityProps & {
-  /**
-   * Present when the tab is active.
-   */
-  'data-active'?: 'true';
-  /**
-   * Present when the tab is disabled.
-   */
-  'data-disabled'?: 'true';
-  /**
-   * Indicates the orientation of the tabs.
-   */
-  'data-orientation'?: 'horizontal' | 'vertical';
-  /**
-   * Indicates the direction of the activation.
-   */
-  'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
-};
-
-/**
- * Web-specific accessibility props for Tabs Indicator.
- */
-export type WebTabsIndicatorAccessibilityProps = WebAccessibilityProps & {
-  /**
-   * Indicates the orientation of the tabs.
-   */
-  'data-orientation'?: 'horizontal' | 'vertical';
-  /**
-   * Indicates the direction of the activation.
-   */
-  'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
-};
-
-/**
- * Web-specific accessibility props for Tabs Panel.
- */
-export type WebTabsPanelAccessibilityProps = WebAccessibilityProps & {
-  /**
-   * Present when the panel is hidden.
-   */
-  'data-hidden'?: 'true';
-  /**
-   * Indicates the orientation of the tabs.
-   */
-  'data-orientation'?: 'horizontal' | 'vertical';
-  /**
-   * Indicates the direction of the activation.
-   */
-  'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
-  /**
-   * The index of the tab panel.
-   */
-  'data-index'?: number;
-};
-
-/**
- * Web-specific accessibility props for Switch Root.
- */
-export type WebSwitchAccessibilityProps = WebAccessibilityProps & {
-  /**
-   * Reflects checked state for the ARIA switch pattern on web.
-   */
-  'aria-checked'?: boolean | 'mixed';
-  /**
-   * Reflects read-only state for the ARIA switch pattern on web.
-   */
-  'aria-readonly'?: boolean;
-  /**
-   * Custom data attribute applied on web for CSS selectors and testing.
-   * Reflects the current checked state.
-   */
-  'data-checked'?: 'true';
-  /**
-   * Present when the switch is disabled.
-   */
-  'data-disabled'?: 'true';
-};
-
-/**
- * Web-specific accessibility props for Switch Thumb.
- */
-export type WebSwitchThumbAccessibilityProps = WebAccessibilityProps & {
-  /**
-   * Custom data attribute applied on web for CSS selectors and testing.
-   * Reflects the current checked state.
-   */
-  'data-checked'?: 'true';
-  /**
-   * Present when the switch is disabled.
-   */
-  'data-disabled'?: 'true';
-};
+  focusRingStyle?: StyleProp<ViewStyle>;
+}
 
 /**
  * Base type for press/toggle activation details.

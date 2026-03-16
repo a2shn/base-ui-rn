@@ -7,7 +7,11 @@ import type {
 import {
   type PressedChangeDetails,
   type KeyPressEventData,
-  type WebToggleAccessibilityProps,
+  type ARIABaseProps,
+  type ARIAFocusProps,
+  type ARIALiveProps,
+  type ARIATraitDisabled,
+  type FocusVisibleProps,
 } from '@base-ui-rn/core';
 import type { ShortcutConfig } from '@base-ui-rn/keyboard-shortcuts';
 
@@ -16,6 +20,28 @@ import type { ShortcutConfig } from '@base-ui-rn/keyboard-shortcuts';
  * Describes how the toggle was activated.
  */
 export type TogglePressedChangeDetails = PressedChangeDetails;
+
+/**
+ * Web-specific accessibility and interactivity props for Toggle.
+ */
+export type WebToggleAccessibilityProps = ARIABaseProps &
+  ARIAFocusProps &
+  ARIALiveProps &
+  ARIATraitDisabled & {
+    /**
+     * Reflects pressed state for the ARIA button-toggle pattern on web.
+     * Automatically set when using role="button".
+     */
+    'aria-pressed'?: boolean | 'mixed';
+    /**
+     * Custom data attribute applied on web for CSS selectors and testing.
+     * Reflects the current pressed state.
+     *
+     * @example
+     * [data-pressed="true"] { background: blue; }
+     */
+    'data-pressed'?: boolean;
+  };
 
 export interface ToggleState {
   /**
@@ -35,7 +61,8 @@ export interface ToggleState {
 export interface ToggleProps
   extends
     Omit<PressableProps, 'role' | 'children' | 'style'>,
-    WebToggleAccessibilityProps {
+    WebToggleAccessibilityProps,
+    FocusVisibleProps {
   /**
    * The content of the toggle.
    */
@@ -89,18 +116,6 @@ export interface ToggleProps
   focusableWhenDisabled?: boolean;
 
   /**
-   * Whether to force the focus-visible state.
-   * @default false
-   */
-  focusVisible?: boolean;
-
-  /**
-   * Whether to disable the default focus ring style.
-   * @default false
-   */
-  disableDefaultFocusRing?: boolean;
-
-  /**
    * Callback fired when a key is pressed.
    */
   onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
@@ -118,7 +133,4 @@ export interface ToggleProps
 }
 
 // Re-export commonly used types from core
-export type {
-  KeyPressEventData,
-  WebToggleAccessibilityProps,
-} from '@base-ui-rn/core';
+export type { KeyPressEventData } from '@base-ui-rn/core';

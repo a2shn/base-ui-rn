@@ -7,6 +7,7 @@ import type {
   KeyPressEventData,
 } from './types';
 import type { NativeSyntheticEvent } from 'react-native';
+import { FocusVisibleProps } from '@base-ui-rn/core';
 
 export interface TabMeasurement {
   x: number;
@@ -15,7 +16,7 @@ export interface TabMeasurement {
   height: number;
 }
 
-export interface TabsContextValue {
+export interface TabsContextValue extends FocusVisibleProps {
   value: TabValue | null;
   orientation: Orientation;
   activationDirection: ActivationDirection;

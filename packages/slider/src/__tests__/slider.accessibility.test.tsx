@@ -59,16 +59,16 @@ describe('Slider accessibility', () => {
 
   it('applies data-attributes to the root', () => {
     const { getByTestId } = render(
-      <Slider.Root 
-        defaultValue={50} 
-        disabled 
+      <Slider.Root
+        defaultValue={50}
+        disabled
         orientation='vertical'
         minStepsBetweenValues={5}
         stepBetweenValues={10}
         testID='root'
       >
         <Slider.Thumb aria-label='Thumb' />
-      </Slider.Root>
+      </Slider.Root>,
     );
 
     const root = getByTestId('root');
@@ -82,7 +82,7 @@ describe('Slider accessibility', () => {
     const { getByLabelText } = render(
       <Slider.Root defaultValue={50} disabled>
         <Slider.Thumb aria-label='Thumb' />
-      </Slider.Root>
+      </Slider.Root>,
     );
 
     const thumb = getByLabelText('Thumb');

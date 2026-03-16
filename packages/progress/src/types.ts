@@ -1,48 +1,65 @@
 import type * as React from 'react';
-import type { ViewProps, TextProps, StyleProp, ViewStyle } from 'react-native';
-import type { WebProgressAccessibilityProps } from '@base-ui-rn/core';
+import type {
+  ViewProps,
+  TextProps,
+  StyleProp,
+  ViewStyle,
+  TextStyle,
+} from 'react-native';
+import {
+  type ARIABaseProps,
+  type ARIAFocusProps,
+  type ARIALiveProps,
+  ARIATraitRange,
+} from '@base-ui-rn/core';
 
+/**
+ * Web-specific accessibility props for the Progress component.
+ */
+export type WebProgressAccessibilityProps = ARIABaseProps &
+  ARIAFocusProps &
+  ARIALiveProps &
+  ARIATraitRange & {
+    /**
+     * Present when the progress is complete.
+     */
+    'data-complete'?: '';
+    /**
+     * Present when the progress is indeterminate.
+     */
+    'data-indeterminate'?: '';
+    /**
+     * Present when the progress is in progress.
+     */
+    'data-progressing'?: '';
+  };
+
+/**
+ * Represents the state of the progress bar.
+ */
 export interface ProgressState {
-  /**
-   * The current value.
-   */
+  /** The current value of the progress bar. */
   value: number | null;
-  /**
-   * The minimum value.
-   */
+  /** The minimum value of the progress bar. */
   min: number;
-  /**
-   * The maximum value.
-   */
+  /** The maximum value of the progress bar. */
   max: number;
-  /**
-   * The percentage of the current value.
-   */
+  /** The percentage of completion. */
   percentage: number | null;
-  /**
-   * The formatted value.
-   */
+  /** The formatted value string. */
   formattedValue: string | null;
-  /**
-   * A string value that provides a human-readable text alternative for the current value.
-   */
+  /** The accessible text for the current value. */
   ariaValueText?: string;
-  /**
-   * Present when the progress has completed.
-   */
+  /** Whether the progress is complete. */
   isComplete: boolean;
-  /**
-   * Present when the progress is in indeterminate state.
-   */
+  /** Whether the progress is indeterminate. */
   isIndeterminate: boolean;
-  /**
-   * Present while the progress is progressing.
-   */
+  /** Whether the progress is ongoing. */
   isProgressing: boolean;
 }
 
 export interface ProgressRootProps
-  extends Omit<ViewProps, 'style' | 'children'>, WebProgressAccessibilityProps {
+  extends Omit<ViewProps, 'children' | 'style'>, WebProgressAccessibilityProps {
   /**
    * The current value of the progress bar.
    * @default null
@@ -59,66 +76,104 @@ export interface ProgressRootProps
    */
   max?: number;
   /**
-   * A user-friendly name for the current value.
+   * A string representation of the current value for screen readers.
    */
   'aria-valuetext'?: string;
   /**
-   * Callback to generate a human-readable text alternative for the value.
+   * A function to generate a string representation of the current value for screen readers.
    */
   getAriaValueText?: (
     formattedValue: string | null,
     value: number | null,
   ) => string;
   /**
-   * The locale used for formatting the value.
+   * The locale to use for formatting the value.
    */
   locale?: string;
   /**
-   * Options for formatting the value.
+   * The options to use for formatting the value.
    */
   format?: Intl.NumberFormatOptions;
   /**
-   * Style applied to the root view.
+   * Style of the root component.
    */
   style?:
     | StyleProp<ViewStyle>
     | ((state: ProgressState) => StyleProp<ViewStyle>);
   /**
-   * The content of the progress root.
+   * Children of the root component.
    */
   children?: React.ReactNode | ((state: ProgressState) => React.ReactNode);
 }
 
 export interface ProgressLabelProps
-  extends TextProps, WebProgressAccessibilityProps {
+  extends Omit<TextProps, 'children' | 'style'>, WebProgressAccessibilityProps {
   /**
-   * The content of the label.
+   * Children of the label component.
    */
-  children?: React.ReactNode;
+  children?:
+    | React.ReactNode
+    | ((state: ProgressContextValue) => React.ReactNode);
+  /**
+   * Style of the label component.
+   */
+  style?:
+    | StyleProp<TextStyle>
+    | ((state: ProgressContextValue) => StyleProp<TextStyle>);
 }
 
 export interface ProgressTrackProps
-  extends ViewProps, WebProgressAccessibilityProps {
+  extends Omit<ViewProps, 'children' | 'style'>, WebProgressAccessibilityProps {
   /**
-   * The content of the track.
+   * Children of the track component.
    */
-  children?: React.ReactNode;
+  children?:
+    | React.ReactNode
+    | ((state: ProgressContextValue) => React.ReactNode);
+  /**
+   * Style of the track component.
+   */
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: ProgressContextValue) => StyleProp<ViewStyle>);
 }
 
 export interface ProgressIndicatorProps
-  extends ViewProps, WebProgressAccessibilityProps {}
+  extends Omit<ViewProps, 'style'>, WebProgressAccessibilityProps {
+  /**
+   * Style of the indicator component.
+   */
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: ProgressContextValue) => StyleProp<ViewStyle>);
+}
 
 export interface ProgressValueProps
-  extends Omit<TextProps, 'children'>, WebProgressAccessibilityProps {
+  extends Omit<TextProps, 'children' | 'style'>, WebProgressAccessibilityProps {
   /**
-   * A function that returns content based on the formatted value.
+   * Children of the value component.
    */
   children?: (
     formattedValue: string | null,
     value: number | null,
   ) => React.ReactNode;
+  /**
+   * Style of the value component.
+   */
+  style?:
+    | StyleProp<TextStyle>
+    | ((
+        formattedValue: string | null,
+        value: number | null,
+      ) => StyleProp<TextStyle>);
 }
 
+/**
+ * The context value for the Progress component.
+ */
 export interface ProgressContextValue extends ProgressState {
+  /**
+   * The ID of the label element.
+   */
   labelId?: string;
 }

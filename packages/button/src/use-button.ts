@@ -24,6 +24,11 @@ import type {
   KeyPressEventData,
 } from './types';
 
+/**
+ * Manages the state and logic for the Button primitive.
+ * @param props The initialization properties.
+ * @returns State and event handlers for the component.
+ */
 export const useButton = ({
   disabled,
   focusableWhenDisabled,

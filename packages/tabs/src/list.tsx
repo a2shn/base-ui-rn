@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
+import { evaluate } from '@base-ui-rn/core';
 import type { TabsListProps } from './types';
 import { useTabsList } from './use-tabs';
 
@@ -29,6 +30,8 @@ export const TabsList = React.memo(
       'aria-expanded': ariaExpanded,
       'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'aria-disabled': ariaDisabled,
+      'aria-keyshortcuts': ariaKeyshortcuts,
       'data-orientation': dataOrientation,
       'data-activation-direction': dataActivationDirection,
       ...otherProps
@@ -36,9 +39,8 @@ export const TabsList = React.memo(
 
     const { state } = useTabsList();
 
-    const resolvedChildren =
-      typeof children === 'function' ? children(state) : children;
-    const resolvedStyle = typeof style === 'function' ? style(state) : style;
+    const resolvedChildren = evaluate(children, state);
+    const resolvedStyle = evaluate(style, state);
 
     return (
       <View
@@ -54,6 +56,8 @@ export const TabsList = React.memo(
         aria-expanded={ariaExpanded}
         aria-busy={ariaBusy}
         aria-hidden={ariaHidden}
+        aria-disabled={ariaDisabled}
+        aria-keyshortcuts={ariaKeyshortcuts}
         data-orientation={dataOrientation ?? state.orientation}
         data-activation-direction={
           dataActivationDirection ?? state.activationDirection

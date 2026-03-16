@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
+import { evaluate, evaluateStyles } from '@base-ui-rn/core';
 import type { AccordionPanelProps } from './types';
 import { useAccordionPanel } from './use-accordion';
 
@@ -21,12 +22,18 @@ export const AccordionPanel = React.forwardRef<View, AccordionPanelProps>(
     const {
       children,
       style,
+      disableDefaultFocusRing = false,
+      focusRingStyle,
+      'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
       'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'aria-disabled': ariaDisabled,
+      'aria-keyshortcuts': ariaKeyshortcuts,
+      tabIndex,
       'data-open': dataOpen,
       'data-orientation': dataOrientation,
       'data-disabled': dataDisabled,
@@ -44,11 +51,9 @@ export const AccordionPanel = React.forwardRef<View, AccordionPanelProps>(
       orientation,
       disabled,
       index,
+      handleFocus,
+      handleBlur,
     } = useAccordionPanel(props);
-
-    const resolvedStyle = typeof style === 'function' ? style(state) : style;
-    const resolvedChildren =
-      typeof children === 'function' ? children(state) : children;
 
     if (!shouldRender) {
       return null;
@@ -58,14 +63,23 @@ export const AccordionPanel = React.forwardRef<View, AccordionPanelProps>(
       <View
         {...otherProps}
         ref={ref}
-        style={resolvedStyle}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        style={evaluateStyles(style, state, {
+          disableDefaultFocusRing,
+          focusRingStyle,
+        })}
         onLayout={onLayout}
+        aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-expanded={ariaExpanded ?? open}
         aria-busy={ariaBusy}
         aria-hidden={ariaHidden}
+        aria-disabled={ariaDisabled ?? (disabled ? true : undefined)}
+        aria-keyshortcuts={ariaKeyshortcuts}
+        tabIndex={tabIndex}
         data-open={dataOpen ?? (open ? 'true' : undefined)}
         data-orientation={dataOrientation ?? orientation}
         data-disabled={dataDisabled ?? (disabled ? 'true' : undefined)}
@@ -73,7 +87,7 @@ export const AccordionPanel = React.forwardRef<View, AccordionPanelProps>(
         data-starting-style={dataStartingStyle}
         data-ending-style={dataEndingStyle}
       >
-        {resolvedChildren}
+        {evaluate(children, state)}
       </View>
     );
   },

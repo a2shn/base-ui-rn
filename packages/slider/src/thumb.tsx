@@ -1,16 +1,17 @@
 import * as React from 'react';
 import {
   type NativeSyntheticEvent,
-  View,
   Platform,
   StyleSheet,
+  View,
 } from 'react-native';
 import {
   useKeyboardRange,
-  type KeyPressEventData,
   resolveTabIndex,
   mergeRefs,
-  DEFAULT_FOCUS_RING_STYLE,
+  evaluateStyles,
+  PressableWithKeyPress,
+  type KeyPressEventData,
 } from '@base-ui-rn/core';
 import { FocusRing, type FocusRingRenderProps } from '@base-ui-rn/focus-ring';
 import { useSliderContext } from './context';
@@ -27,12 +28,19 @@ export const SliderThumb = React.memo(
       onKeyPress,
       onLayout,
       disableDefaultFocusRing = false,
+      focusRingStyle,
       accessibilityRole = 'adjustable',
       accessibilityState,
       accessibilityHint,
       style,
       tabIndex,
       'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-busy': ariaBusy,
+      'aria-hidden': ariaHidden,
+      'aria-keyshortcuts': ariaKeyshortcuts,
       getAriaLabel,
       getAriaValueText,
       ...props
@@ -154,7 +162,7 @@ export const SliderThumb = React.memo(
     return (
       <FocusRing>
         {({ focusVisible }: FocusRingRenderProps) => (
-          <View
+          <PressableWithKeyPress
             {...props}
             ref={mergedRef}
             onLayout={handleLayout}
@@ -176,9 +184,15 @@ export const SliderThumb = React.memo(
                 stepBy(index, -1);
               }
             }}
-            // @ts-expect-error onKeyPress is valid on Web but missing in RN View types
-            onKeyPress={handleKeyPress as never}
+            onKeyPress={handleKeyPress}
             tabIndex={isWeb ? -1 : resolvedTabIndex}
+            aria-label={resolvedAriaLabel}
+            aria-labelledby={ariaLabelledBy}
+            aria-describedby={ariaDescribedBy}
+            aria-details={ariaDetails}
+            aria-busy={ariaBusy}
+            aria-hidden={ariaHidden}
+            aria-keyshortcuts={ariaKeyshortcuts}
             aria-orientation={state.orientation}
             data-orientation={state.orientation}
             data-disabled={isDisabled}
@@ -189,12 +203,11 @@ export const SliderThumb = React.memo(
             pointerEvents={isWeb ? 'none' : 'auto'}
             style={[
               dynamicStyle,
-              typeof style === 'function'
-                ? style({ ...state, index, valueNow, focusVisible })
-                : style,
-              !disableDefaultFocusRing &&
-                focusVisible &&
-                DEFAULT_FOCUS_RING_STYLE,
+              evaluateStyles(
+                style,
+                { ...state, index, valueNow, focusVisible },
+                { disableDefaultFocusRing, focusRingStyle },
+              ),
             ]}
           >
             {isWeb && (
@@ -223,7 +236,7 @@ export const SliderThumb = React.memo(
                 }
               />
             )}
-          </View>
+          </PressableWithKeyPress>
         )}
       </FocusRing>
     );

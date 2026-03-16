@@ -1,25 +1,13 @@
 import * as React from 'react';
+import { View } from 'react-native';
 import {
-  Pressable,
-  View,
-  type PressableProps,
-  type NativeSyntheticEvent,
-  type StyleProp,
-  type ViewStyle,
-} from 'react-native';
-import { DEFAULT_FOCUS_RING_STYLE } from '@base-ui-rn/core';
-import type { KeyPressEventData } from './types';
+  evaluate,
+  evaluateStyles,
+  PressableWithKeyPress,
+} from '@base-ui-rn/core';
 import type { SwitchRootProps } from './types';
 import { SwitchContext } from './context';
 import { useSwitchRoot } from './use-switch';
-
-const PressableWithKeyPress =
-  Pressable as unknown as React.ForwardRefExoticComponent<
-    PressableProps & {
-      onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
-      onKeyDown?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
-    } & React.RefAttributes<View>
-  >;
 
 /**
  * The main container for the Switch component.
@@ -40,6 +28,8 @@ export const SwitchRoot = React.forwardRef<View, SwitchRootProps>(
       children,
       style,
       disableDefaultFocusRing = false,
+      focusRingStyle,
+      'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
@@ -58,17 +48,6 @@ export const SwitchRoot = React.forwardRef<View, SwitchRootProps>(
       handleFocus,
       handleBlur,
     } = useSwitchRoot(props);
-
-    const resolvedStyle = typeof style === 'function' ? style(state) : style;
-    const resolvedChildren =
-      typeof children === 'function' ? children(state) : children;
-
-    const finalStyle = [
-      resolvedStyle,
-      !disableDefaultFocusRing &&
-        state.focusVisible &&
-        DEFAULT_FOCUS_RING_STYLE,
-    ] as StyleProp<ViewStyle>;
 
     const contextValue = React.useMemo(
       () => ({
@@ -91,12 +70,18 @@ export const SwitchRoot = React.forwardRef<View, SwitchRootProps>(
           onKeyPress={handleKeyPress}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          style={finalStyle}
+          style={() =>
+            evaluateStyles(style, state, {
+              disableDefaultFocusRing,
+              focusRingStyle,
+            })
+          }
           accessible
           role='switch'
           aria-checked={checked}
           aria-disabled={disabled}
           aria-readonly={readOnly}
+          aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
           aria-describedby={ariaDescribedBy}
           aria-details={ariaDetails}
@@ -109,7 +94,7 @@ export const SwitchRoot = React.forwardRef<View, SwitchRootProps>(
           data-checked={checked ? 'true' : undefined}
           data-disabled={disabled ? 'true' : undefined}
         >
-          {resolvedChildren}
+          {evaluate(children, state)}
         </PressableWithKeyPress>
       </SwitchContext.Provider>
     );

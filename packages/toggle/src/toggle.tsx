@@ -1,29 +1,14 @@
 import * as React from 'react';
-import {
-  Pressable,
-  View,
-  type PressableProps,
-  type NativeSyntheticEvent,
-  type Role,
-} from 'react-native';
+import { View, type Role } from 'react-native';
 import {
   DEFAULT_HIT_SLOP,
-  DEFAULT_FOCUS_RING_STYLE,
-  type KeyPressEventData,
-  type WebToggleAccessibilityProps,
+  evaluate,
+  evaluateStyles,
+  PressableWithKeyPress,
 } from '@base-ui-rn/core';
 import { type ToggleProps } from './types';
 import { useToggleGroupContext } from './group-context';
 import { useToggle } from './use-toggle';
-
-const PressableWithKeyPress =
-  Pressable as unknown as React.ForwardRefExoticComponent<
-    PressableProps &
-      WebToggleAccessibilityProps & {
-        onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
-        onKeyDown?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
-      } & React.RefAttributes<View>
-  >;
 
 /**
  * Headless toggle primitive built on top of React Native Pressable.
@@ -60,10 +45,12 @@ export const Toggle = React.memo(
       style,
       focusVisible: forceFocusVisible = false,
       disableDefaultFocusRing = false,
+      focusRingStyle,
       onFocus: onFocusProp,
       onBlur: onBlurProp,
       shortcut,
       tabIndex: tabIndexProp,
+      'aria-label': ariaLabel,
       'aria-disabled': ariaDisabledProp,
       'aria-pressed': ariaPressedProp,
       'data-pressed': dataPressedProp,
@@ -160,6 +147,7 @@ export const Toggle = React.memo(
         onAccessibilityAction={handleAccessibilityAction}
         focusable={isFocusable}
         tabIndex={resolvedTabIndex}
+        aria-label={ariaLabel}
         aria-disabled={resolvedAriaDisabled}
         aria-keyshortcuts={resolvedAriaKeyshortcuts}
         aria-pressed={resolvedAriaPressed}
@@ -177,32 +165,22 @@ export const Toggle = React.memo(
         onKeyDown={handleKeyDown}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        style={(pressableState) => {
-          const state = {
-            ...pressableState,
-            pressed: isPressed,
-            focused,
-            focusVisible,
-          };
-          const resolvedStyle =
-            typeof style === 'function' ? style(state) : style;
-          return [
-            resolvedStyle,
-            !disableDefaultFocusRing &&
-              focusVisible &&
-              DEFAULT_FOCUS_RING_STYLE,
-          ];
-        }}
+        style={(pressableState) =>
+          evaluateStyles(
+            style,
+            { ...pressableState, pressed: isPressed, focused, focusVisible },
+            { disableDefaultFocusRing, focusRingStyle },
+          )
+        }
       >
-        {(pressableState) => {
-          const state = {
+        {(pressableState) =>
+          evaluate(children, {
             ...pressableState,
             pressed: isPressed,
             focused,
             focusVisible,
-          };
-          return typeof children === 'function' ? children(state) : children;
-        }}
+          })
+        }
       </PressableWithKeyPress>
     );
   }),

@@ -1,4 +1,6 @@
-import * as React from 'react';
+import type * as React from 'react';
+import type { StyleProp, ViewStyle } from 'react-native';
+import { DEFAULT_FOCUS_RING_STYLE } from './constants';
 
 /**
  * Clamps a value between a minimum and maximum bound.
@@ -31,4 +33,65 @@ export function mergeRefs<T>(
       }
     }
   };
+}
+
+/**
+ * Resolves the focus ring style based on the provided options.
+ *
+ * @param focusVisible - Whether the focus ring should be visible.
+ * @param disableDefault - Whether to disable the default focus ring style.
+ * @param customStyle - Custom style to apply for the focus ring.
+ * @param defaultStyle - The default focus ring style to apply.
+ * @returns The resolved style or null.
+ */
+export function resolveFocusRingStyle(
+  focusVisible: boolean,
+  disableDefault: boolean = false,
+  customStyle?: StyleProp<ViewStyle>,
+  defaultStyle: StyleProp<ViewStyle> = DEFAULT_FOCUS_RING_STYLE,
+) {
+  if (!focusVisible) return null;
+  if (customStyle) return customStyle;
+  if (disableDefault) return null;
+  return defaultStyle;
+}
+
+/**
+ * Evaluates a value that can be a static value or a function that returns a value based on state.
+ *
+ * @param value - The value or function to evaluate.
+ * @param state - The state to pass to the function.
+ * @returns The resolved value.
+ *
+ * @example
+ * ```tsx
+ * const resolvedStyle = evaluate(style, state);
+ * ```
+ */
+export function evaluate<T, S>(value: T | ((state: S) => T), state: S): T {
+  return typeof value === 'function'
+    ? (value as (state: S) => T)(state)
+    : value;
+}
+
+/**
+ * Evaluates styles and merges them with the focus ring style if applicable.
+ */
+export function evaluateStyles<S extends { focusVisible: boolean }>(
+  style: StyleProp<ViewStyle> | ((state: S) => StyleProp<ViewStyle>),
+  state: S,
+  options: {
+    disableDefaultFocusRing?: boolean;
+    focusRingStyle?: StyleProp<ViewStyle>;
+  } = {},
+): StyleProp<ViewStyle> {
+  const { disableDefaultFocusRing, focusRingStyle } = options;
+  return [
+    evaluate(style, state),
+    resolveFocusRingStyle(
+      state.focusVisible,
+      disableDefaultFocusRing,
+      focusRingStyle,
+    ),
+  ];
 }

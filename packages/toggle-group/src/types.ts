@@ -1,6 +1,35 @@
 import type { ViewProps, StyleProp, ViewStyle } from 'react-native';
-import type { WebToggleGroupAccessibilityProps } from '@base-ui-rn/core';
+import {
+  type ARIABaseProps,
+  type ARIAFocusProps,
+  type ARIALiveProps,
+  type ARIATraitDisabled,
+  type ARIATraitOrientation,
+  type FocusVisibleProps,
+} from '@base-ui-rn/core';
 import { type ToggleGroupChangeEventDetails } from '@base-ui-rn/toggle';
+
+/**
+ * Web-specific accessibility props for ToggleGroup.
+ */
+export type WebToggleGroupAccessibilityProps = ARIABaseProps &
+  ARIAFocusProps &
+  ARIALiveProps &
+  ARIATraitDisabled &
+  ARIATraitOrientation & {
+    /**
+     * Indicates the orientation of the toggle group.
+     */
+    'data-orientation'?: 'horizontal' | 'vertical';
+    /**
+     * Present when the toggle group is disabled.
+     */
+    'data-disabled'?: boolean;
+    /**
+     * Present when the toggle group allows multiple buttons to be in the pressed state at the same time.
+     */
+    'data-multiple'?: boolean;
+  };
 
 export interface ToggleGroupState {
   /**
@@ -36,7 +65,8 @@ export interface ToggleGroupState {
 export interface ToggleGroupProps
   extends
     Omit<ViewProps, 'children' | 'style'>,
-    WebToggleGroupAccessibilityProps {
+    WebToggleGroupAccessibilityProps,
+    FocusVisibleProps {
   /**
    * The controlled value of the toggle group.
    */
@@ -95,16 +125,4 @@ export interface ToggleGroupProps
   style?:
     | StyleProp<ViewStyle>
     | ((state: ToggleGroupState) => StyleProp<ViewStyle>);
-
-  /**
-   * Whether to force the focus-visible state.
-   * @default false
-   */
-  focusVisible?: boolean;
-
-  /**
-   * Whether to disable the default focus ring style.
-   * @default false
-   */
-  disableDefaultFocusRing?: boolean;
 }

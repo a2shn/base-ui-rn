@@ -62,11 +62,15 @@ describe('Slider keyboard navigation', () => {
     );
 
     const thumb = getByLabelText('Thumb');
-    
-    fireEvent(thumb, 'accessibilityAction', { nativeEvent: { actionName: 'increment' } });
+
+    fireEvent(thumb, 'accessibilityAction', {
+      nativeEvent: { actionName: 'increment' },
+    });
     expect(onValueChange).toHaveBeenCalledWith(51, expect.anything());
 
-    fireEvent(thumb, 'accessibilityAction', { nativeEvent: { actionName: 'decrement' } });
+    fireEvent(thumb, 'accessibilityAction', {
+      nativeEvent: { actionName: 'decrement' },
+    });
     expect(onValueChange).toHaveBeenCalledWith(50, expect.anything());
   });
 
@@ -79,10 +83,14 @@ describe('Slider keyboard navigation', () => {
       </Slider.Root>,
     );
 
-    fireEvent(getByLabelText('T1'), 'keyPress', { nativeEvent: { key: 'ArrowRight' } });
+    fireEvent(getByLabelText('T1'), 'keyPress', {
+      nativeEvent: { key: 'ArrowRight' },
+    });
     expect(onValueChange).toHaveBeenCalledWith([10, 21], expect.anything());
 
-    fireEvent(getByLabelText('T0'), 'keyPress', { nativeEvent: { key: 'ArrowLeft' } });
+    fireEvent(getByLabelText('T0'), 'keyPress', {
+      nativeEvent: { key: 'ArrowLeft' },
+    });
     expect(onValueChange).toHaveBeenCalledWith([9, 21], expect.anything());
   });
 
@@ -94,7 +102,9 @@ describe('Slider keyboard navigation', () => {
       </Slider.Root>,
     );
 
-    fireEvent(getByLabelText('Thumb'), 'keyPress', { nativeEvent: { key: 'ArrowRight' } });
+    fireEvent(getByLabelText('Thumb'), 'keyPress', {
+      nativeEvent: { key: 'ArrowRight' },
+    });
     expect(onKeyPress).toHaveBeenCalled();
   });
 });

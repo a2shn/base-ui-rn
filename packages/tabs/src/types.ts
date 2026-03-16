@@ -9,13 +9,118 @@ import type {
 } from 'react-native';
 import {
   type KeyPressEventData,
-  type WebAccessibilityProps,
-  type WebTabsRootAccessibilityProps,
-  type WebTabsListAccessibilityProps,
-  type WebTabsTabAccessibilityProps,
-  type WebTabsIndicatorAccessibilityProps,
-  type WebTabsPanelAccessibilityProps,
+  type FocusVisibleProps,
+  type ARIABaseProps,
+  type ARIAFocusProps,
+  type ARIALiveProps,
+  type ARIATraitDisabled,
+  type ARIATraitExpanded,
+  type ARIATraitOrientation,
 } from '@base-ui-rn/core';
+
+/**
+ * Web-specific accessibility props for Tabs Root.
+ */
+export type WebTabsRootAccessibilityProps = ARIABaseProps &
+  ARIAFocusProps &
+  ARIALiveProps &
+  ARIATraitDisabled &
+  ARIATraitOrientation & {
+    /**
+     * Indicates the orientation of the tabs.
+     */
+    'data-orientation'?: 'horizontal' | 'vertical';
+    /**
+     * Indicates the direction of the activation.
+     */
+    'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
+  };
+
+/**
+ * Web-specific accessibility props for Tabs List.
+ */
+export type WebTabsListAccessibilityProps = ARIABaseProps &
+  ARIAFocusProps &
+  ARIALiveProps &
+  ARIATraitDisabled &
+  ARIATraitOrientation & {
+    /**
+     * Indicates the orientation of the tabs.
+     */
+    'data-orientation'?: 'horizontal' | 'vertical';
+    /**
+     * Indicates the direction of the activation.
+     */
+    'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
+  };
+
+/**
+ * Web-specific accessibility props for Tabs Tab.
+ */
+export type WebTabsTabAccessibilityProps = ARIABaseProps &
+  ARIAFocusProps &
+  ARIALiveProps &
+  ARIATraitDisabled &
+  ARIATraitExpanded &
+  ARIATraitOrientation & {
+    /**
+     * Present when the tab is active.
+     */
+    'data-active'?: 'true';
+    /**
+     * Present when the tab is disabled.
+     */
+    'data-disabled'?: 'true';
+    /**
+     * Indicates the orientation of the tabs.
+     */
+    'data-orientation'?: 'horizontal' | 'vertical';
+    /**
+     * Indicates the direction of the activation.
+     */
+    'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
+  };
+
+/**
+ * Web-specific accessibility props for Tabs Indicator.
+ */
+export type WebTabsIndicatorAccessibilityProps = ARIABaseProps &
+  ARIALiveProps &
+  ARIATraitDisabled &
+  ARIATraitOrientation & {
+    /**
+     * Indicates the orientation of the tabs.
+     */
+    'data-orientation'?: 'horizontal' | 'vertical';
+    /**
+     * Indicates the direction of the activation.
+     */
+    'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
+  };
+// ...
+export type WebTabsPanelAccessibilityProps = ARIABaseProps &
+  ARIAFocusProps &
+  ARIALiveProps &
+  ARIATraitDisabled &
+  ARIATraitExpanded &
+  ARIATraitOrientation & {
+    /**
+     * Present when the panel is hidden.
+     */
+    'data-hidden'?: 'true';
+    /**
+     * Indicates the orientation of the tabs.
+     */
+    'data-orientation'?: 'horizontal' | 'vertical';
+    /**
+     * Indicates the direction of the activation.
+     */
+    'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
+    /**
+     * The index of the tab panel.
+     */
+    'data-index'?: number;
+  };
 
 export type TabValue = string | number;
 export type Orientation = 'horizontal' | 'vertical';
@@ -25,10 +130,14 @@ export interface TabsRootState {
   value: TabValue | null;
   orientation: Orientation;
   activationDirection: ActivationDirection;
+  focusVisible: boolean;
 }
 
 export interface TabsRootProps
-  extends Omit<ViewProps, 'children' | 'style'>, WebTabsRootAccessibilityProps {
+  extends
+    Omit<ViewProps, 'children' | 'style'>,
+    WebTabsRootAccessibilityProps,
+    FocusVisibleProps {
   /**
    * The content of the tabs.
    */
@@ -71,10 +180,14 @@ export interface TabsRootProps
 export interface TabsListState {
   orientation: Orientation;
   activationDirection: ActivationDirection;
+  focusVisible: boolean;
 }
 
 export interface TabsListProps
-  extends Omit<ViewProps, 'children' | 'style'>, WebTabsListAccessibilityProps {
+  extends
+    Omit<ViewProps, 'children' | 'style'>,
+    WebTabsListAccessibilityProps,
+    FocusVisibleProps {
   /**
    * The content of the tabs list.
    */
@@ -104,7 +217,8 @@ export interface TabState {
 export interface TabProps
   extends
     Omit<PressableProps, 'children' | 'style'>,
-    WebTabsTabAccessibilityProps {
+    WebTabsTabAccessibilityProps,
+    FocusVisibleProps {
   /**
    * The content of the tab.
    */
@@ -130,21 +244,12 @@ export interface TabProps
    * Callback fired when the tab loses focus.
    */
   onBlur?: (e: NativeSyntheticEvent<TargetedEvent>) => void;
-  /**
-   * Whether to force the focus-visible state.
-   * @default false
-   */
-  focusVisible?: boolean;
-  /**
-   * Whether to disable the default focus ring style.
-   * @default false
-   */
-  disableDefaultFocusRing?: boolean;
 }
 
 export interface TabsIndicatorState {
   orientation: Orientation;
   activationDirection: ActivationDirection;
+  focusVisible: boolean;
   /**
    * The distance from the top of the parent container to the active tab.
    */
@@ -166,7 +271,8 @@ export interface TabsIndicatorState {
 export interface TabsIndicatorProps
   extends
     Omit<ViewProps, 'children' | 'style'>,
-    WebTabsIndicatorAccessibilityProps {
+    WebTabsIndicatorAccessibilityProps,
+    FocusVisibleProps {
   /**
    * The content of the indicator.
    */
@@ -184,12 +290,14 @@ export interface TabPanelState {
   orientation: Orientation;
   activationDirection: ActivationDirection;
   index: number;
+  focusVisible: boolean;
 }
 
 export interface TabPanelProps
   extends
     Omit<ViewProps, 'children' | 'style'>,
-    WebTabsPanelAccessibilityProps {
+    WebTabsPanelAccessibilityProps,
+    FocusVisibleProps {
   /**
    * The content of the panel.
    */
@@ -211,4 +319,4 @@ export interface TabPanelProps
   keepMounted?: boolean;
 }
 
-export type { KeyPressEventData, WebAccessibilityProps };
+export type { KeyPressEventData };

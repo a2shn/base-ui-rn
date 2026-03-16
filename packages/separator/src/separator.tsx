@@ -20,6 +20,8 @@ export const Separator = React.forwardRef<View, SeparatorProps>(
       decorative = false,
       accessibilityRole,
       tabIndex,
+      'aria-label': ariaLabel,
+      'aria-keyshortcuts': ariaKeyshortcuts,
       'aria-disabled': ariaDisabled,
       'data-orientation': dataOrientation,
       'aria-labelledby': ariaLabelledBy,
@@ -42,6 +44,8 @@ export const Separator = React.forwardRef<View, SeparatorProps>(
             : ((accessibilityRole ?? 'separator') as 'separator')
         }
         tabIndex={tabIndex}
+        aria-label={ariaLabel}
+        aria-keyshortcuts={ariaKeyshortcuts}
         aria-disabled={ariaDisabled}
         aria-labelledby={ariaLabelledBy}
         aria-describedby={ariaDescribedBy}

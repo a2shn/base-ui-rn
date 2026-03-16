@@ -1,16 +1,54 @@
-import type { ViewProps, ImageProps as RNImageProps } from 'react-native';
-import type { WebAccessibilityProps } from '@base-ui-rn/core';
+import type {
+  ViewProps,
+  ImageProps as RNImageProps,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
+import type {
+  ARIABaseProps,
+  ARIAFocusProps,
+  ARIALiveProps,
+  ARIATraitDisabled,
+} from '@base-ui-rn/core';
 
 export type ImageLoadingStatus = 'idle' | 'loading' | 'loaded' | 'error';
 
-export interface AvatarRootProps extends ViewProps, WebAccessibilityProps {
+/**
+ * Web-specific accessibility props for Avatar Root.
+ */
+export type WebAvatarRootAccessibilityProps = ARIABaseProps &
+  ARIAFocusProps &
+  ARIALiveProps &
+  ARIATraitDisabled;
+
+/**
+ * Web-specific accessibility props for Avatar Image.
+ */
+export type WebAvatarImageAccessibilityProps = ARIABaseProps;
+
+/**
+ * Web-specific accessibility props for Avatar Fallback.
+ */
+export type WebAvatarFallbackAccessibilityProps = ARIABaseProps;
+
+/**
+ * The state of the avatar.
+ */
+export interface AvatarState {
   /**
-   * The content of the avatar root.
+   * The current loading status of the image.
    */
-  children?: React.ReactNode;
+  loadingStatus: ImageLoadingStatus;
 }
 
-export interface AvatarImageProps extends RNImageProps, WebAccessibilityProps {
+export interface AvatarRootProps
+  extends Omit<ViewProps, 'children'>, WebAvatarRootAccessibilityProps {
+  children?: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
+}
+
+export interface AvatarImageProps
+  extends Omit<RNImageProps, 'style'>, WebAvatarImageAccessibilityProps {
   /**
    * Callback fired when the image loading status changes.
    */
@@ -20,21 +58,16 @@ export interface AvatarImageProps extends RNImageProps, WebAccessibilityProps {
    * @default false
    */
   accessible?: boolean;
+  /**
+   * Style applied to the avatar image.
+   */
+  style?: StyleProp<ViewStyle>;
 }
 
-export interface AvatarFallbackProps extends ViewProps, WebAccessibilityProps {
-  /**
-   * The content of the fallback.
-   */
+export interface AvatarFallbackProps
+  extends Omit<ViewProps, 'children'>, WebAvatarFallbackAccessibilityProps {
   children?: React.ReactNode;
-  /**
-   * Delay in milliseconds before showing the fallback.
-   * @default 0
-   */
   delay?: number;
-  /**
-   * Whether the fallback is an accessibility element.
-   * @default true
-   */
   accessible?: boolean;
+  style?: StyleProp<ViewStyle>;
 }

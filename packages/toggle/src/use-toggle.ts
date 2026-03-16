@@ -24,6 +24,11 @@ import {
 import type { TogglePressedChangeDetails, ToggleProps } from './types';
 import type { ToggleGroupContextValue } from './group-context';
 
+/**
+ * Manages the state and logic for the Toggle primitive.
+ * @param props The initialization properties.
+ * @returns State and event handlers for the component.
+ */
 export const useToggle = ({
   value,
   controlledPressed,

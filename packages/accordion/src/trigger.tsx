@@ -1,23 +1,13 @@
 import * as React from 'react';
+import { View, Platform } from 'react-native';
 import {
-  Pressable,
-  View,
-  Platform,
-  type PressableProps,
-  type NativeSyntheticEvent,
-} from 'react-native';
-import { DEFAULT_FOCUS_RING_STYLE } from '@base-ui-rn/core';
+  evaluate,
+  evaluateStyles,
+  PressableWithKeyPress,
+} from '@base-ui-rn/core';
 import { useAccordionItemContext } from './context';
-import type { AccordionTriggerProps, KeyPressEventData } from './types';
+import type { AccordionTriggerProps } from './types';
 import { useAccordionTrigger } from './use-accordion';
-
-const PressableWithKeyPress =
-  Pressable as unknown as React.ForwardRefExoticComponent<
-    PressableProps & {
-      onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
-      onKeyDown?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
-    } & React.RefAttributes<View>
-  >;
 
 /**
  * The interactive element that toggles the accordion item's panel.
@@ -38,12 +28,17 @@ export const AccordionTrigger = React.forwardRef<View, AccordionTriggerProps>(
       children,
       style,
       disableDefaultFocusRing = false,
+      focusRingStyle,
+      tabIndex,
+      'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
       'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'aria-disabled': ariaDisabled,
+      'aria-keyshortcuts': ariaKeyshortcuts,
       'data-panel-open': dataPanelOpen,
       'data-disabled': dataDisabled,
       ...otherProps
@@ -69,13 +64,11 @@ export const AccordionTrigger = React.forwardRef<View, AccordionTriggerProps>(
       itemContext.registerTriggerRef(internalRef);
     }, [itemContext]);
 
-    const resolvedStyle = typeof style === 'function' ? style(state) : style;
-    const resolvedChildren =
-      typeof children === 'function' ? children(state) : children;
-
     const finalStyle = [
-      resolvedStyle,
-      !disableDefaultFocusRing && focusVisible && DEFAULT_FOCUS_RING_STYLE,
+      evaluateStyles(style, state, {
+        disableDefaultFocusRing,
+        focusRingStyle,
+      }),
       Platform.select({
         web: open || focused || focusVisible ? { zIndex: 1 } : undefined,
       }),
@@ -94,11 +87,15 @@ export const AccordionTrigger = React.forwardRef<View, AccordionTriggerProps>(
         style={finalStyle}
         accessible
         role='button'
+        tabIndex={tabIndex}
+        aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-busy={ariaBusy}
         aria-hidden={ariaHidden}
+        aria-disabled={ariaDisabled ?? (disabled ? true : undefined)}
+        aria-keyshortcuts={ariaKeyshortcuts}
         accessibilityState={{
           expanded: open,
           disabled,
@@ -107,7 +104,7 @@ export const AccordionTrigger = React.forwardRef<View, AccordionTriggerProps>(
         data-panel-open={dataPanelOpen ?? (open ? 'true' : undefined)}
         data-disabled={dataDisabled ?? (disabled ? 'true' : undefined)}
       >
-        {resolvedChildren}
+        {evaluate(children, state)}
       </PressableWithKeyPress>
     );
   },

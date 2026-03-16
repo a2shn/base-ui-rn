@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
+import { evaluate, evaluateStyles } from '@base-ui-rn/core';
 import { AccordionContext } from './context';
 import type { AccordionRootProps } from './types';
 import { useAccordionRoot } from './use-accordion';
@@ -22,12 +23,18 @@ export const AccordionRoot = React.forwardRef<View, AccordionRootProps>(
     const {
       children,
       style,
+      disableDefaultFocusRing = false,
+      focusRingStyle,
+      'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
       'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'aria-disabled': ariaDisabled,
+      'aria-keyshortcuts': ariaKeyshortcuts,
+      tabIndex,
       'data-orientation': dataOrientation,
       'data-disabled': dataDisabled,
       ...otherProps
@@ -46,6 +53,8 @@ export const AccordionRoot = React.forwardRef<View, AccordionRootProps>(
       getItemRef,
       onTriggerKeyPress,
       state,
+      handleFocus,
+      handleBlur,
     } = useAccordionRoot(props);
 
     const contextValue = React.useMemo(
@@ -77,29 +86,34 @@ export const AccordionRoot = React.forwardRef<View, AccordionRootProps>(
       ],
     );
 
-    const resolvedStyle = typeof style === 'function' ? style(state) : style;
-    const resolvedChildren =
-      typeof children === 'function' ? children(state) : children;
-
     return (
       <React.Fragment>
         <AccordionContext.Provider value={contextValue}>
           <View
             {...otherProps}
             ref={ref}
-            style={resolvedStyle}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            style={evaluateStyles(style, state, {
+              disableDefaultFocusRing,
+              focusRingStyle,
+            })}
             role='group'
             aria-orientation={orientation}
+            aria-label={ariaLabel}
             aria-labelledby={ariaLabelledBy}
             aria-describedby={ariaDescribedBy}
             aria-details={ariaDetails}
             aria-expanded={ariaExpanded}
             aria-busy={ariaBusy}
             aria-hidden={ariaHidden}
+            aria-disabled={ariaDisabled ?? (disabled ? true : undefined)}
+            aria-keyshortcuts={ariaKeyshortcuts}
+            tabIndex={tabIndex}
             data-orientation={dataOrientation ?? orientation}
             data-disabled={dataDisabled ?? (disabled ? 'true' : undefined)}
           >
-            {resolvedChildren}
+            {evaluate(children, state)}
           </View>
         </AccordionContext.Provider>
       </React.Fragment>

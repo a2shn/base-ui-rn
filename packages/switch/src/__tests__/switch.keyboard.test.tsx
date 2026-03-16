@@ -57,7 +57,6 @@ describe('Switch - Keyboard', () => {
     });
 
     afterEach(() => {
-      // @ts-expect-error - readonly property
       Platform.OS = originalPlatform;
     });
 

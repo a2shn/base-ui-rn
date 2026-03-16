@@ -1,26 +1,13 @@
 import * as React from 'react';
-import {
-  Pressable,
-  View,
-  type PressableProps,
-  type NativeSyntheticEvent,
-  type Role,
-} from 'react-native';
-import { type ButtonProps, type KeyPressEventData } from './types';
+import { View, type Role } from 'react-native';
+import { type ButtonProps } from './types';
 import {
   DEFAULT_HIT_SLOP,
-  DEFAULT_FOCUS_RING_STYLE,
-  type WebAccessibilityProps,
+  evaluate,
+  evaluateStyles,
+  PressableWithKeyPress,
 } from '@base-ui-rn/core';
 import { useButton } from './use-button';
-
-const PressableWithKeyPress =
-  Pressable as unknown as React.ForwardRefExoticComponent<
-    PressableProps &
-      WebAccessibilityProps & {
-        onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
-      } & React.RefAttributes<View>
-  >;
 
 /**
  * Headless button primitive built on top of React Native Pressable.
@@ -53,11 +40,13 @@ export const Button = React.memo(
       style,
       focusVisible: forceFocusVisible = false,
       disableDefaultFocusRing = false,
+      focusRingStyle,
       onFocus: onFocusProp,
       onBlur: onBlurProp,
       shortcut,
       tabIndex: tabIndexProp,
       'aria-disabled': ariaDisabledProp,
+      'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
@@ -116,6 +105,7 @@ export const Button = React.memo(
         tabIndex={resolvedTabIndex}
         aria-disabled={resolvedAriaDisabled}
         aria-keyshortcuts={resolvedAriaKeyshortcuts}
+        aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
@@ -128,30 +118,17 @@ export const Button = React.memo(
         onKeyPress={handleKeyPress}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        style={(pressableState) => {
-          const state = {
-            ...pressableState,
-            focused,
-            focusVisible,
-          };
-          const resolvedStyle =
-            typeof style === 'function' ? style(state) : style;
-          return [
-            resolvedStyle,
-            !disableDefaultFocusRing &&
-              focusVisible &&
-              DEFAULT_FOCUS_RING_STYLE,
-          ];
-        }}
+        style={(pressableState) =>
+          evaluateStyles(
+            style,
+            { ...pressableState, focused, focusVisible },
+            { disableDefaultFocusRing, focusRingStyle },
+          )
+        }
       >
-        {(pressableState) => {
-          const state = {
-            ...pressableState,
-            focused,
-            focusVisible,
-          };
-          return typeof children === 'function' ? children(state) : children;
-        }}
+        {(pressableState) =>
+          evaluate(children, { ...pressableState, focused, focusVisible })
+        }
       </PressableWithKeyPress>
     );
   }),
