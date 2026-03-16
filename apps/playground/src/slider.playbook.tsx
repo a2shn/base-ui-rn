@@ -49,6 +49,7 @@ export function SliderPlaybook() {
               }
             }}
             style={styles.root}
+            thumbCollisionBehavior="swap"
           >
             <Slider.Label style={styles.label}>Price range</Slider.Label>
             <Slider.Control style={styles.control}>
