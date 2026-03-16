@@ -5,7 +5,6 @@ import {
   type ARIALiveProps,
   type ARIATraitDisabled,
   type ARIATraitOrientation,
-  type FocusVisibleProps,
 } from '@base-ui-rn/core';
 import { type ToggleGroupChangeEventDetails } from '@base-ui-rn/toggle';
 
@@ -56,17 +55,12 @@ export interface ToggleGroupState {
    * Whether the group is currently focused.
    */
   focused: boolean;
-  /**
-   * Whether the group should show a focus ring.
-   */
-  focusVisible: boolean;
 }
 
 export interface ToggleGroupProps
   extends
     Omit<ViewProps, 'children' | 'style'>,
-    WebToggleGroupAccessibilityProps,
-    FocusVisibleProps {
+    WebToggleGroupAccessibilityProps {
   /**
    * The controlled value of the toggle group.
    */

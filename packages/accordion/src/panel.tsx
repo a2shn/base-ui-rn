@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluate, evaluateStyles } from '@base-ui-rn/core';
+import { evaluate } from '@base-ui-rn/core';
 import type { AccordionPanelProps } from './types';
 import { useAccordionPanel } from './use-accordion';
 
@@ -22,8 +22,6 @@ export const AccordionPanel = React.forwardRef<View, AccordionPanelProps>(
     const {
       children,
       style,
-      disableDefaultFocusRing = false,
-      focusRingStyle,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       'aria-describedby': ariaDescribedBy,
@@ -33,7 +31,6 @@ export const AccordionPanel = React.forwardRef<View, AccordionPanelProps>(
       'aria-hidden': ariaHidden,
       'aria-disabled': ariaDisabled,
       'aria-keyshortcuts': ariaKeyshortcuts,
-      tabIndex,
       'data-open': dataOpen,
       'data-orientation': dataOrientation,
       'data-disabled': dataDisabled,
@@ -51,8 +48,6 @@ export const AccordionPanel = React.forwardRef<View, AccordionPanelProps>(
       orientation,
       disabled,
       index,
-      handleFocus,
-      handleBlur,
     } = useAccordionPanel(props);
 
     if (!shouldRender) {
@@ -63,12 +58,7 @@ export const AccordionPanel = React.forwardRef<View, AccordionPanelProps>(
       <View
         {...otherProps}
         ref={ref}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        style={evaluateStyles(style, state, {
-          disableDefaultFocusRing,
-          focusRingStyle,
-        })}
+        style={evaluate(style, state)}
         onLayout={onLayout}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
@@ -79,7 +69,6 @@ export const AccordionPanel = React.forwardRef<View, AccordionPanelProps>(
         aria-hidden={ariaHidden}
         aria-disabled={ariaDisabled ?? (disabled ? true : undefined)}
         aria-keyshortcuts={ariaKeyshortcuts}
-        tabIndex={tabIndex}
         data-open={dataOpen ?? (open ? 'true' : undefined)}
         data-orientation={dataOrientation ?? orientation}
         data-disabled={dataDisabled ?? (disabled ? 'true' : undefined)}

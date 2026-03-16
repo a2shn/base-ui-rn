@@ -20,7 +20,6 @@ export const useToggleGroup = ({
   orientation,
   loopFocus,
   onFocusChange,
-  focusVisible,
 }: {
   value: ToggleGroupProps['value'];
   defaultValue: ToggleGroupProps['defaultValue'];
@@ -30,16 +29,13 @@ export const useToggleGroup = ({
   orientation: NonNullable<ToggleGroupProps['orientation']>;
   loopFocus: boolean;
   onFocusChange: ToggleGroupProps['onFocusChange'];
-  focusVisible: boolean;
 }) => {
   const {
     focused,
     focusVisible: isFocusVisible,
     onFocus,
     onBlur,
-  } = useFocus({
-    focusVisible,
-  });
+  } = useFocus({});
 
   const { registerItem, handleKeyDown } = useKeyboardNavigation({
     orientation,

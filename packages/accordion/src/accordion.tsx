@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluate, evaluateStyles } from '@base-ui-rn/core';
+import { evaluate } from '@base-ui-rn/core';
 import { AccordionContext } from './context';
 import type { AccordionRootProps } from './types';
 import { useAccordionRoot } from './use-accordion';
@@ -23,8 +23,6 @@ export const AccordionRoot = React.forwardRef<View, AccordionRootProps>(
     const {
       children,
       style,
-      disableDefaultFocusRing = false,
-      focusRingStyle,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       'aria-describedby': ariaDescribedBy,
@@ -34,7 +32,6 @@ export const AccordionRoot = React.forwardRef<View, AccordionRootProps>(
       'aria-hidden': ariaHidden,
       'aria-disabled': ariaDisabled,
       'aria-keyshortcuts': ariaKeyshortcuts,
-      tabIndex,
       'data-orientation': dataOrientation,
       'data-disabled': dataDisabled,
       ...otherProps
@@ -53,8 +50,6 @@ export const AccordionRoot = React.forwardRef<View, AccordionRootProps>(
       getItemRef,
       onTriggerKeyPress,
       state,
-      handleFocus,
-      handleBlur,
     } = useAccordionRoot(props);
 
     const contextValue = React.useMemo(
@@ -92,12 +87,7 @@ export const AccordionRoot = React.forwardRef<View, AccordionRootProps>(
           <View
             {...otherProps}
             ref={ref}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            style={evaluateStyles(style, state, {
-              disableDefaultFocusRing,
-              focusRingStyle,
-            })}
+            style={evaluate(style, state)}
             role='group'
             aria-orientation={orientation}
             aria-label={ariaLabel}
@@ -109,7 +99,6 @@ export const AccordionRoot = React.forwardRef<View, AccordionRootProps>(
             aria-hidden={ariaHidden}
             aria-disabled={ariaDisabled ?? (disabled ? true : undefined)}
             aria-keyshortcuts={ariaKeyshortcuts}
-            tabIndex={tabIndex}
             data-orientation={dataOrientation ?? orientation}
             data-disabled={dataDisabled ?? (disabled ? 'true' : undefined)}
           >

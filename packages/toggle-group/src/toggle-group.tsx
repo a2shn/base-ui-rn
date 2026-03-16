@@ -1,11 +1,7 @@
 import * as React from 'react';
-import {
-  View,
-  type NativeSyntheticEvent,
-  type TargetedEvent,
-} from 'react-native';
+import { View } from 'react-native';
 import { ToggleGroupContext } from '@base-ui-rn/toggle';
-import { evaluate, evaluateStyles } from '@base-ui-rn/core';
+import { evaluate } from '@base-ui-rn/core';
 import { type ToggleGroupProps } from './types';
 import { useToggleGroup } from './use-toggle-group';
 
@@ -37,12 +33,7 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
       loopFocus = true,
       onFocusChange,
       style,
-      focusVisible: forceFocusVisible = false,
-      disableDefaultFocusRing = false,
-      focusRingStyle,
       accessibilityRole,
-      onFocus: onFocusProp,
-      onBlur: onBlurProp,
       tabIndex,
       'aria-label': ariaLabel,
       'aria-keyshortcuts': ariaKeyshortcuts,
@@ -64,8 +55,6 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
     React.useImperativeHandle(ref, () => internalRef.current!);
 
     const {
-      onBlur,
-      onFocus,
       onToggleKeyPress,
       registerItem,
       registerValue,
@@ -81,7 +70,6 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
       orientation,
       loopFocus,
       onFocusChange,
-      focusVisible: forceFocusVisible,
     });
 
     const contextValue = React.useMemo(
@@ -103,25 +91,12 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
       ],
     );
 
-    const handleFocus = (event: NativeSyntheticEvent<TargetedEvent>) => {
-      onFocus();
-      onFocusProp?.(event);
-    };
-
-    const handleBlur = (event: NativeSyntheticEvent<TargetedEvent>) => {
-      onBlur();
-      onBlurProp?.(event);
-    };
-
     return (
       <ToggleGroupContext.Provider value={contextValue}>
         <View
           {...otherViewProps}
           ref={internalRef}
-          style={evaluateStyles(style, state, {
-            disableDefaultFocusRing,
-            focusRingStyle,
-          })}
+          style={evaluate(style, state)}
           role={(accessibilityRole ?? 'group') as unknown as 'checkbox'}
           tabIndex={tabIndex}
           aria-label={ariaLabel}
@@ -134,8 +109,6 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
           aria-expanded={ariaExpanded}
           aria-busy={ariaBusy}
           aria-hidden={ariaHidden}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
           data-orientation={dataOrientation ?? orientation}
           data-disabled={dataDisabled ?? disabled}
           data-multiple={dataMultiple ?? multiple}

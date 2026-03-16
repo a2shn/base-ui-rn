@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { View, Platform } from 'react-native';
-import { evaluate, evaluateStyles } from '@base-ui-rn/core';
+import { View } from 'react-native';
+import { evaluate } from '@base-ui-rn/core';
 import { AccordionItemContext } from './context';
 import type { AccordionItemProps } from './types';
 import { useAccordionItem } from './use-accordion';
@@ -24,8 +24,6 @@ export const AccordionItem = React.forwardRef<View, AccordionItemProps>(
     const {
       children,
       style,
-      disableDefaultFocusRing = false,
-      focusRingStyle,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       'aria-describedby': ariaDescribedBy,
@@ -35,7 +33,6 @@ export const AccordionItem = React.forwardRef<View, AccordionItemProps>(
       'aria-hidden': ariaHidden,
       'aria-disabled': ariaDisabled,
       'aria-keyshortcuts': ariaKeyshortcuts,
-      tabIndex,
       'data-open': dataOpen,
       'data-disabled': dataDisabled,
       'data-index': dataIndex,
@@ -45,14 +42,10 @@ export const AccordionItem = React.forwardRef<View, AccordionItemProps>(
     const {
       value,
       open,
-      focused,
-      focusVisible,
       disabled,
       index,
       registerTriggerRef,
       setFocused,
-      handleFocus,
-      handleBlur,
       state,
     } = useAccordionItem(props);
 
@@ -61,32 +54,20 @@ export const AccordionItem = React.forwardRef<View, AccordionItemProps>(
         value,
         open,
         disabled,
-        focused,
+        focused: false,
         index,
         registerTriggerRef,
         setFocused,
       }),
-      [value, open, disabled, focused, index, registerTriggerRef, setFocused],
+      [value, open, disabled, index, registerTriggerRef, setFocused],
     );
-
-    const finalStyle = [
-      evaluateStyles(style, state, {
-        disableDefaultFocusRing,
-        focusRingStyle,
-      }),
-      Platform.select({
-        web: focused || focusVisible ? { zIndex: 1 } : undefined,
-      }),
-    ];
 
     return (
       <AccordionItemContext.Provider value={itemContextValue}>
         <View
           {...otherProps}
           ref={ref}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          style={finalStyle}
+          style={evaluate(style, state)}
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
           aria-describedby={ariaDescribedBy}
@@ -96,7 +77,6 @@ export const AccordionItem = React.forwardRef<View, AccordionItemProps>(
           aria-hidden={ariaHidden}
           aria-disabled={ariaDisabled ?? (disabled ? true : undefined)}
           aria-keyshortcuts={ariaKeyshortcuts}
-          tabIndex={tabIndex}
           data-open={dataOpen ?? (open ? 'true' : undefined)}
           data-disabled={dataDisabled ?? (disabled ? 'true' : undefined)}
           data-index={dataIndex ?? index}
