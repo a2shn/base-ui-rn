@@ -11,6 +11,7 @@ export interface CollisionOptions {
   minDistance: number;
   stepBetweenValues?: number;
   behavior: CollisionBehavior;
+  maxDistance?: number;
 }
 
 /**
@@ -25,6 +26,7 @@ export function calculateNextValues(options: CollisionOptions): number[] {
     min,
     max,
     minDistance,
+    maxDistance,
     stepBetweenValues,
     behavior,
   } = options;
@@ -100,6 +102,27 @@ export function calculateNextValues(options: CollisionOptions): number[] {
       }
     }
 
+    // Apply maximum distance constraint
+    if (maxDistance !== undefined && maxDistance > 0) {
+      // Pull right (if too far apart)
+      for (let i = index + 1; i < next.length; i++) {
+        if (next[i] > next[i - 1] + maxDistance) {
+          next[i] = next[i - 1] + maxDistance;
+        } else {
+          break; // Stop if within max distance
+        }
+      }
+
+      // Pull left (if too far apart)
+      for (let i = index - 1; i >= 0; i--) {
+        if (next[i] < next[i + 1] - maxDistance) {
+          next[i] = next[i + 1] - maxDistance;
+        } else {
+          break; // Stop if within max distance
+        }
+      }
+    }
+
     // If pushing forced values out of bounds, we need to push back
     // while keeping the moved thumb (at 'index') as the anchor.
 
@@ -115,7 +138,7 @@ export function calculateNextValues(options: CollisionOptions): number[] {
     if (next[0] < min) {
       next[0] = min;
       for (let i = 1; i < next.length; i++) {
-        next[i] = Math.max(next[i], next[i - 1] + minDistance);
+        next[i] = Math.max(next[i], next[i - 1] - minDistance);
       }
     }
 

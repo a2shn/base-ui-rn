@@ -10,14 +10,21 @@ import {
 } from '@base-ui-rn/playbook';
 
 export function SliderPlaybook() {
-  const { basicValue, independentValue, swapValue, pushValue, fixedValue } =
-    usePlaybookToggles({
-      basicValue: 25,
-      independentValue: [20, 50, 80] as number[],
-      swapValue: [20, 70] as number[],
-      pushValue: [10, 20, 30, 40] as number[],
-      fixedValue: [20, 40, 60] as number[],
-    });
+  const {
+    basicValue,
+    independentValue,
+    swapValue,
+    pushValue,
+    fixedValue,
+    maxStepsValue,
+  } = usePlaybookToggles({
+    basicValue: 25,
+    independentValue: [20, 50, 80] as number[],
+    swapValue: [20, 70] as number[],
+    pushValue: [10, 20, 30, 40] as number[],
+    fixedValue: [20, 40, 60] as number[],
+    maxStepsValue: [10, 50] as number[],
+  });
 
   return (
     <Gallery title='Slider'>
@@ -199,6 +206,49 @@ export function SliderPlaybook() {
             pulls or pushes the others.
           </Text>
           <LiveConsole title='fixedValue' state={fixedValue} />
+        </View>
+      </Section>
+
+      <Section title='Max Steps Between Values'>
+        <View style={styles.container}>
+          <Slider.Root
+            value={maxStepsValue.value as number[]}
+            maxStepsBetweenValues={30}
+            thumbCollisionBehavior='push'
+            onValueChange={(nextValue) => {
+              if (Array.isArray(nextValue)) {
+                maxStepsValue.setValue(nextValue);
+              }
+            }}
+            style={styles.root}
+          >
+            <Slider.Label style={styles.label}>
+              Max distance constraint
+            </Slider.Label>
+            <Slider.Control style={styles.control}>
+              <Slider.Track style={styles.track}>
+                <Slider.Indicator style={styles.indicator} />
+                <Slider.Thumb
+                  index={0}
+                  aria-label='Min'
+                  style={getThumbStyle}
+                />
+                <Slider.Thumb
+                  index={1}
+                  aria-label='Max'
+                  style={getThumbStyle}
+                />
+              </Slider.Track>
+            </Slider.Control>
+            <Slider.Value style={styles.value}>
+              {(formattedValues) => formattedValues.join(' | ')}
+            </Slider.Value>
+          </Slider.Root>
+          <Text style={styles.hint}>
+            Thumbs cannot be more than 30 steps apart. Try moving one thumb far
+            away - the other will be pulled along.
+          </Text>
+          <LiveConsole title='maxStepsValue' state={maxStepsValue} />
         </View>
       </Section>
 

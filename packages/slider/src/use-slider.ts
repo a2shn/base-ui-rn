@@ -30,6 +30,7 @@ export function useSlider(props: SliderRootProps) {
     step = 1,
     largeStep = 10,
     minStepsBetweenValues = 0,
+    maxStepsBetweenValues = 0,
     stepBetweenValues,
     thumbCollisionBehavior = 'push',
     thumbAlignment = 'center',
@@ -141,6 +142,12 @@ export function useSlider(props: SliderRootProps) {
         minDistance = step;
       }
 
+      // Calculate max distance in steps, then convert to value units
+      let maxDistanceInValueUnits: number | undefined;
+      if (maxStepsBetweenValues !== undefined && maxStepsBetweenValues > 0) {
+        maxDistanceInValueUnits = maxStepsBetweenValues * step;
+      }
+
       const next = calculateNextValues({
         index,
         newValue,
@@ -148,6 +155,7 @@ export function useSlider(props: SliderRootProps) {
         min,
         max,
         minDistance,
+        maxDistance: maxDistanceInValueUnits,
         stepBetweenValues:
           stepBetweenValues !== undefined
             ? stepBetweenValues * step
@@ -191,8 +199,19 @@ export function useSlider(props: SliderRootProps) {
       step,
       disabled,
       orientation,
+      minStepsBetweenValues,
+      maxStepsBetweenValues,
     }),
-    [current, min, max, step, disabled, orientation],
+    [
+      current,
+      min,
+      max,
+      step,
+      disabled,
+      orientation,
+      minStepsBetweenValues,
+      maxStepsBetweenValues,
+    ],
   );
 
   return {

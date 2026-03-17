@@ -44,6 +44,11 @@ export type WebSliderRootAccessibilityProps = ARIABaseProps &
      * The fixed number of steps between thumbs.
      */
     'data-step-between-values'?: number;
+    /**
+     * The maximum number of steps between thumbs.
+     * @default 0 (no maximum)
+     */
+    'data-max-steps-between-values'?: number;
   };
 
 /**
@@ -120,6 +125,15 @@ export interface SliderState {
    * The orientation of the slider.
    */
   orientation: 'horizontal' | 'vertical';
+  /**
+   * The minimum number of steps between thumbs.
+   */
+  minStepsBetweenValues: number;
+  /**
+   * The maximum number of steps between thumbs.
+   * @default 0 (no maximum)
+   */
+  maxStepsBetweenValues: number;
 }
 
 /**
@@ -180,6 +194,11 @@ export interface SliderRootProps
    * @default 0
    */
   minStepsBetweenValues?: number;
+  /**
+   * The maximum steps between values in a range slider.
+   * @default 0 (no maximum)
+   */
+  maxStepsBetweenValues?: number;
   /**
    * The fixed number of steps between values in a range slider.
    */
