@@ -240,39 +240,35 @@ export function useKeyboardNavigation<T = unknown>(
       const mergedKeyMap = { ...DEFAULT_KEY_MAP, ...keyMap };
       let direction: KeyboardDirection | null = null;
 
-      if (orientation === 'horizontal' || orientation === 'both') {
+      // Prioritize first/last keys (orientation-agnostic)
+      if (mergedKeyMap.first.includes(key)) {
+        direction = 'first';
+      } else if (mergedKeyMap.last.includes(key)) {
+        direction = 'last';
+      } else {
+        // Handle next/prev keys based on orientation
         if (
-          mergedKeyMap.next.includes(key) &&
-          ['ArrowRight', 'dpadRight'].includes(key)
+          (orientation === 'horizontal' || orientation === 'both') &&
+          mergedKeyMap.next.includes(key)
         ) {
           direction = 'next';
-        }
-        if (
-          mergedKeyMap.prev.includes(key) &&
-          ['ArrowLeft', 'dpadLeft'].includes(key)
+        } else if (
+          (orientation === 'horizontal' || orientation === 'both') &&
+          mergedKeyMap.prev.includes(key)
+        ) {
+          direction = 'prev';
+        } else if (
+          (orientation === 'vertical' || orientation === 'both') &&
+          mergedKeyMap.next.includes(key)
+        ) {
+          direction = 'next';
+        } else if (
+          (orientation === 'vertical' || orientation === 'both') &&
+          mergedKeyMap.prev.includes(key)
         ) {
           direction = 'prev';
         }
       }
-
-      if (orientation === 'vertical' || orientation === 'both') {
-        if (
-          mergedKeyMap.next.includes(key) &&
-          ['ArrowDown', 'dpadDown'].includes(key)
-        ) {
-          direction = 'next';
-        }
-        if (
-          mergedKeyMap.prev.includes(key) &&
-          ['ArrowUp', 'dpadUp'].includes(key)
-        ) {
-          direction = 'prev';
-        }
-      }
-
-      // If key is mapped to first/last regardless of orientation
-      if (mergedKeyMap.first.includes(key)) direction = 'first';
-      if (mergedKeyMap.last.includes(key)) direction = 'last';
 
       if (direction) {
         const nextId = navigate(currentId, direction);
