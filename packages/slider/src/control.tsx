@@ -17,7 +17,7 @@ export const SliderControl = React.memo(
     { style, onLayout, ...props },
     ref,
   ) {
-    const { state, setValueAtIndex, commitValue, setTrackSize } =
+    const { state, setValueAtIndex, commitValue, setTrackSize, thumbRefs } =
       useSliderContext();
     const isHorizontal = state.orientation === 'horizontal';
     const isWeb = Platform.OS === 'web';
@@ -185,7 +185,14 @@ export const SliderControl = React.memo(
       if (isWeb) return null;
 
       return PanResponder.create({
-        onStartShouldSetPanResponder: () => !state.disabled,
+        onStartShouldSetPanResponder: (evt) => {
+          if (state.disabled) return false;
+          // Don't capture if touching directly on a thumb - let thumb handle focus
+          const target = String(evt.nativeEvent.target);
+          return !thumbRefs.current.some(
+            (ref) => ref && String(ref) === target,
+          );
+        },
         onStartShouldSetPanResponderCapture: () => !state.disabled,
         onMoveShouldSetPanResponder: () => !state.disabled,
         onMoveShouldSetPanResponderCapture: () => !state.disabled,
@@ -227,6 +234,7 @@ export const SliderControl = React.memo(
     }, [
       isWeb,
       state.disabled,
+      thumbRefs,
       activeIndexRef,
       pagePositionToValueRef,
       closestThumbIndexRef,

@@ -212,6 +212,7 @@ export function useTab(props: TabProps) {
 
   const handleFocus = React.useCallback(
     (e: NativeSyntheticEvent<TargetedEvent>) => {
+      console.log('onFocus called');
       onFocus();
       context.onFocusChange?.(String(value));
       onFocusProp?.(e);

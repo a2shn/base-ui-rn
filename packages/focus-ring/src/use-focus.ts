@@ -15,7 +15,6 @@ export function useFocus(options: { focusVisible?: boolean } = {}) {
 
   const onFocus = React.useCallback(() => {
     setFocused(true);
-    // Heuristic: default to true for now. Can be enhanced with global interaction tracking.
     setFocusVisible(true);
   }, []);
 

@@ -42,7 +42,6 @@ export const FocusRing: React.FC<FocusRingProps> = (props) => {
     onBlur?: (e: unknown) => void;
   }>;
 
-  // Inject onFocus and onBlur into the child while preserving existing handlers
   return React.cloneElement(childElement, {
     onFocus: (e: unknown) => {
       onFocus();

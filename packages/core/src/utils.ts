@@ -1,5 +1,10 @@
 import type * as React from 'react';
-import type { StyleProp, ViewStyle } from 'react-native';
+import {
+  Platform,
+  StyleSheet,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 import { DEFAULT_FOCUS_RING_STYLE } from './constants';
 
 /**
@@ -36,6 +41,27 @@ export function mergeRefs<T>(
 }
 
 /**
+ * Converts border styles to outline styles for web compatibility.
+ * On web, focus rings should use outline instead of border.
+ */
+function convertBorderToOutline(style: ViewStyle): ViewStyle {
+  if (Platform.OS !== 'web') return style;
+
+  const outlineStyle: ViewStyle = {};
+  if (style.borderWidth !== undefined) {
+    outlineStyle.outlineWidth = style.borderWidth;
+  }
+  if (style.borderColor !== undefined) {
+    outlineStyle.outlineColor = style.borderColor;
+  }
+  if (style.borderRadius !== undefined) {
+    outlineStyle.outlineOffset = -style.borderRadius;
+  }
+
+  return Object.keys(outlineStyle).length > 0 ? outlineStyle : style;
+}
+
+/**
  * Resolves the focus ring style based on the provided options.
  *
  * @param focusVisible - Whether the focus ring should be visible.
@@ -51,7 +77,10 @@ export function resolveFocusRingStyle(
   defaultStyle: StyleProp<ViewStyle> = DEFAULT_FOCUS_RING_STYLE,
 ) {
   if (!focusVisible) return null;
-  if (customStyle) return customStyle;
+  if (customStyle) {
+    const flatStyle = StyleSheet.flatten(customStyle);
+    return convertBorderToOutline(flatStyle as ViewStyle);
+  }
   if (disableDefault) return null;
   return defaultStyle;
 }

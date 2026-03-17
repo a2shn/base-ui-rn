@@ -1,4 +1,5 @@
 import * as React from 'react';
+import type { View } from 'react-native';
 import type { SliderState, CommitEventDetails } from './types';
 
 interface SliderContextValue {
@@ -16,6 +17,7 @@ interface SliderContextValue {
   largeStep: number;
   setTrackSize: (size: number) => void;
   setThumbSize: (size: number) => void;
+  thumbRefs: React.MutableRefObject<(View | null)[]>;
 }
 
 export const SliderContext = React.createContext<SliderContextValue | null>(

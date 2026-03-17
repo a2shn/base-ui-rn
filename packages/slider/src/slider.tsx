@@ -60,6 +60,8 @@ export const SliderRoot = React.memo(
       setThumbSize,
     } = useSlider(props);
 
+    const thumbRefs = React.useRef<(View | null)[]>([]);
+
     const contextValue = React.useMemo(
       () => ({
         state,
@@ -72,6 +74,7 @@ export const SliderRoot = React.memo(
         thumbAlignment,
         setTrackSize,
         setThumbSize,
+        thumbRefs,
       }),
       [
         state,
@@ -84,6 +87,7 @@ export const SliderRoot = React.memo(
         thumbAlignment,
         setTrackSize,
         setThumbSize,
+        thumbRefs,
       ],
     );
 

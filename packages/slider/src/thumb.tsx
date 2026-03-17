@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {
-  type NativeSyntheticEvent,
   Platform,
-  StyleSheet,
   View,
+  type NativeSyntheticEvent,
+  type TargetedEvent,
 } from 'react-native';
 import {
   useKeyboardRange,
@@ -13,7 +13,7 @@ import {
   PressableWithKeyPress,
   type KeyPressEventData,
 } from '@base-ui-rn/core';
-import { FocusRing, type FocusRingRenderProps } from '@base-ui-rn/focus-ring';
+import { useFocus } from '@base-ui-rn/focus-ring';
 import { useSliderContext } from './context';
 import type { SliderThumbProps } from './types';
 
@@ -26,9 +26,12 @@ export const SliderThumb = React.memo(
       index = 0,
       disabled,
       onKeyPress,
+      onFocus,
+      onBlur,
       onLayout,
       disableDefaultFocusRing = false,
       focusRingStyle,
+      focusVisible: forceFocusVisible = false,
       accessibilityRole = 'adjustable',
       accessibilityState,
       accessibilityHint,
@@ -49,21 +52,31 @@ export const SliderThumb = React.memo(
   ) {
     const {
       state,
-      setValueAtIndex,
       stepBy,
       largeStep,
       locale,
       format,
       setThumbSize,
       thumbAlignment,
+      thumbRefs,
     } = useSliderContext();
     const isDisabled = state.disabled || disabled;
     const valueNow = state.value[index] ?? state.min;
-    const resolvedTabIndex = resolveTabIndex(!!isDisabled, tabIndex);
     const isWeb = Platform.OS === 'web';
+    const resolvedTabIndex = resolveTabIndex(!!isDisabled, tabIndex);
+    const pointerEvents = 'auto' as const;
 
     const innerRef = React.useRef<View>(null);
     const mergedRef = React.useMemo(() => mergeRefs(ref, innerRef), [ref]);
+
+    // Register thumb ref with control for PanResponder coordination
+    React.useEffect(() => {
+      const refs = thumbRefs.current;
+      refs[index] = innerRef.current;
+      return () => {
+        refs[index] = null;
+      };
+    }, [index, thumbRefs]);
 
     const handleLayout = React.useCallback(
       (event: import('react-native').LayoutChangeEvent) => {
@@ -106,6 +119,14 @@ export const SliderThumb = React.memo(
     });
 
     const handleKeyPress = React.useCallback(
+      (event: NativeSyntheticEvent<KeyPressEventData>) => {
+        handleKeyboardRange(event);
+        onKeyPress?.(event);
+      },
+      [handleKeyboardRange, onKeyPress],
+    );
+
+    const handleKeyDown = React.useCallback(
       (event: NativeSyntheticEvent<KeyPressEventData>) => {
         handleKeyboardRange(event);
         onKeyPress?.(event);
@@ -159,103 +180,84 @@ export const SliderThumb = React.memo(
       ? { text: resolvedAriaValueText }
       : { min: state.min, max: state.max, now: valueNow };
 
+    const {
+      focusVisible,
+      onFocus: handleFocus,
+      onBlur: handleBlur,
+    } = useFocus({
+      focusVisible: forceFocusVisible,
+    });
+
+    const handleFocusCallback = React.useCallback(
+      (e: NativeSyntheticEvent<TargetedEvent>) => {
+        handleFocus();
+        onFocus?.(e);
+      },
+      [handleFocus, onFocus],
+    );
+
+    const handleBlurCallback = React.useCallback(
+      (e: NativeSyntheticEvent<TargetedEvent>) => {
+        handleBlur();
+        onBlur?.(e);
+      },
+      [handleBlur, onBlur],
+    );
+
     return (
-      <FocusRing>
-        {({ focusVisible }: FocusRingRenderProps) => (
-          <PressableWithKeyPress
-            {...props}
-            ref={mergedRef}
-            onLayout={handleLayout}
-            accessible
-            role={accessibilityRole as never}
-            accessibilityRole={accessibilityRole}
-            accessibilityLabel={resolvedAriaLabel}
-            accessibilityHint={accessibilityHint}
-            accessibilityState={{ disabled: isDisabled, ...accessibilityState }}
-            accessibilityValue={a11yValue}
-            accessibilityActions={[
-              { name: 'increment', label: 'increment' },
-              { name: 'decrement', label: 'decrement' },
-            ]}
-            onAccessibilityAction={(event) => {
-              if (event.nativeEvent.actionName === 'increment') {
-                stepBy(index, 1);
-              } else if (event.nativeEvent.actionName === 'decrement') {
-                stepBy(index, -1);
-              }
-            }}
-            onKeyPress={handleKeyPress}
-            tabIndex={isWeb ? -1 : resolvedTabIndex}
-            aria-label={resolvedAriaLabel}
-            aria-labelledby={ariaLabelledBy}
-            aria-describedby={ariaDescribedBy}
-            aria-details={ariaDetails}
-            aria-busy={ariaBusy}
-            aria-hidden={ariaHidden}
-            aria-keyshortcuts={ariaKeyshortcuts}
-            aria-orientation={state.orientation}
-            data-orientation={state.orientation}
-            data-disabled={isDisabled}
-            aria-valuemin={state.min}
-            aria-valuemax={state.max}
-            aria-valuenow={valueNow}
-            aria-valuetext={resolvedAriaValueText}
-            pointerEvents={isWeb ? 'none' : 'auto'}
-            style={[
-              dynamicStyle,
-              evaluateStyles(
-                style,
-                { ...state, index, valueNow, focusVisible },
-                { disableDefaultFocusRing, focusRingStyle },
-              ),
-            ]}
-          >
-            {isWeb && (
-              <input
-                type='range'
-                min={state.min}
-                max={state.max}
-                step={state.step}
-                value={valueNow}
-                disabled={isDisabled}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setValueAtIndex(
-                    index,
-                    parseFloat(e.target.value),
-                    'input-change',
-                  );
-                }}
-                tabIndex={resolvedTabIndex}
-                aria-label={resolvedAriaLabel}
-                aria-valuetext={resolvedAriaValueText}
-                style={
-                  {
-                    ...StyleSheet.flatten(styles.input),
-                    pointerEvents: 'auto',
-                  } as React.CSSProperties
-                }
-              />
-            )}
-          </PressableWithKeyPress>
-        )}
-      </FocusRing>
+      <PressableWithKeyPress
+        {...props}
+        ref={mergedRef}
+        onLayout={handleLayout}
+        onFocus={handleFocusCallback}
+        onBlur={handleBlurCallback}
+        accessible
+        role={accessibilityRole as never}
+        accessibilityRole={accessibilityRole}
+        accessibilityLabel={resolvedAriaLabel}
+        accessibilityHint={accessibilityHint}
+        accessibilityState={{ disabled: isDisabled, ...accessibilityState }}
+        accessibilityValue={a11yValue}
+        accessibilityActions={[
+          { name: 'increment', label: 'increment' },
+          { name: 'decrement', label: 'decrement' },
+        ]}
+        onAccessibilityAction={(event) => {
+          if (event.nativeEvent.actionName === 'increment') {
+            stepBy(index, 1);
+          } else if (event.nativeEvent.actionName === 'decrement') {
+            stepBy(index, -1);
+          }
+        }}
+        onKeyPress={handleKeyPress}
+        onKeyDown={handleKeyDown}
+        tabIndex={resolvedTabIndex}
+        aria-label={resolvedAriaLabel}
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
+        aria-busy={ariaBusy}
+        aria-hidden={ariaHidden}
+        aria-keyshortcuts={ariaKeyshortcuts}
+        aria-orientation={state.orientation}
+        data-orientation={state.orientation}
+        data-disabled={isDisabled}
+        aria-valuemin={state.min}
+        aria-valuemax={state.max}
+        aria-valuenow={valueNow}
+        aria-valuetext={resolvedAriaValueText}
+        pointerEvents={pointerEvents}
+        style={[
+          dynamicStyle,
+          evaluateStyles(
+            style,
+            { ...state, index, valueNow, focusVisible },
+            { disableDefaultFocusRing, focusRingStyle },
+          ),
+        ]}
+      />
     );
   }),
 );
-
-const styles = StyleSheet.create({
-  input: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    opacity: 0,
-    // @ts-expect-error inherit is valid on Web but missing in RN types
-    cursor: 'inherit',
-    margin: 0,
-    padding: 0,
-  },
-});
 
 SliderThumb.displayName = 'Slider.Thumb';
