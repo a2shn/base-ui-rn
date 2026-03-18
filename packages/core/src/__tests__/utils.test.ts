@@ -2,7 +2,6 @@ import {
   clamp,
   mergeRefs,
   resolveFocusRingStyle,
-  evaluate,
   evaluateStyles,
 } from '../utils';
 import { DEFAULT_FOCUS_RING_STYLE } from '../constants';
@@ -100,18 +99,6 @@ describe('resolveFocusRingStyle', () => {
   });
 });
 
-describe('evaluate', () => {
-  it('should return static value', () => {
-    expect(evaluate(10, {})).toBe(10);
-    expect(evaluate('hello', {})).toBe('hello');
-  });
-
-  it('should return result of function with state', () => {
-    const fn = (state: { count: number }) => state.count * 2;
-    expect(evaluate(fn, { count: 5 })).toBe(10);
-  });
-});
-
 describe('evaluateStyles', () => {
   it('should evaluate static style and resolve focus ring', () => {
     const style = { color: 'blue' } as StyleProp<ViewStyle>;
@@ -134,7 +121,7 @@ describe('evaluateStyles', () => {
     const result = evaluateStyles(style, state, {
       disableDefaultFocusRing: true,
     });
-    expect(result).toEqual([style, null]);
+    expect(result).toEqual(style);
   });
 
   it('should use custom focus ring style', () => {
@@ -147,10 +134,17 @@ describe('evaluateStyles', () => {
     expect(result).toEqual([style, customFocusRing]);
   });
 
-  it('should return null for focus ring if not focusVisible', () => {
+  it('should return style without focus ring if not focusVisible', () => {
     const style = { color: 'blue' } as StyleProp<ViewStyle>;
     const state = { focusVisible: false };
     const result = evaluateStyles(style, state);
-    expect(result).toEqual([style, null]);
+    expect(result).toEqual(style);
+  });
+
+  it('should return non-style values as-is', () => {
+    const children = 'hello';
+    const state = { focusVisible: true };
+    const result = evaluateStyles(children, state);
+    expect(result).toBe('hello');
   });
 });

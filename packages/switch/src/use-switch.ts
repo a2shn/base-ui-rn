@@ -22,7 +22,7 @@ export function useSwitchRoot(props: SwitchRootProps) {
     readOnly = false,
     focusVisible: forceFocusVisible,
     onPress,
-    onKeyPress,
+    onKeyDown,
     onFocus: onFocusProp,
     onBlur: onBlurProp,
   } = props;
@@ -74,12 +74,12 @@ export function useSwitchRoot(props: SwitchRootProps) {
     disabled,
   );
 
-  const handleKeyPress = React.useCallback(
+  const handleKeyDown = React.useCallback(
     (event: NativeSyntheticEvent<KeyPressEventData>) => {
       handleKeyboardActivation(event);
-      onKeyPress?.(event);
+      onKeyDown?.(event);
     },
-    [handleKeyboardActivation, onKeyPress],
+    [handleKeyboardActivation, onKeyDown],
   );
 
   const handleFocus = React.useCallback(
@@ -112,7 +112,7 @@ export function useSwitchRoot(props: SwitchRootProps) {
     disabled,
     readOnly,
     handlePress,
-    handleKeyPress,
+    handleKeyDown,
     handleFocus,
     handleBlur,
   };

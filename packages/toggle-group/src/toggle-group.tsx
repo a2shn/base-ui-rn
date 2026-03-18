@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View } from 'react-native';
 import { ToggleGroupContext } from '@base-ui-rn/toggle';
-import { evaluate } from '@base-ui-rn/core';
+import { evaluateStyles } from '@base-ui-rn/core';
 import { type ToggleGroupProps } from './types';
 import { useToggleGroup } from './use-toggle-group';
 
@@ -55,7 +55,7 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
     React.useImperativeHandle(ref, () => internalRef.current!);
 
     const {
-      onToggleKeyPress,
+      onToggleKeyDown,
       registerItem,
       registerValue,
       state,
@@ -79,7 +79,7 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
         valueSet,
         registerValue,
         registerItem,
-        onToggleKeyPress,
+        onToggleKeyDown,
       }),
       [
         state,
@@ -87,7 +87,7 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
         valueSet,
         registerValue,
         registerItem,
-        onToggleKeyPress,
+        onToggleKeyDown,
       ],
     );
 
@@ -96,7 +96,7 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
         <View
           {...otherViewProps}
           ref={internalRef}
-          style={evaluate(style, state)}
+          style={evaluateStyles(style, state)}
           role={(accessibilityRole ?? 'group') as unknown as 'checkbox'}
           tabIndex={tabIndex}
           aria-label={ariaLabel}
@@ -113,7 +113,7 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
           data-disabled={dataDisabled ?? disabled}
           data-multiple={dataMultiple ?? multiple}
         >
-          {evaluate(children, state)}
+          {evaluateStyles(children, state)}
         </View>
       </ToggleGroupContext.Provider>
     );

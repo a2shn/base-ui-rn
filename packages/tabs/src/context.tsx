@@ -26,7 +26,7 @@ export interface TabsContextValue extends FocusVisibleProps {
     ref: React.RefObject<View | null>,
   ) => () => void;
   registerPanel: (value: TabValue) => () => void;
-  onTabKeyPress: (
+  onTabKeyDown: (
     value: TabValue,
     event: NativeSyntheticEvent<KeyPressEventData>,
   ) => void;

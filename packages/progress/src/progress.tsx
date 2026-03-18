@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { resolveTabIndex, evaluate } from '@base-ui-rn/core';
+import { resolveTabIndex, evaluateStyles } from '@base-ui-rn/core';
 import type { ProgressRootProps } from './types';
 import { ProgressContext } from './progress-context';
 import { useProgress } from './use-progress';
@@ -76,8 +76,8 @@ export const ProgressRoot = React.forwardRef<View, ProgressRootProps>(
     const resolvedTabIndex = resolveTabIndex(false, tabIndex);
     const isLabelledByProp = Boolean(accessibilityLabel);
 
-    const resolvedStyle = evaluate(style, state);
-    const resolvedChildren = evaluate(children, state);
+    const resolvedStyle = evaluateStyles(style, state);
+    const resolvedChildren = evaluateStyles(children, state);
 
     return (
       <ProgressContext.Provider value={contextValue}>

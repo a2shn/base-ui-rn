@@ -65,7 +65,7 @@ export function useAccordionRoot(props: AccordionRootProps) {
       loop: loopFocus,
     });
 
-  const onTriggerKeyPress = React.useCallback(
+  const onTriggerKeyDown = React.useCallback(
     (value: string, event: NativeSyntheticEvent<KeyPressEventData>) => {
       if (disabled) return;
       const nextId = handleKeyDown(value, event);
@@ -165,7 +165,7 @@ export function useAccordionRoot(props: AccordionRootProps) {
     toggleItem,
     getItemIndex,
     getItemRef,
-    onTriggerKeyPress,
+    onTriggerKeyDown,
     state,
     focusVisible,
     handleFocus: onFocus,
@@ -258,7 +258,7 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
   const {
     disabled: disabledProp,
     onPress,
-    onKeyPress,
+    onKeyDown,
     focusVisible: forceFocusVisible = false,
     onFocus: onFocusProp,
     onBlur: onBlurProp,
@@ -321,21 +321,15 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
     disabled,
   );
 
-  const handleKeyPress = React.useCallback(
+  const handleKeyDown = React.useCallback(
     (event: NativeSyntheticEvent<KeyPressEventData>) => {
       if (disabled) return;
 
       handleKeyboardActivation(event);
-      context.onTriggerKeyPress(itemContext.value, event);
-      onKeyPress?.(event);
+      context.onTriggerKeyDown(itemContext.value, event);
+      onKeyDown?.(event);
     },
-    [
-      disabled,
-      handleKeyboardActivation,
-      itemContext.value,
-      context,
-      onKeyPress,
-    ],
+    [disabled, handleKeyboardActivation, itemContext.value, context, onKeyDown],
   );
 
   const state: AccordionTriggerState = {
@@ -348,7 +342,7 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
   return {
     disabled,
     handlePress,
-    handleKeyPress,
+    handleKeyDown,
     handleFocus,
     handleBlur,
     focused,

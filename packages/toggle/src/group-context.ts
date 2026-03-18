@@ -54,7 +54,7 @@ export interface ToggleGroupContextValue {
   /**
    * Callback for when a toggle within the group receives a key press.
    */
-  onToggleKeyPress: (
+  onToggleKeyDown: (
     value: string,
     event: NativeSyntheticEvent<KeyPressEventData>,
   ) => void;

@@ -126,7 +126,7 @@ describe('Toggle - State Management', () => {
       );
 
       const toggle = getByRole('checkbox');
-      fireEvent(toggle, 'keyPress', { nativeEvent: { key: 'Enter' } });
+      fireEvent(toggle, 'keyDown', { nativeEvent: { key: 'Enter' } });
 
       expect(onChangeMock).toHaveBeenLastCalledWith(true, {
         source: 'keyboard',

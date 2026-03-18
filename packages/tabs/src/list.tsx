@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluate } from '@base-ui-rn/core';
+import { evaluateStyles } from '@base-ui-rn/core';
 import type { TabsListProps } from './types';
 import { useTabsList } from './use-tabs';
 
@@ -39,8 +39,8 @@ export const TabsList = React.memo(
 
     const { state } = useTabsList();
 
-    const resolvedChildren = evaluate(children, state);
-    const resolvedStyle = evaluate(style, state);
+    const resolvedChildren = evaluateStyles(children, state);
+    const resolvedStyle = evaluateStyles(style, state);
 
     return (
       <View

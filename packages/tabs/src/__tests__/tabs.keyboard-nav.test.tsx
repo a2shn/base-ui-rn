@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render } from '@testing-library/react-native';
+import { render, fireEvent } from '@testing-library/react-native';
 import { Tabs } from '../index';
-import { fireKeyPress } from '@base-ui-rn/test-utils';
 
 describe('Tabs - Keyboard Navigation', () => {
   it('navigates with arrow keys without activating by default', () => {
@@ -25,7 +24,9 @@ describe('Tabs - Keyboard Navigation', () => {
       </Tabs.Root>,
     );
 
-    fireKeyPress(getByTestId('tab-1'), 'ArrowRight');
+    fireEvent(getByTestId('tab-1'), 'keyDown', {
+      nativeEvent: { key: 'ArrowRight' },
+    });
     expect(onFocusChange).toHaveBeenCalledWith('tab-2');
     expect(onValueChange).not.toHaveBeenCalled();
   });
@@ -49,7 +50,9 @@ describe('Tabs - Keyboard Navigation', () => {
       </Tabs.Root>,
     );
 
-    fireKeyPress(getByTestId('tab-1'), 'ArrowRight');
+    fireEvent(getByTestId('tab-1'), 'keyDown', {
+      nativeEvent: { key: 'ArrowRight' },
+    });
     expect(onValueChange).toHaveBeenCalledWith('tab-2');
   });
 
@@ -72,7 +75,9 @@ describe('Tabs - Keyboard Navigation', () => {
       </Tabs.Root>,
     );
 
-    fireKeyPress(getByTestId('tab-1'), 'ArrowDown');
+    fireEvent(getByTestId('tab-1'), 'keyDown', {
+      nativeEvent: { key: 'ArrowDown' },
+    });
     expect(onFocusChange).toHaveBeenCalledWith('tab-2');
   });
 });

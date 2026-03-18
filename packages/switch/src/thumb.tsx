@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluate } from '@base-ui-rn/core';
+import { evaluateStyles } from '@base-ui-rn/core';
 import type { SwitchThumbProps } from './types';
 import { useSwitchContext } from './context';
 
@@ -37,7 +37,7 @@ export const SwitchThumb = React.forwardRef<View, SwitchThumbProps>(
       <View
         {...otherProps}
         ref={ref}
-        style={evaluate(style, context)}
+        style={evaluateStyles(style, context)}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
         aria-describedby={ariaDescribedBy}
@@ -47,7 +47,7 @@ export const SwitchThumb = React.forwardRef<View, SwitchThumbProps>(
         data-checked={context.checked ? 'true' : undefined}
         data-disabled={context.disabled ? 'true' : undefined}
       >
-        {evaluate(children, context)}
+        {evaluateStyles(children, context)}
       </View>
     );
   },

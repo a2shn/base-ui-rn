@@ -24,7 +24,7 @@ interface AccordionContextValue {
   toggleItem: (value: string, details: AccordionValueChangeDetails) => void;
   getItemIndex: (value: string) => number;
   getItemRef: (value: string) => React.RefObject<View | null> | null;
-  onTriggerKeyPress: (
+  onTriggerKeyDown: (
     value: string,
     event: NativeSyntheticEvent<KeyPressEventData>,
   ) => void;

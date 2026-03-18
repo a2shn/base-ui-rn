@@ -12,16 +12,16 @@ describe('Slider keyboard navigation', () => {
 
     const thumb = getByLabelText('Volume thumb');
 
-    fireEvent(thumb, 'keyPress', { nativeEvent: { key: 'ArrowLeft' } });
+    fireEvent(thumb, 'keyDown', { nativeEvent: { key: 'ArrowLeft' } });
     expect(thumb.props['aria-valuenow']).toBe(49);
 
-    fireEvent(thumb, 'keyPress', { nativeEvent: { key: 'ArrowRight' } });
+    fireEvent(thumb, 'keyDown', { nativeEvent: { key: 'ArrowRight' } });
     expect(thumb.props['aria-valuenow']).toBe(50);
 
-    fireEvent(thumb, 'keyPress', { nativeEvent: { key: 'Home' } });
+    fireEvent(thumb, 'keyDown', { nativeEvent: { key: 'Home' } });
     expect(thumb.props['aria-valuenow']).toBe(0);
 
-    fireEvent(thumb, 'keyPress', { nativeEvent: { key: 'End' } });
+    fireEvent(thumb, 'keyDown', { nativeEvent: { key: 'End' } });
     expect(thumb.props['aria-valuenow']).toBe(100);
   });
 
@@ -34,10 +34,10 @@ describe('Slider keyboard navigation', () => {
 
     const thumb = getByLabelText('Volume thumb');
 
-    fireEvent(thumb, 'keyPress', { nativeEvent: { key: 'PageUp' } });
+    fireEvent(thumb, 'keyDown', { nativeEvent: { key: 'PageUp' } });
     expect(thumb.props['aria-valuenow']).toBe(60);
 
-    fireEvent(thumb, 'keyPress', { nativeEvent: { key: 'PageDown' } });
+    fireEvent(thumb, 'keyDown', { nativeEvent: { key: 'PageDown' } });
     expect(thumb.props['aria-valuenow']).toBe(50);
   });
 
@@ -49,7 +49,7 @@ describe('Slider keyboard navigation', () => {
     );
 
     const thumb = getByLabelText('Volume thumb');
-    fireEvent(thumb, 'keyPress', { nativeEvent: { key: 'ArrowRight' } });
+    fireEvent(thumb, 'keyDown', { nativeEvent: { key: 'ArrowRight' } });
     expect(thumb.props['aria-valuenow']).toBe(50);
   });
 
@@ -83,28 +83,28 @@ describe('Slider keyboard navigation', () => {
       </Slider.Root>,
     );
 
-    fireEvent(getByLabelText('T1'), 'keyPress', {
+    fireEvent(getByLabelText('T1'), 'keyDown', {
       nativeEvent: { key: 'ArrowRight' },
     });
     expect(onValueChange).toHaveBeenCalledWith([10, 21], expect.anything());
 
-    fireEvent(getByLabelText('T0'), 'keyPress', {
+    fireEvent(getByLabelText('T0'), 'keyDown', {
       nativeEvent: { key: 'ArrowLeft' },
     });
     expect(onValueChange).toHaveBeenCalledWith([9, 21], expect.anything());
   });
 
-  it('calls onKeyPress prop on Thumb', () => {
-    const onKeyPress = jest.fn();
+  it('calls onKeyDown prop on Thumb', () => {
+    const onKeyDown = jest.fn();
     const { getByLabelText } = render(
       <Slider.Root defaultValue={50}>
-        <Slider.Thumb aria-label='Thumb' onKeyPress={onKeyPress} />
+        <Slider.Thumb aria-label='Thumb' onKeyDown={onKeyDown} />
       </Slider.Root>,
     );
 
-    fireEvent(getByLabelText('Thumb'), 'keyPress', {
+    fireEvent(getByLabelText('Thumb'), 'keyDown', {
       nativeEvent: { key: 'ArrowRight' },
     });
-    expect(onKeyPress).toHaveBeenCalled();
+    expect(onKeyDown).toHaveBeenCalled();
   });
 });

@@ -68,7 +68,7 @@ export const useToggleGroup = ({
     [multiple, valueSet, value, controlledValue, onValueChange],
   );
 
-  const onToggleKeyPress = React.useCallback(
+  const onToggleKeyDown = React.useCallback(
     (currentValue: string, event: NativeSyntheticEvent<KeyPressEventData>) => {
       if (disabled) return;
       const nextId = handleKeyDown(currentValue, event);
@@ -121,7 +121,7 @@ export const useToggleGroup = ({
   return {
     onBlur,
     onFocus,
-    onToggleKeyPress,
+    onToggleKeyDown,
     registerItem,
     registerValue,
     state,

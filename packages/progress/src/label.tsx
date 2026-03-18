@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Text } from 'react-native';
-import { evaluate } from '@base-ui-rn/core';
+import { evaluateStyles } from '@base-ui-rn/core';
 import type { ProgressLabelProps } from './types';
 import { useProgressContext } from './progress-context';
 
@@ -34,8 +34,8 @@ export const ProgressLabel = React.forwardRef<Text, ProgressLabelProps>(
     const context = useProgressContext();
     const { labelId, isComplete, isIndeterminate, isProgressing } = context;
 
-    const resolvedChildren = evaluate(children, context);
-    const resolvedStyle = evaluate(style, context);
+    const resolvedChildren = evaluateStyles(children, context);
+    const resolvedStyle = evaluateStyles(style, context);
 
     return (
       <Text

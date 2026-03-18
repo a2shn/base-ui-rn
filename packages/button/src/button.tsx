@@ -3,7 +3,6 @@ import { View, type Role } from 'react-native';
 import { type ButtonProps } from './types';
 import {
   DEFAULT_HIT_SLOP,
-  evaluate,
   evaluateStyles,
   PressableWithKeyPress,
 } from '@base-ui-rn/core';
@@ -28,7 +27,7 @@ export const Button = React.memo(
       disabled,
       onPress,
       onPressedChange,
-      onKeyPress,
+      onKeyDown,
       accessibilityHint = 'Activates the button',
       accessibilityState,
       accessibilityActions,
@@ -66,7 +65,7 @@ export const Button = React.memo(
       handleAccessibilityAction,
       handleBlur,
       handleFocus,
-      handleKeyPress,
+      handleKeyDown,
       handlePress,
       isFocusable,
       mergedAccessibilityActions,
@@ -83,7 +82,7 @@ export const Button = React.memo(
       onPressedChange,
       onPress,
       onAccessibilityAction,
-      onKeyPress,
+      onKeyDown,
       onFocusProp,
       onBlurProp,
       shortcut,
@@ -115,7 +114,7 @@ export const Button = React.memo(
         importantForAccessibility='yes'
         hitSlop={hitSlop}
         onPress={handlePress}
-        onKeyPress={handleKeyPress}
+        onKeyDown={handleKeyDown}
         onFocus={handleFocus}
         onBlur={handleBlur}
         style={(pressableState) =>
@@ -127,7 +126,7 @@ export const Button = React.memo(
         }
       >
         {(pressableState) =>
-          evaluate(children, { ...pressableState, focused, focusVisible })
+          evaluateStyles(children, { ...pressableState, focused, focusVisible })
         }
       </PressableWithKeyPress>
     );

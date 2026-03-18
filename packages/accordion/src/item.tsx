@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluate } from '@base-ui-rn/core';
+import { evaluateStyles } from '@base-ui-rn/core';
 import { AccordionItemContext } from './context';
 import type { AccordionItemProps } from './types';
 import { useAccordionItem } from './use-accordion';
@@ -67,7 +67,7 @@ export const AccordionItem = React.forwardRef<View, AccordionItemProps>(
         <View
           {...otherProps}
           ref={ref}
-          style={evaluate(style, state)}
+          style={evaluateStyles(style, state)}
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
           aria-describedby={ariaDescribedBy}
@@ -81,7 +81,7 @@ export const AccordionItem = React.forwardRef<View, AccordionItemProps>(
           data-disabled={dataDisabled ?? (disabled ? 'true' : undefined)}
           data-index={dataIndex ?? index}
         >
-          {evaluate(children, state)}
+          {evaluateStyles(children, state)}
         </View>
       </AccordionItemContext.Provider>
     );

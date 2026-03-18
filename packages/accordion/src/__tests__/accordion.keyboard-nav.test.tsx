@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { render } from '@testing-library/react-native';
+import { render, fireEvent } from '@testing-library/react-native';
 import { Accordion } from '../index';
-import { fireKeyPress } from '@base-ui-rn/test-utils';
 
 describe('Accordion Keyboard Navigation', () => {
   it('navigates between triggers with arrow keys', () => {
@@ -22,18 +21,22 @@ describe('Accordion Keyboard Navigation', () => {
 
     const trigger1 = getByTestId('trigger-1');
 
-    fireKeyPress(trigger1, 'ArrowDown');
+    fireEvent(trigger1, 'keyDown', { nativeEvent: { key: 'ArrowDown' } });
     expect(onFocusChange).toHaveBeenCalledWith('item-2');
 
-    fireKeyPress(getByTestId('trigger-2'), 'ArrowDown');
+    fireEvent(getByTestId('trigger-2'), 'keyDown', {
+      nativeEvent: { key: 'ArrowDown' },
+    });
     expect(onFocusChange).toHaveBeenCalledWith('item-3');
 
     // Test looping (default true)
-    fireKeyPress(getByTestId('trigger-3'), 'ArrowDown');
+    fireEvent(getByTestId('trigger-3'), 'keyDown', {
+      nativeEvent: { key: 'ArrowDown' },
+    });
     expect(onFocusChange).toHaveBeenCalledWith('item-1');
 
     // Test backward navigation
-    fireKeyPress(trigger1, 'ArrowUp');
+    fireEvent(trigger1, 'keyDown', { nativeEvent: { key: 'ArrowUp' } });
     expect(onFocusChange).toHaveBeenCalledWith('item-3');
   });
 
@@ -51,11 +54,11 @@ describe('Accordion Keyboard Navigation', () => {
     );
 
     const trigger2 = getByTestId('trigger-2');
-    fireKeyPress(trigger2, 'ArrowDown');
+    fireEvent(trigger2, 'keyDown', { nativeEvent: { key: 'ArrowDown' } });
     expect(onFocusChange).not.toHaveBeenCalledWith('item-1');
 
     const trigger1 = getByTestId('trigger-1');
-    fireKeyPress(trigger1, 'ArrowUp');
+    fireEvent(trigger1, 'keyDown', { nativeEvent: { key: 'ArrowUp' } });
     expect(onFocusChange).not.toHaveBeenCalledWith('item-2');
   });
 
@@ -77,10 +80,10 @@ describe('Accordion Keyboard Navigation', () => {
 
     const trigger2 = getByTestId('trigger-2');
 
-    fireKeyPress(trigger2, 'Home');
+    fireEvent(trigger2, 'keyDown', { nativeEvent: { key: 'Home' } });
     expect(onFocusChange).toHaveBeenCalledWith('item-1');
 
-    fireKeyPress(trigger2, 'End');
+    fireEvent(trigger2, 'keyDown', { nativeEvent: { key: 'End' } });
     expect(onFocusChange).toHaveBeenCalledWith('item-3');
   });
 
@@ -98,11 +101,11 @@ describe('Accordion Keyboard Navigation', () => {
     );
 
     const trigger1 = getByTestId('trigger-1');
-    fireKeyPress(trigger1, 'ArrowRight');
+    fireEvent(trigger1, 'keyDown', { nativeEvent: { key: 'ArrowRight' } });
     expect(onFocusChange).toHaveBeenCalledWith('item-2');
 
     const trigger2 = getByTestId('trigger-2');
-    fireKeyPress(trigger2, 'ArrowLeft');
+    fireEvent(trigger2, 'keyDown', { nativeEvent: { key: 'ArrowLeft' } });
     expect(onFocusChange).toHaveBeenCalledWith('item-1');
   });
 });

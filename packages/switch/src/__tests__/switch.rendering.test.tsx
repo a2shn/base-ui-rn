@@ -20,11 +20,7 @@ describe('Switch - Rendering', () => {
       <SwitchRoot style={{ backgroundColor: 'red' }} />,
     );
     const root = getByRole('switch');
-    expect(root.props.style).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({ backgroundColor: 'red' }),
-      ]),
-    );
+    expect(root.props.style).toMatchObject({ backgroundColor: 'red' });
   });
 
   it('provides state to children functions', () => {

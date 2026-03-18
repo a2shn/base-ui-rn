@@ -124,9 +124,9 @@ export interface SwitchRootProps
   readOnly?: boolean;
 
   /**
-   * Callback fired when a key is pressed.
+   * Callback fired when a key is pressed down.
    */
-  onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
+  onKeyDown?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
 }
 
 export interface SwitchThumbProps

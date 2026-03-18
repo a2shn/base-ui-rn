@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluate } from '@base-ui-rn/core';
+import { evaluateStyles } from '@base-ui-rn/core';
 import type { ProgressTrackProps } from './types';
 import { useProgressContext } from './progress-context';
 
@@ -33,8 +33,8 @@ export const ProgressTrack = React.forwardRef<View, ProgressTrackProps>(
     const context = useProgressContext();
     const { isComplete, isIndeterminate, isProgressing } = context;
 
-    const resolvedChildren = evaluate(children, context);
-    const resolvedStyle = evaluate(style, context);
+    const resolvedChildren = evaluateStyles(children, context);
+    const resolvedStyle = evaluateStyles(style, context);
 
     return (
       <View

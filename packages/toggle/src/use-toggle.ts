@@ -36,7 +36,7 @@ export const useToggle = ({
   onPressedChange,
   disabled,
   onPress,
-  onKeyPress,
+  onKeyDown,
   accessibilityState,
   accessibilityActions,
   onAccessibilityAction,
@@ -57,7 +57,7 @@ export const useToggle = ({
   onPressedChange: ToggleProps['onPressedChange'];
   disabled: ToggleProps['disabled'];
   onPress: ToggleProps['onPress'];
-  onKeyPress: ToggleProps['onKeyPress'];
+  onKeyDown: ToggleProps['onKeyDown'];
   accessibilityState: ToggleProps['accessibilityState'];
   accessibilityActions: ToggleProps['accessibilityActions'];
   onAccessibilityAction: ToggleProps['onAccessibilityAction'];
@@ -140,21 +140,15 @@ export const useToggle = ({
     }
   });
 
-  const handleKeyPress = React.useCallback(
-    (e: NativeSyntheticEvent<KeyPressEventData>) => {
-      handleKeyboardActivation(e);
-      onKeyPress?.(e);
-    },
-    [handleKeyboardActivation, onKeyPress],
-  );
-
   const handleKeyDown = React.useCallback(
     (e: NativeSyntheticEvent<KeyPressEventData>) => {
+      handleKeyboardActivation(e);
+      onKeyDown?.(e);
       if (isInGroup && value !== undefined) {
-        groupContext.onToggleKeyPress(value, e);
+        groupContext.onToggleKeyDown(value, e);
       }
     },
-    [isInGroup, value, groupContext],
+    [handleKeyboardActivation, onKeyDown, isInGroup, value, groupContext],
   );
 
   const handleAccessibilityAction = React.useCallback(
@@ -220,7 +214,6 @@ export const useToggle = ({
     handleBlur,
     handleFocus,
     handleKeyDown,
-    handleKeyPress,
     handlePress,
     isDisabled,
     isFocusable,

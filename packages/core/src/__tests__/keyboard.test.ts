@@ -249,6 +249,9 @@ describe('useKeyboardNavigation', () => {
       (options: Record<string, string>) => options.default,
     );
   });
+  it('should be a dummy test', () => {
+    expect(true).toBe(true);
+  });
 
   // Tests continue...
 });

@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { render, RenderResult, fireEvent } from '@testing-library/react-native';
 
+export { fireEvent };
+
 export const DEFAULT_HINT = 'Triggers an action';
 
 /**
@@ -95,39 +97,6 @@ export function testAccessibility(
       );
     });
   }
-}
-
-/**
- * Helper for firing keyboard events
- */
-export function fireKeyPress(
-  element: ReturnType<RenderResult['getByRole']>,
-  key: string,
-): void {
-  fireEvent(element, 'keyDown', { nativeEvent: { key } });
-  fireEvent(element, 'keyPress', { nativeEvent: { key } });
-}
-
-/**
- * Helper for firing accessibility actions
- */
-export function fireAccessibilityAction(
-  element: ReturnType<RenderResult['getByRole']>,
-  actionName: string,
-): void {
-  fireEvent(element, 'accessibilityAction', {
-    nativeEvent: { actionName },
-  });
-}
-
-/**
- * Helper for testing multiple keys at once
- */
-export function fireMultipleKeyPresses(
-  element: ReturnType<RenderResult['getByRole']>,
-  keys: string[],
-): void {
-  keys.forEach((key) => fireKeyPress(element, key));
 }
 
 /**

@@ -12,8 +12,8 @@ describe('Slider keyboard', () => {
     );
 
     const thumb = getByLabelText('Volume thumb');
-    fireEvent(thumb, 'keyPress', { nativeEvent: { key: 'ArrowRight' } });
-    fireEvent(thumb, 'keyPress', { nativeEvent: { key: 'ArrowUp' } });
+    fireEvent(thumb, 'keyDown', { nativeEvent: { key: 'ArrowRight' } });
+    fireEvent(thumb, 'keyDown', { nativeEvent: { key: 'ArrowUp' } });
 
     expect(getByText('3')).toBeTruthy();
   });

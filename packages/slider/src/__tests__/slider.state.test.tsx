@@ -11,7 +11,7 @@ describe('Slider state', () => {
       </Slider.Root>,
     );
 
-    fireEvent(getByLabelText('Volume thumb'), 'keyPress', {
+    fireEvent(getByLabelText('Volume thumb'), 'keyDown', {
       nativeEvent: { key: 'ArrowRight' },
     });
 
@@ -26,7 +26,7 @@ describe('Slider state', () => {
       </Slider.Root>,
     );
 
-    fireEvent(getByLabelText('Volume thumb'), 'keyPress', {
+    fireEvent(getByLabelText('Volume thumb'), 'keyDown', {
       nativeEvent: { key: 'ArrowRight' },
     });
 
@@ -51,12 +51,12 @@ describe('Slider state', () => {
 
     // Move thumb 0 to 15 (at the limit)
     for (let i = 0; i < 5; i++) {
-      fireEvent(thumb0, 'keyPress', { nativeEvent: { key: 'ArrowRight' } });
+      fireEvent(thumb0, 'keyDown', { nativeEvent: { key: 'ArrowRight' } });
     }
     expect(onValueChange).toHaveBeenLastCalledWith([15, 20], expect.anything());
 
     // Try to move thumb 0 to 16 (should be blocked by minStepsBetweenValues=5)
-    fireEvent(thumb0, 'keyPress', { nativeEvent: { key: 'ArrowRight' } });
+    fireEvent(thumb0, 'keyDown', { nativeEvent: { key: 'ArrowRight' } });
     expect(onValueChange).toHaveBeenLastCalledWith([15, 20], expect.anything());
   });
 
@@ -78,7 +78,7 @@ describe('Slider state', () => {
 
     // Move thumb 0 from 10 to 16. It should push thumb 1 to 21.
     for (let i = 0; i < 6; i++) {
-      fireEvent(thumb0, 'keyPress', { nativeEvent: { key: 'ArrowRight' } });
+      fireEvent(thumb0, 'keyDown', { nativeEvent: { key: 'ArrowRight' } });
     }
     expect(onValueChange).toHaveBeenLastCalledWith([16, 21], expect.anything());
   });
@@ -100,7 +100,7 @@ describe('Slider state', () => {
     // Move thumb 1 from 20 to 25.
     // Thumb 0 should pull to 15, Thumb 2 should push to 35.
     for (let i = 0; i < 5; i++) {
-      fireEvent(thumb1, 'keyPress', { nativeEvent: { key: 'ArrowRight' } });
+      fireEvent(thumb1, 'keyDown', { nativeEvent: { key: 'ArrowRight' } });
     }
     expect(onValueChange).toHaveBeenLastCalledWith(
       [15, 25, 35],
@@ -130,7 +130,7 @@ describe('Slider state', () => {
     // Move thumb 0 from 80 to 81.
     // Chain would be [81, 91, 101] which overflows max 100.
     // Chain should shift back to [80, 90, 100].
-    fireEvent(thumb0, 'keyPress', { nativeEvent: { key: 'ArrowRight' } });
+    fireEvent(thumb0, 'keyDown', { nativeEvent: { key: 'ArrowRight' } });
 
     // If it was successful, it would have called onValueChange.
     // Since it's blocked, it might not have been called or called with same values.
@@ -152,12 +152,12 @@ describe('Slider state', () => {
       </Slider.Root>,
     );
 
-    fireEvent(getByLabelText('Thumb'), 'keyPress', {
+    fireEvent(getByLabelText('Thumb'), 'keyDown', {
       nativeEvent: { key: 'ArrowRight' },
     });
     expect(onValueChange).toHaveBeenCalledWith(0.2, expect.anything());
 
-    fireEvent(getByLabelText('Thumb'), 'keyPress', {
+    fireEvent(getByLabelText('Thumb'), 'keyDown', {
       nativeEvent: { key: 'ArrowRight' },
     });
     expect(onValueChange).toHaveBeenCalledWith(0.3, expect.anything());
@@ -195,8 +195,8 @@ describe('Slider state', () => {
 
     // Move thumb 0 to 25 in one go (simulating a jump or drag)
     // next = [25, 20].sort = [20, 25].
-    fireEvent(thumb0, 'keyPress', { nativeEvent: { key: 'PageUp' } }); // largeStep is 10 by default
-    fireEvent(thumb0, 'keyPress', { nativeEvent: { key: 'PageUp' } }); // another 10 steps -> 30.
+    fireEvent(thumb0, 'keyDown', { nativeEvent: { key: 'PageUp' } }); // largeStep is 10 by default
+    fireEvent(thumb0, 'keyDown', { nativeEvent: { key: 'PageUp' } }); // another 10 steps -> 30.
 
     // Default is 10 + 10 + 10 = 30. Initial 10 + 2*10 = 30.
     // [30, 20] -> [20, 30]
@@ -220,7 +220,7 @@ describe('Slider state', () => {
 
     // Move thumb 0 towards 25. Behavior='none' means it caps at index 1 (20).
     for (let i = 0; i < 15; i++) {
-      fireEvent(thumb0, 'keyPress', { nativeEvent: { key: 'ArrowRight' } });
+      fireEvent(thumb0, 'keyDown', { nativeEvent: { key: 'ArrowRight' } });
     }
 
     expect(onValueChange).toHaveBeenLastCalledWith([20, 20], expect.anything());
@@ -239,7 +239,7 @@ describe('Slider state', () => {
       </Slider.Root>,
     );
 
-    fireEvent(getByLabelText('Thumb'), 'keyPress', {
+    fireEvent(getByLabelText('Thumb'), 'keyDown', {
       nativeEvent: { key: 'ArrowRight' },
     });
     expect(onValueChange).toHaveBeenCalledWith(-49, expect.anything());

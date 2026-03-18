@@ -18,6 +18,7 @@ interface SliderContextValue {
   setTrackSize: (size: number) => void;
   setThumbSize: (size: number) => void;
   thumbRefs: React.MutableRefObject<(View | null)[]>;
+  thumbNodeHandles: React.MutableRefObject<Array<number | undefined>>;
 }
 
 export const SliderContext = React.createContext<SliderContextValue | null>(

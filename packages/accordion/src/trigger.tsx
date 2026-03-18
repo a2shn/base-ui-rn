@@ -1,10 +1,6 @@
 import * as React from 'react';
 import { View, Platform } from 'react-native';
-import {
-  evaluate,
-  evaluateStyles,
-  PressableWithKeyPress,
-} from '@base-ui-rn/core';
+import { evaluateStyles, PressableWithKeyPress } from '@base-ui-rn/core';
 import { useAccordionItemContext } from './context';
 import type { AccordionTriggerProps } from './types';
 import { useAccordionTrigger } from './use-accordion';
@@ -47,7 +43,7 @@ export const AccordionTrigger = React.forwardRef<View, AccordionTriggerProps>(
     const {
       disabled,
       handlePress,
-      handleKeyPress,
+      handleKeyDown,
       handleFocus,
       handleBlur,
       focused,
@@ -80,8 +76,7 @@ export const AccordionTrigger = React.forwardRef<View, AccordionTriggerProps>(
         ref={internalRef}
         disabled={disabled}
         onPress={handlePress}
-        onKeyPress={handleKeyPress}
-        onKeyDown={handleKeyPress}
+        onKeyDown={handleKeyDown}
         onFocus={handleFocus}
         onBlur={handleBlur}
         style={finalStyle}
@@ -104,7 +99,7 @@ export const AccordionTrigger = React.forwardRef<View, AccordionTriggerProps>(
         data-panel-open={dataPanelOpen ?? (open ? 'true' : undefined)}
         data-disabled={dataDisabled ?? (disabled ? 'true' : undefined)}
       >
-        {evaluate(children, state)}
+        {evaluateStyles(children, state)}
       </PressableWithKeyPress>
     );
   },

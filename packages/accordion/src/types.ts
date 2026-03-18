@@ -302,10 +302,6 @@ export interface AccordionTriggerProps
   /**
    * Callback fired when a key is pressed.
    */
-  onKeyPress?: (e: NativeSyntheticEvent<CoreKeyPressEventData>) => void;
-  /**
-   * Callback fired when the trigger receives focus.
-   */
   onFocus?: (e: NativeSyntheticEvent<TargetedEvent>) => void;
   /**
    * Callback fired when the trigger loses focus.

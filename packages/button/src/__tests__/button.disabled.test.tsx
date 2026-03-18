@@ -2,11 +2,7 @@ import * as React from 'react';
 import { Text } from 'react-native';
 import { render, fireEvent } from '@testing-library/react-native';
 import { Button } from '../button';
-import {
-  DEFAULT_HINT,
-  fireKeyPress,
-  fireAccessibilityAction,
-} from '@base-ui-rn/test-utils';
+import { DEFAULT_HINT } from '@base-ui-rn/test-utils';
 
 describe('Button - Disabled State', () => {
   afterEach(() => {
@@ -94,7 +90,9 @@ describe('Button - Disabled State', () => {
 
       const button = getByRole('button');
 
-      fireAccessibilityAction(button, 'activate');
+      fireEvent(button, 'accessibilityAction', {
+        nativeEvent: { actionName: 'activate' },
+      });
       expect(onPressMock).not.toHaveBeenCalled();
     });
 
@@ -137,12 +135,12 @@ describe('Button - Disabled State', () => {
   describe('Disabled with Multiple Interaction Sources', () => {
     it('ignores all interaction sources when disabled', () => {
       const onPressMock = jest.fn();
-      const onKeyPressMock = jest.fn();
+      const onKeyDownMock = jest.fn();
       const { getByRole } = render(
         <Button
           disabled
           onPress={onPressMock}
-          onKeyPress={onKeyPressMock}
+          onKeyDown={onKeyDownMock}
           accessibilityHint={DEFAULT_HINT}
         >
           <Text>Disabled Button</Text>
@@ -155,21 +153,23 @@ describe('Button - Disabled State', () => {
       fireEvent.press(button);
       expect(onPressMock).not.toHaveBeenCalled();
 
-      // Try keyboard (onKeyPress callback still fires)
-      fireKeyPress(button, 'Enter');
+      // Try keyboard (onKeyDown callback still fires)
+      fireEvent(button, 'keyDown', { nativeEvent: { key: 'Enter' } });
       expect(onPressMock).not.toHaveBeenCalled();
 
       // Try accessibility action
-      fireAccessibilityAction(button, 'activate');
+      fireEvent(button, 'accessibilityAction', {
+        nativeEvent: { actionName: 'activate' },
+      });
       expect(onPressMock).not.toHaveBeenCalled();
     });
 
-    it('allows onKeyPress callback to fire even when disabled', () => {
-      const onKeyPressMock = jest.fn();
+    it('allows onKeyDown callback to fire even when disabled', () => {
+      const onKeyDownMock = jest.fn();
       const { getByRole } = render(
         <Button
           disabled
-          onKeyPress={onKeyPressMock}
+          onKeyDown={onKeyDownMock}
           accessibilityHint={DEFAULT_HINT}
         >
           <Text>Disabled Button</Text>
@@ -178,8 +178,8 @@ describe('Button - Disabled State', () => {
 
       const button = getByRole('button');
 
-      fireKeyPress(button, 'Tab');
-      expect(onKeyPressMock).toHaveBeenCalledTimes(1);
+      fireEvent(button, 'keyDown', { nativeEvent: { key: 'Tab' } });
+      expect(onKeyDownMock).toHaveBeenCalledTimes(1);
     });
   });
 

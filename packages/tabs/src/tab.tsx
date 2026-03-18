@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { View, type NativeSyntheticEvent } from 'react-native';
 import {
-  evaluate,
   evaluateStyles,
   type KeyPressEventData,
   PressableWithKeyPress,
@@ -50,7 +49,7 @@ export const Tab = React.memo(
       ref,
       state,
       handlePress,
-      handleKeyPress,
+      handleKeyDown,
       handleFocus,
       handleBlur,
       onLayout,
@@ -67,11 +66,8 @@ export const Tab = React.memo(
         ref={ref}
         disabled={state.disabled}
         onPress={handlePress}
-        onKeyPress={(e: unknown) =>
-          handleKeyPress(e as NativeSyntheticEvent<KeyPressEventData>)
-        }
         onKeyDown={(e: unknown) =>
-          handleKeyPress(e as NativeSyntheticEvent<KeyPressEventData>)
+          handleKeyDown(e as NativeSyntheticEvent<KeyPressEventData>)
         }
         onFocus={handleFocus}
         onBlur={handleBlur}
@@ -102,7 +98,7 @@ export const Tab = React.memo(
           dataActivationDirection ?? state.activationDirection
         }
       >
-        {evaluate(children, state)}
+        {evaluateStyles(children, state)}
       </PressableWithKeyPress>
     );
   }),

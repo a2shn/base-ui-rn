@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Text } from 'react-native';
-import { evaluate } from '@base-ui-rn/core';
+import { evaluateStyles } from '@base-ui-rn/core';
 import type { SliderLabelProps } from './types';
 import { useSliderContext } from './context';
 
@@ -42,7 +42,7 @@ export const SliderLabel = React.memo(
         aria-busy={ariaBusy}
         aria-hidden={ariaHidden}
       >
-        {evaluate(children, state)}
+        {evaluateStyles(children, state)}
       </Text>
     );
   }),

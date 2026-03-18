@@ -141,9 +141,17 @@ You **MUST** create or update these files in `src/__tests__/`:
 
 ### Testing Helpers
 
-- **MUST** use `fireKeyPress` from `@base-ui-rn/test-utils` for hardware
-  keyboard simulation.
-- **MUST** use `testAccessibility` for standard checks.
+- **MUST** import `fireEvent` from `@testing-library/react-native` for all event
+  testing.
+- **MUST** use
+  `fireEvent(element, 'keyDown', { nativeEvent: { key: 'Enter' } })` for
+  keyboard events.
+- **MUST** use
+  `fireEvent(element, 'accessibilityAction', { nativeEvent: { actionName: 'activate' } })`
+  for accessibility actions.
+- **MUST** use `testAccessibility` for standard accessibility checks.
+- **CAN** use key constants from `@base-ui-rn/test-utils`: `ACTIVATION_KEYS`,
+  `NON_ACTIVATION_KEYS`, `DPAD_KEYS`.
 
 ---
 

@@ -1,13 +1,9 @@
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render } from '@testing-library/react-native';
+import { render, fireEvent } from '@testing-library/react-native';
 import { ToggleGroup } from '../toggle-group';
 import { Toggle } from '@base-ui-rn/toggle';
-import {
-  fireKeyPress,
-  ACTIVATION_KEYS,
-  NON_ACTIVATION_KEYS,
-} from '@base-ui-rn/test-utils';
+import { ACTIVATION_KEYS, NON_ACTIVATION_KEYS } from '@base-ui-rn/test-utils';
 
 describe('ToggleGroup - Keyboard Interaction', () => {
   it('allows activating toggles via ALL hardware activation keys (Enter, Space, Gamepad buttons)', () => {
@@ -23,7 +19,7 @@ describe('ToggleGroup - Keyboard Interaction', () => {
     const a = getByRole('checkbox', { name: 'A' });
 
     ACTIVATION_KEYS.forEach((key, index) => {
-      fireKeyPress(a, key);
+      fireEvent(a, 'keyDown', { nativeEvent: { key } });
       // Even index = toggled ON (['a']), Odd index = toggled OFF ([])
       const expectedValue = index % 2 === 0 ? ['a'] : [];
       expect(onValueChange).toHaveBeenLastCalledWith(
@@ -51,7 +47,7 @@ describe('ToggleGroup - Keyboard Interaction', () => {
     const a = getByRole('checkbox', { name: 'A' });
 
     NON_ACTIVATION_KEYS.forEach((key) => {
-      fireKeyPress(a, key);
+      fireEvent(a, 'keyDown', { nativeEvent: { key } });
     });
 
     expect(onValueChange).not.toHaveBeenCalled();
@@ -70,7 +66,7 @@ describe('ToggleGroup - Keyboard Interaction', () => {
     const a = getByRole('checkbox', { name: 'A' });
 
     ACTIVATION_KEYS.forEach((key) => {
-      fireKeyPress(a, key);
+      fireEvent(a, 'keyDown', { nativeEvent: { key } });
     });
 
     expect(onValueChange).not.toHaveBeenCalled();
@@ -93,11 +89,11 @@ describe('ToggleGroup - Keyboard Interaction', () => {
     const b = getByRole('checkbox', { name: 'B' });
 
     // Activate 'a' with 'Enter'
-    fireKeyPress(a, 'Enter');
+    fireEvent(a, 'keyDown', { nativeEvent: { key: 'Enter' } });
     expect(onValueChange).toHaveBeenLastCalledWith(['a'], expect.anything());
 
     // Activate 'b' with 'Select' (gamepad)
-    fireKeyPress(b, 'Select');
+    fireEvent(b, 'keyDown', { nativeEvent: { key: 'Select' } });
     expect(onValueChange).toHaveBeenLastCalledWith(
       ['a', 'b'],
       expect.anything(),

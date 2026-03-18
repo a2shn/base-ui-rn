@@ -38,12 +38,12 @@ export const useButton = ({
   onPressedChange,
   onPress,
   onAccessibilityAction,
-  onKeyPress,
   onFocusProp,
   onBlurProp,
   shortcut,
   tabIndex,
   ariaDisabled,
+  onKeyDown,
 }: {
   disabled: ButtonProps['disabled'];
   focusableWhenDisabled: boolean;
@@ -53,12 +53,12 @@ export const useButton = ({
   onPressedChange: ButtonProps['onPressedChange'];
   onPress: ButtonProps['onPress'];
   onAccessibilityAction: ButtonProps['onAccessibilityAction'];
-  onKeyPress: ButtonProps['onKeyPress'];
   onFocusProp: ButtonProps['onFocus'];
   onBlurProp: ButtonProps['onBlur'];
   shortcut: ButtonProps['shortcut'];
   tabIndex: ButtonProps['tabIndex'];
   ariaDisabled: ButtonProps['aria-disabled'];
+  onKeyDown: ButtonProps['onKeyDown'];
 }) => {
   const isDisabled = disabled === true;
   const isFocusable = !isDisabled || focusableWhenDisabled === true;
@@ -133,12 +133,12 @@ export const useButton = ({
     }
   });
 
-  const handleKeyPress = React.useCallback(
+  const handleKeyDown = React.useCallback(
     (e: NativeSyntheticEvent<KeyPressEventData>) => {
       handleKeyboardActivation(e);
-      onKeyPress?.(e);
+      onKeyDown?.(e);
     },
-    [handleKeyboardActivation, onKeyPress],
+    [handleKeyboardActivation, onKeyDown],
   );
 
   const handlePress = React.useCallback(
@@ -172,7 +172,7 @@ export const useButton = ({
     handleAccessibilityAction,
     handleBlur,
     handleFocus,
-    handleKeyPress,
+    handleKeyDown,
     handlePress,
     isFocusable,
     mergedAccessibilityActions,

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluate } from '@base-ui-rn/core';
+import { evaluateStyles } from '@base-ui-rn/core';
 import type { AccordionPanelProps } from './types';
 import { useAccordionPanel } from './use-accordion';
 
@@ -58,7 +58,7 @@ export const AccordionPanel = React.forwardRef<View, AccordionPanelProps>(
       <View
         {...otherProps}
         ref={ref}
-        style={evaluate(style, state)}
+        style={evaluateStyles(style, state)}
         onLayout={onLayout}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
@@ -76,7 +76,7 @@ export const AccordionPanel = React.forwardRef<View, AccordionPanelProps>(
         data-starting-style={dataStartingStyle}
         data-ending-style={dataEndingStyle}
       >
-        {evaluate(children, state)}
+        {evaluateStyles(children, state)}
       </View>
     );
   },

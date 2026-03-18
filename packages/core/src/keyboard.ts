@@ -36,7 +36,7 @@ const DEFAULT_KEY_MAP: Record<KeyboardDirection, string[]> = {
  *
  * @param onActivate Callback fired on an activation key press.
  * @param isDisabled Whether the component is disabled, which blocks activation.
- * @returns A generic onKeyPress handler to spread onto a component.
+ * @returns A generic onKeyDown handler to spread onto a component.
  */
 export function useKeyboardActivation(
   onActivate: () => void,
@@ -101,7 +101,7 @@ export interface KeyboardRangeOptions {
  * Follows WAI-ARIA slider design pattern.
  *
  * @param options Keyboard range options.
- * @returns A generic onKeyPress handler.
+ * @returns A generic onKeyDown handler.
  */
 export function useKeyboardRange(options: KeyboardRangeOptions) {
   const {

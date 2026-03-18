@@ -4,6 +4,7 @@ import {
   View,
   type NativeSyntheticEvent,
   type TargetedEvent,
+  findNodeHandle,
 } from 'react-native';
 import {
   useKeyboardRange,
@@ -25,10 +26,10 @@ export const SliderThumb = React.memo(
     {
       index = 0,
       disabled,
-      onKeyPress,
       onFocus,
       onBlur,
       onLayout,
+      onKeyDown,
       disableDefaultFocusRing = false,
       focusRingStyle,
       focusVisible: forceFocusVisible = false,
@@ -59,6 +60,7 @@ export const SliderThumb = React.memo(
       setThumbSize,
       thumbAlignment,
       thumbRefs,
+      thumbNodeHandles,
     } = useSliderContext();
     const isDisabled = state.disabled || disabled;
     const valueNow = state.value[index] ?? state.min;
@@ -73,10 +75,21 @@ export const SliderThumb = React.memo(
     React.useEffect(() => {
       const refs = thumbRefs.current;
       refs[index] = innerRef.current;
+
+      // NEW: Register the native node handle
+      if (!isWeb && innerRef.current) {
+        // Conditionally call findNodeHandle
+        const nodeHandle = findNodeHandle(innerRef.current);
+        if (typeof nodeHandle === 'number') {
+          thumbNodeHandles.current[index] = nodeHandle;
+        }
+      }
+
       return () => {
         refs[index] = null;
+        thumbNodeHandles.current[index] = undefined; // Clear native node handle on unmount
       };
-    }, [index, thumbRefs]);
+    }, [index, thumbRefs, thumbNodeHandles]); // Add thumbNodeHandles to dependency array
 
     const handleLayout = React.useCallback(
       (event: import('react-native').LayoutChangeEvent) => {
@@ -118,20 +131,12 @@ export const SliderThumb = React.memo(
       orientation: state.orientation,
     });
 
-    const handleKeyPress = React.useCallback(
-      (event: NativeSyntheticEvent<KeyPressEventData>) => {
-        handleKeyboardRange(event);
-        onKeyPress?.(event);
-      },
-      [handleKeyboardRange, onKeyPress],
-    );
-
     const handleKeyDown = React.useCallback(
       (event: NativeSyntheticEvent<KeyPressEventData>) => {
         handleKeyboardRange(event);
-        onKeyPress?.(event);
+        onKeyDown?.(event);
       },
-      [handleKeyboardRange, onKeyPress],
+      [handleKeyboardRange, onKeyDown],
     );
 
     const range = state.max - state.min || 1;
@@ -229,7 +234,6 @@ export const SliderThumb = React.memo(
             stepBy(index, -1);
           }
         }}
-        onKeyPress={handleKeyPress}
         onKeyDown={handleKeyDown}
         tabIndex={resolvedTabIndex}
         aria-label={resolvedAriaLabel}

@@ -58,7 +58,7 @@ describe('Accordion - Disabled State', () => {
       );
 
       const trigger = getByText('Item 1');
-      fireEvent(trigger, 'keyPress', { nativeEvent: { key: 'Enter' } });
+      fireEvent(trigger, 'keyDown', { nativeEvent: { key: 'Enter' } });
 
       expect(onValueChange).not.toHaveBeenCalled();
     });

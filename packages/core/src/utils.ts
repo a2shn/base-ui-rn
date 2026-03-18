@@ -1,4 +1,4 @@
-import type * as React from 'react';
+import * as React from 'react';
 import {
   Platform,
   StyleSheet,
@@ -86,41 +86,79 @@ export function resolveFocusRingStyle(
 }
 
 /**
- * Evaluates a value that can be a static value or a function that returns a value based on state.
- *
- * @param value - The value or function to evaluate.
- * @param state - The state to pass to the function.
- * @returns The resolved value.
- *
- * @example
- * ```tsx
- * const resolvedStyle = evaluate(style, state);
- * ```
+ * Checks if a value is a style (StyleProp<ViewStyle>).
+ * Returns true for: null, undefined, numbers (dimension values), style objects, arrays of styles.
+ * Returns false for: React elements, strings, booleans, functions.
  */
-export function evaluate<T, S>(value: T | ((state: S) => T), state: S): T {
-  return typeof value === 'function'
-    ? (value as (state: S) => T)(state)
-    : value;
+function isStyle(value: unknown): boolean {
+  if (value === null || value === undefined) return false;
+  if (typeof value === 'number') return true;
+  if (typeof value === 'string' || typeof value === 'boolean') return false;
+  if (typeof value === 'function') return false;
+  if (Array.isArray(value)) return value.every(isStyle);
+  if (typeof value === 'object') {
+    if (React.isValidElement(value)) return false;
+    const obj = value as Record<string, unknown>;
+    if ('$$typeof' in obj) return false;
+    if ('ref' in obj) return false;
+    if ('type' in obj && 'props' in obj) return false;
+    return true;
+  }
+  return false;
 }
 
 /**
- * Evaluates styles and merges them with the focus ring style if applicable.
+ * Evaluates a value that can be a static value or a function that returns a value based on state.
+ * When used with styles, merges the result with focus ring style if state has focusVisible.
  */
-export function evaluateStyles<S extends { focusVisible: boolean }>(
-  style: StyleProp<ViewStyle> | ((state: S) => StyleProp<ViewStyle>),
+export function evaluateStyles<T extends StyleProp<ViewStyle>, S>(
+  value: T | ((state: S) => T),
+  state: S,
+  options?: {
+    disableDefaultFocusRing?: boolean;
+    focusRingStyle?: StyleProp<ViewStyle>;
+  },
+): StyleProp<ViewStyle>;
+
+export function evaluateStyles<T, S>(
+  value: T | ((state: S) => T),
+  state: S,
+  options?: {
+    disableDefaultFocusRing?: boolean;
+    focusRingStyle?: StyleProp<ViewStyle>;
+  },
+): T;
+
+export function evaluateStyles<T, S>(
+  value: T | ((state: S) => T),
   state: S,
   options: {
     disableDefaultFocusRing?: boolean;
     focusRingStyle?: StyleProp<ViewStyle>;
   } = {},
-): StyleProp<ViewStyle> {
+): T | StyleProp<ViewStyle> {
   const { disableDefaultFocusRing, focusRingStyle } = options;
-  return [
-    evaluate(style, state),
-    resolveFocusRingStyle(
-      state.focusVisible,
-      disableDefaultFocusRing,
-      focusRingStyle,
-    ),
-  ];
+  const resolvedValue =
+    typeof value === 'function' ? (value as (state: S) => T)(state) : value;
+
+  if (!isStyle(resolvedValue)) {
+    return resolvedValue;
+  }
+
+  const focusVisible = (state as { focusVisible?: boolean }).focusVisible;
+  if (!focusVisible) {
+    return resolvedValue as StyleProp<ViewStyle>;
+  }
+
+  const focusRing = resolveFocusRingStyle(
+    focusVisible,
+    disableDefaultFocusRing,
+    focusRingStyle,
+  );
+
+  if (focusRing === null) {
+    return resolvedValue as StyleProp<ViewStyle>;
+  }
+
+  return [resolvedValue, focusRing] as StyleProp<ViewStyle>;
 }

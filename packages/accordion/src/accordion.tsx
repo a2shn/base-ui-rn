@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluate } from '@base-ui-rn/core';
+import { evaluateStyles } from '@base-ui-rn/core';
 import { AccordionContext } from './context';
 import type { AccordionRootProps } from './types';
 import { useAccordionRoot } from './use-accordion';
@@ -48,7 +48,7 @@ export const AccordionRoot = React.forwardRef<View, AccordionRootProps>(
       toggleItem,
       getItemIndex,
       getItemRef,
-      onTriggerKeyPress,
+      onTriggerKeyDown,
       state,
     } = useAccordionRoot(props);
 
@@ -64,7 +64,7 @@ export const AccordionRoot = React.forwardRef<View, AccordionRootProps>(
         toggleItem,
         getItemIndex,
         getItemRef,
-        onTriggerKeyPress,
+        onTriggerKeyDown,
       }),
       [
         baseId,
@@ -77,7 +77,7 @@ export const AccordionRoot = React.forwardRef<View, AccordionRootProps>(
         toggleItem,
         getItemIndex,
         getItemRef,
-        onTriggerKeyPress,
+        onTriggerKeyDown,
       ],
     );
 
@@ -87,7 +87,7 @@ export const AccordionRoot = React.forwardRef<View, AccordionRootProps>(
           <View
             {...otherProps}
             ref={ref}
-            style={evaluate(style, state)}
+            style={evaluateStyles(style, state)}
             role='group'
             aria-orientation={orientation}
             aria-label={ariaLabel}
@@ -102,7 +102,7 @@ export const AccordionRoot = React.forwardRef<View, AccordionRootProps>(
             data-orientation={dataOrientation ?? orientation}
             data-disabled={dataDisabled ?? (disabled ? 'true' : undefined)}
           >
-            {evaluate(children, state)}
+            {evaluateStyles(children, state)}
           </View>
         </AccordionContext.Provider>
       </React.Fragment>

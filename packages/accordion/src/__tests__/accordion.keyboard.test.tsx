@@ -44,7 +44,7 @@ describe('Accordion - Keyboard Interaction', () => {
       );
 
       const trigger = getByText('Item 1');
-      fireEvent(trigger, 'keyPress', { nativeEvent: { key: 'Enter' } });
+      fireEvent(trigger, 'keyDown', { nativeEvent: { key: 'Enter' } });
 
       expect(onValueChange).toHaveBeenCalledWith('item-1', {
         value: 'item-1',
@@ -70,7 +70,7 @@ describe('Accordion - Keyboard Interaction', () => {
       );
 
       const trigger = getByText('Item 1');
-      fireEvent(trigger, 'keyPress', { nativeEvent: { key: ' ' } });
+      fireEvent(trigger, 'keyDown', { nativeEvent: { key: ' ' } });
 
       expect(onValueChange).toHaveBeenCalledWith('item-1', {
         value: 'item-1',
@@ -98,7 +98,7 @@ describe('Accordion - Keyboard Interaction', () => {
       const trigger = getByText('Item 1');
 
       ACTIVATION_KEYS.forEach((key) => {
-        fireEvent(trigger, 'keyPress', { nativeEvent: { key } });
+        fireEvent(trigger, 'keyDown', { nativeEvent: { key } });
       });
 
       expect(onValueChange).toHaveBeenCalledTimes(ACTIVATION_KEYS.length);
@@ -122,7 +122,7 @@ describe('Accordion - Keyboard Interaction', () => {
       );
 
       const trigger = getByText('Item 1');
-      fireEvent(trigger, 'keyPress', { nativeEvent: { key: 'Enter' } });
+      fireEvent(trigger, 'keyDown', { nativeEvent: { key: 'Enter' } });
 
       expect(onValueChange).not.toHaveBeenCalled();
     });
@@ -145,22 +145,22 @@ describe('Accordion - Keyboard Interaction', () => {
       );
 
       const trigger = getByText('Item 1');
-      fireEvent(trigger, 'keyPress', { nativeEvent: { key: 'Tab' } });
-      fireEvent(trigger, 'keyPress', { nativeEvent: { key: 'ArrowDown' } });
-      fireEvent(trigger, 'keyPress', { nativeEvent: { key: 'Escape' } });
+      fireEvent(trigger, 'keyDown', { nativeEvent: { key: 'Tab' } });
+      fireEvent(trigger, 'keyDown', { nativeEvent: { key: 'ArrowDown' } });
+      fireEvent(trigger, 'keyDown', { nativeEvent: { key: 'Escape' } });
 
       expect(onValueChange).not.toHaveBeenCalled();
     });
   });
 
-  describe('onKeyPress Callback', () => {
-    it('forwards key events to onKeyPress callback', () => {
-      const onKeyPress = jest.fn();
+  describe('onKeyDown Callback', () => {
+    it('forwards key events to onKeyDown callback', () => {
+      const onKeyDown = jest.fn();
       const { getByText } = render(
         <AccordionRoot>
           <AccordionItem value='item-1'>
             <AccordionHeader>
-              <AccordionTrigger onKeyPress={onKeyPress}>
+              <AccordionTrigger onKeyDown={onKeyDown}>
                 <Text>Item 1</Text>
               </AccordionTrigger>
             </AccordionHeader>
@@ -172,9 +172,9 @@ describe('Accordion - Keyboard Interaction', () => {
       );
 
       const trigger = getByText('Item 1');
-      fireEvent(trigger, 'keyPress', { nativeEvent: { key: 'Tab' } });
+      fireEvent(trigger, 'keyDown', { nativeEvent: { key: 'Tab' } });
 
-      expect(onKeyPress).toHaveBeenCalledTimes(1);
+      expect(onKeyDown).toHaveBeenCalledTimes(1);
     });
   });
 });

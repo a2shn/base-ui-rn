@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluate } from '@base-ui-rn/core';
+import { evaluateStyles } from '@base-ui-rn/core';
 import type { AccordionHeaderProps } from './types';
 import { useAccordionHeader } from './use-accordion';
 
@@ -39,13 +39,13 @@ export const AccordionHeader = React.forwardRef<View, AccordionHeaderProps>(
 
     const { state, open, disabled, index } = useAccordionHeader({});
 
-    const resolvedChildren = evaluate(children, state);
+    const resolvedChildren = evaluateStyles(children, state);
 
     return (
       <View
         {...otherProps}
         ref={ref}
-        style={evaluate(style, state)}
+        style={evaluateStyles(style, state)}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
         aria-describedby={ariaDescribedBy}

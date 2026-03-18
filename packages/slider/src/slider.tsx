@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { resolveTabIndex, evaluate } from '@base-ui-rn/core';
+import { resolveTabIndex, evaluateStyles } from '@base-ui-rn/core';
 import { SliderContext } from './context';
 import type { SliderRootProps } from './types';
 import { useSlider } from './use-slider';
@@ -58,6 +58,7 @@ export const SliderRoot = React.memo(
       thumbAlignment,
       setTrackSize,
       setThumbSize,
+      thumbNodeHandles,
     } = useSlider(props);
 
     const thumbRefs = React.useRef<(View | null)[]>([]);
@@ -75,6 +76,7 @@ export const SliderRoot = React.memo(
         setTrackSize,
         setThumbSize,
         thumbRefs,
+        thumbNodeHandles,
       }),
       [
         state,
@@ -88,6 +90,7 @@ export const SliderRoot = React.memo(
         setTrackSize,
         setThumbSize,
         thumbRefs,
+        thumbNodeHandles,
       ],
     );
 
@@ -115,9 +118,9 @@ export const SliderRoot = React.memo(
           data-min-steps-between-values={minStepsBetweenValues}
           data-max-steps-between-values={maxStepsBetweenValues}
           data-step-between-values={stepBetweenValues}
-          style={evaluate(style, state)}
+          style={evaluateStyles(style, state)}
         >
-          {evaluate(children, state)}
+          {evaluateStyles(children, state)}
         </View>
       </SliderContext.Provider>
     );

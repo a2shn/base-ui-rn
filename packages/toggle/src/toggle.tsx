@@ -2,7 +2,6 @@ import * as React from 'react';
 import { View, type Role } from 'react-native';
 import {
   DEFAULT_HIT_SLOP,
-  evaluate,
   evaluateStyles,
   PressableWithKeyPress,
 } from '@base-ui-rn/core';
@@ -33,7 +32,7 @@ export const Toggle = React.memo(
       role = 'checkbox',
       disabled,
       onPress,
-      onKeyPress,
+      onKeyDown,
       accessibilityHint = 'Toggles the value',
       accessibilityState,
       accessibilityActions,
@@ -73,7 +72,6 @@ export const Toggle = React.memo(
       handleBlur,
       handleFocus,
       handleKeyDown,
-      handleKeyPress,
       handlePress,
       isDisabled,
       isFocusable,
@@ -93,7 +91,7 @@ export const Toggle = React.memo(
       onPressedChange,
       disabled,
       onPress,
-      onKeyPress,
+      onKeyDown,
       accessibilityState,
       accessibilityActions,
       onAccessibilityAction,
@@ -161,7 +159,6 @@ export const Toggle = React.memo(
         importantForAccessibility='yes'
         hitSlop={hitSlop}
         onPress={handlePress}
-        onKeyPress={handleKeyPress}
         onKeyDown={handleKeyDown}
         onFocus={handleFocus}
         onBlur={handleBlur}
@@ -174,7 +171,7 @@ export const Toggle = React.memo(
         }
       >
         {(pressableState) =>
-          evaluate(children, {
+          evaluateStyles(children, {
             ...pressableState,
             pressed: isPressed,
             focused,

@@ -5,7 +5,11 @@ import {
   type NativeSyntheticEvent,
   type TargetedEvent,
 } from 'react-native';
-import { useKeyboardNavigation, useKeyboardActivation } from '@base-ui-rn/core';
+import {
+  useKeyboardNavigation,
+  useKeyboardActivation,
+  type KeyPressEventData,
+} from '@base-ui-rn/core';
 import { useFocus } from '@base-ui-rn/focus-ring';
 import type {
   TabValue,
@@ -18,7 +22,6 @@ import type {
   TabPanelProps,
   TabPanelState,
   ActivationDirection,
-  KeyPressEventData,
 } from './types';
 import { useTabsContext, type TabMeasurement } from './context';
 
@@ -131,7 +134,7 @@ export function useTabsRoot(props: TabsRootProps) {
       loop: true,
     });
 
-  const onTabKeyPress = React.useCallback(
+  const onTabKeyDown = React.useCallback(
     (value: TabValue, event: NativeSyntheticEvent<KeyPressEventData>) => {
       const nextId = handleKeyDown(String(value), event);
       if (nextId) {
@@ -170,7 +173,7 @@ export function useTabsRoot(props: TabsRootProps) {
         };
       },
       registerPanel,
-      onTabKeyPress,
+      onTabKeyDown,
       getTabIndex,
       tabMeasurements,
       updateTabMeasurement,
@@ -212,7 +215,6 @@ export function useTab(props: TabProps) {
 
   const handleFocus = React.useCallback(
     (e: NativeSyntheticEvent<TargetedEvent>) => {
-      console.log('onFocus called');
       onFocus();
       context.onFocusChange?.(String(value));
       onFocusProp?.(e);
@@ -242,11 +244,11 @@ export function useTab(props: TabProps) {
     handleActivation();
   }, [disabled, handleActivation]);
 
-  const handleKeyPress = React.useCallback(
+  const handleKeyDown = React.useCallback(
     (e: NativeSyntheticEvent<KeyPressEventData>) => {
       if (disabled) return;
       handleKeyboardActivation(e);
-      context.onTabKeyPress(value, e);
+      context.onTabKeyDown(value, e);
     },
     [disabled, handleKeyboardActivation, context, value],
   );
@@ -273,7 +275,7 @@ export function useTab(props: TabProps) {
     ref,
     state,
     handlePress,
-    handleKeyPress,
+    handleKeyDown,
     handleFocus,
     handleBlur,
     onLayout,

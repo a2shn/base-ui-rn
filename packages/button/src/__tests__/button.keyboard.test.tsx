@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render } from '@testing-library/react-native';
+import { render, fireEvent } from '@testing-library/react-native';
 import { Button } from '../button';
 import {
   DEFAULT_HINT,
-  fireKeyPress,
   ACTIVATION_KEYS,
   NON_ACTIVATION_KEYS,
   DPAD_KEYS,
@@ -27,7 +26,7 @@ describe('Button - Keyboard Interaction', () => {
       const button = getByRole('button');
 
       ACTIVATION_KEYS.forEach((key) => {
-        fireKeyPress(button, key);
+        fireEvent(button, 'keyDown', { nativeEvent: { key } });
       });
 
       expect(onPressMock).toHaveBeenCalledTimes(ACTIVATION_KEYS.length);
@@ -43,10 +42,10 @@ describe('Button - Keyboard Interaction', () => {
 
       const button = getByRole('button');
 
-      fireKeyPress(button, ' ');
+      fireEvent(button, 'keyDown', { nativeEvent: { key: ' ' } });
       expect(onPressMock).toHaveBeenCalledTimes(1);
 
-      fireKeyPress(button, 'Enter');
+      fireEvent(button, 'keyDown', { nativeEvent: { key: 'Enter' } });
       expect(onPressMock).toHaveBeenCalledTimes(2);
     });
 
@@ -59,7 +58,7 @@ describe('Button - Keyboard Interaction', () => {
       );
 
       const button = getByRole('button');
-      fireKeyPress(button, 'Enter');
+      fireEvent(button, 'keyDown', { nativeEvent: { key: 'Enter' } });
 
       expect(onPressMock).not.toHaveBeenCalled();
     });
@@ -80,7 +79,7 @@ describe('Button - Keyboard Interaction', () => {
       const button = getByRole('button');
 
       ACTIVATION_KEYS.forEach((key) => {
-        fireKeyPress(button, key);
+        fireEvent(button, 'keyDown', { nativeEvent: { key } });
       });
 
       expect(onPressMock).not.toHaveBeenCalled();
@@ -99,7 +98,7 @@ describe('Button - Keyboard Interaction', () => {
       const button = getByRole('button');
 
       NON_ACTIVATION_KEYS.forEach((key) => {
-        fireKeyPress(button, key);
+        fireEvent(button, 'keyDown', { nativeEvent: { key } });
       });
 
       expect(onPressMock).not.toHaveBeenCalled();
@@ -116,38 +115,38 @@ describe('Button - Keyboard Interaction', () => {
       const button = getByRole('button');
 
       DPAD_KEYS.forEach((key) => {
-        fireKeyPress(button, key);
+        fireEvent(button, 'keyDown', { nativeEvent: { key } });
       });
 
       expect(onPressMock).not.toHaveBeenCalled();
     });
   });
 
-  describe('onKeyPress Callback', () => {
-    it('forwards all key events to onKeyPress callback regardless of key type', () => {
-      const onKeyPressMock = jest.fn();
+  describe('onKeyDown Callback', () => {
+    it('forwards all key events to onKeyDown callback regardless of key type', () => {
+      const onKeyDownMock = jest.fn();
       const { getByRole } = render(
-        <Button onKeyPress={onKeyPressMock} accessibilityHint={DEFAULT_HINT}>
+        <Button onKeyDown={onKeyDownMock} accessibilityHint={DEFAULT_HINT}>
           <Text>Keyboard Button</Text>
         </Button>,
       );
 
       const button = getByRole('button');
 
-      fireKeyPress(button, 'Tab');
-      fireKeyPress(button, 'Enter');
-      fireKeyPress(button, 'ArrowDown');
+      fireEvent(button, 'keyDown', { nativeEvent: { key: 'Tab' } });
+      fireEvent(button, 'keyDown', { nativeEvent: { key: 'Enter' } });
+      fireEvent(button, 'keyDown', { nativeEvent: { key: 'ArrowDown' } });
 
-      expect(onKeyPressMock).toHaveBeenCalledTimes(3);
+      expect(onKeyDownMock).toHaveBeenCalledTimes(3);
     });
 
-    it('forwards activation keys to both onPress and onKeyPress', () => {
+    it('forwards activation keys to both onPress and onKeyDown', () => {
       const onPressMock = jest.fn();
-      const onKeyPressMock = jest.fn();
+      const onKeyDownMock = jest.fn();
       const { getByRole } = render(
         <Button
           onPress={onPressMock}
-          onKeyPress={onKeyPressMock}
+          onKeyDown={onKeyDownMock}
           accessibilityHint={DEFAULT_HINT}
         >
           <Text>Keyboard Button</Text>
@@ -156,10 +155,10 @@ describe('Button - Keyboard Interaction', () => {
 
       const button = getByRole('button');
 
-      fireKeyPress(button, 'Enter');
+      fireEvent(button, 'keyDown', { nativeEvent: { key: 'Enter' } });
 
       expect(onPressMock).toHaveBeenCalledTimes(1);
-      expect(onKeyPressMock).toHaveBeenCalledTimes(1);
+      expect(onKeyDownMock).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -181,7 +180,7 @@ describe('Button - Keyboard Interaction', () => {
       expect(loadingButton.props.focusable).toBe(true);
       expect(loadingButton.props.accessibilityState.disabled).toBe(true);
 
-      fireKeyPress(loadingButton, 'Enter');
+      fireEvent(loadingButton, 'keyDown', { nativeEvent: { key: 'Enter' } });
       expect(onPressMock).not.toHaveBeenCalled();
 
       rerender(
@@ -194,7 +193,7 @@ describe('Button - Keyboard Interaction', () => {
       expect(activeButton.props.focusable).toBe(true);
       expect(activeButton.props.accessibilityState.disabled).toBe(false);
 
-      fireKeyPress(activeButton, 'Enter');
+      fireEvent(activeButton, 'keyDown', { nativeEvent: { key: 'Enter' } });
       expect(onPressMock).toHaveBeenCalledTimes(1);
     });
 
@@ -212,7 +211,7 @@ describe('Button - Keyboard Interaction', () => {
 
       const button = getByRole('button');
 
-      fireKeyPress(button, 'Enter');
+      fireEvent(button, 'keyDown', { nativeEvent: { key: 'Enter' } });
 
       expect(onPressMock).toHaveBeenCalledTimes(1);
     });

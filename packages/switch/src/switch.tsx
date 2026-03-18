@@ -1,10 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import {
-  evaluate,
-  evaluateStyles,
-  PressableWithKeyPress,
-} from '@base-ui-rn/core';
+import { evaluateStyles, PressableWithKeyPress } from '@base-ui-rn/core';
 import type { SwitchRootProps } from './types';
 import { SwitchContext } from './context';
 import { useSwitchRoot } from './use-switch';
@@ -44,7 +40,7 @@ export const SwitchRoot = React.forwardRef<View, SwitchRootProps>(
       disabled,
       readOnly,
       handlePress,
-      handleKeyPress,
+      handleKeyDown,
       handleFocus,
       handleBlur,
     } = useSwitchRoot(props);
@@ -67,7 +63,7 @@ export const SwitchRoot = React.forwardRef<View, SwitchRootProps>(
           ref={ref}
           disabled={disabled}
           onPress={handlePress}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyDown}
           onFocus={handleFocus}
           onBlur={handleBlur}
           style={() =>
@@ -94,7 +90,7 @@ export const SwitchRoot = React.forwardRef<View, SwitchRootProps>(
           data-checked={checked ? 'true' : undefined}
           data-disabled={disabled ? 'true' : undefined}
         >
-          {evaluate(children, state)}
+          {evaluateStyles(children, state)}
         </PressableWithKeyPress>
       </SwitchContext.Provider>
     );

@@ -116,9 +116,9 @@ export interface ToggleProps
   focusableWhenDisabled?: boolean;
 
   /**
-   * Callback fired when a key is pressed.
+   * Callback fired when a key is pressed down.
    */
-  onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
+  onKeyDown?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
 
   /**
    * Keyboard shortcut configuration for the toggle.
@@ -131,6 +131,3 @@ export interface ToggleProps
    */
   hitSlop?: PressableProps['hitSlop'];
 }
-
-// Re-export commonly used types from core
-export type { KeyPressEventData } from '@base-ui-rn/core';

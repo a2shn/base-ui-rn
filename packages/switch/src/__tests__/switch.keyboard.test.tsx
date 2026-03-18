@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Platform } from 'react-native';
 import { render, fireEvent } from '@testing-library/react-native';
 import { SwitchRoot } from '../index';
-import { fireKeyPress } from '@base-ui-rn/test-utils';
 
 describe('Switch - Keyboard', () => {
   it('toggles on Enter key press', () => {
@@ -12,7 +11,7 @@ describe('Switch - Keyboard', () => {
     );
     const root = getByRole('switch');
 
-    fireKeyPress(root, 'Enter');
+    fireEvent(root, 'keyDown', { nativeEvent: { key: 'Enter' } });
     expect(onCheckedChange).toHaveBeenCalledWith(true);
   });
 
@@ -23,7 +22,7 @@ describe('Switch - Keyboard', () => {
     );
     const root = getByRole('switch');
 
-    fireKeyPress(root, ' ');
+    fireEvent(root, 'keyDown', { nativeEvent: { key: ' ' } });
     expect(onCheckedChange).toHaveBeenCalledWith(false);
   });
 
@@ -34,7 +33,7 @@ describe('Switch - Keyboard', () => {
     );
     const root = getByRole('switch');
 
-    fireKeyPress(root, 'a');
+    fireEvent(root, 'keyDown', { nativeEvent: { key: 'a' } });
     expect(onCheckedChange).not.toHaveBeenCalled();
   });
 
@@ -45,7 +44,7 @@ describe('Switch - Keyboard', () => {
     );
     const root = getByRole('switch');
 
-    fireKeyPress(root, 'Enter');
+    fireEvent(root, 'keyDown', { nativeEvent: { key: 'Enter' } });
     expect(onCheckedChange).not.toHaveBeenCalled();
   });
 
@@ -69,8 +68,8 @@ describe('Switch - Keyboard', () => {
       const root = getByRole('switch');
 
       // Simulate the sequence that happens on web:
-      // 1. Hardware keydown (handled by our onKeyPress)
-      fireKeyPress(root, 'Enter');
+      // 1. Hardware keydown
+      fireEvent(root, 'keyDown', { nativeEvent: { key: 'Enter' } });
       // 2. Browser click event (handled by Pressable's onPress)
       fireEvent.press(root);
 

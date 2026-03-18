@@ -279,7 +279,7 @@ export interface SliderThumbState extends SliderState {
  */
 export interface SliderThumbProps
   extends
-    Omit<ViewProps, 'style' | 'disabled' | 'onKeyPress'>,
+    Omit<ViewProps, 'style' | 'disabled'>,
     WebSliderThumbAccessibilityProps,
     FocusVisibleProps {
   /**
@@ -317,9 +317,9 @@ export interface SliderThumbProps
    */
   onPress?: (event: GestureResponderEvent) => void;
   /**
-   * Callback fired on key press.
+   * Callback fired on key down.
    */
-  onKeyPress?: (event: NativeSyntheticEvent<KeyPressEventData>) => void;
+  onKeyDown?: (event: NativeSyntheticEvent<KeyPressEventData>) => void;
   /**
    * Style applied to the thumb view.
    */

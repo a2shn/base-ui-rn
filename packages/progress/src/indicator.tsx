@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, type ViewStyle } from 'react-native';
-import { evaluate } from '@base-ui-rn/core';
+import { evaluateStyles } from '@base-ui-rn/core';
 import type { ProgressIndicatorProps } from './types';
 import { useProgressContext } from './progress-context';
 
@@ -40,7 +40,7 @@ export const ProgressIndicator = React.forwardRef<View, ProgressIndicatorProps>(
       };
     }, [percentage]);
 
-    const resolvedStyle = evaluate(style, context);
+    const resolvedStyle = evaluateStyles(style, context);
 
     return (
       <View

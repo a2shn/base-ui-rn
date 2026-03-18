@@ -2,11 +2,7 @@ import * as React from 'react';
 import { Text } from 'react-native';
 import { render, fireEvent } from '@testing-library/react-native';
 import { Toggle } from '../toggle';
-import {
-  DEFAULT_HINT,
-  fireKeyPress,
-  fireAccessibilityAction,
-} from '@base-ui-rn/test-utils';
+import { DEFAULT_HINT } from '@base-ui-rn/test-utils';
 
 describe('Toggle - Disabled State', () => {
   afterEach(() => {
@@ -117,7 +113,9 @@ describe('Toggle - Disabled State', () => {
 
       const toggle = getByRole('checkbox');
 
-      fireAccessibilityAction(toggle, 'activate');
+      fireEvent(toggle, 'accessibilityAction', {
+        nativeEvent: { actionName: 'activate' },
+      });
       expect(onChangeMock).not.toHaveBeenCalled();
     });
 
@@ -140,11 +138,13 @@ describe('Toggle - Disabled State', () => {
       expect(onChangeMock).not.toHaveBeenCalled();
 
       // Try keyboard
-      fireKeyPress(toggle, 'Enter');
+      fireEvent(toggle, 'keyDown', { nativeEvent: { key: 'Enter' } });
       expect(onChangeMock).not.toHaveBeenCalled();
 
       // Try accessibility action
-      fireAccessibilityAction(toggle, 'activate');
+      fireEvent(toggle, 'accessibilityAction', {
+        nativeEvent: { actionName: 'activate' },
+      });
       expect(onChangeMock).not.toHaveBeenCalled();
     });
   });

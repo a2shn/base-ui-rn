@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluate } from '@base-ui-rn/core';
+import { evaluateStyles } from '@base-ui-rn/core';
 import { TabsContext } from './context';
 import type { TabsRootProps } from './types';
 import { useTabsRoot } from './use-tabs';
@@ -54,8 +54,8 @@ export const TabsRoot = React.memo(
       onFocusChange,
     });
 
-    const resolvedChildren = evaluate(children, state);
-    const resolvedStyle = evaluate(style, state);
+    const resolvedChildren = evaluateStyles(children, state);
+    const resolvedStyle = evaluateStyles(style, state);
 
     return (
       <TabsContext.Provider value={contextValue}>

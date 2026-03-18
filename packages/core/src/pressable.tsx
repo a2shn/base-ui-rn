@@ -26,7 +26,6 @@ export const PressableWithKeyPress =
       ARIALiveProps &
       ARIATraitDisabled &
       ARIATraitExpanded & {
-        onKeyPress?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
         onKeyDown?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
       } & React.RefAttributes<View>
   >;

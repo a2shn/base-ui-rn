@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluate } from '@base-ui-rn/core';
+import { evaluateStyles } from '@base-ui-rn/core';
 import type { TabsIndicatorProps } from './types';
 import { useTabsIndicator } from './use-tabs';
 
@@ -32,8 +32,8 @@ export const TabsIndicator = React.memo(
 
     const { state } = useTabsIndicator();
 
-    const resolvedChildren = evaluate(children, state);
-    const resolvedStyle = evaluate(style, state);
+    const resolvedChildren = evaluateStyles(children, state);
+    const resolvedStyle = evaluateStyles(style, state);
 
     return (
       <View

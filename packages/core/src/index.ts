@@ -21,7 +21,6 @@ export {
   type ActivationKey,
 } from './constants';
 
-// Accessibility utilities
 export {
   mergeAccessibilityActions,
   isActivationAction,
@@ -48,7 +47,6 @@ export {
   mergeRefs,
   clamp,
   resolveFocusRingStyle,
-  evaluate,
   evaluateStyles,
 } from './utils';
 

@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render } from '@testing-library/react-native';
+import { render, fireEvent } from '@testing-library/react-native';
 import { Toggle } from '../toggle';
 import {
   DEFAULT_HINT,
-  fireKeyPress,
   ACTIVATION_KEYS,
   NON_ACTIVATION_KEYS,
   DPAD_KEYS,
@@ -27,13 +26,13 @@ describe('Toggle - Keyboard Interaction', () => {
       const toggle = getByRole('checkbox');
 
       // Test Space
-      fireKeyPress(toggle, ' ');
+      fireEvent(toggle, 'keyDown', { nativeEvent: { key: ' ' } });
       expect(onChangeMock).toHaveBeenLastCalledWith(true, {
         source: 'keyboard',
       });
 
       // Test Enter
-      fireKeyPress(toggle, 'Enter');
+      fireEvent(toggle, 'keyDown', { nativeEvent: { key: 'Enter' } });
       expect(onChangeMock).toHaveBeenLastCalledWith(false, {
         source: 'keyboard',
       });
@@ -50,7 +49,7 @@ describe('Toggle - Keyboard Interaction', () => {
       const toggle = getByRole('checkbox');
 
       ACTIVATION_KEYS.forEach((key) => {
-        fireKeyPress(toggle, key);
+        fireEvent(toggle, 'keyDown', { nativeEvent: { key } });
       });
 
       expect(onChangeMock).toHaveBeenCalledTimes(ACTIVATION_KEYS.length);
@@ -69,7 +68,7 @@ describe('Toggle - Keyboard Interaction', () => {
       );
 
       const toggle = getByRole('checkbox');
-      fireKeyPress(toggle, 'Enter');
+      fireEvent(toggle, 'keyDown', { nativeEvent: { key: 'Enter' } });
 
       expect(onChangeMock).not.toHaveBeenCalled();
     });
@@ -90,7 +89,7 @@ describe('Toggle - Keyboard Interaction', () => {
       const toggle = getByRole('checkbox');
 
       ACTIVATION_KEYS.forEach((key) => {
-        fireKeyPress(toggle, key);
+        fireEvent(toggle, 'keyDown', { nativeEvent: { key } });
       });
 
       expect(onChangeMock).not.toHaveBeenCalled();
@@ -112,7 +111,7 @@ describe('Toggle - Keyboard Interaction', () => {
       const toggle = getByRole('checkbox');
 
       NON_ACTIVATION_KEYS.forEach((key) => {
-        fireKeyPress(toggle, key);
+        fireEvent(toggle, 'keyDown', { nativeEvent: { key } });
       });
 
       expect(onPressedChangeMock).not.toHaveBeenCalled();
@@ -129,45 +128,45 @@ describe('Toggle - Keyboard Interaction', () => {
       const toggle = getByRole('checkbox');
 
       DPAD_KEYS.forEach((key) => {
-        fireKeyPress(toggle, key);
+        fireEvent(toggle, 'keyDown', { nativeEvent: { key } });
       });
 
       expect(onPressMock).not.toHaveBeenCalled();
     });
   });
 
-  describe('onKeyPress Callback', () => {
-    it('forwards all key events to onKeyPress callback', () => {
-      const onKeyPressMock = jest.fn();
+  describe('onKeyDown Callback', () => {
+    it('forwards all key events to onKeyDown callback', () => {
+      const onKeyDownMock = jest.fn();
       const { getByRole } = render(
-        <Toggle onKeyPress={onKeyPressMock} accessibilityHint={DEFAULT_HINT}>
+        <Toggle onKeyDown={onKeyDownMock} accessibilityHint={DEFAULT_HINT}>
           <Text>Keyboard Toggle</Text>
         </Toggle>,
       );
 
       const toggle = getByRole('checkbox');
 
-      fireKeyPress(toggle, 'Tab');
-      fireKeyPress(toggle, 'Enter');
+      fireEvent(toggle, 'keyDown', { nativeEvent: { key: 'Tab' } });
+      fireEvent(toggle, 'keyDown', { nativeEvent: { key: 'Enter' } });
 
-      expect(onKeyPressMock).toHaveBeenCalledTimes(2);
+      expect(onKeyDownMock).toHaveBeenCalledTimes(2);
     });
 
-    it('forwards both activation and non-activation keys to onKeyPress', () => {
-      const onKeyPressMock = jest.fn();
+    it('forwards both activation and non-activation keys to onKeyDown', () => {
+      const onKeyDownMock = jest.fn();
       const { getByRole } = render(
-        <Toggle onKeyPress={onKeyPressMock} accessibilityHint={DEFAULT_HINT}>
+        <Toggle onKeyDown={onKeyDownMock} accessibilityHint={DEFAULT_HINT}>
           <Text>Keyboard Toggle</Text>
         </Toggle>,
       );
 
       const toggle = getByRole('checkbox');
 
-      fireKeyPress(toggle, 'Enter');
-      fireKeyPress(toggle, 'Tab');
-      fireKeyPress(toggle, 'ArrowDown');
+      fireEvent(toggle, 'keyDown', { nativeEvent: { key: 'Enter' } });
+      fireEvent(toggle, 'keyDown', { nativeEvent: { key: 'Tab' } });
+      fireEvent(toggle, 'keyDown', { nativeEvent: { key: 'ArrowDown' } });
 
-      expect(onKeyPressMock).toHaveBeenCalledTimes(3);
+      expect(onKeyDownMock).toHaveBeenCalledTimes(3);
     });
   });
 
@@ -189,7 +188,7 @@ describe('Toggle - Keyboard Interaction', () => {
       expect(loadingToggle.props.focusable).toBe(true);
       expect(loadingToggle.props.accessibilityState.disabled).toBe(true);
 
-      fireKeyPress(loadingToggle, 'Enter');
+      fireEvent(loadingToggle, 'keyDown', { nativeEvent: { key: 'Enter' } });
       expect(onChangeMock).not.toHaveBeenCalled();
 
       rerender(
@@ -202,7 +201,7 @@ describe('Toggle - Keyboard Interaction', () => {
       expect(activeToggle.props.focusable).toBe(true);
       expect(activeToggle.props.accessibilityState.disabled).toBe(false);
 
-      fireKeyPress(activeToggle, 'Enter');
+      fireEvent(activeToggle, 'keyDown', { nativeEvent: { key: 'Enter' } });
       expect(onChangeMock).toHaveBeenCalledTimes(1);
     });
   });
