@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { resolveTabIndex, evaluateStyles } from '@base-ui-rn/core';
+import { evaluateStyles } from '@base-ui-rn/core';
 import { SliderContext } from './context';
 import type { SliderRootProps } from './types';
 import { useSlider } from './use-slider';
@@ -14,12 +14,10 @@ import { useSlider } from './use-slider';
  * @example
  * ```tsx
  * <Slider.Root defaultValue={25}>
- *   <Slider.Control>
- *     <Slider.Track>
- *       <Slider.Indicator />
- *       <Slider.Thumb />
- *     </Slider.Track>
- *   </Slider.Control>
+ *   <Slider.Track>
+ *     <Slider.Indicator />
+ *     <Slider.Thumb />
+ *   </Slider.Track>
  * </Slider.Root>
  * ```
  */
@@ -28,10 +26,8 @@ export const SliderRoot = React.memo(
     const {
       children,
       disabled = false,
-      accessibilityRole = 'adjustable',
       accessibilityState,
       style,
-      tabIndex,
       'aria-label': ariaLabel,
       'aria-keyshortcuts': ariaKeyshortcuts,
       'aria-disabled': ariaDisabled,
@@ -58,7 +54,7 @@ export const SliderRoot = React.memo(
       thumbAlignment,
       setTrackSize,
       setThumbSize,
-      thumbNodeHandles,
+      trackSize,
     } = useSlider(props);
 
     const thumbRefs = React.useRef<(View | null)[]>([]);
@@ -76,7 +72,7 @@ export const SliderRoot = React.memo(
         setTrackSize,
         setThumbSize,
         thumbRefs,
-        thumbNodeHandles,
+        trackSize,
       }),
       [
         state,
@@ -90,7 +86,7 @@ export const SliderRoot = React.memo(
         setTrackSize,
         setThumbSize,
         thumbRefs,
-        thumbNodeHandles,
+        trackSize,
       ],
     );
 
@@ -100,10 +96,7 @@ export const SliderRoot = React.memo(
           {...otherProps}
           ref={ref}
           accessible
-          role={accessibilityRole as never}
-          accessibilityRole={accessibilityRole}
           accessibilityState={{ disabled, ...accessibilityState }}
-          tabIndex={resolveTabIndex(disabled, tabIndex)}
           aria-label={ariaLabel}
           aria-keyshortcuts={ariaKeyshortcuts}
           aria-disabled={ariaDisabled ?? disabled}

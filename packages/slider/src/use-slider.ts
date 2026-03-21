@@ -43,7 +43,6 @@ export function useSlider(props: SliderRootProps) {
   // Use refs for physical sizes to avoid stale closure issues in rapid updates
   const trackSizeRef = React.useRef(0);
   const thumbSizeRef = React.useRef(0);
-  const thumbNodeHandles = React.useRef<Array<number | undefined>>([]);
 
   const handleSetTrackSize = React.useCallback((size: number) => {
     trackSizeRef.current = size;
@@ -226,6 +225,6 @@ export function useSlider(props: SliderRootProps) {
     thumbAlignment,
     setTrackSize: handleSetTrackSize,
     setThumbSize: handleSetThumbSize,
-    thumbNodeHandles,
+    trackSize: trackSizeRef,
   };
 }

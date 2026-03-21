@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {
+  PanResponder,
   Platform,
   View,
   type NativeSyntheticEvent,
   type TargetedEvent,
-  findNodeHandle,
 } from 'react-native';
 import {
   useKeyboardRange,
@@ -60,12 +60,14 @@ export const SliderThumb = React.memo(
       setThumbSize,
       thumbAlignment,
       thumbRefs,
-      thumbNodeHandles,
+      setValueAtIndex,
+      commitValue,
+      trackSize,
     } = useSliderContext();
     const isDisabled = state.disabled || disabled;
     const valueNow = state.value[index] ?? state.min;
     const isWeb = Platform.OS === 'web';
-    const resolvedTabIndex = resolveTabIndex(!!isDisabled, tabIndex);
+    const resolvedTabIndex = resolveTabIndex(!!isDisabled, tabIndex ?? 0);
     const pointerEvents = 'auto' as const;
 
     const innerRef = React.useRef<View>(null);
@@ -76,20 +78,10 @@ export const SliderThumb = React.memo(
       const refs = thumbRefs.current;
       refs[index] = innerRef.current;
 
-      // NEW: Register the native node handle
-      if (!isWeb && innerRef.current) {
-        // Conditionally call findNodeHandle
-        const nodeHandle = findNodeHandle(innerRef.current);
-        if (typeof nodeHandle === 'number') {
-          thumbNodeHandles.current[index] = nodeHandle;
-        }
-      }
-
       return () => {
         refs[index] = null;
-        thumbNodeHandles.current[index] = undefined; // Clear native node handle on unmount
       };
-    }, [index, thumbRefs, thumbNodeHandles]); // Add thumbNodeHandles to dependency array
+    }, [index, thumbRefs]);
 
     const handleLayout = React.useCallback(
       (event: import('react-native').LayoutChangeEvent) => {
@@ -119,6 +111,111 @@ export const SliderThumb = React.memo(
         );
       }
     }, [isWeb, state.orientation, setThumbSize]);
+
+    const initialValue = React.useRef(0);
+    const initialPointerPos = React.useRef(0);
+
+    // --- WEB DRAGGING (Pointer API) ---
+    React.useEffect(() => {
+      if (!isWeb || isDisabled) return;
+
+      const el = (innerRef.current as unknown as HTMLElement) ?? null;
+      if (!el) return;
+
+      const onPointerDown = (e: PointerEvent) => {
+        if (e.button !== 0) return;
+        const isHorizontal = state.orientation === 'horizontal';
+        initialValue.current = state.value[index];
+        initialPointerPos.current = isHorizontal ? e.clientX : e.clientY;
+        el.setPointerCapture(e.pointerId);
+      };
+
+      const onPointerMove = (e: PointerEvent) => {
+        if (!el.hasPointerCapture(e.pointerId)) return;
+        const isHorizontal = state.orientation === 'horizontal';
+        const size = trackSize.current;
+        if (size === 0) return;
+
+        const currentPointerPos = isHorizontal ? e.clientX : e.clientY;
+        const delta = currentPointerPos - initialPointerPos.current;
+        const direction = isHorizontal ? 1 : -1;
+        const range = state.max - state.min;
+        const deltaValue = (delta / size) * range * direction;
+        const newValue = initialValue.current + deltaValue;
+
+        setValueAtIndex(index, newValue, 'drag');
+      };
+
+      const onPointerUp = (e: PointerEvent) => {
+        if (!el.hasPointerCapture(e.pointerId)) return;
+        el.releasePointerCapture(e.pointerId);
+        commitValue('drag');
+      };
+
+      el.addEventListener('pointerdown', onPointerDown);
+      el.addEventListener('pointermove', onPointerMove);
+      el.addEventListener('pointerup', onPointerUp);
+      el.addEventListener('pointercancel', onPointerUp);
+
+      return () => {
+        el.removeEventListener('pointerdown', onPointerDown);
+        el.removeEventListener('pointermove', onPointerMove);
+        el.removeEventListener('pointerup', onPointerUp);
+        el.removeEventListener('pointercancel', onPointerUp);
+      };
+    }, [
+      isWeb,
+      isDisabled,
+      index,
+      state.orientation,
+      state.value,
+      state.max,
+      state.min,
+      setValueAtIndex,
+      commitValue,
+      trackSize,
+    ]);
+
+    // --- NATIVE DRAGGING (PanResponder) ---
+    const panResponder = React.useMemo(() => {
+      if (isWeb || isDisabled) return { panHandlers: {} };
+
+      return PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onPanResponderGrant: () => {
+          initialValue.current = state.value[index];
+        },
+        onPanResponderMove: (_, gestureState) => {
+          const isHorizontal = state.orientation === 'horizontal';
+          const size = trackSize.current;
+          if (size === 0) return;
+
+          const delta = isHorizontal ? gestureState.dx : -gestureState.dy;
+          const range = state.max - state.min;
+          const deltaValue = (delta / size) * range;
+          const newValue = initialValue.current + deltaValue;
+
+          setValueAtIndex(index, newValue, 'drag');
+        },
+        onPanResponderRelease: () => {
+          commitValue('drag');
+        },
+        onPanResponderTerminate: () => {
+          commitValue('drag');
+        },
+      });
+    }, [
+      isWeb,
+      isDisabled,
+      index,
+      state.orientation,
+      state.value,
+      state.max,
+      state.min,
+      trackSize,
+      setValueAtIndex,
+      commitValue,
+    ]);
 
     const handleKeyboardRange = useKeyboardRange({
       onIncrement: () => stepBy(index, 1),
@@ -212,6 +309,7 @@ export const SliderThumb = React.memo(
     return (
       <PressableWithKeyPress
         {...props}
+        {...panResponder.panHandlers}
         ref={mergedRef}
         onLayout={handleLayout}
         onFocus={handleFocusCallback}

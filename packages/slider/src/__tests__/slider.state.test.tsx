@@ -167,15 +167,11 @@ describe('Slider state', () => {
     const onValueCommitted = jest.fn();
     render(
       <Slider.Root defaultValue={50} onValueCommitted={onValueCommitted}>
-        <Slider.Control testID='control'>
-          <Slider.Thumb aria-label='Thumb' />
-        </Slider.Control>
+        <Slider.Thumb aria-label='Thumb' />
       </Slider.Root>,
     );
 
-    // PanResponder simulation is complex in RNTL, but we can call commitValue via context or
-    // test if it's called on certain events if they were implemented.
-    // Since we don't have a direct 'release' event in View, we'll test the swap behavior instead.
+    // PanResponder simulation is complex in RNTL, so this test is a placeholder.
   });
 
   it('handles "swap" behavior correctly by sorting values after a jump', () => {

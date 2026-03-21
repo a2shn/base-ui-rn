@@ -21,12 +21,29 @@ import type { SliderPartProps } from './types';
  */
 export const SliderTrack = React.memo(
   React.forwardRef<View, SliderPartProps>(function SliderTrack(
-    { style, ...props },
+    { style, onLayout, ...props },
     ref,
   ) {
-    const { state } = useSliderContext();
+    const { state, setTrackSize } = useSliderContext();
     const resolvedStyle = typeof style === 'function' ? style(state) : style;
-    return <View {...props} ref={ref} style={resolvedStyle} />;
+
+    const handleLayout = React.useCallback(
+      (event: import('react-native').LayoutChangeEvent) => {
+        const { width, height } = event.nativeEvent.layout;
+        setTrackSize(state.orientation === 'horizontal' ? width : height);
+        onLayout?.(event);
+      },
+      [setTrackSize, state.orientation, onLayout],
+    );
+
+    return (
+      <View
+        {...props}
+        ref={ref}
+        onLayout={handleLayout}
+        style={resolvedStyle}
+      />
+    );
   }),
 );
 
