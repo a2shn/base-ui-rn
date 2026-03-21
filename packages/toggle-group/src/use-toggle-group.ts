@@ -6,35 +6,24 @@ import { useKeyboardNavigation } from '@base-ui-rn/core';
 import { useFocus } from '@base-ui-rn/focus-ring';
 import type { ToggleGroupProps, ToggleGroupState } from './types';
 
-/**
- * Manages the state and logic for the ToggleGroup primitive.
- * @param props The initialization properties.
- * @returns State and event handlers for the component.
- */
-export const useToggleGroup = ({
-  value: controlledValue,
-  defaultValue,
-  onValueChange,
-  multiple,
-  disabled,
-  orientation,
-  loopFocus,
-  onFocusChange,
-}: {
-  value: ToggleGroupProps['value'];
-  defaultValue: ToggleGroupProps['defaultValue'];
-  onValueChange: ToggleGroupProps['onValueChange'];
-  multiple: boolean;
-  disabled: boolean;
-  orientation: NonNullable<ToggleGroupProps['orientation']>;
-  loopFocus: boolean;
-  onFocusChange: ToggleGroupProps['onFocusChange'];
-}) => {
+
+export const useToggleGroup = (props: ToggleGroupProps) => {
   const {
-    focused,
+    value: controlledValue,
+    defaultValue,
+    onValueChange,
+    multiple = false,
+    disabled = false,
+    orientation = 'horizontal',
+    loopFocus = true,
+    onFocusChange,
+  } = props;
+
+  const {
+    focused: isFocused,
     focusVisible: isFocusVisible,
-    onFocus,
-    onBlur,
+    onFocus: onFocusIn,
+    onBlur: onFocusOut,
   } = useFocus({});
 
   const { registerItem, handleKeyDown } = useKeyboardNavigation({
@@ -104,7 +93,7 @@ export const useToggleGroup = ({
       multiple,
       orientation,
       loopFocus,
-      focused,
+      focused: isFocused,
       focusVisible: isFocusVisible,
     }),
     [
@@ -113,14 +102,14 @@ export const useToggleGroup = ({
       multiple,
       orientation,
       loopFocus,
-      focused,
+      isFocused,
       isFocusVisible,
     ],
   );
 
   return {
-    onBlur,
-    onFocus,
+    onBlur: onFocusOut,
+    onFocus: onFocusIn,
     onToggleKeyDown,
     registerItem,
     registerValue,

@@ -17,8 +17,8 @@ import { useSwitchContext } from './context';
  * </Switch.Root>
  * ```
  */
-export const SwitchThumb = React.forwardRef<View, SwitchThumbProps>(
-  (props, ref) => {
+export const SwitchThumb = React.memo(
+  React.forwardRef<View, SwitchThumbProps>((props, ref) => {
     const {
       children,
       style,
@@ -51,6 +51,6 @@ export const SwitchThumb = React.forwardRef<View, SwitchThumbProps>(
       </View>
     );
   },
-);
+  ));
 
 SwitchThumb.displayName = 'SwitchThumb';

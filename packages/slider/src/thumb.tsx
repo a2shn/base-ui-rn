@@ -22,8 +22,8 @@ import type { SliderThumbProps } from './types';
  * Draggable handle that controls a slider value.
  */
 export const SliderThumb = React.memo(
-  React.forwardRef<View, SliderThumbProps>(function SliderThumb(
-    {
+  React.forwardRef<View, SliderThumbProps>(function SliderThumb(props, ref) {
+    const {
       index = 0,
       disabled,
       onFocus,
@@ -47,10 +47,9 @@ export const SliderThumb = React.memo(
       'aria-keyshortcuts': ariaKeyshortcuts,
       getAriaLabel,
       getAriaValueText,
-      ...props
-    },
-    ref,
-  ) {
+      ...otherProps
+    } = props;
+
     const {
       state,
       stepBy,
@@ -310,6 +309,7 @@ export const SliderThumb = React.memo(
       <PressableWithKeyPress
         {...props}
         {...panResponder.panHandlers}
+
         ref={mergedRef}
         onLayout={handleLayout}
         onFocus={handleFocusCallback}

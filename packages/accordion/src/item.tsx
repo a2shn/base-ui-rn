@@ -19,8 +19,8 @@ import { useAccordionItem } from './use-accordion';
  * </Accordion.Item>
  * ```
  */
-export const AccordionItem = React.forwardRef<View, AccordionItemProps>(
-  (props, ref) => {
+export const AccordionItem = React.memo(
+  React.forwardRef<View, AccordionItemProps>((props, ref) => {
     const {
       children,
       style,

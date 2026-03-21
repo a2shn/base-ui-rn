@@ -19,14 +19,13 @@ import { useMeterRoot } from './use-meter-root';
  * </Meter.Root>
  * ```
  */
-export const MeterRoot = React.forwardRef<View, MeterRootProps>(
-  (props, ref) => {
+export const MeterRoot = React.memo(
+  React.forwardRef<View, MeterRootProps>((props, ref) => {
     const {
       children,
       value,
       min = 0,
       max = 100,
-      'aria-valuetext': ariaValueTextProp,
       getAriaValueText,
       locale,
       format,
@@ -38,6 +37,7 @@ export const MeterRoot = React.forwardRef<View, MeterRootProps>(
       focusable = false,
       importantForAccessibility = 'yes',
       tabIndex,
+      'aria-valuetext': ariaValueTextProp,
       'aria-valuemin': ariaValueMin,
       'aria-valuemax': ariaValueMax,
       'aria-valuenow': ariaValueNow,
@@ -113,10 +113,10 @@ export const MeterRoot = React.forwardRef<View, MeterRootProps>(
             ariaValueText
               ? { text: ariaValueText }
               : {
-                  min,
-                  max,
-                  now: value,
-                }
+                min,
+                max,
+                now: value,
+              }
           }
         >
           {children}

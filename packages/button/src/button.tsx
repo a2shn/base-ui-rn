@@ -22,29 +22,15 @@ import { useButton } from './use-button';
  * ```
  */
 export const Button = React.memo(
-  React.forwardRef<View, ButtonProps>(function Root(
-    {
-      disabled,
-      onPress,
-      onPressedChange,
-      onKeyDown,
+  React.forwardRef<View, ButtonProps>(function Root(props, forwardedRef) {
+    const {
       accessibilityHint = 'Activates the button',
-      accessibilityState,
-      accessibilityActions,
-      onAccessibilityAction,
       accessibilityRole,
-      focusableWhenDisabled = false,
       hitSlop = DEFAULT_HIT_SLOP,
       children,
       style,
-      focusVisible: forceFocusVisible = false,
       disableDefaultFocusRing = false,
       focusRingStyle,
-      onFocus: onFocusProp,
-      onBlur: onBlurProp,
-      shortcut,
-      tabIndex: tabIndexProp,
-      'aria-disabled': ariaDisabledProp,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       'aria-describedby': ariaDescribedBy,
@@ -53,9 +39,8 @@ export const Button = React.memo(
       'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
       ...otherProps
-    },
-    forwardedRef,
-  ) {
+    } = props;
+
     const internalRef = React.useRef<View>(null);
     React.useImperativeHandle(forwardedRef, () => internalRef.current!);
 
@@ -73,22 +58,7 @@ export const Button = React.memo(
       resolvedAriaDisabled,
       resolvedAriaKeyshortcuts,
       resolvedTabIndex,
-    } = useButton({
-      disabled,
-      focusableWhenDisabled,
-      focusVisible: forceFocusVisible,
-      accessibilityState,
-      accessibilityActions,
-      onPressedChange,
-      onPress,
-      onAccessibilityAction,
-      onKeyDown,
-      onFocusProp,
-      onBlurProp,
-      shortcut,
-      tabIndex: tabIndexProp,
-      ariaDisabled: ariaDisabledProp,
-    });
+    } = useButton(props);
 
     return (
       <PressableWithKeyPress

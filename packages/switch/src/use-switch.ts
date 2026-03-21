@@ -8,11 +8,6 @@ import { useFocus } from '@base-ui-rn/focus-ring';
 import { useKeyboardActivation } from '@base-ui-rn/core';
 import type { SwitchRootProps, SwitchState, KeyPressEventData } from './types';
 
-/**
- * Manages the state and logic for the Switch primitive.
- * @param props The initialization properties.
- * @returns State and event handlers for the component.
- */
 export function useSwitchRoot(props: SwitchRootProps) {
   const {
     checked: checkedProp,

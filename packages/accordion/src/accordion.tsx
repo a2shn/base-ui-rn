@@ -18,8 +18,8 @@ import { useAccordionRoot } from './use-accordion';
  * </Accordion.Root>
  * ```
  */
-export const AccordionRoot = React.forwardRef<View, AccordionRootProps>(
-  (props, ref) => {
+export const AccordionRoot = React.memo(
+  React.forwardRef<View, AccordionRootProps>((props, ref) => {
     const {
       children,
       style,

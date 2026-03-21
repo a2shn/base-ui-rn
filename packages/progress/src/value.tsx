@@ -13,8 +13,8 @@ import { useProgressContext } from './progress-context';
  * <Progress.Value />
  * ```
  */
-export const ProgressValue = React.forwardRef<Text, ProgressValueProps>(
-  (props, ref) => {
+export const ProgressValue = React.memo(
+  React.forwardRef<Text, ProgressValueProps>((props, ref) => {
     const {
       children,
       style,

@@ -18,8 +18,8 @@ import { useAccordionTrigger } from './use-accordion';
  * </Accordion.Trigger>
  * ```
  */
-export const AccordionTrigger = React.forwardRef<View, AccordionTriggerProps>(
-  (props, ref) => {
+export const AccordionTrigger = React.memo(
+  React.forwardRef<View, AccordionTriggerProps>((props, ref) => {
     const {
       children,
       style,

@@ -17,8 +17,8 @@ import { useAccordionPanel } from './use-accordion';
  * </Accordion.Panel>
  * ```
  */
-export const AccordionPanel = React.forwardRef<View, AccordionPanelProps>(
-  (props, ref) => {
+export const AccordionPanel = React.memo(
+  React.forwardRef<View, AccordionPanelProps>((props, ref) => {
     const {
       children,
       style,

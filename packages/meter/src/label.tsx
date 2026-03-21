@@ -13,8 +13,8 @@ import { useMeterContext } from './meter-context';
  * <Meter.Label>Storage Used</Meter.Label>
  * ```
  */
-export const MeterLabel = React.forwardRef<Text, MeterLabelProps>(
-  (props, ref) => {
+export const MeterLabel = React.memo(
+  React.forwardRef<Text, MeterLabelProps>((props, ref) => {
     const {
       children,
       nativeID,

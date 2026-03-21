@@ -14,8 +14,8 @@ import { useProgressContext } from './progress-context';
  * <Progress.Label>Export data</Progress.Label>
  * ```
  */
-export const ProgressLabel = React.forwardRef<Text, ProgressLabelProps>(
-  (props, ref) => {
+export const ProgressLabel = React.memo(
+  React.forwardRef<Text, ProgressLabelProps>((props, ref) => {
     const {
       children,
       nativeID,

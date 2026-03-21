@@ -17,8 +17,8 @@ import { useAccordionHeader } from './use-accordion';
  * </Accordion.Header>
  * ```
  */
-export const AccordionHeader = React.forwardRef<View, AccordionHeaderProps>(
-  (props, ref) => {
+export const AccordionHeader = React.memo(
+  React.forwardRef<View, AccordionHeaderProps>((props, ref) => {
     const {
       children,
       style,

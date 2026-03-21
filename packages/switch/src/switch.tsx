@@ -18,8 +18,8 @@ import { useSwitchRoot } from './use-switch';
  * </Switch.Root>
  * ```
  */
-export const SwitchRoot = React.forwardRef<View, SwitchRootProps>(
-  (props, ref) => {
+export const SwitchRoot = React.memo(
+  React.forwardRef<View, SwitchRootProps>((props, ref) => {
     const {
       children,
       style,
@@ -95,6 +95,6 @@ export const SwitchRoot = React.forwardRef<View, SwitchRootProps>(
       </SwitchContext.Provider>
     );
   },
-);
+  ))
 
 SwitchRoot.displayName = 'SwitchRoot';

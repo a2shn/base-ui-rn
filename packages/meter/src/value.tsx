@@ -13,8 +13,8 @@ import { useMeterContext } from './meter-context';
  * <Meter.Value />
  * ```
  */
-export const MeterValue = React.forwardRef<Text, MeterValueProps>(
-  (props, ref) => {
+export const MeterValue = React.memo(
+  React.forwardRef<Text, MeterValueProps>((props, ref) => {
     const {
       children,
       'aria-labelledby': ariaLabelledBy,

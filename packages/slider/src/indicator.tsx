@@ -17,10 +17,8 @@ import type { SliderPartProps } from './types';
  * ```
  */
 export const SliderIndicator = React.memo(
-  React.forwardRef<View, SliderPartProps>(function SliderIndicator(
-    { style, ...props },
-    ref,
-  ) {
+  React.forwardRef<View, SliderPartProps>(function SliderIndicator(props, ref) {
+    const { style, ...otherProps } = props;
     const { state } = useSliderContext();
 
     const isRange = state.value.length > 1;
@@ -47,7 +45,9 @@ export const SliderIndicator = React.memo(
 
     const resolvedStyle = typeof style === 'function' ? style(state) : style;
 
-    return <View {...props} ref={ref} style={[dynamicStyle, resolvedStyle]} />;
+    return (
+      <View {...otherProps} ref={ref} style={[dynamicStyle, resolvedStyle]} />
+    );
   }),
 );
 

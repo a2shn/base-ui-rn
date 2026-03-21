@@ -2,25 +2,18 @@ import * as React from 'react';
 import { mergeAccessibilityState } from '@base-ui-rn/core';
 import type { MeterRootProps } from './types';
 
-export const useMeterRoot = ({
-  value,
-  min,
-  max,
-  locale,
-  format,
-  ariaValueTextProp,
-  getAriaValueText,
-  accessibilityState,
-}: {
-  value: number;
-  min: number;
-  max: number;
-  locale: MeterRootProps['locale'];
-  format: MeterRootProps['format'];
-  ariaValueTextProp: MeterRootProps['aria-valuetext'];
-  getAriaValueText: MeterRootProps['getAriaValueText'];
-  accessibilityState: MeterRootProps['accessibilityState'];
-}) => {
+export const useMeterRoot = (props: MeterRootProps) => {
+  const {
+    value,
+    min = 0,
+    max = 100,
+    locale,
+    format,
+    'aria-valuetext': ariaValueTextProp,
+    getAriaValueText,
+    accessibilityState,
+  } = props;
+
   const labelId = React.useId();
 
   const percentage =

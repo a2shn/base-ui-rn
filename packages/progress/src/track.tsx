@@ -14,8 +14,8 @@ import { useProgressContext } from './progress-context';
  * <Progress.Track><Progress.Indicator /></Progress.Track>
  * ```
  */
-export const ProgressTrack = React.forwardRef<View, ProgressTrackProps>(
-  (props, ref) => {
+export const ProgressTrack = React.memo(
+  React.forwardRef<View, ProgressTrackProps>((props, ref) => {
     const {
       children,
       style,

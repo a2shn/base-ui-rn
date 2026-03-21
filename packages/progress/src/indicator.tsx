@@ -15,8 +15,8 @@ import { useProgressContext } from './progress-context';
  * <Progress.Indicator style={{ backgroundColor: 'blue' }} />
  * ```
  */
-export const ProgressIndicator = React.forwardRef<View, ProgressIndicatorProps>(
-  (props, ref) => {
+export const ProgressIndicator = React.memo(
+  React.forwardRef<View, ProgressIndicatorProps>((props, ref) => {
     const {
       style,
       'aria-labelledby': ariaLabelledBy,

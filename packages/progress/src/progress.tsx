@@ -19,8 +19,8 @@ import { useProgress } from './use-progress';
  * </Progress.Root>
  * ```
  */
-export const ProgressRoot = React.forwardRef<View, ProgressRootProps>(
-  (props, ref) => {
+export const ProgressRoot = React.memo(
+  React.forwardRef<View, ProgressRootProps>((props, ref) => {
     const {
       children,
       value = null,
@@ -54,16 +54,7 @@ export const ProgressRoot = React.forwardRef<View, ProgressRootProps>(
       ...otherViewProps
     } = props;
 
-    const { labelId, mergedAccessibilityState, state } = useProgress({
-      value,
-      min,
-      max,
-      locale,
-      format,
-      ariaValueTextProp,
-      getAriaValueText,
-      accessibilityState,
-    });
+    const { labelId, mergedAccessibilityState, state } = useProgress(props);
 
     const contextValue = React.useMemo(
       () => ({

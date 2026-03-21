@@ -2,6 +2,7 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { useSliderContext } from './context';
 import type { SliderPartProps } from './types';
+import { evaluateStyles } from '@base-ui-rn/core';
 
 /**
  * Visual range container for the slider.
@@ -44,6 +45,7 @@ export const SliderTrack = React.memo(
         style={resolvedStyle}
       />
     );
+
   }),
 );
 

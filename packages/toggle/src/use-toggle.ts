@@ -27,57 +27,46 @@ import type { ToggleGroupContextValue } from './group-context';
 /**
  * Manages the state and logic for the Toggle primitive.
  * @param props The initialization properties.
+ * @param groupContext The context from a parent ToggleGroup, if present.
  * @returns State and event handlers for the component.
  */
-export const useToggle = ({
-  value,
-  controlledPressed,
-  defaultPressed,
-  onPressedChange,
-  disabled,
-  onPress,
-  onKeyDown,
-  accessibilityState,
-  accessibilityActions,
-  onAccessibilityAction,
-  focusableWhenDisabled,
-  forceFocusVisible,
-  onFocusProp,
-  onBlurProp,
-  shortcut,
-  tabIndexProp,
-  ariaDisabledProp,
-  ariaPressedProp,
-  dataPressedProp,
-  groupContext,
-}: {
-  value: ToggleProps['value'];
-  controlledPressed: ToggleProps['pressed'];
-  defaultPressed: boolean;
-  onPressedChange: ToggleProps['onPressedChange'];
-  disabled: ToggleProps['disabled'];
-  onPress: ToggleProps['onPress'];
-  onKeyDown: ToggleProps['onKeyDown'];
-  accessibilityState: ToggleProps['accessibilityState'];
-  accessibilityActions: ToggleProps['accessibilityActions'];
-  onAccessibilityAction: ToggleProps['onAccessibilityAction'];
-  focusableWhenDisabled: boolean;
-  forceFocusVisible: boolean;
-  onFocusProp: ToggleProps['onFocus'];
-  onBlurProp: ToggleProps['onBlur'];
-  shortcut: ToggleProps['shortcut'];
-  tabIndexProp: ToggleProps['tabIndex'];
-  ariaDisabledProp: ToggleProps['aria-disabled'];
-  ariaPressedProp: ToggleProps['aria-pressed'];
-  dataPressedProp: ToggleProps['data-pressed'];
-  groupContext: ToggleGroupContextValue | null;
-}) => {
+export const useToggle = (
+  props: ToggleProps,
+  groupContext: ToggleGroupContextValue | null,
+) => {
+  const {
+    value,
+    pressed: controlledPressed,
+    defaultPressed = false,
+    onPressedChange,
+    disabled,
+    onPress,
+    onKeyDown,
+    accessibilityState,
+    accessibilityActions,
+    onAccessibilityAction,
+    focusableWhenDisabled = false,
+    focusVisible: forceFocusVisible = false,
+    onFocus: onFocusProp,
+    onBlur: onBlurProp,
+    shortcut,
+    tabIndex: tabIndexProp,
+    'aria-disabled': ariaDisabledProp,
+    'aria-pressed': ariaPressedProp,
+    'data-pressed': dataPressedProp,
+  } = props;
+
   const isInGroup = groupContext !== null;
 
   const isDisabled = disabled === true || (isInGroup && groupContext.disabled);
   const isFocusable = !isDisabled || focusableWhenDisabled === true;
 
-  const { focused, focusVisible, onFocus, onBlur } = useFocus({
+  const {
+    focused: isFocused,
+    focusVisible: isFocusVisible,
+    onFocus: onFocusIn,
+    onBlur: onFocusOut,
+  } = useFocus({
     focusVisible: forceFocusVisible,
   });
 
@@ -166,18 +155,18 @@ export const useToggle = ({
 
   const handleFocus = React.useCallback(
     (e: NativeSyntheticEvent<TargetedEvent>) => {
-      onFocus();
+      onFocusIn();
       onFocusProp?.(e);
     },
-    [onFocus, onFocusProp],
+    [onFocusIn, onFocusProp],
   );
 
   const handleBlur = React.useCallback(
     (e: NativeSyntheticEvent<TargetedEvent>) => {
-      onBlur();
+      onFocusOut();
       onBlurProp?.(e);
     },
-    [onBlur, onBlurProp],
+    [onFocusOut, onBlurProp],
   );
 
   const mergedAccessibilityState = React.useMemo(
@@ -208,8 +197,8 @@ export const useToggle = ({
   const resolvedDataPressed = resolveDataPressed(isPressed, dataPressedProp);
 
   return {
-    focused,
-    focusVisible,
+    focused: isFocused,
+    focusVisible: isFocusVisible,
     handleAccessibilityAction,
     handleBlur,
     handleFocus,

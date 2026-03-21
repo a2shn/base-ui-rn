@@ -12,8 +12,8 @@ import type { MeterTrackProps } from './types';
  * <Meter.Track><Meter.Indicator /></Meter.Track>
  * ```
  */
-export const MeterTrack = React.forwardRef<View, MeterTrackProps>(
-  (props, ref) => {
+export const MeterTrack = React.memo(
+  React.forwardRef<View, MeterTrackProps>((props, ref) => {
     const {
       children,
       'aria-labelledby': ariaLabelledBy,

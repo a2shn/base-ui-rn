@@ -14,8 +14,8 @@ import { useMeterContext } from './meter-context';
  * <Meter.Indicator style={{ backgroundColor: 'blue' }} />
  * ```
  */
-export const MeterIndicator = React.forwardRef<View, MeterIndicatorProps>(
-  (props, ref) => {
+export const MeterIndicator = React.memo(
+  React.forwardRef<View, MeterIndicatorProps>((props, ref) => {
     const {
       style,
       'aria-labelledby': ariaLabelledBy,

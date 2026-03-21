@@ -20,8 +20,8 @@ import { useToggleGroup } from './use-toggle-group';
  * </ToggleGroup>
  * ```
  */
-export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
-  (props, ref) => {
+export const ToggleGroup = React.memo(
+  React.forwardRef<View, ToggleGroupProps>((props, ref) => {
     const {
       children,
       value,
@@ -61,16 +61,7 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
       state,
       toggleValue,
       valueSet,
-    } = useToggleGroup({
-      value,
-      defaultValue,
-      onValueChange,
-      multiple,
-      disabled,
-      orientation,
-      loopFocus,
-      onFocusChange,
-    });
+    } = useToggleGroup(props);
 
     const contextValue = React.useMemo(
       () => ({
@@ -118,6 +109,6 @@ export const ToggleGroup = React.forwardRef<View, ToggleGroupProps>(
       </ToggleGroupContext.Provider>
     );
   },
-);
+  ));
 
 ToggleGroup.displayName = 'ToggleGroup';

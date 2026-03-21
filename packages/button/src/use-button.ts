@@ -29,45 +29,32 @@ import type {
  * @param props The initialization properties.
  * @returns State and event handlers for the component.
  */
-export const useButton = ({
-  disabled,
-  focusableWhenDisabled,
-  focusVisible,
-  accessibilityState,
-  accessibilityActions,
-  onPressedChange,
-  onPress,
-  onAccessibilityAction,
-  onFocusProp,
-  onBlurProp,
-  shortcut,
-  tabIndex,
-  ariaDisabled,
-  onKeyDown,
-}: {
-  disabled: ButtonProps['disabled'];
-  focusableWhenDisabled: boolean;
-  focusVisible: boolean;
-  accessibilityState: ButtonProps['accessibilityState'];
-  accessibilityActions: ButtonProps['accessibilityActions'];
-  onPressedChange: ButtonProps['onPressedChange'];
-  onPress: ButtonProps['onPress'];
-  onAccessibilityAction: ButtonProps['onAccessibilityAction'];
-  onFocusProp: ButtonProps['onFocus'];
-  onBlurProp: ButtonProps['onBlur'];
-  shortcut: ButtonProps['shortcut'];
-  tabIndex: ButtonProps['tabIndex'];
-  ariaDisabled: ButtonProps['aria-disabled'];
-  onKeyDown: ButtonProps['onKeyDown'];
-}) => {
-  const isDisabled = disabled === true;
-  const isFocusable = !isDisabled || focusableWhenDisabled === true;
-
+export const useButton = (props: ButtonProps) => {
   const {
-    focused,
-    focusVisible: isFocusVisible,
+    disabled,
+    focusableWhenDisabled = false,
+    focusVisible = false,
+    accessibilityState,
+    accessibilityActions,
+    onPressedChange,
+    onPress,
+    onAccessibilityAction,
     onFocus,
     onBlur,
+    shortcut,
+    tabIndex,
+    'aria-disabled': ariaDisabled,
+    onKeyDown,
+  } = props;
+
+  const isDisabled = disabled === true;
+  const isFocusable = !isDisabled || focusableWhenDisabled;
+
+  const {
+    focused: isFocused,
+    focusVisible: isFocusVisible,
+    onFocus: onFocusIn,
+    onBlur: onFocusOut,
   } = useFocus({
     focusVisible,
   });
@@ -152,22 +139,22 @@ export const useButton = ({
 
   const handleFocus = React.useCallback(
     (e: NativeSyntheticEvent<TargetedEvent>) => {
-      onFocus();
-      onFocusProp?.(e);
+      onFocusIn();
+      onFocus?.(e);
     },
-    [onFocus, onFocusProp],
+    [onFocusIn, onFocus],
   );
 
   const handleBlur = React.useCallback(
     (e: NativeSyntheticEvent<TargetedEvent>) => {
-      onBlur();
-      onBlurProp?.(e);
+      onFocusOut();
+      onBlur?.(e);
     },
-    [onBlur, onBlurProp],
+    [onFocusOut, onBlur],
   );
 
   return {
-    focused,
+    focused: isFocused,
     focusVisible: isFocusVisible,
     handleAccessibilityAction,
     handleBlur,

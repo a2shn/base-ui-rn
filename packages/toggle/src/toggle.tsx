@@ -23,36 +23,18 @@ import { useToggle } from './use-toggle';
  * ```
  */
 export const Toggle = React.memo(
-  React.forwardRef<View, ToggleProps>(function Root(
-    {
+  React.forwardRef<View, ToggleProps>(function Root(props, forwardedRef) {
+    const {
       value,
-      pressed: controlledPressed,
-      defaultPressed = false,
-      onPressedChange,
       role = 'checkbox',
-      disabled,
-      onPress,
-      onKeyDown,
       accessibilityHint = 'Toggles the value',
-      accessibilityState,
-      accessibilityActions,
-      onAccessibilityAction,
       accessibilityRole,
-      focusableWhenDisabled = false,
       hitSlop = DEFAULT_HIT_SLOP,
       children,
       style,
-      focusVisible: forceFocusVisible = false,
       disableDefaultFocusRing = false,
       focusRingStyle,
-      onFocus: onFocusProp,
-      onBlur: onBlurProp,
-      shortcut,
-      tabIndex: tabIndexProp,
       'aria-label': ariaLabel,
-      'aria-disabled': ariaDisabledProp,
-      'aria-pressed': ariaPressedProp,
-      'data-pressed': dataPressedProp,
       'aria-labelledby': ariaLabelledBy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
@@ -60,9 +42,8 @@ export const Toggle = React.memo(
       'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
       ...otherProps
-    },
-    forwardedRef,
-  ) {
+    } = props;
+
     const groupContext = useToggleGroupContext();
 
     const {
@@ -84,28 +65,7 @@ export const Toggle = React.memo(
       resolvedAriaPressed,
       resolvedDataPressed,
       resolvedTabIndex,
-    } = useToggle({
-      value,
-      controlledPressed,
-      defaultPressed,
-      onPressedChange,
-      disabled,
-      onPress,
-      onKeyDown,
-      accessibilityState,
-      accessibilityActions,
-      onAccessibilityAction,
-      focusableWhenDisabled,
-      forceFocusVisible,
-      onFocusProp,
-      onBlurProp,
-      shortcut,
-      tabIndexProp,
-      ariaDisabledProp,
-      ariaPressedProp,
-      dataPressedProp,
-      groupContext,
-    });
+    } = useToggle(props, groupContext);
 
     if (process.env.NODE_ENV !== 'production') {
       if (isInGroup && value === undefined) {
