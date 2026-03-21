@@ -1,12 +1,13 @@
-import * as React from 'react';
-import { View, type Role } from 'react-native';
 import {
   DEFAULT_HIT_SLOP,
   evaluateStyles,
   PressableWithKeyPress,
 } from '@base-ui-rn/core';
-import { type ToggleProps } from './types';
+import * as React from 'react';
+import { type Role, View } from 'react-native';
+
 import { useToggleGroupContext } from './group-context';
+import { type ToggleProps } from './types';
 import { useToggle } from './use-toggle';
 
 /**
@@ -25,22 +26,22 @@ import { useToggle } from './use-toggle';
 export const Toggle = React.memo(
   React.forwardRef<View, ToggleProps>(function Root(props, forwardedRef) {
     const {
-      value,
-      role = 'checkbox',
       accessibilityHint = 'Toggles the value',
       accessibilityRole,
-      hitSlop = DEFAULT_HIT_SLOP,
-      children,
-      style,
-      disableDefaultFocusRing = false,
-      focusRingStyle,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      children,
+      disableDefaultFocusRing = false,
+      focusRingStyle,
+      hitSlop = DEFAULT_HIT_SLOP,
+      role = 'checkbox',
+      style,
+      value,
       ...otherProps
     } = props;
 
@@ -95,47 +96,47 @@ export const Toggle = React.memo(
     return (
       <PressableWithKeyPress
         {...otherProps}
-        ref={internalRef}
-        disabled={isDisabled}
-        accessible
-        role={(accessibilityRole ?? role) as Role}
+        accessibilityActions={mergedAccessibilityActions}
         accessibilityHint={accessibilityHint}
         accessibilityState={mergedAccessibilityState}
-        accessibilityActions={mergedAccessibilityActions}
-        onAccessibilityAction={handleAccessibilityAction}
-        focusable={isFocusable}
-        tabIndex={resolvedTabIndex}
-        aria-label={ariaLabel}
-        aria-disabled={resolvedAriaDisabled}
-        aria-keyshortcuts={resolvedAriaKeyshortcuts}
-        aria-pressed={resolvedAriaPressed}
-        data-pressed={resolvedDataPressed}
-        aria-labelledby={ariaLabelledBy}
+        accessible
+        aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
+        aria-disabled={resolvedAriaDisabled}
         aria-expanded={ariaExpanded}
-        aria-busy={ariaBusy}
         aria-hidden={ariaHidden}
-        importantForAccessibility='yes'
+        aria-keyshortcuts={resolvedAriaKeyshortcuts}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
+        aria-pressed={resolvedAriaPressed}
+        data-pressed={resolvedDataPressed}
+        disabled={isDisabled}
+        focusable={isFocusable}
         hitSlop={hitSlop}
-        onPress={handlePress}
-        onKeyDown={handleKeyDown}
-        onFocus={handleFocus}
+        importantForAccessibility='yes'
+        onAccessibilityAction={handleAccessibilityAction}
         onBlur={handleBlur}
+        onFocus={handleFocus}
+        onKeyDown={handleKeyDown}
+        onPress={handlePress}
+        ref={internalRef}
+        role={(accessibilityRole ?? role) as Role}
         style={(pressableState) =>
           evaluateStyles(
             style,
-            { ...pressableState, pressed: isPressed, focused, focusVisible },
+            { ...pressableState, focused, focusVisible, pressed: isPressed },
             { disableDefaultFocusRing, focusRingStyle },
           )
         }
+        tabIndex={resolvedTabIndex}
       >
         {(pressableState) =>
           evaluateStyles(children, {
             ...pressableState,
-            pressed: isPressed,
             focused,
             focusVisible,
+            pressed: isPressed,
           })
         }
       </PressableWithKeyPress>

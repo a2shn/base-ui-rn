@@ -1,13 +1,13 @@
-import * as React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
 import { Avatar } from '@base-ui-rn/avatar';
 import {
   Gallery,
-  Section,
   LiveConsole,
-  usePlaybookToggles,
+  Section,
   theme,
+  usePlaybookToggles,
 } from '@base-ui-rn/playbook';
+import * as React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 export function AvatarPlaybook() {
   const { status1, status2, status3 } = usePlaybookToggles({
@@ -21,66 +21,66 @@ export function AvatarPlaybook() {
       <Section title='Basic'>
         <View style={styles.container}>
           <Avatar.Root
-            style={styles.avatar}
-            accessibilityLabel='User avatar'
             accessibilityHint='Displays user profile picture'
+            accessibilityLabel='User avatar'
+            style={styles.avatar}
           >
             <Avatar.Image
+              height={60}
+              onLoadingStatusChange={status1.setValue}
               source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }}
               style={styles.image}
               width={60}
-              height={60}
-              onLoadingStatusChange={status1.setValue}
             />
             <Avatar.Fallback style={styles.fallback}>
               <Text style={styles.fallbackText}>CN</Text>
             </Avatar.Fallback>
           </Avatar.Root>
-          <LiveConsole title='Loading Status' state={status1} />
+          <LiveConsole state={status1} title='Loading Status' />
         </View>
       </Section>
 
       <Section title='Error Fallback'>
         <View style={styles.container}>
           <Avatar.Root
-            style={styles.avatar}
-            accessibilityLabel='Error avatar showing fallback'
             accessibilityHint='Displays initials when image fails to load'
+            accessibilityLabel='Error avatar showing fallback'
+            style={styles.avatar}
           >
             <Avatar.Image
+              height={60}
+              onLoadingStatusChange={status2.setValue}
               source={{ uri: 'https://invalid-url-example.com/image.png' }}
               style={styles.image}
-              onLoadingStatusChange={status2.setValue}
               width={60}
-              height={60}
             />
             <Avatar.Fallback style={styles.fallback}>
               <Text style={styles.fallbackText}>JD</Text>
             </Avatar.Fallback>
           </Avatar.Root>
-          <LiveConsole title='Loading Status' state={status2} />
+          <LiveConsole state={status2} title='Loading Status' />
         </View>
       </Section>
 
       <Section title='Loading Delay'>
         <View style={styles.container}>
           <Avatar.Root
-            style={styles.avatar}
-            accessibilityLabel='Loading avatar with delayed fallback'
             accessibilityHint='Displays fallback after a delay during loading'
+            accessibilityLabel='Loading avatar with delayed fallback'
+            style={styles.avatar}
           >
             <Avatar.Image
+              height={60}
+              onLoadingStatusChange={status3.setValue}
               source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }}
               style={styles.image}
               width={60}
-              height={60}
-              onLoadingStatusChange={status3.setValue}
             />
-            <Avatar.Fallback style={styles.fallback} delay={300}>
+            <Avatar.Fallback delay={300} style={styles.fallback}>
               <Text style={styles.fallbackText}>VL</Text>
             </Avatar.Fallback>
           </Avatar.Root>
-          <LiveConsole title='Loading Status' state={status3} />
+          <LiveConsole state={status3} title='Loading Status' />
           <Text style={styles.hint}>
             The fallback will only appear if loading takes more than 300ms.
           </Text>
@@ -91,32 +91,27 @@ export function AvatarPlaybook() {
 }
 
 const styles = StyleSheet.create({
+  avatar: {
+    alignItems: 'center',
+    backgroundColor: theme.colors.border,
+    borderRadius: theme.radius.lg * 2.5, // 30 is 60/2. radius.lg is 12, so 30 is lg*2.5
+    height: 60,
+    justifyContent: 'center',
+    overflow: 'hidden',
+    width: 60,
+  },
   container: {
-    padding: theme.spacing.sm,
-    gap: theme.spacing.md,
     alignItems: 'center',
     alignSelf: 'center',
-  },
-  avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: theme.radius.lg * 2.5, // 30 is 60/2. radius.lg is 12, so 30 is lg*2.5
-    overflow: 'hidden',
-    backgroundColor: theme.colors.border,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    position: 'absolute',
+    gap: theme.spacing.md,
+    padding: theme.spacing.sm,
   },
   fallback: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: theme.colors.borderLight,
-    justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: theme.colors.borderLight,
+    height: '100%',
+    justifyContent: 'center',
+    width: '100%',
   },
   fallbackText: {
     color: theme.colors.textPrimary,
@@ -124,8 +119,13 @@ const styles = StyleSheet.create({
     fontWeight: theme.font.weight.bold,
   },
   hint: {
-    fontSize: theme.font.size.xs,
     color: theme.colors.textMuted,
+    fontSize: theme.font.size.xs,
     textAlign: 'center',
+  },
+  image: {
+    height: '100%',
+    position: 'absolute',
+    width: '100%',
   },
 });

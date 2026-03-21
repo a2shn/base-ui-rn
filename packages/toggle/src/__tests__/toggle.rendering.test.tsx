@@ -1,6 +1,7 @@
-import * as React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
 import { render } from '@testing-library/react-native';
+import * as React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+
 import { Toggle } from '../toggle';
 
 describe('Toggle - Rendering', () => {
@@ -26,12 +27,12 @@ describe('Toggle - Rendering', () => {
   it('supports style as a function of pressed state', () => {
     const { getByTestId } = render(
       <Toggle
-        testID='toggle'
-        value='debug-toggle'
         pressed={true}
         style={({ pressed }) => ({
           backgroundColor: pressed ? 'red' : 'blue',
         })}
+        testID='toggle'
+        value='debug-toggle'
       >
         <Text>Style</Text>
       </Toggle>,

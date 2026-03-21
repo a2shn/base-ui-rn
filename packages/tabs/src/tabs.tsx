@@ -1,6 +1,7 @@
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluateStyles } from '@base-ui-rn/core';
+
 import { TabsContext } from './context';
 import type { TabsRootProps } from './types';
 import { useTabsRoot } from './use-tabs';
@@ -22,36 +23,36 @@ import { useTabsRoot } from './use-tabs';
 export const TabsRoot = React.memo(
   React.forwardRef<View, TabsRootProps>((props, ref) => {
     const {
-      children,
-      defaultValue,
-      value,
-      onValueChange,
-      orientation,
       activateOnFocus,
-      onFocusChange,
-      tabIndex,
-      style,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
-      'aria-hidden': ariaHidden,
       'aria-disabled': ariaDisabled,
+      'aria-expanded': ariaExpanded,
+      'aria-hidden': ariaHidden,
       'aria-keyshortcuts': ariaKeyshortcuts,
-      'data-orientation': dataOrientation,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      children,
       'data-activation-direction': dataActivationDirection,
+      'data-orientation': dataOrientation,
+      defaultValue,
+      onFocusChange,
+      onValueChange,
+      orientation,
+      style,
+      tabIndex,
+      value,
       ...otherProps
     } = props;
 
-    const { state, contextValue } = useTabsRoot({
+    const { contextValue, state } = useTabsRoot({
+      activateOnFocus,
       defaultValue,
-      value,
+      onFocusChange,
       onValueChange,
       orientation,
-      activateOnFocus,
-      onFocusChange,
+      value,
     });
 
     const resolvedChildren = evaluateStyles(children, state);
@@ -61,22 +62,22 @@ export const TabsRoot = React.memo(
       <TabsContext.Provider value={contextValue}>
         <View
           {...otherProps}
-          ref={ref}
-          style={resolvedStyle}
-          tabIndex={tabIndex}
-          aria-label={ariaLabel}
-          aria-labelledby={ariaLabelledBy}
+          aria-busy={ariaBusy}
           aria-describedby={ariaDescribedBy}
           aria-details={ariaDetails}
-          aria-expanded={ariaExpanded}
-          aria-busy={ariaBusy}
-          aria-hidden={ariaHidden}
           aria-disabled={ariaDisabled}
+          aria-expanded={ariaExpanded}
+          aria-hidden={ariaHidden}
           aria-keyshortcuts={ariaKeyshortcuts}
-          data-orientation={dataOrientation ?? state.orientation}
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledBy}
           data-activation-direction={
             dataActivationDirection ?? state.activationDirection
           }
+          data-orientation={dataOrientation ?? state.orientation}
+          ref={ref}
+          style={resolvedStyle}
+          tabIndex={tabIndex}
         >
           {resolvedChildren}
         </View>

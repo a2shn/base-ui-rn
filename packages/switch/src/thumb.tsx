@@ -1,8 +1,9 @@
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluateStyles } from '@base-ui-rn/core';
-import type { SwitchThumbProps } from './types';
+
 import { useSwitchContext } from './context';
+import type { SwitchThumbProps } from './types';
 
 /**
  * The movable part of the switch that indicates whether it is on or off.
@@ -20,14 +21,14 @@ import { useSwitchContext } from './context';
 export const SwitchThumb = React.memo(
   React.forwardRef<View, SwitchThumbProps>((props, ref) => {
     const {
-      children,
-      style,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
-      'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      children,
+      style,
       ...otherProps
     } = props;
 
@@ -36,21 +37,21 @@ export const SwitchThumb = React.memo(
     return (
       <View
         {...otherProps}
-        ref={ref}
-        style={evaluateStyles(style, context)}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
+        aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
-        aria-busy={ariaBusy}
         aria-hidden={ariaHidden}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
         data-checked={context.checked ? 'true' : undefined}
         data-disabled={context.disabled ? 'true' : undefined}
+        ref={ref}
+        style={evaluateStyles(style, context)}
       >
         {evaluateStyles(children, context)}
       </View>
     );
-  },
-  ));
+  }),
+);
 
 SwitchThumb.displayName = 'SwitchThumb';

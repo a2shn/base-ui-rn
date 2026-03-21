@@ -1,6 +1,7 @@
 import * as React from 'react';
 import type { View } from 'react-native';
-import type { SliderState, CommitEventDetails } from './types';
+
+import type { CommitEventDetails, SliderState } from './types';
 
 interface SliderContextValue {
   state: SliderState;

@@ -1,5 +1,6 @@
-import * as React from 'react';
 import { render } from '@testing-library/react-native';
+import * as React from 'react';
+
 import { Progress } from '../index';
 
 describe('Progress - Rendering & State', () => {
@@ -19,7 +20,7 @@ describe('Progress - Rendering & State', () => {
 
   it('applies data attributes correctly based on state', () => {
     const { getByTestId, rerender } = render(
-      <Progress.Root value={50} testID='root'>
+      <Progress.Root testID='root' value={50}>
         <Progress.Indicator testID='indicator' />
       </Progress.Root>,
     );
@@ -32,7 +33,7 @@ describe('Progress - Rendering & State', () => {
     expect(indicator.props['data-progressing']).toBeDefined();
 
     rerender(
-      <Progress.Root value={100} testID='root'>
+      <Progress.Root testID='root' value={100}>
         <Progress.Indicator testID='indicator' />
       </Progress.Root>,
     );
@@ -42,7 +43,7 @@ describe('Progress - Rendering & State', () => {
     expect(root.props['data-progressing']).toBeUndefined();
 
     rerender(
-      <Progress.Root value={null} testID='root'>
+      <Progress.Root testID='root' value={null}>
         <Progress.Indicator testID='indicator' />
       </Progress.Root>,
     );

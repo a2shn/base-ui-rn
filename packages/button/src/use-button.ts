@@ -1,23 +1,24 @@
-import * as React from 'react';
 import {
-  type NativeSyntheticEvent,
-  type GestureResponderEvent,
-  type AccessibilityActionEvent,
-  type TargetedEvent,
-} from 'react-native';
-import {
-  mergeAccessibilityActions,
   isActivationAction,
+  mergeAccessibilityActions,
   mergeAccessibilityState,
-  resolveTabIndex,
   resolveAriaDisabled,
+  resolveTabIndex,
   useKeyboardActivation,
 } from '@base-ui-rn/core';
 import { useFocus } from '@base-ui-rn/focus-ring';
 import {
-  useKeyboardShortcut,
   getAriaKeyshortcuts,
+  useKeyboardShortcut,
 } from '@base-ui-rn/keyboard-shortcuts';
+import * as React from 'react';
+import {
+  type AccessibilityActionEvent,
+  type GestureResponderEvent,
+  type NativeSyntheticEvent,
+  type TargetedEvent,
+} from 'react-native';
+
 import type {
   ButtonPressedChangeDetails,
   ButtonProps,
@@ -31,20 +32,20 @@ import type {
  */
 export const useButton = (props: ButtonProps) => {
   const {
+    accessibilityActions,
+    accessibilityState,
+    'aria-disabled': ariaDisabled,
     disabled,
     focusableWhenDisabled = false,
     focusVisible = false,
-    accessibilityState,
-    accessibilityActions,
-    onPressedChange,
-    onPress,
     onAccessibilityAction,
-    onFocus,
     onBlur,
+    onFocus,
+    onKeyDown,
+    onPress,
+    onPressedChange,
     shortcut,
     tabIndex,
-    'aria-disabled': ariaDisabled,
-    onKeyDown,
   } = props;
 
   const isDisabled = disabled === true;
@@ -53,8 +54,8 @@ export const useButton = (props: ButtonProps) => {
   const {
     focused: isFocused,
     focusVisible: isFocusVisible,
-    onFocus: onFocusIn,
     onBlur: onFocusOut,
+    onFocus: onFocusIn,
   } = useFocus({
     focusVisible,
   });

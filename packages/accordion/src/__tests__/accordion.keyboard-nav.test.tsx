@@ -1,5 +1,6 @@
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+
 import { Accordion } from '../index';
 
 describe('Accordion Keyboard Navigation', () => {
@@ -43,7 +44,7 @@ describe('Accordion Keyboard Navigation', () => {
   it('honors loopFocus=false', () => {
     const onFocusChange = jest.fn();
     const { getByTestId } = render(
-      <Accordion.Root onFocusChange={onFocusChange} loopFocus={false}>
+      <Accordion.Root loopFocus={false} onFocusChange={onFocusChange}>
         <Accordion.Item value='item-1'>
           <Accordion.Trigger testID='trigger-1'>Trigger 1</Accordion.Trigger>
         </Accordion.Item>

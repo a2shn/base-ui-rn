@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Platform, type NativeSyntheticEvent } from 'react-native';
+import { type NativeSyntheticEvent, Platform } from 'react-native';
 
 import { isActivationKey } from './constants';
 import type { KeyPressEventData } from './types';
@@ -24,10 +24,10 @@ export interface KeyboardNavigationOptions {
 }
 
 const DEFAULT_KEY_MAP: Record<KeyboardDirection, string[]> = {
-  next: ['ArrowRight', 'ArrowDown', 'dpadRight', 'dpadDown'],
-  prev: ['ArrowLeft', 'ArrowUp', 'dpadLeft', 'dpadUp'],
   first: ['Home'],
   last: ['End'],
+  next: ['ArrowRight', 'ArrowDown', 'dpadRight', 'dpadDown'],
+  prev: ['ArrowLeft', 'ArrowUp', 'dpadLeft', 'dpadUp'],
 };
 
 /**
@@ -105,13 +105,13 @@ export interface KeyboardRangeOptions {
  */
 export function useKeyboardRange(options: KeyboardRangeOptions) {
   const {
-    onIncrement,
-    onDecrement,
-    onPageUp,
-    onPageDown,
-    onHome,
-    onEnd,
     disabled = false,
+    onDecrement,
+    onEnd,
+    onHome,
+    onIncrement,
+    onPageDown,
+    onPageUp,
     orientation = 'horizontal',
   } = options;
 
@@ -174,7 +174,7 @@ export function useKeyboardRange(options: KeyboardRangeOptions) {
 export function useKeyboardNavigation<T = unknown>(
   options: KeyboardNavigationOptions = {},
 ) {
-  const { orientation = 'horizontal', loop = true, keyMap = {} } = options;
+  const { keyMap = {}, loop = true, orientation = 'horizontal' } = options;
 
   const items = React.useRef<Map<string, React.RefObject<T>>>(new Map());
   const itemOrder = React.useRef<string[]>([]);
@@ -300,9 +300,9 @@ export function useKeyboardNavigation<T = unknown>(
 
   return React.useMemo(
     () => ({
-      registerItem,
       handleKeyDown,
       navigate,
+      registerItem,
     }),
     [registerItem, handleKeyDown, navigate],
   );

@@ -1,12 +1,12 @@
-import type { ViewProps } from 'react-native';
 import {
   type ARIABaseProps,
   type ARIAFocusProps,
   type ARIALiveProps,
   type ARIATraitDisabled,
-  type ARIATraitOrientation,
   type ARIATraitExpanded,
+  type ARIATraitOrientation,
 } from '@base-ui-rn/core';
+import type { ViewProps } from 'react-native';
 
 /**
  * Web-specific accessibility props for Separator.

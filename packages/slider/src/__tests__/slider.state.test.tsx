@@ -1,5 +1,6 @@
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+
 import { Slider } from '../index';
 
 describe('Slider state', () => {
@@ -21,7 +22,7 @@ describe('Slider state', () => {
   it('supports controlled value', () => {
     const onValueChange = jest.fn();
     const { getByLabelText } = render(
-      <Slider.Root value={20} onValueChange={onValueChange}>
+      <Slider.Root onValueChange={onValueChange} value={20}>
         <Slider.Thumb aria-label='Volume thumb' />
       </Slider.Root>,
     );
@@ -39,11 +40,11 @@ describe('Slider state', () => {
       <Slider.Root
         defaultValue={[10, 20]}
         minStepsBetweenValues={5}
-        thumbCollisionBehavior='none'
         onValueChange={onValueChange}
+        thumbCollisionBehavior='none'
       >
-        <Slider.Thumb index={0} aria-label='Thumb 0' />
-        <Slider.Thumb index={1} aria-label='Thumb 1' />
+        <Slider.Thumb aria-label='Thumb 0' index={0} />
+        <Slider.Thumb aria-label='Thumb 1' index={1} />
       </Slider.Root>,
     );
 
@@ -65,12 +66,12 @@ describe('Slider state', () => {
     const { getByLabelText } = render(
       <Slider.Root
         defaultValue={[10, 20]}
-        thumbCollisionBehavior='push'
         minStepsBetweenValues={5}
         onValueChange={onValueChange}
+        thumbCollisionBehavior='push'
       >
-        <Slider.Thumb index={0} aria-label='Thumb 0' />
-        <Slider.Thumb index={1} aria-label='Thumb 1' />
+        <Slider.Thumb aria-label='Thumb 0' index={0} />
+        <Slider.Thumb aria-label='Thumb 1' index={1} />
       </Slider.Root>,
     );
 
@@ -88,10 +89,10 @@ describe('Slider state', () => {
     const { getByLabelText } = render(
       <Slider.Root
         defaultValue={[10, 20, 30]}
-        stepBetweenValues={10}
         onValueChange={onValueChange}
+        stepBetweenValues={10}
       >
-        <Slider.Thumb index={1} aria-label='Thumb 1' />
+        <Slider.Thumb aria-label='Thumb 1' index={1} />
       </Slider.Root>,
     );
 
@@ -113,14 +114,14 @@ describe('Slider state', () => {
     const { getByLabelText } = render(
       <Slider.Root
         defaultValue={[80, 90, 100]}
-        min={0}
         max={100}
-        stepBetweenValues={10}
+        min={0}
         onValueChange={onValueChange}
+        stepBetweenValues={10}
       >
-        <Slider.Thumb index={0} aria-label='Thumb 0' />
-        <Slider.Thumb index={1} aria-label='Thumb 1' />
-        <Slider.Thumb index={2} aria-label='Thumb 2' />
+        <Slider.Thumb aria-label='Thumb 0' index={0} />
+        <Slider.Thumb aria-label='Thumb 1' index={1} />
+        <Slider.Thumb aria-label='Thumb 2' index={2} />
       </Slider.Root>,
     );
 
@@ -143,10 +144,10 @@ describe('Slider state', () => {
     const { getByLabelText } = render(
       <Slider.Root
         defaultValue={0.1}
-        step={0.1}
-        min={0}
         max={1}
+        min={0}
         onValueChange={onValueChange}
+        step={0.1}
       >
         <Slider.Thumb aria-label='Thumb' />
       </Slider.Root>,
@@ -179,11 +180,11 @@ describe('Slider state', () => {
     const { getByLabelText } = render(
       <Slider.Root
         defaultValue={[10, 20]}
-        thumbCollisionBehavior='swap'
         onValueChange={onValueChange}
+        thumbCollisionBehavior='swap'
       >
-        <Slider.Thumb index={0} aria-label='Thumb 0' />
-        <Slider.Thumb index={1} aria-label='Thumb 1' />
+        <Slider.Thumb aria-label='Thumb 0' index={0} />
+        <Slider.Thumb aria-label='Thumb 1' index={1} />
       </Slider.Root>,
     );
 
@@ -204,11 +205,11 @@ describe('Slider state', () => {
     const { getByLabelText } = render(
       <Slider.Root
         defaultValue={[10, 20]}
-        thumbCollisionBehavior='none'
         onValueChange={onValueChange}
+        thumbCollisionBehavior='none'
       >
-        <Slider.Thumb index={0} aria-label='Thumb 0' />
-        <Slider.Thumb index={1} aria-label='Thumb 1' />
+        <Slider.Thumb aria-label='Thumb 0' index={0} />
+        <Slider.Thumb aria-label='Thumb 1' index={1} />
       </Slider.Root>,
     );
 
@@ -227,8 +228,8 @@ describe('Slider state', () => {
     const { getByLabelText } = render(
       <Slider.Root
         defaultValue={-50}
-        min={-100}
         max={0}
+        min={-100}
         onValueChange={onValueChange}
       >
         <Slider.Thumb aria-label='Thumb' />

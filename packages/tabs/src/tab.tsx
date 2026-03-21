@@ -1,10 +1,11 @@
-import * as React from 'react';
-import { View, type NativeSyntheticEvent } from 'react-native';
 import {
   evaluateStyles,
   type KeyPressEventData,
   PressableWithKeyPress,
 } from '@base-ui-rn/core';
+import * as React from 'react';
+import { type NativeSyntheticEvent, View } from 'react-native';
+
 import type { TabProps } from './types';
 import { useTab } from './use-tabs';
 
@@ -23,39 +24,39 @@ import { useTab } from './use-tabs';
 export const Tab = React.memo(
   React.forwardRef<View, TabProps>((props, forwardedRef) => {
     const {
-      children,
-      value,
-      disabled,
-      style,
-      disableDefaultFocusRing = false,
-      focusRingStyle,
-      tabIndex,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
-      'aria-busy': ariaBusy,
+      'aria-expanded': ariaExpanded,
       'aria-hidden': ariaHidden,
       'aria-keyshortcuts': ariaKeyshortcuts,
-      'aria-expanded': ariaExpanded,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      children,
+      'data-activation-direction': dataActivationDirection,
       'data-active': dataActive,
       'data-disabled': dataDisabled,
       'data-orientation': dataOrientation,
-      'data-activation-direction': dataActivationDirection,
+      disabled,
+      disableDefaultFocusRing = false,
+      focusRingStyle,
+      style,
+      tabIndex,
+      value,
       ...otherProps
     } = props;
 
     const {
+      handleBlur,
+      handleFocus,
+      handleKeyDown,
+      handlePress,
+      onLayout,
       ref,
       state,
-      handlePress,
-      handleKeyDown,
-      handleFocus,
-      handleBlur,
-      onLayout,
     } = useTab({
-      value,
       disabled,
+      value,
     });
 
     React.useImperativeHandle(forwardedRef, () => ref.current!);
@@ -63,40 +64,40 @@ export const Tab = React.memo(
     return (
       <PressableWithKeyPress
         {...otherProps}
-        ref={ref}
+        accessible
+        aria-busy={ariaBusy}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
+        aria-disabled={state.disabled}
+        aria-expanded={ariaExpanded}
+        aria-hidden={ariaHidden}
+        aria-keyshortcuts={ariaKeyshortcuts}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
+        aria-selected={state.active}
+        data-activation-direction={
+          dataActivationDirection ?? state.activationDirection
+        }
+        data-active={dataActive ?? (state.active ? 'true' : undefined)}
+        data-disabled={dataDisabled ?? (state.disabled ? 'true' : undefined)}
+        data-orientation={dataOrientation ?? state.orientation}
         disabled={state.disabled}
-        onPress={handlePress}
+        onBlur={handleBlur}
+        onFocus={handleFocus}
         onKeyDown={(e: unknown) =>
           handleKeyDown(e as NativeSyntheticEvent<KeyPressEventData>)
         }
-        onFocus={handleFocus}
-        onBlur={handleBlur}
         onLayout={onLayout}
+        onPress={handlePress}
+        ref={ref}
+        role='tab'
         style={() =>
           evaluateStyles(style, state, {
             disableDefaultFocusRing,
             focusRingStyle,
           })
         }
-        accessible
-        role='tab'
-        aria-selected={state.active}
-        aria-disabled={state.disabled}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
-        aria-describedby={ariaDescribedBy}
-        aria-details={ariaDetails}
-        aria-busy={ariaBusy}
-        aria-hidden={ariaHidden}
-        aria-keyshortcuts={ariaKeyshortcuts}
-        aria-expanded={ariaExpanded}
         tabIndex={tabIndex}
-        data-active={dataActive ?? (state.active ? 'true' : undefined)}
-        data-disabled={dataDisabled ?? (state.disabled ? 'true' : undefined)}
-        data-orientation={dataOrientation ?? state.orientation}
-        data-activation-direction={
-          dataActivationDirection ?? state.activationDirection
-        }
       >
         {evaluateStyles(children, state)}
       </PressableWithKeyPress>

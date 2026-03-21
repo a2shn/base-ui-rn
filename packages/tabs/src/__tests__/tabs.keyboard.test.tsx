@@ -1,6 +1,7 @@
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+
 import { Tabs } from '../index';
 
 describe('Tabs - Keyboard', () => {
@@ -9,10 +10,10 @@ describe('Tabs - Keyboard', () => {
     const { getByTestId } = render(
       <Tabs.Root onValueChange={onValueChange}>
         <Tabs.List>
-          <Tabs.Tab value='tab-1' testID='tab-1'>
+          <Tabs.Tab testID='tab-1' value='tab-1'>
             <Text>Tab 1</Text>
           </Tabs.Tab>
-          <Tabs.Tab value='tab-2' testID='tab-2'>
+          <Tabs.Tab testID='tab-2' value='tab-2'>
             <Text>Tab 2</Text>
           </Tabs.Tab>
         </Tabs.List>
@@ -33,10 +34,10 @@ describe('Tabs - Keyboard', () => {
     const { getByTestId } = render(
       <Tabs.Root onValueChange={onValueChange}>
         <Tabs.List>
-          <Tabs.Tab value='tab-1' testID='tab-1'>
+          <Tabs.Tab testID='tab-1' value='tab-1'>
             <Text>Tab 1</Text>
           </Tabs.Tab>
-          <Tabs.Tab value='tab-2' disabled testID='tab-2'>
+          <Tabs.Tab disabled testID='tab-2' value='tab-2'>
             <Text>Tab 2</Text>
           </Tabs.Tab>
         </Tabs.List>

@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { View, type ViewStyle } from 'react-native';
-import type { MeterIndicatorProps } from './types';
+
 import { useMeterContext } from './meter-context';
+import type { MeterIndicatorProps } from './types';
 
 /**
  * Visualizes the meter's current value.
@@ -17,13 +18,13 @@ import { useMeterContext } from './meter-context';
 export const MeterIndicator = React.memo(
   React.forwardRef<View, MeterIndicatorProps>((props, ref) => {
     const {
-      style,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'aria-labelledby': ariaLabelledBy,
+      style,
       ...other
     } = props;
     const { percentage } = useMeterContext();
@@ -37,18 +38,18 @@ export const MeterIndicator = React.memo(
     return (
       <View
         {...other}
-        ref={ref}
-        style={[indicatorStyle, style]}
-        importantForAccessibility='no-hide-descendants'
-        aria-labelledby={ariaLabelledBy}
+        aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-expanded={ariaExpanded}
-        aria-busy={ariaBusy}
         aria-hidden={ariaHidden ?? true}
+        aria-labelledby={ariaLabelledBy}
+        importantForAccessibility='no-hide-descendants'
+        ref={ref}
+        style={[indicatorStyle, style]}
       />
     );
-  },
+  }),
 );
 
 MeterIndicator.displayName = 'Meter.Indicator';

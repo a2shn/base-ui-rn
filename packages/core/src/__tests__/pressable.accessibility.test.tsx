@@ -1,15 +1,16 @@
-import * as React from 'react';
 import { render } from '@testing-library/react-native';
+import * as React from 'react';
 import { Text } from 'react-native';
+
 import { PressableWithKeyPress } from '../pressable';
 
 describe('PressableWithKeyPress: Accessibility', () => {
   it('should pass accessibilityLabel and accessibilityHint', () => {
     const { getByTestId } = render(
       <PressableWithKeyPress
-        testID='test-pressable'
-        accessibilityLabel='My Button'
         accessibilityHint='Double tap to activate'
+        accessibilityLabel='My Button'
+        testID='test-pressable'
       >
         <Text>Button</Text>
       </PressableWithKeyPress>,
@@ -22,9 +23,9 @@ describe('PressableWithKeyPress: Accessibility', () => {
   it('should pass accessibilityRole and accessibilityState', () => {
     const { getByTestId } = render(
       <PressableWithKeyPress
-        testID='test-pressable'
         accessibilityRole='button'
         accessibilityState={{ disabled: true, selected: true }}
+        testID='test-pressable'
       >
         <Text>Button</Text>
       </PressableWithKeyPress>,

@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Tabs, type TabState, type TabsIndicatorState } from '@base-ui-rn/tabs';
 import { Gallery, Section, theme } from '@base-ui-rn/playbook';
+import { Tabs, type TabsIndicatorState, type TabState } from '@base-ui-rn/tabs';
+import * as React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 export function TabsPlaybook() {
   return (
@@ -10,7 +10,7 @@ export function TabsPlaybook() {
         <View style={styles.container}>
           <Tabs.Root defaultValue='tab-1'>
             <Tabs.List style={styles.list}>
-              <Tabs.Tab value='tab-1' style={getTabStyle}>
+              <Tabs.Tab style={getTabStyle} value='tab-1'>
                 {({ active }) => (
                   <Text
                     style={[styles.tabText, active && styles.activeTabText]}
@@ -19,7 +19,7 @@ export function TabsPlaybook() {
                   </Text>
                 )}
               </Tabs.Tab>
-              <Tabs.Tab value='tab-2' style={getTabStyle}>
+              <Tabs.Tab style={getTabStyle} value='tab-2'>
                 {({ active }) => (
                   <Text
                     style={[styles.tabText, active && styles.activeTabText]}
@@ -28,7 +28,7 @@ export function TabsPlaybook() {
                   </Text>
                 )}
               </Tabs.Tab>
-              <Tabs.Tab value='tab-3' style={getTabStyle}>
+              <Tabs.Tab style={getTabStyle} value='tab-3'>
                 {({ active }) => (
                   <Text
                     style={[styles.tabText, active && styles.activeTabText]}
@@ -39,13 +39,13 @@ export function TabsPlaybook() {
               </Tabs.Tab>
               <Tabs.Indicator style={getIndicatorStyle} />
             </Tabs.List>
-            <Tabs.Panel value='tab-1' style={styles.panel}>
+            <Tabs.Panel style={styles.panel} value='tab-1'>
               <Text style={styles.panelText}>Overview content</Text>
             </Tabs.Panel>
-            <Tabs.Panel value='tab-2' style={styles.panel}>
+            <Tabs.Panel style={styles.panel} value='tab-2'>
               <Text style={styles.panelText}>Projects content</Text>
             </Tabs.Panel>
-            <Tabs.Panel value='tab-3' style={styles.panel}>
+            <Tabs.Panel style={styles.panel} value='tab-3'>
               <Text style={styles.panelText}>Account content</Text>
             </Tabs.Panel>
           </Tabs.Root>
@@ -54,10 +54,10 @@ export function TabsPlaybook() {
 
       <Section title='Vertical'>
         <View style={styles.container}>
-          <Tabs.Root orientation='vertical' defaultValue='tab-1'>
+          <Tabs.Root defaultValue='tab-1' orientation='vertical'>
             <View style={styles.verticalWrapper}>
               <Tabs.List style={styles.verticalList}>
-                <Tabs.Tab value='tab-1' style={getTabStyle}>
+                <Tabs.Tab style={getTabStyle} value='tab-1'>
                   {({ active }) => (
                     <Text
                       style={[styles.tabText, active && styles.activeTabText]}
@@ -66,7 +66,7 @@ export function TabsPlaybook() {
                     </Text>
                   )}
                 </Tabs.Tab>
-                <Tabs.Tab value='tab-2' style={getTabStyle}>
+                <Tabs.Tab style={getTabStyle} value='tab-2'>
                   {({ active }) => (
                     <Text
                       style={[styles.tabText, active && styles.activeTabText]}
@@ -78,10 +78,10 @@ export function TabsPlaybook() {
                 <Tabs.Indicator style={getVerticalIndicatorStyle} />
               </Tabs.List>
               <View style={styles.flex1}>
-                <Tabs.Panel value='tab-1' style={styles.panel}>
+                <Tabs.Panel style={styles.panel} value='tab-1'>
                   <Text style={styles.panelText}>Vertical Panel 1</Text>
                 </Tabs.Panel>
-                <Tabs.Panel value='tab-2' style={styles.panel}>
+                <Tabs.Panel style={styles.panel} value='tab-2'>
                   <Text style={styles.panelText}>Vertical Panel 2</Text>
                 </Tabs.Panel>
               </View>
@@ -94,58 +94,58 @@ export function TabsPlaybook() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    padding: theme.spacing.xl,
-    alignSelf: 'center',
-  },
-  list: {
-    flexDirection: 'row',
-    backgroundColor: theme.colors.bgCanvas,
-    borderRadius: theme.radius.md,
-    padding: theme.spacing.xs,
-    gap: theme.spacing.xs,
-  },
-  verticalWrapper: {
-    flexDirection: 'row',
-    gap: theme.spacing.xl,
-  },
-  verticalList: {
-    flexDirection: 'column',
-    backgroundColor: theme.colors.bgCanvas,
-    borderRadius: theme.radius.md,
-    padding: theme.spacing.xs,
-    gap: theme.spacing.xs,
-  },
-  tab: {
-    paddingVertical: theme.spacing.sm,
-    paddingHorizontal: theme.spacing.md,
-    borderRadius: theme.radius.sm + 2,
-  },
-  tabText: {
-    fontSize: theme.font.size.md,
-    color: theme.colors.textSecondary,
-  },
   activeTabText: {
     color: theme.colors.textPrimary,
     fontWeight: theme.font.weight.semibold,
   },
-  panel: {
+  container: {
+    alignSelf: 'center',
     padding: theme.spacing.xl,
-    backgroundColor: theme.colors.bgCanvas,
-    borderRadius: theme.radius.md,
-    minHeight: 100,
-    marginTop: theme.spacing.md,
-  },
-  panelText: {
-    color: theme.colors.textPrimary,
+    width: '100%',
   },
   flex1: {
     flex: 1,
   },
   indicator: {
-    position: 'absolute',
     backgroundColor: theme.colors.border, // Or another suitable dark color
+    position: 'absolute',
+  },
+  list: {
+    backgroundColor: theme.colors.bgCanvas,
+    borderRadius: theme.radius.md,
+    flexDirection: 'row',
+    gap: theme.spacing.xs,
+    padding: theme.spacing.xs,
+  },
+  panel: {
+    backgroundColor: theme.colors.bgCanvas,
+    borderRadius: theme.radius.md,
+    marginTop: theme.spacing.md,
+    minHeight: 100,
+    padding: theme.spacing.xl,
+  },
+  panelText: {
+    color: theme.colors.textPrimary,
+  },
+  tab: {
+    borderRadius: theme.radius.sm + 2,
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+  },
+  tabText: {
+    color: theme.colors.textSecondary,
+    fontSize: theme.font.size.md,
+  },
+  verticalList: {
+    backgroundColor: theme.colors.bgCanvas,
+    borderRadius: theme.radius.md,
+    flexDirection: 'column',
+    gap: theme.spacing.xs,
+    padding: theme.spacing.xs,
+  },
+  verticalWrapper: {
+    flexDirection: 'row',
+    gap: theme.spacing.xl,
   },
 });
 
@@ -159,8 +159,8 @@ function getIndicatorStyle(state: TabsIndicatorState) {
     {
       bottom: 0,
       height: 0, // Hidden for this style
-      width: state['--active-tab-width'],
       transform: [{ translateX: state['--active-tab-left'] ?? 0 }],
+      width: state['--active-tab-width'],
     },
   ];
 }
@@ -169,10 +169,10 @@ function getVerticalIndicatorStyle(state: TabsIndicatorState) {
   return [
     styles.indicator,
     {
-      right: 0,
-      width: 0, // Hidden for this style
       height: state['--active-tab-height'],
+      right: 0,
       transform: [{ translateY: state['--active-tab-top'] ?? 0 }],
+      width: 0, // Hidden for this style
     },
   ];
 }

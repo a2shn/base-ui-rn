@@ -1,18 +1,18 @@
 import type {
-  PressableProps,
-  NativeSyntheticEvent,
-  ViewProps,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
-import type {
-  KeyPressEventData,
-  FocusVisibleProps,
   ARIABaseProps,
   ARIAFocusProps,
   ARIALiveProps,
   ARIATraitDisabled,
+  FocusVisibleProps,
+  KeyPressEventData,
 } from '@base-ui-rn/core';
+import type {
+  NativeSyntheticEvent,
+  PressableProps,
+  StyleProp,
+  ViewProps,
+  ViewStyle,
+} from 'react-native';
 
 /**
  * Web-specific accessibility props for Switch Root.

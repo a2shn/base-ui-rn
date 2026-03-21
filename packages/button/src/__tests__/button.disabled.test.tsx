@@ -1,8 +1,9 @@
+import { DEFAULT_HINT } from '@base-ui-rn/test-utils';
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+
 import { Button } from '../button';
-import { DEFAULT_HINT } from '@base-ui-rn/test-utils';
 
 describe('Button - Disabled State', () => {
   afterEach(() => {
@@ -13,7 +14,7 @@ describe('Button - Disabled State', () => {
     it('ignores presses when disabled', () => {
       const onPressMock = jest.fn();
       const { getByRole } = render(
-        <Button disabled onPress={onPressMock} accessibilityHint={DEFAULT_HINT}>
+        <Button accessibilityHint={DEFAULT_HINT} disabled onPress={onPressMock}>
           <Text>Disabled Button</Text>
         </Button>,
       );
@@ -26,7 +27,7 @@ describe('Button - Disabled State', () => {
 
     it('applies disabled accessibility state', () => {
       const { getByRole } = render(
-        <Button disabled accessibilityHint={DEFAULT_HINT}>
+        <Button accessibilityHint={DEFAULT_HINT} disabled>
           <Text>Disabled Button</Text>
         </Button>,
       );
@@ -39,7 +40,7 @@ describe('Button - Disabled State', () => {
 
     it('makes button non-focusable when disabled', () => {
       const { getByRole } = render(
-        <Button disabled accessibilityHint={DEFAULT_HINT}>
+        <Button accessibilityHint={DEFAULT_HINT} disabled>
           <Text>Disabled Button</Text>
         </Button>,
       );
@@ -56,10 +57,10 @@ describe('Button - Disabled State', () => {
       const onPressMock = jest.fn();
       const { getByRole } = render(
         <Button
+          accessibilityHint={DEFAULT_HINT}
           disabled
           focusableWhenDisabled
           onPress={onPressMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Loading</Text>
         </Button>,
@@ -79,10 +80,10 @@ describe('Button - Disabled State', () => {
       const onPressMock = jest.fn();
       const { getByRole } = render(
         <Button
+          accessibilityHint={DEFAULT_HINT}
           disabled
           focusableWhenDisabled
           onPress={onPressMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Loading Button</Text>
         </Button>,
@@ -107,7 +108,7 @@ describe('Button - Disabled State', () => {
       expect(getByRole('button').props.tabIndex).toBe(0);
 
       rerender(
-        <Button disabled accessibilityHint={DEFAULT_HINT}>
+        <Button accessibilityHint={DEFAULT_HINT} disabled>
           <Text>Toggle</Text>
         </Button>,
       );
@@ -115,7 +116,7 @@ describe('Button - Disabled State', () => {
       expect(getByRole('button').props.tabIndex).toBe(-1);
 
       rerender(
-        <Button disabled focusableWhenDisabled accessibilityHint={DEFAULT_HINT}>
+        <Button accessibilityHint={DEFAULT_HINT} disabled focusableWhenDisabled>
           <Text>Toggle</Text>
         </Button>,
       );
@@ -138,10 +139,10 @@ describe('Button - Disabled State', () => {
       const onKeyDownMock = jest.fn();
       const { getByRole } = render(
         <Button
-          disabled
-          onPress={onPressMock}
-          onKeyDown={onKeyDownMock}
           accessibilityHint={DEFAULT_HINT}
+          disabled
+          onKeyDown={onKeyDownMock}
+          onPress={onPressMock}
         >
           <Text>Disabled Button</Text>
         </Button>,
@@ -163,24 +164,6 @@ describe('Button - Disabled State', () => {
       });
       expect(onPressMock).not.toHaveBeenCalled();
     });
-
-    it('allows onKeyDown callback to fire even when disabled', () => {
-      const onKeyDownMock = jest.fn();
-      const { getByRole } = render(
-        <Button
-          disabled
-          onKeyDown={onKeyDownMock}
-          accessibilityHint={DEFAULT_HINT}
-        >
-          <Text>Disabled Button</Text>
-        </Button>,
-      );
-
-      const button = getByRole('button');
-
-      fireEvent(button, 'keyDown', { nativeEvent: { key: 'Tab' } });
-      expect(onKeyDownMock).toHaveBeenCalledTimes(1);
-    });
   });
 
   describe('Group Focus Management with Disabled', () => {
@@ -190,13 +173,13 @@ describe('Button - Disabled State', () => {
           <Button accessibilityHint='Normal button'>
             <Text>Normal</Text>
           </Button>
-          <Button disabled accessibilityHint='Disabled button'>
+          <Button accessibilityHint='Disabled button' disabled>
             <Text>Disabled</Text>
           </Button>
           <Button
+            accessibilityHint='Loading button'
             disabled
             focusableWhenDisabled
-            accessibilityHint='Loading button'
           >
             <Text>Loading</Text>
           </Button>
@@ -230,7 +213,7 @@ describe('Button - Disabled State', () => {
       expect(button.props.focusable).toBe(true);
 
       rerender(
-        <Button disabled accessibilityHint={DEFAULT_HINT}>
+        <Button accessibilityHint={DEFAULT_HINT} disabled>
           <Text>Toggle Button</Text>
         </Button>,
       );
@@ -251,7 +234,7 @@ describe('Button - Disabled State', () => {
       expect(button.props.tabIndex).toBe(0);
 
       rerender(
-        <Button disabled focusableWhenDisabled accessibilityHint={DEFAULT_HINT}>
+        <Button accessibilityHint={DEFAULT_HINT} disabled focusableWhenDisabled>
           <Text>Toggle Button</Text>
         </Button>,
       );

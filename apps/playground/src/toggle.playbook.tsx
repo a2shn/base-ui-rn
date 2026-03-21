@@ -1,13 +1,13 @@
-import * as React from 'react';
-import { Text, StyleSheet } from 'react-native';
-import { Toggle, type ToggleState } from '@base-ui-rn/toggle';
 import {
   Gallery,
-  Section,
-  usePlaybookToggles,
   LiveConsole,
+  Section,
   theme,
+  usePlaybookToggles,
 } from '@base-ui-rn/playbook';
+import { Toggle, type ToggleState } from '@base-ui-rn/toggle';
+import * as React from 'react';
+import { StyleSheet, Text } from 'react-native';
 
 export function TogglePlaybook() {
   const { darkMode, loading, loadingPressCount } = usePlaybookToggles({
@@ -25,12 +25,12 @@ export function TogglePlaybook() {
 
   return (
     <Gallery title='Toggle'>
-      <Section title='Uncontrolled' showAllProps={true}>
+      <Section showAllProps={true} title='Uncontrolled'>
         <Toggle
-          defaultPressed={false}
           accessibilityHint='Toggles notifications'
-          testID='toggle-uncontrolled'
+          defaultPressed={false}
           style={getToggleStyle}
+          testID='toggle-uncontrolled'
         >
           <Text style={styles.text}>Notifications</Text>
         </Toggle>
@@ -38,24 +38,24 @@ export function TogglePlaybook() {
 
       <Section title='Controlled'>
         <Toggle
-          role='switch'
-          pressed={darkMode.value as boolean}
-          onPressedChange={darkMode.setValue}
           accessibilityHint='Toggles dark mode'
-          testID='toggle-dark-mode'
+          onPressedChange={darkMode.setValue}
+          pressed={darkMode.value as boolean}
+          role='switch'
           style={getToggleStyle}
+          testID='toggle-dark-mode'
         >
           <Text style={styles.text}>{darkMode.value ? 'ON' : 'OFF'}</Text>
         </Toggle>
-        <LiveConsole title='darkMode' state={darkMode} />
+        <LiveConsole state={darkMode} title='darkMode' />
       </Section>
 
       <Section title='Disabled'>
         <Toggle
-          disabled
           accessibilityHint='Locked setting'
-          testID='toggle-disabled'
+          disabled
           style={[styles.toggleBase, styles.disabled]}
+          testID='toggle-disabled'
         >
           <Text style={styles.text}>Disabled</Text>
         </Toggle>
@@ -63,27 +63,27 @@ export function TogglePlaybook() {
 
       <Section title='Processing'>
         <Toggle
-          disabled={loading.value as boolean}
-          focusableWhenDisabled
-          onPress={handleLoadingPress}
           accessibilityHint={
             loading.value ? 'Applying changes, please wait' : 'Press to agree'
           }
-          accessibilityState={{ busy: loading.value as boolean }}
-          testID='toggle-disabled-focusable'
           accessibilityLabel='Agree Toggle'
+          accessibilityState={{ busy: loading.value as boolean }}
+          disabled={loading.value as boolean}
+          focusableWhenDisabled
+          onPress={handleLoadingPress}
           style={getToggleStyle}
+          testID='toggle-disabled-focusable'
         >
           <Text style={styles.text}>
             {loading.value ? 'Applying...' : 'Agree'}
           </Text>
         </Toggle>
 
-        <LiveConsole title='loading' state={loading} testID='loading-console' />
+        <LiveConsole state={loading} testID='loading-console' title='loading' />
         <LiveConsole
-          title='presses'
           state={loadingPressCount}
           testID='presses-console'
+          title='presses'
         />
       </Section>
     </Gallery>
@@ -91,26 +91,26 @@ export function TogglePlaybook() {
 }
 
 const styles = StyleSheet.create({
-  toggleBase: {
-    paddingVertical: theme.spacing.md,
-    paddingHorizontal: theme.spacing.xl,
-    borderRadius: theme.radius.md,
-    backgroundColor: theme.colors.border,
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'center',
+  disabled: {
+    opacity: 0.5,
+  },
+  pressed: {
+    backgroundColor: '#3D3D3D',
+    opacity: 0.7,
   },
   text: {
     color: theme.colors.textPrimary,
     fontSize: theme.font.size.md,
     fontWeight: theme.font.weight.medium,
   },
-  pressed: {
-    opacity: 0.7,
-    backgroundColor: '#3D3D3D',
-  },
-  disabled: {
-    opacity: 0.5,
+  toggleBase: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    backgroundColor: theme.colors.border,
+    borderRadius: theme.radius.md,
+    justifyContent: 'center',
+    paddingHorizontal: theme.spacing.xl,
+    paddingVertical: theme.spacing.md,
   },
 });
 

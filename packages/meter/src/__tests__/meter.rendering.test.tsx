@@ -1,6 +1,7 @@
+import { render } from '@testing-library/react-native';
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
-import { render } from '@testing-library/react-native';
+
 import { Meter } from '../index';
 
 describe('Meter - Rendering', () => {
@@ -28,7 +29,7 @@ describe('Meter - Rendering', () => {
 
   it('passes through style to Meter.Root', () => {
     const { getByRole } = render(
-      <Meter.Root value={50} style={{ margin: 10 }} />,
+      <Meter.Root style={{ margin: 10 }} value={50} />,
     );
     const meter = getByRole('progressbar');
     expect(StyleSheet.flatten(meter.props.style).margin).toBe(10);
@@ -36,7 +37,7 @@ describe('Meter - Rendering', () => {
 
   it('supports custom min and max values', () => {
     const { getByTestId } = render(
-      <Meter.Root value={200} min={100} max={500}>
+      <Meter.Root max={500} min={100} value={200}>
         <Meter.Track>
           <Meter.Indicator testID='indicator' />
         </Meter.Track>
@@ -54,7 +55,7 @@ describe('Meter - Rendering', () => {
     const { getByTestId } = render(
       <Meter.Root value={50}>
         <Meter.Track>
-          <Meter.Indicator testID='indicator' style={{ height: 10 }} />
+          <Meter.Indicator style={{ height: 10 }} testID='indicator' />
         </Meter.Track>
       </Meter.Root>,
     );
@@ -69,7 +70,7 @@ describe('Meter - Rendering', () => {
 
   it('clamps values within min and max range', () => {
     const { getByTestId, rerender } = render(
-      <Meter.Root value={600} min={0} max={500}>
+      <Meter.Root max={500} min={0} value={600}>
         <Meter.Track>
           <Meter.Indicator testID='indicator' />
         </Meter.Track>
@@ -82,7 +83,7 @@ describe('Meter - Rendering', () => {
     expect(StyleSheet.flatten(indicator.props.style).width).toBe('100%');
 
     rerender(
-      <Meter.Root value={-100} min={0} max={500}>
+      <Meter.Root max={500} min={0} value={-100}>
         <Meter.Track>
           <Meter.Indicator testID='indicator' />
         </Meter.Track>
@@ -95,11 +96,11 @@ describe('Meter - Rendering', () => {
   it('supports localized value formatting', () => {
     const { getByText } = render(
       <Meter.Root
-        value={0.75}
-        min={0}
-        max={1}
         format={{ style: 'percent' }}
         locale='en-US'
+        max={1}
+        min={0}
+        value={0.75}
       >
         <Meter.Value />
       </Meter.Root>,
@@ -110,7 +111,7 @@ describe('Meter - Rendering', () => {
 
   it('supports custom render function for Meter.Value', () => {
     const { getByText } = render(
-      <Meter.Root value={24} max={100}>
+      <Meter.Root max={100} value={24}>
         <Meter.Value>
           {(formattedValue, value) =>
             `Value is ${value} (formatted: ${formattedValue})`

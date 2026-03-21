@@ -1,17 +1,17 @@
-import type * as React from 'react';
-import type {
-  ViewProps,
-  TextProps,
-  StyleProp,
-  ViewStyle,
-  TextStyle,
-} from 'react-native';
 import {
   type ARIABaseProps,
   type ARIAFocusProps,
   type ARIALiveProps,
   ARIATraitRange,
 } from '@base-ui-rn/core';
+import type * as React from 'react';
+import type {
+  StyleProp,
+  TextProps,
+  TextStyle,
+  ViewProps,
+  ViewStyle,
+} from 'react-native';
 
 /**
  * Web-specific accessibility props for the Progress component.

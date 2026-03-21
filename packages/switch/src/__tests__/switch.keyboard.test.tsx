@@ -1,6 +1,7 @@
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Platform } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+
 import { SwitchRoot } from '../index';
 
 describe('Switch - Keyboard', () => {

@@ -1,11 +1,12 @@
-import * as React from 'react';
-import { View, type Role } from 'react-native';
-import { type ButtonProps } from './types';
 import {
   DEFAULT_HIT_SLOP,
   evaluateStyles,
   PressableWithKeyPress,
 } from '@base-ui-rn/core';
+import * as React from 'react';
+import { type Role, View } from 'react-native';
+
+import { type ButtonProps } from './types';
 import { useButton } from './use-button';
 
 /**
@@ -26,18 +27,18 @@ export const Button = React.memo(
     const {
       accessibilityHint = 'Activates the button',
       accessibilityRole,
-      hitSlop = DEFAULT_HIT_SLOP,
-      children,
-      style,
-      disableDefaultFocusRing = false,
-      focusRingStyle,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      children,
+      disableDefaultFocusRing = false,
+      focusRingStyle,
+      hitSlop = DEFAULT_HIT_SLOP,
+      style,
       ...otherProps
     } = props;
 
@@ -63,30 +64,29 @@ export const Button = React.memo(
     return (
       <PressableWithKeyPress
         {...otherProps}
-        ref={internalRef}
-        accessible
-        role={(accessibilityRole ?? 'button') as Role}
+        accessibilityActions={mergedAccessibilityActions}
         accessibilityHint={accessibilityHint}
         accessibilityState={mergedAccessibilityState}
-        accessibilityActions={mergedAccessibilityActions}
-        onAccessibilityAction={handleAccessibilityAction}
-        focusable={isFocusable}
-        tabIndex={resolvedTabIndex}
+        accessible
+        aria-busy={ariaBusy}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
         aria-disabled={resolvedAriaDisabled}
+        aria-expanded={ariaExpanded}
+        aria-hidden={ariaHidden}
         aria-keyshortcuts={resolvedAriaKeyshortcuts}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
-        aria-describedby={ariaDescribedBy}
-        aria-details={ariaDetails}
-        aria-expanded={ariaExpanded}
-        aria-busy={ariaBusy}
-        aria-hidden={ariaHidden}
-        importantForAccessibility='yes'
+        focusable={isFocusable}
         hitSlop={hitSlop}
-        onPress={handlePress}
-        onKeyDown={handleKeyDown}
-        onFocus={handleFocus}
+        importantForAccessibility='yes'
+        onAccessibilityAction={handleAccessibilityAction}
         onBlur={handleBlur}
+        onFocus={handleFocus}
+        onKeyDown={handleKeyDown}
+        onPress={handlePress}
+        ref={internalRef}
+        role={(accessibilityRole ?? 'button') as Role}
         style={(pressableState) =>
           evaluateStyles(
             style,
@@ -94,6 +94,7 @@ export const Button = React.memo(
             { disableDefaultFocusRing, focusRingStyle },
           )
         }
+        tabIndex={resolvedTabIndex}
       >
         {(pressableState) =>
           evaluateStyles(children, { ...pressableState, focused, focusVisible })

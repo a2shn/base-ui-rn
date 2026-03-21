@@ -1,8 +1,9 @@
+import { Toggle } from '@base-ui-rn/toggle';
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+
 import { ToggleGroup } from '../toggle-group';
-import { Toggle } from '@base-ui-rn/toggle';
 
 describe('ToggleGroup - State Management', () => {
   afterEach(() => {
@@ -90,7 +91,7 @@ describe('ToggleGroup - State Management', () => {
     it('calls onValueChange when a toggle is pressed', () => {
       const onValueChange = jest.fn();
       const { getByRole } = render(
-        <ToggleGroup value={['a']} onValueChange={onValueChange}>
+        <ToggleGroup onValueChange={onValueChange} value={['a']}>
           <Toggle value='a'>
             <Text>A</Text>
           </Toggle>

@@ -1,8 +1,9 @@
+import { DEFAULT_HINT } from '@base-ui-rn/test-utils';
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+
 import { Toggle } from '../toggle';
-import { DEFAULT_HINT } from '@base-ui-rn/test-utils';
 
 describe('Toggle - Disabled State', () => {
   afterEach(() => {
@@ -14,9 +15,9 @@ describe('Toggle - Disabled State', () => {
       const onChangeMock = jest.fn();
       const { getByRole } = render(
         <Toggle
+          accessibilityHint={DEFAULT_HINT}
           disabled
           onPressedChange={onChangeMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Disabled Toggle</Text>
         </Toggle>,
@@ -31,7 +32,7 @@ describe('Toggle - Disabled State', () => {
 
     it('makes toggle non-focusable when disabled', () => {
       const { getByRole } = render(
-        <Toggle disabled accessibilityHint={DEFAULT_HINT}>
+        <Toggle accessibilityHint={DEFAULT_HINT} disabled>
           <Text>Disabled Toggle</Text>
         </Toggle>,
       );
@@ -46,7 +47,7 @@ describe('Toggle - Disabled State', () => {
   describe('focusableWhenDisabled', () => {
     it('keeps focusable and tabIndex when disabled', () => {
       const { getByRole } = render(
-        <Toggle disabled focusableWhenDisabled accessibilityHint={DEFAULT_HINT}>
+        <Toggle accessibilityHint={DEFAULT_HINT} disabled focusableWhenDisabled>
           <Text>Loading</Text>
         </Toggle>,
       );
@@ -56,8 +57,8 @@ describe('Toggle - Disabled State', () => {
       expect(toggle.props.focusable).toBe(true);
       expect(toggle.props.tabIndex).toBe(0);
       expect(toggle.props.accessibilityState).toEqual({
-        disabled: true,
         checked: false,
+        disabled: true,
       });
     });
 
@@ -72,7 +73,7 @@ describe('Toggle - Disabled State', () => {
       expect(getByRole('checkbox').props.tabIndex).toBe(0);
 
       rerender(
-        <Toggle disabled accessibilityHint={DEFAULT_HINT}>
+        <Toggle accessibilityHint={DEFAULT_HINT} disabled>
           <Text>Toggle</Text>
         </Toggle>,
       );
@@ -80,7 +81,7 @@ describe('Toggle - Disabled State', () => {
       expect(getByRole('checkbox').props.tabIndex).toBe(-1);
 
       rerender(
-        <Toggle disabled focusableWhenDisabled accessibilityHint={DEFAULT_HINT}>
+        <Toggle accessibilityHint={DEFAULT_HINT} disabled focusableWhenDisabled>
           <Text>Toggle</Text>
         </Toggle>,
       );
@@ -102,10 +103,10 @@ describe('Toggle - Disabled State', () => {
       const onChangeMock = jest.fn();
       const { getByRole } = render(
         <Toggle
+          accessibilityHint={DEFAULT_HINT}
           disabled
           focusableWhenDisabled
           onPressedChange={onChangeMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Loading Toggle</Text>
         </Toggle>,
@@ -123,9 +124,9 @@ describe('Toggle - Disabled State', () => {
       const onChangeMock = jest.fn();
       const { getByRole } = render(
         <Toggle
+          accessibilityHint={DEFAULT_HINT}
           disabled
           onPressedChange={onChangeMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Disabled Toggle</Text>
         </Toggle>,
@@ -156,13 +157,13 @@ describe('Toggle - Disabled State', () => {
           <Toggle accessibilityHint='Normal toggle'>
             <Text>Normal</Text>
           </Toggle>
-          <Toggle disabled accessibilityHint='Disabled toggle'>
+          <Toggle accessibilityHint='Disabled toggle' disabled>
             <Text>Disabled</Text>
           </Toggle>
           <Toggle
+            accessibilityHint='Loading toggle'
             disabled
             focusableWhenDisabled
-            accessibilityHint='Loading toggle'
           >
             <Text>Loading</Text>
           </Toggle>
@@ -195,7 +196,7 @@ describe('Toggle - Disabled State', () => {
       expect(getByRole('checkbox').props.tabIndex).toBe(0);
 
       rerender(
-        <Toggle disabled focusableWhenDisabled accessibilityHint={DEFAULT_HINT}>
+        <Toggle accessibilityHint={DEFAULT_HINT} disabled focusableWhenDisabled>
           <Text>Toggle</Text>
         </Toggle>,
       );

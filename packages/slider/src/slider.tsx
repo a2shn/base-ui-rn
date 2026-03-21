@@ -1,6 +1,7 @@
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluateStyles } from '@base-ui-rn/core';
+
 import { SliderContext } from './context';
 import type { SliderRootProps } from './types';
 import { useSlider } from './use-slider';
@@ -24,36 +25,36 @@ import { useSlider } from './use-slider';
 export const SliderRoot = React.memo(
   React.forwardRef<View, SliderRootProps>(function SliderRoot(props, ref) {
     const {
-      children,
-      disabled = false,
       accessibilityState,
-      style,
-      'aria-label': ariaLabel,
-      'aria-keyshortcuts': ariaKeyshortcuts,
-      'aria-disabled': ariaDisabled,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
+      'aria-disabled': ariaDisabled,
       'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
-      minStepsBetweenValues,
+      'aria-keyshortcuts': ariaKeyshortcuts,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      children,
+      disabled = false,
       maxStepsBetweenValues,
+      minStepsBetweenValues,
       stepBetweenValues,
+      style,
       ...otherProps
     } = props;
 
     const {
-      state,
-      setValueAtIndex,
-      stepBy,
       commitValue,
-      locale,
       format,
       largeStep,
-      thumbAlignment,
-      setTrackSize,
+      locale,
       setThumbSize,
+      setTrackSize,
+      setValueAtIndex,
+      state,
+      stepBy,
+      thumbAlignment,
       trackSize,
     } = useSlider(props);
 
@@ -61,16 +62,16 @@ export const SliderRoot = React.memo(
 
     const contextValue = React.useMemo(
       () => ({
-        state,
-        setValueAtIndex,
-        stepBy,
         commitValue,
-        locale,
         format,
         largeStep,
-        thumbAlignment,
-        setTrackSize,
+        locale,
         setThumbSize,
+        setTrackSize,
+        setValueAtIndex,
+        state,
+        stepBy,
+        thumbAlignment,
         thumbRefs,
         trackSize,
       }),
@@ -94,23 +95,23 @@ export const SliderRoot = React.memo(
       <SliderContext.Provider value={contextValue}>
         <View
           {...otherProps}
-          ref={ref}
-          accessible
           accessibilityState={{ disabled, ...accessibilityState }}
-          aria-label={ariaLabel}
-          aria-keyshortcuts={ariaKeyshortcuts}
-          aria-disabled={ariaDisabled ?? disabled}
-          aria-labelledby={ariaLabelledBy}
+          accessible
+          aria-busy={ariaBusy}
           aria-describedby={ariaDescribedBy}
           aria-details={ariaDetails}
+          aria-disabled={ariaDisabled ?? disabled}
           aria-expanded={ariaExpanded}
-          aria-busy={ariaBusy}
           aria-hidden={ariaHidden}
-          data-orientation={state.orientation}
+          aria-keyshortcuts={ariaKeyshortcuts}
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledBy}
           data-disabled={disabled}
-          data-min-steps-between-values={minStepsBetweenValues}
           data-max-steps-between-values={maxStepsBetweenValues}
+          data-min-steps-between-values={minStepsBetweenValues}
+          data-orientation={state.orientation}
           data-step-between-values={stepBetweenValues}
+          ref={ref}
           style={evaluateStyles(style, state)}
         >
           {evaluateStyles(children, state)}

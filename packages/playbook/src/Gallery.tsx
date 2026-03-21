@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { ScrollView, View, Text } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
+
 import { useStyles } from './styles';
 
 /**
@@ -21,8 +22,8 @@ import { useStyles } from './styles';
  * ```
  */
 export const Gallery = ({
-  title,
   children,
+  title,
 }: {
   title: string;
   children: React.ReactNode;
@@ -30,7 +31,7 @@ export const Gallery = ({
   const styles = useStyles();
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView contentContainerStyle={styles.content} style={styles.container}>
       <Text style={styles.header}>{title}</Text>
       <View style={styles.divider} />
       {children}

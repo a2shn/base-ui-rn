@@ -1,10 +1,11 @@
-import * as React from 'react';
 import { render } from '@testing-library/react-native';
+import * as React from 'react';
+
 import { Slider } from '../index';
 
 describe('Slider rendering', () => {
   it('renders root and all basic parts', () => {
-    const { getAllByRole, getByText, getByTestId } = render(
+    const { getAllByRole, getByTestId, getByText } = render(
       <Slider.Root defaultValue={25}>
         <Slider.Label>Volume</Slider.Label>
         <Slider.Value />
@@ -25,9 +26,9 @@ describe('Slider rendering', () => {
     const { getByText } = render(
       <Slider.Root defaultValue={[10, 50, 90]}>
         <Slider.Value>{(formatted) => formatted.join(' - ')}</Slider.Value>
-        <Slider.Thumb index={0} aria-label='T1' />
-        <Slider.Thumb index={1} aria-label='T2' />
-        <Slider.Thumb index={2} aria-label='T3' />
+        <Slider.Thumb aria-label='T1' index={0} />
+        <Slider.Thumb aria-label='T2' index={1} />
+        <Slider.Thumb aria-label='T3' index={2} />
       </Slider.Root>,
     );
 

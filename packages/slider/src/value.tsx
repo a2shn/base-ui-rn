@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Text } from 'react-native';
+
 import { useSliderContext } from './context';
 import type { SliderValueProps } from './types';
 
@@ -19,16 +20,16 @@ import type { SliderValueProps } from './types';
 export const SliderValue = React.memo(
   React.forwardRef<Text, SliderValueProps>(function SliderValue(props, ref) {
     const {
-      children,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
-      'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      children,
       ...other
     } = props;
-    const { state, locale, format } = useSliderContext();
+    const { format, locale, state } = useSliderContext();
 
     const formatted = React.useMemo(() => {
       const formatter =
@@ -41,13 +42,13 @@ export const SliderValue = React.memo(
     return (
       <Text
         {...other}
-        ref={ref}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
+        aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
-        aria-busy={ariaBusy}
         aria-hidden={ariaHidden}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
+        ref={ref}
       >
         {typeof children === 'function'
           ? children(formatted, state.value)

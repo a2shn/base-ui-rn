@@ -1,8 +1,9 @@
+import { resolveTabIndex } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
-import { resolveTabIndex } from '@base-ui-rn/core';
-import type { MeterRootProps } from './types';
+
 import { MeterContext } from './meter-context';
+import type { MeterRootProps } from './types';
 import { useMeterRoot } from './use-meter-root';
 
 /**
@@ -22,31 +23,23 @@ import { useMeterRoot } from './use-meter-root';
 export const MeterRoot = React.memo(
   React.forwardRef<View, MeterRootProps>((props, ref) => {
     const {
-      children,
-      value,
-      min = 0,
-      max = 100,
-      getAriaValueText,
-      locale,
-      format,
-      accessible = true,
-      accessibilityRole = 'progressbar',
       accessibilityHint = 'Displays a value within a range',
-      accessibilityState,
       accessibilityLabel,
-      focusable = false,
-      importantForAccessibility = 'yes',
-      tabIndex,
-      'aria-valuetext': ariaValueTextProp,
-      'aria-valuemin': ariaValueMin,
-      'aria-valuemax': ariaValueMax,
-      'aria-valuenow': ariaValueNow,
-      'aria-labelledby': ariaLabelledBy,
+      accessibilityRole = 'progressbar',
+      accessible = true,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'aria-labelledby': ariaLabelledBy,
+      children,
+      focusable = false,
+      importantForAccessibility = 'yes',
+      max = 100,
+      min = 0,
+      tabIndex,
+      value,
       ...otherViewProps
     } = props;
 
@@ -56,26 +49,17 @@ export const MeterRoot = React.memo(
       labelId,
       mergedAccessibilityState,
       percentage,
-    } = useMeterRoot({
-      value,
-      min,
-      max,
-      locale,
-      format,
-      ariaValueTextProp,
-      getAriaValueText,
-      accessibilityState,
-    });
+    } = useMeterRoot(props);
 
     const contextValue = React.useMemo(
       () => ({
-        value,
-        min,
-        max,
-        percentage,
-        formattedValue,
         ariaValueText,
+        formattedValue,
         labelId,
+        max,
+        min,
+        percentage,
+        value,
       }),
       [value, min, max, percentage, formattedValue, ariaValueText, labelId],
     );
@@ -87,43 +71,43 @@ export const MeterRoot = React.memo(
       <MeterContext.Provider value={contextValue}>
         <View
           {...otherViewProps}
-          ref={ref}
-          accessible={accessible}
           accessibilityHint={accessibilityHint}
-          accessibilityState={mergedAccessibilityState}
           accessibilityLabel={accessibilityLabel}
-          focusable={focusable}
-          importantForAccessibility={importantForAccessibility}
-          role={(accessibilityRole ?? 'progressbar') as unknown as 'checkbox'}
-          aria-labelledby={
-            ariaLabelledBy ?? (isLabelledByProp ? undefined : labelId)
-          }
           accessibilityLabelledBy={isLabelledByProp ? undefined : [labelId]}
-          aria-describedby={ariaDescribedBy}
-          aria-details={ariaDetails}
-          aria-expanded={ariaExpanded}
-          aria-busy={ariaBusy}
-          aria-hidden={ariaHidden}
-          tabIndex={resolvedTabIndex}
-          aria-valuemin={ariaValueMin ?? min}
-          aria-valuemax={ariaValueMax ?? max}
-          aria-valuenow={ariaValueNow ?? value}
-          aria-valuetext={ariaValueTextProp ?? ariaValueText}
+          accessibilityState={mergedAccessibilityState}
           accessibilityValue={
             ariaValueText
               ? { text: ariaValueText }
               : {
-                min,
-                max,
-                now: value,
-              }
+                  max,
+                  min,
+                  now: value,
+                }
           }
+          accessible={accessible}
+          aria-busy={ariaBusy}
+          aria-describedby={ariaDescribedBy}
+          aria-details={ariaDetails}
+          aria-expanded={ariaExpanded}
+          aria-hidden={ariaHidden}
+          aria-labelledby={
+            ariaLabelledBy ?? (isLabelledByProp ? undefined : labelId)
+          }
+          aria-valuemax={max}
+          aria-valuemin={min}
+          aria-valuenow={value}
+          aria-valuetext={ariaValueText}
+          focusable={focusable}
+          importantForAccessibility={importantForAccessibility}
+          ref={ref}
+          role={(accessibilityRole ?? 'progressbar') as unknown as 'checkbox'}
+          tabIndex={resolvedTabIndex}
         >
           {children}
         </View>
       </MeterContext.Provider>
     );
-  },
+  }),
 );
 
 MeterRoot.displayName = 'Meter.Root';

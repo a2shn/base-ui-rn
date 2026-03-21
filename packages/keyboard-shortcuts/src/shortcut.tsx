@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { useKeyboardShortcut } from './use-keyboard-shortcut';
+
 import type { ShortcutConfig, ShortcutMatchDetails } from './types';
+import { useKeyboardShortcut } from './use-keyboard-shortcut';
 
 export interface ShortcutProps extends ShortcutConfig {
   /**

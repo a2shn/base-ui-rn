@@ -1,6 +1,7 @@
+import { render } from '@testing-library/react-native';
 import * as React from 'react';
 import { View } from 'react-native';
-import { render } from '@testing-library/react-native';
+
 import { Separator } from '../separator';
 
 describe('Separator - Accessibility', () => {
@@ -17,7 +18,7 @@ describe('Separator - Accessibility', () => {
 
   it('renders with vertical orientation', () => {
     const { getByTestId } = render(
-      <Separator testID='separator' orientation='vertical' />,
+      <Separator orientation='vertical' testID='separator' />,
     );
     const separator = getByTestId('separator');
 
@@ -28,7 +29,7 @@ describe('Separator - Accessibility', () => {
 
   it('is hidden from screen readers when decorative', () => {
     const { UNSAFE_getByType } = render(
-      <Separator testID='separator' decorative />,
+      <Separator decorative testID='separator' />,
     );
     const separator = UNSAFE_getByType(View);
 

@@ -1,27 +1,27 @@
 import {
-  mergeAccessibilityActions,
   isActivationAction,
+  mergeAccessibilityActions,
   mergeAccessibilityState,
-  resolveTabIndex,
   resolveAriaDisabled,
   resolveAriaPressed,
   resolveDataPressed,
+  resolveTabIndex,
 } from '../accessibility';
 
 describe('mergeAccessibilityActions', () => {
   it('should add activate action if not present', () => {
-    const actions = [{ name: 'longpress', label: 'Long Press' }];
+    const actions = [{ label: 'Long Press', name: 'longpress' }];
     const result = mergeAccessibilityActions(actions);
     expect(result).toEqual([
-      { name: 'longpress', label: 'Long Press' },
+      { label: 'Long Press', name: 'longpress' },
       { name: 'activate' },
     ]);
   });
 
   it('should not add activate action if already present', () => {
-    const actions = [{ name: 'activate', label: 'Activate' }];
+    const actions = [{ label: 'Activate', name: 'activate' }];
     const result = mergeAccessibilityActions(actions);
-    expect(result).toEqual([{ name: 'activate', label: 'Activate' }]);
+    expect(result).toEqual([{ label: 'Activate', name: 'activate' }]);
   });
 
   it('should handle undefined actions gracefully', () => {
@@ -58,19 +58,19 @@ describe('mergeAccessibilityState', () => {
   it('should merge accessibility state with disabled and no checked', () => {
     const baseState = { label: 'Test', role: 'button' };
     const result = mergeAccessibilityState(baseState, true);
-    expect(result).toEqual({ label: 'Test', role: 'button', disabled: true });
+    expect(result).toEqual({ disabled: true, label: 'Test', role: 'button' });
   });
 
   it('should merge accessibility state with disabled and checked', () => {
     const baseState = { label: 'Toggle' };
     const result = mergeAccessibilityState(baseState, false, true);
-    expect(result).toEqual({ label: 'Toggle', disabled: false, checked: true });
+    expect(result).toEqual({ checked: true, disabled: false, label: 'Toggle' });
   });
 
   it('should merge accessibility state with disabled and mixed checked', () => {
     const baseState = {};
     const result = mergeAccessibilityState(baseState, false, 'mixed');
-    expect(result).toEqual({ disabled: false, checked: 'mixed' });
+    expect(result).toEqual({ checked: 'mixed', disabled: false });
   });
 
   it('should handle undefined base accessibility state', () => {

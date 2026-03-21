@@ -1,12 +1,13 @@
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
-import { Text, View, Platform } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+import { Platform, Text, View } from 'react-native';
+
 import {
-  AccordionRoot,
-  AccordionItem,
   AccordionHeader,
-  AccordionTrigger,
+  AccordionItem,
   AccordionPanel,
+  AccordionRoot,
+  AccordionTrigger,
 } from '../index';
 
 describe('Accordion - Rendering', () => {
@@ -181,7 +182,7 @@ describe('Accordion - Rendering', () => {
   it('applies zIndex: 1 to Header and Trigger when open', () => {
     const { getByTestId } = render(
       <AccordionRoot defaultValue='item-1'>
-        <AccordionItem value='item-1' testID='item'>
+        <AccordionItem testID='item' value='item-1'>
           <AccordionHeader testID='header'>
             <AccordionTrigger testID='trigger'>
               <Text>Item 1</Text>
@@ -222,7 +223,7 @@ describe('Accordion - Rendering', () => {
   it('does not apply zIndex: 1 when closed', () => {
     const { getByTestId } = render(
       <AccordionRoot>
-        <AccordionItem value='item-1' testID='item'>
+        <AccordionItem testID='item' value='item-1'>
           <AccordionHeader testID='header'>
             <AccordionTrigger testID='trigger'>
               <Text>Item 1</Text>
@@ -253,7 +254,7 @@ describe('Accordion - Rendering', () => {
   it('elevates Item, Header and Trigger when focused', () => {
     const { getByTestId } = render(
       <AccordionRoot>
-        <AccordionItem value='item-1' testID='item'>
+        <AccordionItem testID='item' value='item-1'>
           <AccordionHeader testID='header'>
             <AccordionTrigger testID='trigger'>
               <Text>Item 1</Text>

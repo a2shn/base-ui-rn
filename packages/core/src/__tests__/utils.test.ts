@@ -1,11 +1,12 @@
+import { StyleProp, ViewStyle } from 'react-native';
+
+import { DEFAULT_FOCUS_RING_STYLE } from '../constants';
 import {
   clamp,
+  evaluateStyles,
   mergeRefs,
   resolveFocusRingStyle,
-  evaluateStyles,
 } from '../utils';
-import { DEFAULT_FOCUS_RING_STYLE } from '../constants';
-import { StyleProp, ViewStyle } from 'react-native';
 
 describe('clamp', () => {
   it('should clamp value within bounds', () => {

@@ -1,8 +1,9 @@
+import { DEFAULT_HINT, testAccessibility } from '@base-ui-rn/test-utils';
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+
 import { Button } from '../button';
-import { DEFAULT_HINT, testAccessibility } from '@base-ui-rn/test-utils';
 
 describe('Button - Accessibility', () => {
   it('has correct default accessibility traits', () => {
@@ -13,24 +14,24 @@ describe('Button - Accessibility', () => {
     );
 
     testAccessibility(getByRole('button'), {
-      hint: DEFAULT_HINT,
-      focusable: true,
-      disabled: false,
       actions: ['activate'],
+      disabled: false,
+      focusable: true,
+      hint: DEFAULT_HINT,
       importantForAccessibility: 'yes',
     });
   });
 
   it('supports custom accessibilityLabel and accessibilityHint', () => {
     const { getByRole } = render(
-      <Button accessibilityLabel='Custom Label' accessibilityHint='Custom Hint'>
+      <Button accessibilityHint='Custom Hint' accessibilityLabel='Custom Label'>
         <Text>Click Me</Text>
       </Button>,
     );
 
     testAccessibility(getByRole('button'), {
-      label: 'Custom Label',
       hint: 'Custom Hint',
+      label: 'Custom Label',
     });
   });
 
@@ -65,9 +66,9 @@ describe('Button - Accessibility', () => {
     const onAccessibilityAction = jest.fn();
     const { getByRole } = render(
       <Button
-        onPress={onPress}
-        onAccessibilityAction={onAccessibilityAction}
         accessibilityActions={[{ name: 'activate' }]}
+        onAccessibilityAction={onAccessibilityAction}
+        onPress={onPress}
       >
         <Text>Action</Text>
       </Button>,
@@ -85,7 +86,7 @@ describe('Button - Accessibility', () => {
   it('merges custom accessibilityActions', () => {
     const { getByRole } = render(
       <Button
-        accessibilityActions={[{ name: 'longpress', label: 'Long Press' }]}
+        accessibilityActions={[{ label: 'Long Press', name: 'longpress' }]}
         onAccessibilityAction={() => {}}
       >
         <Text>Custom Actions</Text>

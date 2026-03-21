@@ -1,6 +1,7 @@
-import * as React from 'react';
 import { render } from '@testing-library/react-native';
-import { View, Text } from 'react-native';
+import * as React from 'react';
+import { Text, View } from 'react-native';
+
 import { Slider } from '../index';
 
 describe('Slider refs', () => {
@@ -13,12 +14,12 @@ describe('Slider refs', () => {
     const thumbRef = React.createRef<View>();
 
     render(
-      <Slider.Root ref={rootRef} defaultValue={42}>
+      <Slider.Root defaultValue={42} ref={rootRef}>
         <Slider.Label ref={labelRef}>Label</Slider.Label>
         <Slider.Value ref={valueRef} />
         <Slider.Track ref={trackRef}>
           <Slider.Indicator ref={indicatorRef} />
-          <Slider.Thumb ref={thumbRef} aria-label='Thumb' />
+          <Slider.Thumb aria-label='Thumb' ref={thumbRef} />
         </Slider.Track>
       </Slider.Root>,
     );

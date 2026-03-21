@@ -1,23 +1,23 @@
-import { TabsRoot } from './tabs';
-import { TabsList } from './list';
-import { Tab } from './tab';
 import { TabsIndicator } from './indicator';
+import { TabsList } from './list';
 import { TabPanel } from './panel';
+import { Tab } from './tab';
+import { TabsRoot } from './tabs';
 
 export const Tabs = {
-  Root: TabsRoot,
-  List: TabsList,
-  Tab: Tab,
   Indicator: TabsIndicator,
+  List: TabsList,
   Panel: TabPanel,
+  Root: TabsRoot,
+  Tab: Tab,
 };
 
 export {
-  TabsRoot,
-  TabsList,
-  Tab as TabsTab,
   TabsIndicator,
+  TabsList,
   TabPanel as TabsPanel,
+  TabsRoot,
+  Tab as TabsTab,
 };
 
 export * from './types';

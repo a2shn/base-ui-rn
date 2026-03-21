@@ -1,8 +1,9 @@
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View, type ViewStyle } from 'react-native';
-import { evaluateStyles } from '@base-ui-rn/core';
-import type { ProgressIndicatorProps } from './types';
+
 import { useProgressContext } from './progress-context';
+import type { ProgressIndicatorProps } from './types';
 
 /**
  * Visualizes the progress bar's completion status.
@@ -18,20 +19,20 @@ import { useProgressContext } from './progress-context';
 export const ProgressIndicator = React.memo(
   React.forwardRef<View, ProgressIndicatorProps>((props, ref) => {
     const {
-      style,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'aria-labelledby': ariaLabelledBy,
       'data-complete': dataComplete,
       'data-indeterminate': dataIndeterminate,
       'data-progressing': dataProgressing,
+      style,
       ...other
     } = props;
     const context = useProgressContext();
-    const { percentage, isComplete, isIndeterminate, isProgressing } = context;
+    const { isComplete, isIndeterminate, isProgressing, percentage } = context;
 
     const indicatorStyle = React.useMemo<ViewStyle>(() => {
       if (typeof percentage !== 'number') return {};
@@ -45,15 +46,15 @@ export const ProgressIndicator = React.memo(
     return (
       <View
         {...other}
-        ref={ref}
-        style={[indicatorStyle, resolvedStyle]}
-        importantForAccessibility='no-hide-descendants'
-        aria-labelledby={ariaLabelledBy}
+        aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-expanded={ariaExpanded}
-        aria-busy={ariaBusy}
         aria-hidden={ariaHidden ?? true}
+        aria-labelledby={ariaLabelledBy}
+        importantForAccessibility='no-hide-descendants'
+        ref={ref}
+        style={[indicatorStyle, resolvedStyle]}
         {...({
           'data-complete': dataComplete ?? (isComplete ? '' : undefined),
           'data-indeterminate':
@@ -63,7 +64,7 @@ export const ProgressIndicator = React.memo(
         } as Record<string, unknown>)}
       />
     );
-  },
+  }),
 );
 
 ProgressIndicator.displayName = 'Progress.Indicator';

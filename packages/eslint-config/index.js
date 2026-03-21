@@ -1,16 +1,21 @@
-import { defineConfig, globalIgnores } from 'eslint/config';
-import reactNativeA11y from 'eslint-plugin-react-native-a11y';
-import perfectionist from "eslint-plugin-perfectionist"
-import prettier from 'eslint-plugin-prettier/recommended';
+import importPlugin from 'eslint-plugin-import';
 import jsonc from 'eslint-plugin-jsonc';
 import packageJson from 'eslint-plugin-package-json';
+import perfectionist from 'eslint-plugin-perfectionist';
+import prettier from 'eslint-plugin-prettier/recommended';
+import reactNativeA11y from 'eslint-plugin-react-native-a11y';
 import yml from 'eslint-plugin-yml';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import tseslint from 'typescript-eslint';
-import importPlugin from 'eslint-plugin-import'
 
 export const config = (options = []) =>
   defineConfig([
-    globalIgnores(['dist/*', 'node_modules/*', '.expo/*', '**/Pods/**']),
+    globalIgnores([
+      '**/dist/**',
+      '**/node_modules/**',
+      '**/.expo/**',
+      '**/Pods/**',
+    ]),
     ...tseslint.configs.recommended,
     ...jsonc.configs['flat/recommended-with-jsonc'],
     ...yml.configs['flat/recommended'],
@@ -37,7 +42,6 @@ export const config = (options = []) =>
         'jsonc/sort-keys': [
           'error',
           {
-            pathPattern: '^$',
             order: [
               'name',
               'version',
@@ -58,10 +62,11 @@ export const config = (options = []) =>
               'engines',
               'publishConfig',
             ],
+            pathPattern: '^$',
           },
           {
-            pathPattern: '^(?:dev|peer|optional|bundled)?[Dd]ependencies$',
             order: { type: 'asc' },
+            pathPattern: '^(?:dev|peer|optional|bundled)?[Dd]ependencies$',
           },
         ],
       },
@@ -71,6 +76,10 @@ export const config = (options = []) =>
       files: ['**/*.ts', '**/*.tsx'],
       languageOptions: {
         parser: tseslint.parser,
+        parserOptions: {
+          ecmaVersion: 'latest',
+          sourceType: 'module',
+        },
       },
       plugins: {
         'react-native-a11y': reactNativeA11y,
@@ -83,32 +92,41 @@ export const config = (options = []) =>
 
     {
       plugins: {
-        perfectionist
+        perfectionist,
       },
       rules: {
-        'perfectionist/sort-imports': ['error', {
-          type: 'natural',
-          order: 'asc',
-          groups: [
-            'builtin',
-            'external',
-            'internal',
-            ['parent', 'sibling', 'index'],
-          ],
-        }],
+        'perfectionist/sort-imports': [
+          'error',
+          {
+            groups: [
+              'builtin',
+              'external',
+              'internal',
+              ['parent', 'sibling', 'index'],
+            ],
+            order: 'asc',
+            type: 'natural',
+          },
+        ],
 
-        'perfectionist/sort-named-imports': 'error',
+        'perfectionist/sort-jsx-props': [
+          'error',
+          {
+            order: 'asc',
+            type: 'natural',
+          },
+        ],
         'perfectionist/sort-named-exports': 'error',
 
-        'perfectionist/sort-objects': ['error', {
-          type: 'natural',
-          order: 'asc',
-        }],
+        'perfectionist/sort-named-imports': 'error',
 
-        'perfectionist/sort-jsx-props': ['error', {
-          type: 'natural',
-          order: 'asc',
-        }],
+        'perfectionist/sort-objects': [
+          'error',
+          {
+            order: 'asc',
+            type: 'natural',
+          },
+        ],
       },
     },
 
@@ -117,24 +135,25 @@ export const config = (options = []) =>
         import: importPlugin,
       },
 
+      rules: {
+        'import/default': 'error',
+        'import/named': 'error',
+        'import/newline-after-import': 'error',
+        'import/no-cycle': 'warn',
+
+        'import/no-duplicates': 'error',
+        'import/no-unresolved': 'error',
+
+        'import/no-unused-modules': 'warn',
+        'import/order': 'off', // let perfectionist handle sorting
+      },
+
       settings: {
+        'import/ignore': ['node_modules', 'react-native'],
         'import/resolver': {
           node: true, // resolves node_modules + relative path
           typescript: true,
         },
-      },
-
-      rules: {
-        'import/no-unresolved': 'error',
-        'import/named': 'error',
-        'import/default': 'error',
-        'import/no-duplicates': 'error',
-
-        'import/no-cycle': 'warn',
-        'import/no-unused-modules': 'warn',
-
-        'import/order': 'off', // let perfectionist handle sorting
-        'import/newline-after-import': 'error',
       },
     },
 

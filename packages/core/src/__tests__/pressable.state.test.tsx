@@ -1,13 +1,14 @@
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
 import { Text } from 'react-native';
+
 import { PressableWithKeyPress } from '../pressable';
 
 describe('PressableWithKeyPress: State', () => {
   it('should call onPress when pressed', () => {
     const handlePress = jest.fn();
     const { getByTestId } = render(
-      <PressableWithKeyPress testID='test-pressable' onPress={handlePress}>
+      <PressableWithKeyPress onPress={handlePress} testID='test-pressable'>
         <Text>Button</Text>
       </PressableWithKeyPress>,
     );
@@ -19,7 +20,7 @@ describe('PressableWithKeyPress: State', () => {
   it('should call onPressIn when press starts', () => {
     const handlePressIn = jest.fn();
     const { getByTestId } = render(
-      <PressableWithKeyPress testID='test-pressable' onPressIn={handlePressIn}>
+      <PressableWithKeyPress onPressIn={handlePressIn} testID='test-pressable'>
         <Text>Button</Text>
       </PressableWithKeyPress>,
     );
@@ -32,8 +33,8 @@ describe('PressableWithKeyPress: State', () => {
     const handlePressOut = jest.fn();
     const { getByTestId } = render(
       <PressableWithKeyPress
-        testID='test-pressable'
         onPressOut={handlePressOut}
+        testID='test-pressable'
       >
         <Text>Button</Text>
       </PressableWithKeyPress>,
@@ -47,9 +48,9 @@ describe('PressableWithKeyPress: State', () => {
     const handlePress = jest.fn();
     const { getByTestId } = render(
       <PressableWithKeyPress
-        testID='test-pressable'
-        onPress={handlePress}
         disabled
+        onPress={handlePress}
+        testID='test-pressable'
       >
         <Text>Button</Text>
       </PressableWithKeyPress>,

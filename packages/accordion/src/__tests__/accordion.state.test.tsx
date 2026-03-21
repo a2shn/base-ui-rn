@@ -1,12 +1,13 @@
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+
 import {
-  AccordionRoot,
-  AccordionItem,
   AccordionHeader,
-  AccordionTrigger,
+  AccordionItem,
   AccordionPanel,
+  AccordionRoot,
+  AccordionTrigger,
 } from '../index';
 
 describe('Accordion - State Management', () => {
@@ -84,8 +85,8 @@ describe('Accordion - State Management', () => {
       fireEvent.press(trigger);
 
       expect(onValueChange).toHaveBeenCalledWith('item-1', {
-        value: 'item-1',
         reason: 'toggle',
+        value: 'item-1',
       });
     });
   });
@@ -124,7 +125,7 @@ describe('Accordion - State Management', () => {
     it('calls onValueChange for controlled accordion', () => {
       const onValueChange = jest.fn();
       const { getByText } = render(
-        <AccordionRoot value='item-1' onValueChange={onValueChange}>
+        <AccordionRoot onValueChange={onValueChange} value='item-1'>
           <AccordionItem value='item-1'>
             <AccordionHeader>
               <AccordionTrigger>
@@ -183,8 +184,8 @@ describe('Accordion - State Management', () => {
       expect(onValueChange).toHaveBeenLastCalledWith(
         expect.arrayContaining(['item-1', 'item-2']),
         {
-          value: expect.arrayContaining(['item-1', 'item-2']),
           reason: 'toggle',
+          value: expect.arrayContaining(['item-1', 'item-2']),
         },
       );
     });
@@ -193,8 +194,8 @@ describe('Accordion - State Management', () => {
       const onValueChange = jest.fn();
       const { getByText, queryByText } = render(
         <AccordionRoot
-          multiple
           defaultValue={['item-1', 'item-2']}
+          multiple
           onValueChange={onValueChange}
         >
           <AccordionItem value='item-1'>
@@ -235,7 +236,7 @@ describe('Accordion - State Management', () => {
       const onOpenChange = jest.fn();
       const { getByText } = render(
         <AccordionRoot>
-          <AccordionItem value='item-1' onOpenChange={onOpenChange}>
+          <AccordionItem onOpenChange={onOpenChange} value='item-1'>
             <AccordionHeader>
               <AccordionTrigger>
                 <Text>Item 1</Text>
@@ -253,8 +254,8 @@ describe('Accordion - State Management', () => {
 
       expect(onOpenChange).toHaveBeenCalledWith(true, {
         open: true,
-        value: 'item-1',
         reason: 'toggle',
+        value: 'item-1',
       });
     });
   });

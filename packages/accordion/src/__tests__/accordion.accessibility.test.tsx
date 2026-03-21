@@ -1,12 +1,13 @@
+import { render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render } from '@testing-library/react-native';
+
 import {
-  AccordionRoot,
-  AccordionItem,
   AccordionHeader,
-  AccordionTrigger,
+  AccordionItem,
   AccordionPanel,
+  AccordionRoot,
+  AccordionTrigger,
 } from '../index';
 
 describe('Accordion - Accessibility', () => {
@@ -28,8 +29,8 @@ describe('Accordion - Accessibility', () => {
 
     const button = getByRole('button');
     expect(button.props.accessibilityState).toMatchObject({
-      expanded: false,
       disabled: false,
+      expanded: false,
     });
   });
 
@@ -51,15 +52,15 @@ describe('Accordion - Accessibility', () => {
 
     const button = getByRole('button');
     expect(button.props.accessibilityState).toMatchObject({
-      expanded: true,
       disabled: false,
+      expanded: true,
     });
   });
 
   it('has correct accessibility attributes when disabled', () => {
     const { getByRole } = render(
       <AccordionRoot>
-        <AccordionItem value='item-1' disabled>
+        <AccordionItem disabled value='item-1'>
           <AccordionHeader>
             <AccordionTrigger>
               <Text>Item 1</Text>
@@ -82,7 +83,7 @@ describe('Accordion - Accessibility', () => {
   it('has data attributes on items', () => {
     const { getByTestId } = render(
       <AccordionRoot>
-        <AccordionItem value='item-1' testID='item'>
+        <AccordionItem testID='item' value='item-1'>
           <AccordionHeader>
             <AccordionTrigger>
               <Text>Item 1</Text>
@@ -103,7 +104,7 @@ describe('Accordion - Accessibility', () => {
   it('has data attributes on items when open', () => {
     const { getByTestId } = render(
       <AccordionRoot defaultValue='item-1'>
-        <AccordionItem value='item-1' testID='item'>
+        <AccordionItem testID='item' value='item-1'>
           <AccordionHeader>
             <AccordionTrigger>
               <Text>Item 1</Text>

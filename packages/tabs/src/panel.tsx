@@ -1,6 +1,7 @@
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluateStyles } from '@base-ui-rn/core';
+
 import type { TabPanelProps } from './types';
 import { useTabPanel } from './use-tabs';
 
@@ -19,30 +20,30 @@ import { useTabPanel } from './use-tabs';
 export const TabPanel = React.memo(
   React.forwardRef<View, TabPanelProps>((props, ref) => {
     const {
+      'aria-busy': ariaBusy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-disabled': ariaDisabled,
+      'aria-expanded': ariaExpanded,
+      'aria-hidden': ariaHidden,
+      'aria-keyshortcuts': ariaKeyshortcuts,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
       children,
-      value,
+      'data-activation-direction': dataActivationDirection,
+      'data-hidden': dataHidden,
+      'data-index': dataIndex,
+      'data-orientation': dataOrientation,
       keepMounted,
       style,
       tabIndex,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
-      'aria-hidden': ariaHidden,
-      'aria-disabled': ariaDisabled,
-      'aria-keyshortcuts': ariaKeyshortcuts,
-      'data-hidden': dataHidden,
-      'data-orientation': dataOrientation,
-      'data-activation-direction': dataActivationDirection,
-      'data-index': dataIndex,
+      value,
       ...otherProps
     } = props;
 
-    const { state, shouldRender } = useTabPanel({
-      value,
+    const { shouldRender, state } = useTabPanel({
       keepMounted,
+      value,
     });
 
     if (!shouldRender) {
@@ -55,25 +56,25 @@ export const TabPanel = React.memo(
     return (
       <View
         {...otherProps}
-        ref={ref}
-        style={resolvedStyle}
-        role='tabpanel'
-        tabIndex={tabIndex}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
+        aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
-        aria-expanded={ariaExpanded}
-        aria-busy={ariaBusy}
-        aria-hidden={ariaHidden ?? (state.hidden ? true : undefined)}
         aria-disabled={ariaDisabled}
+        aria-expanded={ariaExpanded}
+        aria-hidden={ariaHidden ?? (state.hidden ? true : undefined)}
         aria-keyshortcuts={ariaKeyshortcuts}
-        data-hidden={dataHidden ?? (state.hidden ? 'true' : undefined)}
-        data-orientation={dataOrientation ?? state.orientation}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
         data-activation-direction={
           dataActivationDirection ?? state.activationDirection
         }
+        data-hidden={dataHidden ?? (state.hidden ? 'true' : undefined)}
         data-index={dataIndex ?? state.index}
+        data-orientation={dataOrientation ?? state.orientation}
+        ref={ref}
+        role='tabpanel'
+        style={resolvedStyle}
+        tabIndex={tabIndex}
       >
         {resolvedChildren}
       </View>

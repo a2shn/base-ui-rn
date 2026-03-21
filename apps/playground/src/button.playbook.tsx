@@ -1,13 +1,13 @@
-import * as React from 'react';
-import { Text, StyleSheet } from 'react-native';
 import { Button, type ButtonState } from '@base-ui-rn/button';
 import {
   Gallery,
-  Section,
-  usePlaybookToggles,
   LiveConsole,
+  Section,
   theme,
+  usePlaybookToggles,
 } from '@base-ui-rn/playbook';
+import * as React from 'react';
+import { StyleSheet, Text } from 'react-native';
 
 export function ButtonPlaybook() {
   const { count, loading, loadingPressCount } = usePlaybookToggles({
@@ -27,24 +27,24 @@ export function ButtonPlaybook() {
     <Gallery title='Button'>
       <Section title='Counter'>
         <Button
-          onPress={() => count.setValue(count.value + 1)}
           accessibilityHint='Increments the counter'
-          testID='button-counter'
+          onPress={() => count.setValue(count.value + 1)}
           style={getButtonStyle}
+          testID='button-counter'
         >
           <Text style={styles.textWhite}>{count.value}</Text>
         </Button>
-        <LiveConsole title='count' state={count} />
+        <LiveConsole state={count} title='count' />
       </Section>
 
       <Section title='Disabled'>
         <Button
-          disabled
           accessibilityHint='Locked button'
-          testID='button-disabled'
           accessibilityLabel='Disabled Button'
-          style={[styles.buttonBase, styles.disabled]}
+          disabled
           disableDefaultFocusRing
+          style={[styles.buttonBase, styles.disabled]}
+          testID='button-disabled'
         >
           <Text style={styles.textWhite}>Disabled Button</Text>
         </Button>
@@ -52,27 +52,27 @@ export function ButtonPlaybook() {
 
       <Section title='Loading'>
         <Button
-          disabled={loading.value as boolean}
-          focusableWhenDisabled
-          onPress={handleLoadingPress}
           accessibilityHint={
             loading.value ? 'Loading, please wait' : 'Press to start loading'
           }
-          accessibilityState={{ busy: loading.value as boolean }}
-          testID='button-disabled-focusable'
           accessibilityLabel='Loading Button'
+          accessibilityState={{ busy: loading.value as boolean }}
+          disabled={loading.value as boolean}
+          focusableWhenDisabled
+          onPress={handleLoadingPress}
           style={getButtonStyle}
+          testID='button-disabled-focusable'
         >
           <Text style={styles.textWhite}>
             {loading.value ? 'Loading...' : 'Load'}
           </Text>
         </Button>
 
-        <LiveConsole title='loading' state={loading} testID='loading-console' />
+        <LiveConsole state={loading} testID='loading-console' title='loading' />
         <LiveConsole
-          title='presses'
           state={loadingPressCount}
           testID='presses-console'
+          title='presses'
         />
       </Section>
 
@@ -100,20 +100,24 @@ export function ButtonPlaybook() {
 
 const styles = StyleSheet.create({
   buttonBase: {
-    paddingVertical: theme.spacing.md,
-    paddingHorizontal: theme.spacing.xl,
-    borderRadius: theme.radius.md,
-    backgroundColor: theme.colors.border,
     alignItems: 'center',
-    justifyContent: 'center',
     alignSelf: 'center',
-  },
-  pressed: {
-    opacity: 0.7,
-    backgroundColor: theme.colors.borderLight,
+    backgroundColor: theme.colors.border,
+    borderRadius: theme.radius.md,
+    justifyContent: 'center',
+    paddingHorizontal: theme.spacing.xl,
+    paddingVertical: theme.spacing.md,
   },
   disabled: {
     opacity: 0.5,
+  },
+  pressed: {
+    backgroundColor: theme.colors.borderLight,
+    opacity: 0.7,
+  },
+  textSecondary: {
+    color: theme.colors.textSecondary,
+    fontWeight: theme.font.weight.regular,
   },
   textWhite: {
     color: theme.colors.textPrimary,
@@ -121,10 +125,6 @@ const styles = StyleSheet.create({
   textWhiteBold: {
     color: theme.colors.textPrimary,
     fontWeight: theme.font.weight.bold,
-  },
-  textSecondary: {
-    color: theme.colors.textSecondary,
-    fontWeight: theme.font.weight.regular,
   },
 });
 

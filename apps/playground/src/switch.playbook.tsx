@@ -1,13 +1,13 @@
-import * as React from 'react';
-import { Text, View, StyleSheet, Animated } from 'react-native';
-import { Switch } from '@base-ui-rn/switch';
 import {
   Gallery,
-  Section,
-  usePlaybookToggles,
   LiveConsole,
+  Section,
   theme,
+  usePlaybookToggles,
 } from '@base-ui-rn/playbook';
+import { Switch } from '@base-ui-rn/switch';
+import * as React from 'react';
+import { Animated, StyleSheet, Text, View } from 'react-native';
 
 export function SwitchPlaybook() {
   const { darkMode } = usePlaybookToggles({
@@ -18,7 +18,7 @@ export function SwitchPlaybook() {
     <Gallery title='Switch'>
       <Section title='Uncontrolled'>
         <View style={styles.row}>
-          <Switch.Root style={styles.rootBase} defaultChecked>
+          <Switch.Root defaultChecked style={styles.rootBase}>
             <AnimatedThumb />
           </Switch.Root>
           <Text style={styles.label}>Notifications</Text>
@@ -28,29 +28,29 @@ export function SwitchPlaybook() {
       <Section title='Controlled'>
         <View style={styles.row}>
           <Switch.Root
-            style={styles.rootBase}
             checked={darkMode.value as boolean}
             onCheckedChange={darkMode.setValue}
+            style={styles.rootBase}
           >
             <AnimatedThumb />
           </Switch.Root>
           <Text style={styles.label}>Dark Mode</Text>
         </View>
-        <LiveConsole title='darkMode' state={darkMode} />
+        <LiveConsole state={darkMode} title='darkMode' />
       </Section>
 
       <Section title='Disabled'>
         <View style={styles.row}>
-          <Switch.Root style={[styles.rootBase, styles.rootDisabled]} disabled>
+          <Switch.Root disabled style={[styles.rootBase, styles.rootDisabled]}>
             <AnimatedThumb />
           </Switch.Root>
           <Text style={styles.label}>Disabled Off</Text>
         </View>
         <View style={styles.row}>
           <Switch.Root
-            style={[styles.rootBase, styles.rootDisabled]}
             checked
             disabled
+            style={[styles.rootBase, styles.rootDisabled]}
           >
             <AnimatedThumb />
           </Switch.Root>
@@ -71,10 +71,10 @@ function AnimatedThumb() {
         // Animate whenever the checked state changes
         React.useEffect(() => {
           Animated.spring(position, {
-            toValue: state.checked ? 20 : 0,
-            useNativeDriver: false,
             bounciness: 12,
             speed: 20,
+            toValue: state.checked ? 20 : 0,
+            useNativeDriver: false,
           }).start();
         }, [state.checked]);
 
@@ -102,30 +102,20 @@ function AnimatedThumb() {
 }
 
 const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.spacing.md,
-    alignSelf: 'center',
-    marginBottom: theme.spacing.md,
-  },
   label: {
-    fontSize: theme.font.size.md,
     color: theme.colors.textPrimary,
-  },
-  rootBase: {
-    width: 44,
-    height: 24,
+    fontSize: theme.font.size.md,
   },
   rootBackground: {
-    borderRadius: 12,
-    padding: 2,
-    justifyContent: 'center',
-    borderWidth: 2,
     borderColor: 'transparent',
+    borderRadius: 12,
+    borderWidth: 2,
+    justifyContent: 'center',
+    padding: 2,
   },
-  rootUnchecked: {
-    backgroundColor: theme.colors.border,
+  rootBase: {
+    height: 24,
+    width: 44,
   },
   rootChecked: {
     backgroundColor: '#0A7EA4', // A nice blue
@@ -136,16 +126,26 @@ const styles = StyleSheet.create({
   rootFocused: {
     borderColor: '#0A7EA4',
   },
+  rootUnchecked: {
+    backgroundColor: theme.colors.border,
+  },
+  row: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    gap: theme.spacing.md,
+    marginBottom: theme.spacing.md,
+  },
   thumb: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
     backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    elevation: 2,
+    height: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { height: 2, width: 0 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
-    elevation: 2,
+    width: 16,
   },
   thumbDisabled: {
     backgroundColor: '#E0E0E0',

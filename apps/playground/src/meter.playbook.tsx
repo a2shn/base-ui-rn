@@ -1,14 +1,14 @@
-import * as React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
 import { Meter } from '@base-ui-rn/meter';
 import { Gallery, Section, theme } from '@base-ui-rn/playbook';
+import * as React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 export function MeterPlaybook() {
   return (
     <Gallery title='Meter'>
       <Section title='Basic'>
         <View style={styles.container}>
-          <Meter.Root value={24} style={styles.meterRoot}>
+          <Meter.Root style={styles.meterRoot} value={24}>
             <View style={styles.meterHeader}>
               <Meter.Label style={styles.meterLabel}>Storage Used</Meter.Label>
               <Meter.Value style={styles.meterValue} />
@@ -22,7 +22,7 @@ export function MeterPlaybook() {
 
       <Section title='Custom Range (0-500)'>
         <View style={styles.container}>
-          <Meter.Root value={350} min={0} max={500} style={styles.meterRoot}>
+          <Meter.Root max={500} min={0} style={styles.meterRoot} value={350}>
             <View style={styles.meterHeader}>
               <Meter.Label style={styles.meterLabel}>Points</Meter.Label>
               <Meter.Value style={styles.meterValue}>
@@ -41,10 +41,10 @@ export function MeterPlaybook() {
       <Section title='Formatted Value (Currency)'>
         <View style={styles.container}>
           <Meter.Root
-            value={750}
+            format={{ currency: 'USD', style: 'currency' }}
             max={1000}
-            format={{ style: 'currency', currency: 'USD' }}
             style={styles.meterRoot}
+            value={750}
           >
             <View style={styles.meterHeader}>
               <Meter.Label style={styles.meterLabel}>Budget</Meter.Label>
@@ -62,9 +62,9 @@ export function MeterPlaybook() {
       <Section title='Custom Accessibility Text'>
         <View style={styles.container}>
           <Meter.Root
-            value={85}
             getAriaValueText={(value) => `${value}% critical`}
             style={styles.meterRoot}
+            value={85}
           >
             <View style={styles.meterHeader}>
               <Meter.Label style={styles.meterLabel}>CPU Load</Meter.Label>
@@ -87,42 +87,18 @@ export function MeterPlaybook() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: theme.spacing.md,
-    gap: theme.spacing.md,
     alignItems: 'center',
     alignSelf: 'center',
+    gap: theme.spacing.md,
+    padding: theme.spacing.md,
   },
-  meterRoot: {
-    width: 200,
-    gap: theme.spacing.sm,
+  hint: {
+    color: theme.colors.textMuted,
+    fontSize: theme.font.size.xs,
+    textAlign: 'center',
   },
-  meterHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  meterLabel: {
-    fontSize: theme.font.size.md,
-    fontWeight: theme.font.weight.medium,
-    color: theme.colors.textPrimary,
-  },
-  meterValue: {
-    fontSize: theme.font.size.md,
-    color: theme.colors.textSecondary,
-  },
-  meterTrack: {
-    height: 8,
-    width: '100%',
-    backgroundColor: theme.colors.bgCanvas,
-    borderRadius: theme.radius.sm,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-  },
-  meterIndicator: {
-    height: '100%',
-    width: '100%',
-    backgroundColor: '#4A90D9', // Accent color
+  indicatorCritical: {
+    backgroundColor: '#EF4444',
   },
   indicatorSuccess: {
     backgroundColor: '#10B981',
@@ -130,12 +106,36 @@ const styles = StyleSheet.create({
   indicatorWarning: {
     backgroundColor: '#F59E0B',
   },
-  indicatorCritical: {
-    backgroundColor: '#EF4444',
+  meterHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  hint: {
-    fontSize: theme.font.size.xs,
-    color: theme.colors.textMuted,
-    textAlign: 'center',
+  meterIndicator: {
+    backgroundColor: '#4A90D9', // Accent color
+    height: '100%',
+    width: '100%',
+  },
+  meterLabel: {
+    color: theme.colors.textPrimary,
+    fontSize: theme.font.size.md,
+    fontWeight: theme.font.weight.medium,
+  },
+  meterRoot: {
+    gap: theme.spacing.sm,
+    width: 200,
+  },
+  meterTrack: {
+    backgroundColor: theme.colors.bgCanvas,
+    borderColor: theme.colors.border,
+    borderRadius: theme.radius.sm,
+    borderWidth: 1,
+    height: 8,
+    overflow: 'hidden',
+    width: '100%',
+  },
+  meterValue: {
+    color: theme.colors.textSecondary,
+    fontSize: theme.font.size.md,
   },
 });

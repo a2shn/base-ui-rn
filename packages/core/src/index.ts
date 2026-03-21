@@ -1,6 +1,5 @@
 // Types
 export type {
-  KeyPressEventData,
   ARIABaseProps,
   ARIAFocusProps,
   ARIALiveProps,
@@ -9,31 +8,32 @@ export type {
   ARIATraitOrientation,
   ARIATraitRange,
   FocusVisibleProps,
+  KeyPressEventData,
   PressedChangeDetails,
 } from './types';
 
 // Constants
 export {
-  DEFAULT_HIT_SLOP,
   ACTIVATION_KEYS,
-  isActivationKey,
-  DEFAULT_FOCUS_RING_STYLE,
   type ActivationKey,
+  DEFAULT_FOCUS_RING_STYLE,
+  DEFAULT_HIT_SLOP,
+  isActivationKey,
 } from './constants';
 
 export {
-  mergeAccessibilityActions,
   isActivationAction,
+  mergeAccessibilityActions,
   mergeAccessibilityState,
-  resolveTabIndex,
   resolveAriaDisabled,
   resolveAriaPressed,
   resolveDataPressed,
+  resolveTabIndex,
 } from './accessibility';
 
 export {
-  useKeyboardNavigation,
   useKeyboardActivation,
+  useKeyboardNavigation,
   useKeyboardRange,
 } from './keyboard';
 export type {
@@ -44,10 +44,10 @@ export type {
 
 // Utils
 export {
-  mergeRefs,
   clamp,
-  resolveFocusRingStyle,
   evaluateStyles,
+  mergeRefs,
+  resolveFocusRingStyle,
 } from './utils';
 
 // Components

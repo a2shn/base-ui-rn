@@ -1,8 +1,9 @@
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { Text } from 'react-native';
-import { evaluateStyles } from '@base-ui-rn/core';
-import type { SliderLabelProps } from './types';
+
 import { useSliderContext } from './context';
+import type { SliderLabelProps } from './types';
 
 /**
  * Accessible text label for a slider.
@@ -20,13 +21,13 @@ import { useSliderContext } from './context';
 export const SliderLabel = React.memo(
   React.forwardRef<Text, SliderLabelProps>(function SliderLabel(props, ref) {
     const {
-      children,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
-      'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      children,
       ...other
     } = props;
     const { state } = useSliderContext();
@@ -34,13 +35,13 @@ export const SliderLabel = React.memo(
     return (
       <Text
         {...other}
-        ref={ref}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
+        aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
-        aria-busy={ariaBusy}
         aria-hidden={ariaHidden}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
+        ref={ref}
       >
         {evaluateStyles(children, state)}
       </Text>

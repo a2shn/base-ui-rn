@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import type { FocusRingProps } from './types';
 import { useFocus } from './use-focus';
 
@@ -24,7 +25,7 @@ import { useFocus } from './use-focus';
  */
 export const FocusRing: React.FC<FocusRingProps> = (props) => {
   const { children, focusVisible: forceFocusVisible = false } = props;
-  const { focused, focusVisible, onFocus, onBlur } = useFocus({
+  const { focused, focusVisible, onBlur, onFocus } = useFocus({
     focusVisible: forceFocusVisible,
   });
 
@@ -43,13 +44,13 @@ export const FocusRing: React.FC<FocusRingProps> = (props) => {
   }>;
 
   return React.cloneElement(childElement, {
-    onFocus: (e: unknown) => {
-      onFocus();
-      childElement.props.onFocus?.(e);
-    },
     onBlur: (e: unknown) => {
       onBlur();
       childElement.props.onBlur?.(e);
+    },
+    onFocus: (e: unknown) => {
+      onFocus();
+      childElement.props.onFocus?.(e);
     },
   });
 };

@@ -1,15 +1,14 @@
-import * as React from 'react';
-import { View, Text } from 'react-native';
 import { Button } from '@base-ui-rn/button';
+import * as React from 'react';
+import { Text, View } from 'react-native';
 
 import { DebugTable } from './DebugTable';
 import { ExtractionBadge } from './ExtractionBadge';
-import { mergeRefs } from './utils/mergeRefs';
-import { serialisePropValue } from './utils/inspectNativeProps';
 import { useStyles } from './styles';
-
-import { useInspector } from './utils/useInspector';
 import type { SectionProps } from './types';
+import { serialisePropValue } from './utils/inspectNativeProps';
+import { mergeRefs } from './utils/mergeRefs';
+import { useInspector } from './utils/useInspector';
 
 /**
  * Renders a labeled section that can inspect and display props
@@ -41,21 +40,21 @@ import type { SectionProps } from './types';
  * ```
  */
 export const Section = ({
-  title,
-  description,
   children,
   contentStyle,
+  description,
   showAllProps = false,
+  title,
 }: SectionProps) => {
   const styles = useStyles();
 
   const {
-    showDebug,
-    setShowDebug,
+    buildCallbackOverrides,
     debugData,
     extractionMethod,
+    setShowDebug,
+    showDebug,
     spyCallbackRef,
-    buildCallbackOverrides,
   } = useInspector(showAllProps);
 
   const childrenArray = React.Children.toArray(children);

@@ -1,12 +1,13 @@
+import { render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Text, View } from 'react-native';
-import { render } from '@testing-library/react-native';
+
 import {
-  AccordionRoot,
-  AccordionItem,
   AccordionHeader,
-  AccordionTrigger,
+  AccordionItem,
   AccordionPanel,
+  AccordionRoot,
+  AccordionTrigger,
 } from '../index';
 
 describe('Accordion - Ref Forwarding', () => {
@@ -38,7 +39,7 @@ describe('Accordion - Ref Forwarding', () => {
     const ref = React.createRef<View>();
     render(
       <AccordionRoot>
-        <AccordionItem value='item-1' ref={ref}>
+        <AccordionItem ref={ref} value='item-1'>
           <AccordionHeader>
             <AccordionTrigger>
               <Text>Item 1</Text>

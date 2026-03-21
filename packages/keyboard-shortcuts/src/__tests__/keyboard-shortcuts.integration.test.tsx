@@ -1,15 +1,16 @@
-import * as React from 'react';
-import { Text, Pressable } from 'react-native';
 import { render } from '@testing-library/react-native';
+import * as React from 'react';
+import { Pressable, Text } from 'react-native';
+
 import { ShortcutProvider, useKeyboardShortcut } from '../index';
 import type { ShortcutConfig } from '../types';
 
 // Mock Button component to break cyclic dependency
 const MockButton = ({
+  children,
+  disabled,
   onPress,
   shortcut,
-  disabled,
-  children,
 }: {
   onPress: () => void;
   shortcut: ShortcutConfig;
@@ -24,9 +25,9 @@ const MockButton = ({
   return (
     <Pressable
       accessibilityRole='button'
-      testID='mock-button'
-      onPress={onPress}
       disabled={disabled}
+      onPress={onPress}
+      testID='mock-button'
     >
       {children}
     </Pressable>

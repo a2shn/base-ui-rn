@@ -1,5 +1,6 @@
+import { act, render } from '@testing-library/react-native';
 import * as React from 'react';
-import { render, act } from '@testing-library/react-native';
+
 import { Avatar } from '../index';
 
 jest.useFakeTimers();
@@ -9,8 +10,8 @@ describe('Avatar - State', () => {
     const { getByTestId } = render(
       <Avatar.Root>
         <Avatar.Image
-          testID='image'
           source={{ uri: 'https://example.com/invalid.png' }}
+          testID='image'
         />
         <Avatar.Fallback testID='fallback'>FB</Avatar.Fallback>
       </Avatar.Root>,
@@ -28,8 +29,8 @@ describe('Avatar - State', () => {
     const { getByTestId, queryByTestId } = render(
       <Avatar.Root>
         <Avatar.Image
-          testID='image'
           source={{ uri: 'https://example.com/image.png' }}
+          testID='image'
         />
         <Avatar.Fallback testID='fallback'>FB</Avatar.Fallback>
       </Avatar.Root>,
@@ -48,9 +49,9 @@ describe('Avatar - State', () => {
     const { getByTestId, queryByTestId } = render(
       <Avatar.Root>
         <Avatar.Image
-          testID='image'
-          source={{ uri: 'https://example.com/image.png' }}
           onLoadingStatusChange={onLoadingStatusChange}
+          source={{ uri: 'https://example.com/image.png' }}
+          testID='image'
         />
         <Avatar.Fallback testID='fallback'>FB</Avatar.Fallback>
       </Avatar.Root>,
@@ -78,9 +79,9 @@ describe('Avatar - State', () => {
     const { getByTestId } = render(
       <Avatar.Root>
         <Avatar.Image
-          testID='image'
-          source={{ uri: 'https://example.com/invalid.png' }}
           onLoadingStatusChange={onLoadingStatusChange}
+          source={{ uri: 'https://example.com/invalid.png' }}
+          testID='image'
         />
         <Avatar.Fallback testID='fallback'>FB</Avatar.Fallback>
       </Avatar.Root>,
@@ -107,9 +108,9 @@ describe('Avatar - State', () => {
     const { getByTestId, queryByTestId, rerender } = render(
       <Avatar.Root>
         <Avatar.Image
-          testID='image'
-          source={{ uri: 'https://example.com/image.png' }}
           onLoadingStatusChange={onLoadingStatusChange}
+          source={{ uri: 'https://example.com/image.png' }}
+          testID='image'
         />
         <Avatar.Fallback testID='fallback'>FB</Avatar.Fallback>
       </Avatar.Root>,
@@ -124,9 +125,9 @@ describe('Avatar - State', () => {
     rerender(
       <Avatar.Root>
         <Avatar.Image
-          testID='image'
-          source={{ uri: 'https://example.com/image.png' }}
           onLoadingStatusChange={onLoadingStatusChange}
+          source={{ uri: 'https://example.com/image.png' }}
+          testID='image'
         />
         <Avatar.Fallback testID='fallback'>FB</Avatar.Fallback>
       </Avatar.Root>,
@@ -145,12 +146,12 @@ describe('Avatar - State', () => {
 
   it('enters loading state when source changes before effects flush', () => {
     const onLoadingStatusChange = jest.fn();
-    const { getByTestId, rerender, queryByTestId } = render(
+    const { getByTestId, queryByTestId, rerender } = render(
       <Avatar.Root>
         <Avatar.Image
-          testID='image'
-          source={{ uri: 'https://example.com/first.png' }}
           onLoadingStatusChange={onLoadingStatusChange}
+          source={{ uri: 'https://example.com/first.png' }}
+          testID='image'
         />
         <Avatar.Fallback testID='fallback'>FB</Avatar.Fallback>
       </Avatar.Root>,
@@ -167,9 +168,9 @@ describe('Avatar - State', () => {
     rerender(
       <Avatar.Root>
         <Avatar.Image
-          testID='image'
-          source={{ uri: 'https://example.com/second.png' }}
           onLoadingStatusChange={onLoadingStatusChange}
+          source={{ uri: 'https://example.com/second.png' }}
+          testID='image'
         />
         <Avatar.Fallback testID='fallback'>FB</Avatar.Fallback>
       </Avatar.Root>,
@@ -189,7 +190,7 @@ describe('Avatar - State', () => {
     const { queryByTestId } = render(
       <Avatar.Root>
         <Avatar.Image source={{ uri: 'https://example.com/slow-image.png' }} />
-        <Avatar.Fallback testID='fallback' delay={500}>
+        <Avatar.Fallback delay={500} testID='fallback'>
           FB
         </Avatar.Fallback>
       </Avatar.Root>,

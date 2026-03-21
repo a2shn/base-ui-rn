@@ -1,8 +1,9 @@
+import { clamp } from '@base-ui-rn/core';
 import * as React from 'react';
 import { Platform } from 'react-native';
-import { clamp } from '@base-ui-rn/core';
-import type { SliderRootProps, SliderState, SliderValue } from './types';
+
 import { calculateNextValues } from './collision';
+import type { SliderRootProps, SliderState, SliderValue } from './types';
 
 const normalizeValue = (value: SliderValue | undefined, min: number) => {
   if (Array.isArray(value)) {
@@ -21,23 +22,23 @@ const normalizeValue = (value: SliderValue | undefined, min: number) => {
  */
 export function useSlider(props: SliderRootProps) {
   const {
-    value,
     defaultValue,
+    disabled = false,
+    format,
+    largeStep = 10,
+    locale,
+    max = 100,
+    maxStepsBetweenValues = 0,
+    min = 0,
+    minStepsBetweenValues = 0,
     onValueChange,
     onValueCommitted,
-    min = 0,
-    max = 100,
-    step = 1,
-    largeStep = 10,
-    minStepsBetweenValues = 0,
-    maxStepsBetweenValues = 0,
-    stepBetweenValues,
-    thumbCollisionBehavior = 'push',
-    thumbAlignment = 'center',
-    locale,
-    format,
-    disabled = false,
     orientation = 'horizontal',
+    step = 1,
+    stepBetweenValues,
+    thumbAlignment = 'center',
+    thumbCollisionBehavior = 'push',
+    value,
   } = props;
 
   // Use refs for physical sizes to avoid stale closure issues in rapid updates
@@ -149,18 +150,18 @@ export function useSlider(props: SliderRootProps) {
       }
 
       const next = calculateNextValues({
-        index,
-        newValue,
+        behavior: thumbCollisionBehavior,
         currentValues: currentRef.current,
-        min,
+        index,
         max,
-        minDistance,
         maxDistance: maxDistanceInValueUnits,
+        min,
+        minDistance,
+        newValue,
         stepBetweenValues:
           stepBetweenValues !== undefined
             ? stepBetweenValues * step
             : undefined,
-        behavior: thumbCollisionBehavior,
       });
 
       if (next.some((v, i) => v !== currentRef.current[i])) {
@@ -193,14 +194,14 @@ export function useSlider(props: SliderRootProps) {
 
   const state: SliderState = React.useMemo(
     () => ({
-      value: current,
-      min,
-      max,
-      step,
       disabled,
-      orientation,
-      minStepsBetweenValues,
+      max,
       maxStepsBetweenValues,
+      min,
+      minStepsBetweenValues,
+      orientation,
+      step,
+      value: current,
     }),
     [
       current,
@@ -215,16 +216,16 @@ export function useSlider(props: SliderRootProps) {
   );
 
   return {
-    state,
-    setValueAtIndex,
-    stepBy,
     commitValue,
-    locale,
     format,
     largeStep,
-    thumbAlignment,
-    setTrackSize: handleSetTrackSize,
+    locale,
     setThumbSize: handleSetThumbSize,
+    setTrackSize: handleSetTrackSize,
+    setValueAtIndex,
+    state,
+    stepBy,
+    thumbAlignment,
     trackSize: trackSizeRef,
   };
 }

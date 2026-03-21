@@ -1,9 +1,10 @@
 import * as React from 'react';
+
+import { INTERACTION_CALLBACKS, POLL_INTERVAL_MS } from './constants';
 import {
   extractDebugTableData,
   inspectNativeProps,
 } from './inspectNativeProps';
-import { POLL_INTERVAL_MS, INTERACTION_CALLBACKS } from './constants';
 
 export function useInspector(showAllProps: boolean) {
   const [showDebug, setShowDebug] = React.useState(false);
@@ -63,12 +64,12 @@ export function useInspector(showAllProps: boolean) {
   }
 
   return {
-    showDebug,
-    setShowDebug,
+    buildCallbackOverrides,
     debugData,
     extractionMethod,
+    setShowDebug,
+    showDebug,
     spyCallbackRef,
     stableExtract,
-    buildCallbackOverrides,
   };
 }

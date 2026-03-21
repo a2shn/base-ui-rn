@@ -1,6 +1,7 @@
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluateStyles } from '@base-ui-rn/core';
+
 import { AccordionContext } from './context';
 import type { AccordionRootProps } from './types';
 import { useAccordionRoot } from './use-accordion';
@@ -21,50 +22,50 @@ import { useAccordionRoot } from './use-accordion';
 export const AccordionRoot = React.memo(
   React.forwardRef<View, AccordionRootProps>((props, ref) => {
     const {
-      children,
-      style,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
-      'aria-hidden': ariaHidden,
       'aria-disabled': ariaDisabled,
+      'aria-expanded': ariaExpanded,
+      'aria-hidden': ariaHidden,
       'aria-keyshortcuts': ariaKeyshortcuts,
-      'data-orientation': dataOrientation,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      children,
       'data-disabled': dataDisabled,
+      'data-orientation': dataOrientation,
+      style,
       ...otherProps
     } = props;
 
     const {
       baseId,
-      orientation,
       disabled,
-      multiple,
-      openItems,
-      registerItem,
-      registerTrigger,
-      toggleItem,
       getItemIndex,
       getItemRef,
+      multiple,
       onTriggerKeyDown,
+      openItems,
+      orientation,
+      registerItem,
+      registerTrigger,
       state,
+      toggleItem,
     } = useAccordionRoot(props);
 
     const contextValue = React.useMemo(
       () => ({
         baseId,
-        orientation,
         disabled,
+        getItemIndex,
+        getItemRef,
         multiple,
+        onTriggerKeyDown,
         openItems,
+        orientation,
         registerItem,
         registerTrigger,
         toggleItem,
-        getItemIndex,
-        getItemRef,
-        onTriggerKeyDown,
       }),
       [
         baseId,
@@ -86,28 +87,28 @@ export const AccordionRoot = React.memo(
         <AccordionContext.Provider value={contextValue}>
           <View
             {...otherProps}
-            ref={ref}
-            style={evaluateStyles(style, state)}
-            role='group'
-            aria-orientation={orientation}
-            aria-label={ariaLabel}
-            aria-labelledby={ariaLabelledBy}
+            aria-busy={ariaBusy}
             aria-describedby={ariaDescribedBy}
             aria-details={ariaDetails}
-            aria-expanded={ariaExpanded}
-            aria-busy={ariaBusy}
-            aria-hidden={ariaHidden}
             aria-disabled={ariaDisabled ?? (disabled ? true : undefined)}
+            aria-expanded={ariaExpanded}
+            aria-hidden={ariaHidden}
             aria-keyshortcuts={ariaKeyshortcuts}
-            data-orientation={dataOrientation ?? orientation}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledBy}
+            aria-orientation={orientation}
             data-disabled={dataDisabled ?? (disabled ? 'true' : undefined)}
+            data-orientation={dataOrientation ?? orientation}
+            ref={ref}
+            role='group'
+            style={evaluateStyles(style, state)}
           >
             {evaluateStyles(children, state)}
           </View>
         </AccordionContext.Provider>
       </React.Fragment>
     );
-  },
+  }),
 );
 
 AccordionRoot.displayName = 'AccordionRoot';

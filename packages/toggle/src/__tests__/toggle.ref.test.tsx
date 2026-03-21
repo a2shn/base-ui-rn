@@ -1,8 +1,9 @@
+import { DEFAULT_HINT } from '@base-ui-rn/test-utils';
+import { render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Text, View } from 'react-native';
-import { render } from '@testing-library/react-native';
+
 import { Toggle } from '../toggle';
-import { DEFAULT_HINT } from '@base-ui-rn/test-utils';
 
 describe('Toggle - Ref Forwarding', () => {
   afterEach(() => {
@@ -12,7 +13,7 @@ describe('Toggle - Ref Forwarding', () => {
   it('forwards ref to the internal Pressable component', () => {
     const ref = React.createRef<View>();
     render(
-      <Toggle ref={ref} accessibilityHint={DEFAULT_HINT}>
+      <Toggle accessibilityHint={DEFAULT_HINT} ref={ref}>
         <Text>Ref Target</Text>
       </Toggle>,
     );
@@ -23,7 +24,7 @@ describe('Toggle - Ref Forwarding', () => {
   it('allows accessing native properties through forwarded ref', () => {
     const ref = React.createRef<View>();
     render(
-      <Toggle ref={ref} accessibilityHint={DEFAULT_HINT}>
+      <Toggle accessibilityHint={DEFAULT_HINT} ref={ref}>
         <Text>Ref Access</Text>
       </Toggle>,
     );

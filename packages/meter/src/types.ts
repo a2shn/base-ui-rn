@@ -1,11 +1,11 @@
-import type * as React from 'react';
-import type { ViewProps, TextProps } from 'react-native';
 import {
   type ARIABaseProps,
   type ARIAFocusProps,
   type ARIALiveProps,
   ARIATraitRange,
 } from '@base-ui-rn/core';
+import type * as React from 'react';
+import type { TextProps, ViewProps } from 'react-native';
 
 /**
  * Web-specific accessibility props for the Meter component.

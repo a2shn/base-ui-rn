@@ -1,6 +1,7 @@
-import { Platform, type NativeSyntheticEvent } from 'react-native';
 import type { KeyPressEventData } from '@base-ui-rn/core';
-import type { ShortcutConfig, ModifierKey } from './types';
+import { type NativeSyntheticEvent, Platform } from 'react-native';
+
+import type { ModifierKey, ShortcutConfig } from './types';
 
 /**
  * Checks if the current environment's modifier state matches the required modifiers.
@@ -70,10 +71,10 @@ export function getAriaKeyshortcuts(
   if (!config || !config.keys.length) return undefined;
 
   const modifierMap: Record<ModifierKey, string> = {
-    ctrl: 'Control',
     alt: 'Alt',
-    shift: 'Shift',
+    ctrl: 'Control',
     meta: 'Meta',
+    shift: 'Shift',
   };
 
   const mods = (config.modifiers || []).map((m) => modifierMap[m]).join('+');

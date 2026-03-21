@@ -1,6 +1,7 @@
-import * as React from 'react';
-import { View, Text } from 'react-native';
 import { render } from '@testing-library/react-native';
+import * as React from 'react';
+import { Text, View } from 'react-native';
+
 import { Meter } from '../index';
 
 describe('Meter - Ref', () => {
@@ -12,7 +13,7 @@ describe('Meter - Ref', () => {
     const valueRef = React.createRef<Text>();
 
     render(
-      <Meter.Root value={50} ref={rootRef}>
+      <Meter.Root ref={rootRef} value={50}>
         <Meter.Label ref={labelRef}>L</Meter.Label>
         <Meter.Track ref={trackRef}>
           <Meter.Indicator ref={indicatorRef} />

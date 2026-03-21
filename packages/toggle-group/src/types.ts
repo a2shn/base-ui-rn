@@ -1,4 +1,3 @@
-import type { ViewProps, StyleProp, ViewStyle } from 'react-native';
 import {
   type ARIABaseProps,
   type ARIAFocusProps,
@@ -7,6 +6,7 @@ import {
   type ARIATraitOrientation,
 } from '@base-ui-rn/core';
 import { type ToggleGroupChangeEventDetails } from '@base-ui-rn/toggle';
+import type { StyleProp, ViewProps, ViewStyle } from 'react-native';
 
 /**
  * Web-specific accessibility props for ToggleGroup.

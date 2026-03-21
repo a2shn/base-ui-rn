@@ -1,11 +1,12 @@
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+
 import { Slider } from '../index';
 
 describe('Slider keyboard navigation', () => {
   it('supports Arrow keys and Home/End on thumbs', () => {
     const { getByLabelText } = render(
-      <Slider.Root defaultValue={50} min={0} max={100}>
+      <Slider.Root defaultValue={50} max={100} min={0}>
         <Slider.Thumb aria-label='Volume thumb' />
       </Slider.Root>,
     );
@@ -27,7 +28,7 @@ describe('Slider keyboard navigation', () => {
 
   it('supports PageUp and PageDown on thumbs', () => {
     const { getByLabelText } = render(
-      <Slider.Root defaultValue={50} min={0} max={100} largeStep={10}>
+      <Slider.Root defaultValue={50} largeStep={10} max={100} min={0}>
         <Slider.Thumb aria-label='Volume thumb' />
       </Slider.Root>,
     );
@@ -78,8 +79,8 @@ describe('Slider keyboard navigation', () => {
     const onValueChange = jest.fn();
     const { getByLabelText } = render(
       <Slider.Root defaultValue={[10, 20]} onValueChange={onValueChange}>
-        <Slider.Thumb index={0} aria-label='T0' />
-        <Slider.Thumb index={1} aria-label='T1' />
+        <Slider.Thumb aria-label='T0' index={0} />
+        <Slider.Thumb aria-label='T1' index={1} />
       </Slider.Root>,
     );
 

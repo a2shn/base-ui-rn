@@ -1,7 +1,8 @@
-import { Text } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
-import { ToggleGroup } from '../toggle-group';
 import { Toggle } from '@base-ui-rn/toggle';
+import { fireEvent, render } from '@testing-library/react-native';
+import { Text } from 'react-native';
+
+import { ToggleGroup } from '../toggle-group';
 
 describe('ToggleGroup - Disabled State', () => {
   it('disables all toggles when group is disabled', () => {
@@ -33,7 +34,7 @@ describe('ToggleGroup - Disabled State', () => {
     const onValueChange = jest.fn();
     const { getByRole } = render(
       <ToggleGroup onValueChange={onValueChange}>
-        <Toggle value='a' disabled>
+        <Toggle disabled value='a'>
           <Text>A</Text>
         </Toggle>
         <Toggle value='b'>
@@ -58,7 +59,7 @@ describe('ToggleGroup - Disabled State', () => {
   it('respects focusableWhenDisabled on individual toggles even if group is disabled', () => {
     const { getByRole } = render(
       <ToggleGroup disabled>
-        <Toggle value='a' focusableWhenDisabled>
+        <Toggle focusableWhenDisabled value='a'>
           <Text>A</Text>
         </Toggle>
         <Toggle value='b'>

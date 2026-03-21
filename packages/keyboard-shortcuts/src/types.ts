@@ -1,5 +1,5 @@
-import type { NativeSyntheticEvent } from 'react-native';
 import type { KeyPressEventData } from '@base-ui-rn/core';
+import type { NativeSyntheticEvent } from 'react-native';
 
 /**
  * Supported modifier keys.

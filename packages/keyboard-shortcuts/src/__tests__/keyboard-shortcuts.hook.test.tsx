@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
-import * as ShortcutContext from '../keyboard-shortcuts-context';
+
 import { useKeyboardShortcut } from '../index';
+import * as ShortcutContext from '../keyboard-shortcuts-context';
 
 describe('useKeyboardShortcut Hook', () => {
   it('registers and unregisters a shortcut', () => {

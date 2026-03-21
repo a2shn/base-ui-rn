@@ -1,17 +1,18 @@
-import * as React from 'react';
 import { mergeAccessibilityState } from '@base-ui-rn/core';
+import * as React from 'react';
+
 import type { ProgressRootProps, ProgressState } from './types';
 
 export const useProgress = (props: ProgressRootProps) => {
   const {
-    value = null,
-    min = 0,
-    max = 100,
-    locale,
-    format,
-    'aria-valuetext': ariaValueTextProp,
-    getAriaValueText,
     accessibilityState,
+    'aria-valuetext': ariaValueTextProp,
+    format,
+    getAriaValueText,
+    locale,
+    max = 100,
+    min = 0,
+    value = null,
   } = props;
   const labelId = React.useId();
 
@@ -50,15 +51,15 @@ export const useProgress = (props: ProgressRootProps) => {
   );
 
   const state: ProgressState = {
-    value: value ?? null,
-    min,
-    max,
-    percentage,
-    formattedValue,
     ariaValueText,
+    formattedValue,
     isComplete,
     isIndeterminate,
     isProgressing,
+    max,
+    min,
+    percentage,
+    value: value ?? null,
   };
 
   return {

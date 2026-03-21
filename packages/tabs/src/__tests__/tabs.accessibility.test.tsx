@@ -1,6 +1,7 @@
+import { render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render } from '@testing-library/react-native';
+
 import { Tabs } from '../index';
 
 describe('Tabs - Accessibility', () => {
@@ -8,11 +9,11 @@ describe('Tabs - Accessibility', () => {
     const { getByRole, getByTestId } = render(
       <Tabs.Root defaultValue='tab-1'>
         <Tabs.List testID='list'>
-          <Tabs.Tab value='tab-1' testID='tab-1'>
+          <Tabs.Tab testID='tab-1' value='tab-1'>
             <Text>Tab 1</Text>
           </Tabs.Tab>
         </Tabs.List>
-        <Tabs.Panel value='tab-1' testID='panel-1'>
+        <Tabs.Panel testID='panel-1' value='tab-1'>
           <Text>Content 1</Text>
         </Tabs.Panel>
       </Tabs.Root>,
@@ -34,7 +35,7 @@ describe('Tabs - Accessibility', () => {
     const { getByRole } = render(
       <Tabs.Root defaultValue='tab-1'>
         <Tabs.List>
-          <Tabs.Tab value='tab-1' aria-label='Home Tab'>
+          <Tabs.Tab aria-label='Home Tab' value='tab-1'>
             <Text>Home</Text>
           </Tabs.Tab>
         </Tabs.List>

@@ -1,13 +1,13 @@
+import { FocusVisibleProps } from '@base-ui-rn/core';
 import * as React from 'react';
-import type { View } from 'react-native';
+import type { NativeSyntheticEvent, View } from 'react-native';
+
 import type {
-  TabValue,
-  Orientation,
   ActivationDirection,
   KeyPressEventData,
+  Orientation,
+  TabValue,
 } from './types';
-import type { NativeSyntheticEvent } from 'react-native';
-import { FocusVisibleProps } from '@base-ui-rn/core';
 
 export interface TabMeasurement {
   x: number;

@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import { useShortcutRegistry } from './keyboard-shortcuts-context';
 import type { ShortcutConfig, ShortcutMatchDetails } from './types';
 

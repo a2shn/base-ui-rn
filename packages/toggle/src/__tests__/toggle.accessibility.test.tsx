@@ -1,8 +1,9 @@
+import { DEFAULT_HINT, testAccessibility } from '@base-ui-rn/test-utils';
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+
 import { Toggle } from '../toggle';
-import { DEFAULT_HINT, testAccessibility } from '@base-ui-rn/test-utils';
 
 describe('Toggle - Accessibility', () => {
   it('has correct default accessibility traits', () => {
@@ -13,18 +14,18 @@ describe('Toggle - Accessibility', () => {
     );
 
     testAccessibility(getByRole('checkbox'), {
-      hint: DEFAULT_HINT,
-      focusable: true,
-      disabled: false,
-      checked: false,
       actions: ['activate'],
+      checked: false,
+      disabled: false,
+      focusable: true,
+      hint: DEFAULT_HINT,
       importantForAccessibility: 'yes',
     });
   });
 
   it('renders as a switch when role is overridden', () => {
     const { getByRole } = render(
-      <Toggle role='switch' accessibilityHint={DEFAULT_HINT}>
+      <Toggle accessibilityHint={DEFAULT_HINT} role='switch'>
         <Text>Toggle Me</Text>
       </Toggle>,
     );
@@ -34,14 +35,14 @@ describe('Toggle - Accessibility', () => {
 
   it('supports custom accessibilityLabel and accessibilityHint', () => {
     const { getByRole } = render(
-      <Toggle accessibilityLabel='Custom Label' accessibilityHint='Custom Hint'>
+      <Toggle accessibilityHint='Custom Hint' accessibilityLabel='Custom Label'>
         <Text>Toggle Me</Text>
       </Toggle>,
     );
 
     testAccessibility(getByRole('checkbox'), {
-      label: 'Custom Label',
       hint: 'Custom Hint',
+      label: 'Custom Label',
     });
   });
 
@@ -88,9 +89,9 @@ describe('Toggle - Accessibility', () => {
     const onAccessibilityAction = jest.fn();
     const { getByRole } = render(
       <Toggle
-        onPressedChange={onPressedChange}
-        onAccessibilityAction={onAccessibilityAction}
         accessibilityActions={[{ name: 'activate' }]}
+        onAccessibilityAction={onAccessibilityAction}
+        onPressedChange={onPressedChange}
       >
         <Text>Action</Text>
       </Toggle>,
@@ -111,7 +112,7 @@ describe('Toggle - Accessibility', () => {
   it('merges custom accessibilityActions', () => {
     const { getByRole } = render(
       <Toggle
-        accessibilityActions={[{ name: 'magicTap', label: 'Magic' }]}
+        accessibilityActions={[{ label: 'Magic', name: 'magicTap' }]}
         onAccessibilityAction={() => {}}
       >
         <Text>Custom Actions</Text>

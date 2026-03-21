@@ -20,15 +20,15 @@ export interface CollisionOptions {
  */
 export function calculateNextValues(options: CollisionOptions): number[] {
   const {
-    index,
-    newValue,
-    currentValues,
-    min,
-    max,
-    minDistance,
-    maxDistance,
-    stepBetweenValues,
     behavior,
+    currentValues,
+    index,
+    max,
+    maxDistance,
+    min,
+    minDistance,
+    newValue,
+    stepBetweenValues,
   } = options;
   const next = [...currentValues];
 

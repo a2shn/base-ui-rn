@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
+
 import type { SeparatorProps } from './types';
 
 /**
@@ -16,27 +17,40 @@ import type { SeparatorProps } from './types';
 export const Separator = React.forwardRef<View, SeparatorProps>(
   (props, ref) => {
     const {
-      orientation = 'horizontal',
-      decorative = false,
       accessibilityRole,
-      tabIndex,
-      'aria-label': ariaLabel,
-      'aria-keyshortcuts': ariaKeyshortcuts,
-      'aria-disabled': ariaDisabled,
-      'data-orientation': dataOrientation,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
+      'aria-disabled': ariaDisabled,
       'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'aria-keyshortcuts': ariaKeyshortcuts,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
       'aria-orientation': ariaOrientationProp,
+      'data-orientation': dataOrientation,
+      decorative = false,
+      orientation = 'horizontal',
+      tabIndex,
       ...otherProps
     } = props;
 
     return (
       <View
         {...otherProps}
+        accessibilityElementsHidden={decorative}
+        aria-busy={ariaBusy}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
+        aria-disabled={ariaDisabled}
+        aria-expanded={ariaExpanded}
+        aria-hidden={ariaHidden ?? (decorative ? true : undefined)}
+        aria-keyshortcuts={ariaKeyshortcuts}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
+        aria-orientation={ariaOrientationProp ?? orientation}
+        data-orientation={dataOrientation ?? orientation}
+        importantForAccessibility={decorative ? 'no-hide-descendants' : 'yes'}
         ref={ref}
         role={
           decorative
@@ -44,19 +58,6 @@ export const Separator = React.forwardRef<View, SeparatorProps>(
             : ((accessibilityRole ?? 'separator') as 'separator')
         }
         tabIndex={tabIndex}
-        aria-label={ariaLabel}
-        aria-keyshortcuts={ariaKeyshortcuts}
-        aria-disabled={ariaDisabled}
-        aria-labelledby={ariaLabelledBy}
-        aria-describedby={ariaDescribedBy}
-        aria-details={ariaDetails}
-        aria-expanded={ariaExpanded}
-        aria-busy={ariaBusy}
-        aria-hidden={ariaHidden ?? (decorative ? true : undefined)}
-        accessibilityElementsHidden={decorative}
-        importantForAccessibility={decorative ? 'no-hide-descendants' : 'yes'}
-        aria-orientation={ariaOrientationProp ?? orientation}
-        data-orientation={dataOrientation ?? orientation}
       />
     );
   },

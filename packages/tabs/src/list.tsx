@@ -1,6 +1,7 @@
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluateStyles } from '@base-ui-rn/core';
+
 import type { TabsListProps } from './types';
 import { useTabsList } from './use-tabs';
 
@@ -20,20 +21,20 @@ import { useTabsList } from './use-tabs';
 export const TabsList = React.memo(
   React.forwardRef<View, TabsListProps>((props, ref) => {
     const {
-      children,
-      tabIndex,
-      style,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
-      'aria-hidden': ariaHidden,
       'aria-disabled': ariaDisabled,
+      'aria-expanded': ariaExpanded,
+      'aria-hidden': ariaHidden,
       'aria-keyshortcuts': ariaKeyshortcuts,
-      'data-orientation': dataOrientation,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      children,
       'data-activation-direction': dataActivationDirection,
+      'data-orientation': dataOrientation,
+      style,
+      tabIndex,
       ...otherProps
     } = props;
 
@@ -45,23 +46,23 @@ export const TabsList = React.memo(
     return (
       <View
         {...otherProps}
-        ref={ref}
-        style={resolvedStyle}
-        role='tablist'
-        tabIndex={tabIndex}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
+        aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
-        aria-expanded={ariaExpanded}
-        aria-busy={ariaBusy}
-        aria-hidden={ariaHidden}
         aria-disabled={ariaDisabled}
+        aria-expanded={ariaExpanded}
+        aria-hidden={ariaHidden}
         aria-keyshortcuts={ariaKeyshortcuts}
-        data-orientation={dataOrientation ?? state.orientation}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
         data-activation-direction={
           dataActivationDirection ?? state.activationDirection
         }
+        data-orientation={dataOrientation ?? state.orientation}
+        ref={ref}
+        role='tablist'
+        style={resolvedStyle}
+        tabIndex={tabIndex}
       >
         {resolvedChildren}
       </View>

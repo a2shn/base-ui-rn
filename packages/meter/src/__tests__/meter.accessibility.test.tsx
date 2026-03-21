@@ -1,7 +1,8 @@
-import * as React from 'react';
-import { render } from '@testing-library/react-native';
-import { Meter } from '../index';
 import { testAccessibility } from '@base-ui-rn/test-utils';
+import { render } from '@testing-library/react-native';
+import * as React from 'react';
+
+import { Meter } from '../index';
 
 describe('Meter - Accessibility', () => {
   it('has correct default accessibility traits', () => {
@@ -41,8 +42,8 @@ describe('Meter - Accessibility', () => {
   it('supports custom ariaValueText via getAriaValueText', () => {
     const { getByRole } = render(
       <Meter.Root
-        value={80}
         getAriaValueText={(value) => `${value} units used`}
+        value={80}
       />,
     );
 
@@ -54,7 +55,7 @@ describe('Meter - Accessibility', () => {
 
   it('supports custom aria-valuetext prop', () => {
     const { getByRole } = render(
-      <Meter.Root value={50} aria-valuetext='Halfway' />,
+      <Meter.Root aria-valuetext='Halfway' value={50} />,
     );
 
     const meter = getByRole('progressbar');
@@ -66,9 +67,9 @@ describe('Meter - Accessibility', () => {
   it('prefers accessibilityLabel over automated labeling', () => {
     const { getByRole } = render(
       <Meter.Root
-        value={50}
-        accessibilityLabel='Custom Label'
         accessibilityHint='Custom Hint'
+        accessibilityLabel='Custom Label'
+        value={50}
       >
         <Meter.Label>Ignored Label</Meter.Label>
       </Meter.Root>,
@@ -82,7 +83,7 @@ describe('Meter - Accessibility', () => {
 
   it('hides track and value from accessibility tree', () => {
     const { getByTestId } = render(
-      <Meter.Root value={50} accessibilityHint='Displays storage usage'>
+      <Meter.Root accessibilityHint='Displays storage usage' value={50}>
         <Meter.Track testID='track'>
           <Meter.Indicator testID='indicator' />
         </Meter.Track>
@@ -108,7 +109,7 @@ describe('Meter - Accessibility', () => {
 
   describe('Web Accessibility', () => {
     it('sets web-specific ARIA attributes', () => {
-      const { getByRole } = render(<Meter.Root value={50} min={10} max={90} />);
+      const { getByRole } = render(<Meter.Root max={90} min={10} value={50} />);
 
       const meter = getByRole('progressbar');
       expect(meter.props['aria-valuemin']).toBe(10);
@@ -117,7 +118,7 @@ describe('Meter - Accessibility', () => {
     });
 
     it('supports tabIndex on Root', () => {
-      const { getByRole } = render(<Meter.Root value={50} tabIndex={0} />);
+      const { getByRole } = render(<Meter.Root tabIndex={0} value={50} />);
 
       const meter = getByRole('progressbar');
       expect(meter.props.tabIndex).toBe(0);
@@ -126,7 +127,7 @@ describe('Meter - Accessibility', () => {
 
   it('supports accessible prop', () => {
     const { getByTestId } = render(
-      <Meter.Root value={50} accessible={false} testID='meter' />,
+      <Meter.Root accessible={false} testID='meter' value={50} />,
     );
     const meter = getByTestId('meter');
     expect(meter.props.accessible).toBe(false);

@@ -1,6 +1,7 @@
-import * as React from 'react';
 import { render } from '@testing-library/react-native';
-import { View, Text } from 'react-native';
+import * as React from 'react';
+import { Text, View } from 'react-native';
+
 import { PressableWithKeyPress } from '../pressable';
 
 describe('PressableWithKeyPress: Ref Forwarding', () => {

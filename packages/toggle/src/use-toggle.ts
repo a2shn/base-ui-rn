@@ -1,28 +1,29 @@
-import * as React from 'react';
 import {
-  type NativeSyntheticEvent,
-  type GestureResponderEvent,
-  type AccessibilityActionEvent,
-  type TargetedEvent,
-} from 'react-native';
-import {
-  mergeAccessibilityActions,
   isActivationAction,
+  type KeyPressEventData,
+  mergeAccessibilityActions,
   mergeAccessibilityState,
-  resolveTabIndex,
   resolveAriaDisabled,
   resolveAriaPressed,
   resolveDataPressed,
+  resolveTabIndex,
   useKeyboardActivation,
-  type KeyPressEventData,
 } from '@base-ui-rn/core';
 import { useFocus } from '@base-ui-rn/focus-ring';
 import {
-  useKeyboardShortcut,
   getAriaKeyshortcuts,
+  useKeyboardShortcut,
 } from '@base-ui-rn/keyboard-shortcuts';
-import type { TogglePressedChangeDetails, ToggleProps } from './types';
+import * as React from 'react';
+import {
+  type AccessibilityActionEvent,
+  type GestureResponderEvent,
+  type NativeSyntheticEvent,
+  type TargetedEvent,
+} from 'react-native';
+
 import type { ToggleGroupContextValue } from './group-context';
+import type { TogglePressedChangeDetails, ToggleProps } from './types';
 
 /**
  * Manages the state and logic for the Toggle primitive.
@@ -35,25 +36,25 @@ export const useToggle = (
   groupContext: ToggleGroupContextValue | null,
 ) => {
   const {
-    value,
-    pressed: controlledPressed,
-    defaultPressed = false,
-    onPressedChange,
-    disabled,
-    onPress,
-    onKeyDown,
-    accessibilityState,
     accessibilityActions,
-    onAccessibilityAction,
-    focusableWhenDisabled = false,
-    focusVisible: forceFocusVisible = false,
-    onFocus: onFocusProp,
-    onBlur: onBlurProp,
-    shortcut,
-    tabIndex: tabIndexProp,
+    accessibilityState,
     'aria-disabled': ariaDisabledProp,
     'aria-pressed': ariaPressedProp,
     'data-pressed': dataPressedProp,
+    defaultPressed = false,
+    disabled,
+    focusableWhenDisabled = false,
+    focusVisible: forceFocusVisible = false,
+    onAccessibilityAction,
+    onBlur: onBlurProp,
+    onFocus: onFocusProp,
+    onKeyDown,
+    onPress,
+    onPressedChange,
+    pressed: controlledPressed,
+    shortcut,
+    tabIndex: tabIndexProp,
+    value,
   } = props;
 
   const isInGroup = groupContext !== null;
@@ -64,8 +65,8 @@ export const useToggle = (
   const {
     focused: isFocused,
     focusVisible: isFocusVisible,
-    onFocus: onFocusIn,
     onBlur: onFocusOut,
+    onFocus: onFocusIn,
   } = useFocus({
     focusVisible: forceFocusVisible,
   });

@@ -1,13 +1,14 @@
+import {
+  ACTIVATION_KEYS,
+  DEFAULT_HINT,
+  DPAD_KEYS,
+  NON_ACTIVATION_KEYS,
+} from '@base-ui-rn/test-utils';
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+
 import { Button } from '../button';
-import {
-  DEFAULT_HINT,
-  ACTIVATION_KEYS,
-  NON_ACTIVATION_KEYS,
-  DPAD_KEYS,
-} from '@base-ui-rn/test-utils';
 
 describe('Button - Keyboard Interaction', () => {
   afterEach(() => {
@@ -18,7 +19,7 @@ describe('Button - Keyboard Interaction', () => {
     it('triggers onPress for all activation keys', () => {
       const onPressMock = jest.fn();
       const { getByRole } = render(
-        <Button onPress={onPressMock} accessibilityHint={DEFAULT_HINT}>
+        <Button accessibilityHint={DEFAULT_HINT} onPress={onPressMock}>
           <Text>Keyboard Button</Text>
         </Button>,
       );
@@ -35,7 +36,7 @@ describe('Button - Keyboard Interaction', () => {
     it('triggers onPress for Space and Enter keys specifically', () => {
       const onPressMock = jest.fn();
       const { getByRole } = render(
-        <Button onPress={onPressMock} accessibilityHint={DEFAULT_HINT}>
+        <Button accessibilityHint={DEFAULT_HINT} onPress={onPressMock}>
           <Text>Keyboard Button</Text>
         </Button>,
       );
@@ -52,7 +53,7 @@ describe('Button - Keyboard Interaction', () => {
     it('ignores hardware keyboard events when disabled', () => {
       const onPressMock = jest.fn();
       const { getByRole } = render(
-        <Button disabled onPress={onPressMock} accessibilityHint={DEFAULT_HINT}>
+        <Button accessibilityHint={DEFAULT_HINT} disabled onPress={onPressMock}>
           <Text>Disabled Keyboard Button</Text>
         </Button>,
       );
@@ -67,10 +68,10 @@ describe('Button - Keyboard Interaction', () => {
       const onPressMock = jest.fn();
       const { getByRole } = render(
         <Button
+          accessibilityHint={DEFAULT_HINT}
           disabled
           focusableWhenDisabled
           onPress={onPressMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Loading Button</Text>
         </Button>,
@@ -90,7 +91,7 @@ describe('Button - Keyboard Interaction', () => {
     it('does not trigger onPress for navigation and modifier keys', () => {
       const onPressMock = jest.fn();
       const { getByRole } = render(
-        <Button onPress={onPressMock} accessibilityHint={DEFAULT_HINT}>
+        <Button accessibilityHint={DEFAULT_HINT} onPress={onPressMock}>
           <Text>Keyboard Button</Text>
         </Button>,
       );
@@ -107,7 +108,7 @@ describe('Button - Keyboard Interaction', () => {
     it('does not trigger onPress for D-pad navigation keys', () => {
       const onPressMock = jest.fn();
       const { getByRole } = render(
-        <Button onPress={onPressMock} accessibilityHint={DEFAULT_HINT}>
+        <Button accessibilityHint={DEFAULT_HINT} onPress={onPressMock}>
           <Text>Keyboard Button</Text>
         </Button>,
       );
@@ -126,7 +127,7 @@ describe('Button - Keyboard Interaction', () => {
     it('forwards all key events to onKeyDown callback regardless of key type', () => {
       const onKeyDownMock = jest.fn();
       const { getByRole } = render(
-        <Button onKeyDown={onKeyDownMock} accessibilityHint={DEFAULT_HINT}>
+        <Button accessibilityHint={DEFAULT_HINT} onKeyDown={onKeyDownMock}>
           <Text>Keyboard Button</Text>
         </Button>,
       );
@@ -145,9 +146,9 @@ describe('Button - Keyboard Interaction', () => {
       const onKeyDownMock = jest.fn();
       const { getByRole } = render(
         <Button
-          onPress={onPressMock}
-          onKeyDown={onKeyDownMock}
           accessibilityHint={DEFAULT_HINT}
+          onKeyDown={onKeyDownMock}
+          onPress={onPressMock}
         >
           <Text>Keyboard Button</Text>
         </Button>,
@@ -167,10 +168,10 @@ describe('Button - Keyboard Interaction', () => {
       const onPressMock = jest.fn();
       const { getByRole, rerender } = render(
         <Button
+          accessibilityHint={DEFAULT_HINT}
           disabled
           focusableWhenDisabled
           onPress={onPressMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Loading Button</Text>
         </Button>,
@@ -184,7 +185,7 @@ describe('Button - Keyboard Interaction', () => {
       expect(onPressMock).not.toHaveBeenCalled();
 
       rerender(
-        <Button onPress={onPressMock} accessibilityHint={DEFAULT_HINT}>
+        <Button accessibilityHint={DEFAULT_HINT} onPress={onPressMock}>
           <Text>Active Button</Text>
         </Button>,
       );
@@ -201,9 +202,9 @@ describe('Button - Keyboard Interaction', () => {
       const onPressMock = jest.fn();
       const { getByRole } = render(
         <Button
+          accessibilityHint={DEFAULT_HINT}
           focusableWhenDisabled
           onPress={onPressMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Button</Text>
         </Button>,

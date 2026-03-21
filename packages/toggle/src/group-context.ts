@@ -1,6 +1,7 @@
+import type { KeyPressEventData } from '@base-ui-rn/core';
 import * as React from 'react';
 import type { NativeSyntheticEvent } from 'react-native';
-import type { KeyPressEventData } from '@base-ui-rn/core';
+
 import { type TogglePressedChangeDetails } from './types';
 
 export type Orientation = 'horizontal' | 'vertical';

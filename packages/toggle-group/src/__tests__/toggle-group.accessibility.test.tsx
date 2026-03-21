@@ -1,7 +1,8 @@
-import { Text } from 'react-native';
-import { render } from '@testing-library/react-native';
-import { ToggleGroup } from '../toggle-group';
 import { Toggle } from '@base-ui-rn/toggle';
+import { render } from '@testing-library/react-native';
+import { Text } from 'react-native';
+
+import { ToggleGroup } from '../toggle-group';
 
 describe('ToggleGroup - Accessibility & Dev Mode', () => {
   const originalNodeEnv = process.env.NODE_ENV;
@@ -74,7 +75,7 @@ describe('ToggleGroup - Accessibility & Dev Mode', () => {
 
   it('sets role="group" and aria-orientation on the container', () => {
     const { getByTestId } = render(
-      <ToggleGroup testID='group' orientation='vertical'>
+      <ToggleGroup orientation='vertical' testID='group'>
         <Toggle value='a'>
           <Text>A</Text>
         </Toggle>
@@ -89,7 +90,7 @@ describe('ToggleGroup - Accessibility & Dev Mode', () => {
 
   it('sets data-disabled and data-multiple attributes', () => {
     const { getByTestId, rerender } = render(
-      <ToggleGroup testID='group' disabled multiple>
+      <ToggleGroup disabled multiple testID='group'>
         <Toggle value='a'>
           <Text>A</Text>
         </Toggle>
@@ -101,7 +102,7 @@ describe('ToggleGroup - Accessibility & Dev Mode', () => {
     expect(group.props['data-multiple']).toBe(true);
 
     rerender(
-      <ToggleGroup testID='group' disabled={false} multiple={false}>
+      <ToggleGroup disabled={false} multiple={false} testID='group'>
         <Toggle value='a'>
           <Text>A</Text>
         </Toggle>
@@ -116,9 +117,9 @@ describe('ToggleGroup - Accessibility & Dev Mode', () => {
   it('allows overriding data attributes', () => {
     const { getByTestId } = render(
       <ToggleGroup
-        testID='group'
         data-orientation='vertical'
         orientation='horizontal'
+        testID='group'
       >
         <Toggle value='a'>
           <Text>A</Text>
@@ -133,7 +134,7 @@ describe('ToggleGroup - Accessibility & Dev Mode', () => {
 
   it('allows overriding role on the container', () => {
     const { getByTestId } = render(
-      <ToggleGroup testID='group' accessibilityRole='radiogroup'>
+      <ToggleGroup accessibilityRole='radiogroup' testID='group'>
         <Toggle value='a'>
           <Text>A</Text>
         </Toggle>

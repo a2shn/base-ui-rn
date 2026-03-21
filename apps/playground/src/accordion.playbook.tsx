@@ -1,12 +1,12 @@
-import * as React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
 import { Accordion, type AccordionTriggerState } from '@base-ui-rn/accordion';
 import {
   Gallery,
   Section,
-  usePlaybookToggles,
   theme,
+  usePlaybookToggles,
 } from '@base-ui-rn/playbook';
+import * as React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 export function AccordionPlaybook() {
   usePlaybookToggles({
@@ -16,14 +16,14 @@ export function AccordionPlaybook() {
 
   return (
     <Gallery title='Accordion'>
-      <Section title='Default' showAllProps={true}>
+      <Section showAllProps={true} title='Default'>
         <View style={styles.container}>
           <Accordion.Root>
             <Accordion.Item value='item-1'>
               <Accordion.Header>
                 <Accordion.Trigger
-                  testID='accordion-trigger-1'
                   style={getTriggerStyle}
+                  testID='accordion-trigger-1'
                 >
                   {({ open }) => (
                     <>
@@ -44,8 +44,8 @@ export function AccordionPlaybook() {
             <Accordion.Item value='item-2'>
               <Accordion.Header>
                 <Accordion.Trigger
-                  testID='accordion-trigger-2'
                   style={getTriggerStyle}
+                  testID='accordion-trigger-2'
                 >
                   {({ open }) => (
                     <>
@@ -67,8 +67,8 @@ export function AccordionPlaybook() {
             <Accordion.Item value='item-3'>
               <Accordion.Header>
                 <Accordion.Trigger
-                  testID='accordion-trigger-3'
                   style={getTriggerStyle}
+                  testID='accordion-trigger-3'
                 >
                   {({ open }) => (
                     <>
@@ -92,7 +92,7 @@ export function AccordionPlaybook() {
 
       <Section title='Controlled'>
         <View style={styles.container}>
-          <Accordion.Root value='item-1' onValueChange={() => {}}>
+          <Accordion.Root onValueChange={() => {}} value='item-1'>
             <Accordion.Item value='item-1'>
               <Accordion.Header>
                 <Accordion.Trigger style={getTriggerStyle}>
@@ -193,7 +193,7 @@ export function AccordionPlaybook() {
               </Accordion.Panel>
             </Accordion.Item>
 
-            <Accordion.Item value='item-2' disabled>
+            <Accordion.Item disabled value='item-2'>
               <Accordion.Header>
                 <Accordion.Trigger style={getTriggerStyle}>
                   {({ open }) => (
@@ -234,25 +234,28 @@ export function AccordionPlaybook() {
 }
 
 const styles = StyleSheet.create({
+  animatedPanel: {
+    overflow: 'hidden',
+  },
   container: {
-    width: 320,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
     alignSelf: 'center',
     backgroundColor: theme.colors.bgCanvas,
+    borderColor: theme.colors.border,
+    borderWidth: 1,
+    width: 320,
   },
-  trigger: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: theme.spacing.md,
+  disabled: {
+    opacity: 0.5,
+  },
+  icon: {
+    color: theme.colors.textMuted,
+    fontSize: 18,
+    fontWeight: theme.font.weight.bold,
+  },
+  panel: {
+    backgroundColor: theme.colors.bgCanvas,
+    padding: theme.spacing.lg,
     paddingHorizontal: theme.spacing.lg,
-  },
-  triggerOpen: {
-    backgroundColor: theme.colors.borderLight,
-  },
-  triggerDefault: {
-    backgroundColor: 'transparent',
   },
   textPrimary: {
     color: theme.colors.textPrimary,
@@ -260,25 +263,22 @@ const styles = StyleSheet.create({
   textSecondary: {
     color: theme.colors.textSecondary,
   },
-  icon: {
-    fontSize: 18,
-    fontWeight: theme.font.weight.bold,
-    color: theme.colors.textMuted,
-  },
-  panel: {
+  trigger: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     paddingHorizontal: theme.spacing.lg,
-    padding: theme.spacing.lg,
-    backgroundColor: theme.colors.bgCanvas,
+    paddingVertical: theme.spacing.md,
   },
-  animatedPanel: {
-    overflow: 'hidden',
+  triggerDefault: {
+    backgroundColor: 'transparent',
   },
-  disabled: {
-    opacity: 0.5,
+  triggerOpen: {
+    backgroundColor: theme.colors.borderLight,
   },
 });
 
-function getTriggerStyle({ open, disabled }: AccordionTriggerState) {
+function getTriggerStyle({ disabled, open }: AccordionTriggerState) {
   return [
     styles.trigger,
     open ? styles.triggerOpen : styles.triggerDefault,

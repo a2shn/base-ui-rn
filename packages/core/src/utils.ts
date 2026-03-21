@@ -1,10 +1,11 @@
 import * as React from 'react';
 import {
   Platform,
-  StyleSheet,
   type StyleProp,
+  StyleSheet,
   type ViewStyle,
 } from 'react-native';
+
 import { DEFAULT_FOCUS_RING_STYLE } from './constants';
 
 /**

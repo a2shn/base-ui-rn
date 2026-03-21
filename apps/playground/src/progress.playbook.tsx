@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Progress, type ProgressState } from '@base-ui-rn/progress';
 import { Gallery, Section, theme } from '@base-ui-rn/playbook';
+import { Progress, type ProgressState } from '@base-ui-rn/progress';
+import * as React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 export function ProgressPlaybook() {
   const [value, setValue] = React.useState(0);
@@ -25,7 +25,7 @@ export function ProgressPlaybook() {
     <Gallery title='Progress'>
       <Section title='Basic'>
         <View style={styles.container}>
-          <Progress.Root value={value} style={styles.meterRoot}>
+          <Progress.Root style={styles.meterRoot} value={value}>
             <View style={styles.meterHeader}>
               <Progress.Label style={styles.meterLabel}>
                 Exporting data...
@@ -42,7 +42,7 @@ export function ProgressPlaybook() {
 
       <Section title='Indeterminate'>
         <View style={styles.container}>
-          <Progress.Root value={null} style={styles.meterRoot}>
+          <Progress.Root style={styles.meterRoot} value={null}>
             <View style={styles.meterHeader}>
               <Progress.Label style={styles.meterLabel}>
                 Searching...
@@ -61,10 +61,10 @@ export function ProgressPlaybook() {
       <Section title='Custom Format'>
         <View style={styles.container}>
           <Progress.Root
-            value={3}
-            max={10}
             getAriaValueText={(formatted) => `Step ${formatted} of 10`}
+            max={10}
             style={styles.meterRoot}
+            value={3}
           >
             <View style={styles.meterHeader}>
               <Progress.Label style={styles.meterLabel}>
@@ -85,7 +85,7 @@ export function ProgressPlaybook() {
 
       <Section title='State Data Attributes'>
         <View style={styles.container}>
-          <Progress.Root value={value} style={styles.meterRoot}>
+          <Progress.Root style={styles.meterRoot} value={value}>
             {(state) => (
               <>
                 <Progress.Label style={getProgressLabelStyle(state)}>
@@ -109,62 +109,62 @@ export function ProgressPlaybook() {
 }
 
 const styles = StyleSheet.create({
+  complete: {
+    color: '#10B981',
+    fontWeight: theme.font.weight.bold,
+  },
   container: {
-    padding: theme.spacing.md,
-    gap: theme.spacing.md,
     alignItems: 'center',
     alignSelf: 'center',
+    gap: theme.spacing.md,
+    padding: theme.spacing.md,
   },
-  meterRoot: {
-    width: 200,
-    gap: theme.spacing.sm,
-  },
-  meterHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  meterLabel: {
-    fontSize: theme.font.size.md,
-    fontWeight: theme.font.weight.medium,
-    color: theme.colors.textPrimary,
-  },
-  meterValue: {
-    fontSize: theme.font.size.md,
-    color: theme.colors.textSecondary,
-  },
-  meterTrack: {
-    height: 8,
-    width: '100%',
-    backgroundColor: theme.colors.bgCanvas,
-    borderRadius: theme.radius.sm,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-  },
-  meterIndicator: {
-    height: '100%',
-    width: '100%',
-    backgroundColor: '#4A90D9', // Accent color
-  },
-  indicatorIndeterminate: {
-    width: '30%',
-    backgroundColor: '#8B5CF6',
-  },
-  indicatorSuccess: {
-    backgroundColor: '#10B981',
+  hint: {
+    color: theme.colors.textMuted,
+    fontSize: theme.font.size.xs,
+    textAlign: 'center',
   },
   indicatorComplete: {
     backgroundColor: '#059669',
   },
-  hint: {
-    fontSize: theme.font.size.xs,
-    color: theme.colors.textMuted,
-    textAlign: 'center',
+  indicatorIndeterminate: {
+    backgroundColor: '#8B5CF6',
+    width: '30%',
   },
-  complete: {
-    color: '#10B981',
-    fontWeight: theme.font.weight.bold,
+  indicatorSuccess: {
+    backgroundColor: '#10B981',
+  },
+  meterHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  meterIndicator: {
+    backgroundColor: '#4A90D9', // Accent color
+    height: '100%',
+    width: '100%',
+  },
+  meterLabel: {
+    color: theme.colors.textPrimary,
+    fontSize: theme.font.size.md,
+    fontWeight: theme.font.weight.medium,
+  },
+  meterRoot: {
+    gap: theme.spacing.sm,
+    width: 200,
+  },
+  meterTrack: {
+    backgroundColor: theme.colors.bgCanvas,
+    borderColor: theme.colors.border,
+    borderRadius: theme.radius.sm,
+    borderWidth: 1,
+    height: 8,
+    overflow: 'hidden',
+    width: '100%',
+  },
+  meterValue: {
+    color: theme.colors.textSecondary,
+    fontSize: theme.font.size.md,
   },
 });
 

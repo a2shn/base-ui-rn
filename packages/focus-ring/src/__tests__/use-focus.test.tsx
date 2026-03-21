@@ -1,6 +1,7 @@
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Pressable, View } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+
 import { useFocus } from '../use-focus';
 
 describe('useFocus: Focusing', () => {
@@ -9,17 +10,17 @@ describe('useFocus: Focusing', () => {
       const {
         focused,
         focusVisible,
-        onFocus: handleFocus,
         onBlur: handleBlur,
+        onFocus: handleFocus,
       } = useFocus({ focusVisible: false });
 
       return (
         <View>
           <Pressable
             accessibilityRole='button'
-            testID='focusable'
-            onFocus={handleFocus}
             onBlur={handleBlur}
+            onFocus={handleFocus}
+            testID='focusable'
           >
             Focusable
           </Pressable>
@@ -70,17 +71,17 @@ describe('useFocus: Focusing', () => {
       const {
         focused,
         focusVisible,
-        onFocus: handleFocus,
         onBlur: handleBlur,
+        onFocus: handleFocus,
       } = useFocus({ focusVisible: true });
 
       return (
         <View>
           <Pressable
             accessibilityRole='button'
-            testID='focusable'
-            onFocus={handleFocus}
             onBlur={handleBlur}
+            onFocus={handleFocus}
+            testID='focusable'
           >
             Focusable
           </Pressable>
@@ -114,7 +115,7 @@ describe('useFocus: Focusing', () => {
 describe('useFocus: Return Value', () => {
   it('returns correct types', () => {
     function TestComponent() {
-      const { focused, focusVisible, onFocus, onBlur } = useFocus({
+      const { focused, focusVisible, onBlur, onFocus } = useFocus({
         focusVisible: false,
       });
 

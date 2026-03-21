@@ -1,37 +1,37 @@
 import { AccordionRoot } from './accordion';
-import { AccordionItem } from './item';
 import { AccordionHeader } from './header';
-import { AccordionTrigger } from './trigger';
+import { AccordionItem } from './item';
 import { AccordionPanel } from './panel';
+import { AccordionTrigger } from './trigger';
 
 export const Accordion = {
-  Root: AccordionRoot,
-  Item: AccordionItem,
   Header: AccordionHeader,
-  Trigger: AccordionTrigger,
+  Item: AccordionItem,
   Panel: AccordionPanel,
+  Root: AccordionRoot,
+  Trigger: AccordionTrigger,
 };
 
 export {
-  AccordionRoot,
-  AccordionItem,
   AccordionHeader,
-  AccordionTrigger,
+  AccordionItem,
   AccordionPanel,
+  AccordionRoot,
+  AccordionTrigger,
 };
 
 export type {
-  AccordionRootProps,
-  AccordionItemProps,
   AccordionHeaderProps,
-  AccordionTriggerProps,
-  AccordionPanelProps,
-  AccordionRootState,
-  AccordionItemState,
   AccordionHeaderState,
-  AccordionTriggerState,
-  AccordionPanelState,
-  AccordionValueChangeDetails,
   AccordionItemOpenChangeDetails,
+  AccordionItemProps,
+  AccordionItemState,
+  AccordionPanelProps,
+  AccordionPanelState,
+  AccordionRootProps,
+  AccordionRootState,
+  AccordionTriggerProps,
+  AccordionTriggerState,
+  AccordionValueChangeDetails,
   Orientation,
 } from './types';

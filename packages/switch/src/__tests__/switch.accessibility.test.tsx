@@ -1,7 +1,8 @@
-import * as React from 'react';
-import { render } from '@testing-library/react-native';
-import { SwitchRoot, SwitchThumb } from '../index';
 import { testAccessibility } from '@base-ui-rn/test-utils';
+import { render } from '@testing-library/react-native';
+import * as React from 'react';
+
+import { SwitchRoot, SwitchThumb } from '../index';
 
 describe('Switch - Accessibility', () => {
   it('has correct default accessibility attributes', () => {
@@ -9,8 +10,8 @@ describe('Switch - Accessibility', () => {
     const root = getByRole('switch');
 
     testAccessibility(root, {
-      disabled: false,
       checked: false,
+      disabled: false,
     });
 
     expect(root.props['data-checked']).toBeUndefined();

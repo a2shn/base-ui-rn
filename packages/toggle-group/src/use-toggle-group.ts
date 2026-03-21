@@ -1,34 +1,34 @@
-import * as React from 'react';
-import type { NativeSyntheticEvent } from 'react-native';
 import type { KeyPressEventData } from '@base-ui-rn/core';
-import type { ToggleGroupChangeEventDetails } from '@base-ui-rn/toggle';
 import { useKeyboardNavigation } from '@base-ui-rn/core';
 import { useFocus } from '@base-ui-rn/focus-ring';
-import type { ToggleGroupProps, ToggleGroupState } from './types';
+import type { ToggleGroupChangeEventDetails } from '@base-ui-rn/toggle';
+import * as React from 'react';
+import type { NativeSyntheticEvent } from 'react-native';
 
+import type { ToggleGroupProps, ToggleGroupState } from './types';
 
 export const useToggleGroup = (props: ToggleGroupProps) => {
   const {
-    value: controlledValue,
     defaultValue,
-    onValueChange,
-    multiple = false,
     disabled = false,
-    orientation = 'horizontal',
     loopFocus = true,
+    multiple = false,
     onFocusChange,
+    onValueChange,
+    orientation = 'horizontal',
+    value: controlledValue,
   } = props;
 
   const {
     focused: isFocused,
     focusVisible: isFocusVisible,
-    onFocus: onFocusIn,
     onBlur: onFocusOut,
+    onFocus: onFocusIn,
   } = useFocus({});
 
-  const { registerItem, handleKeyDown } = useKeyboardNavigation({
-    orientation,
+  const { handleKeyDown, registerItem } = useKeyboardNavigation({
     loop: loopFocus,
+    orientation,
   });
 
   const [uncontrolledValue, setUncontrolledValue] = React.useState(
@@ -88,13 +88,13 @@ export const useToggleGroup = (props: ToggleGroupProps) => {
 
   const state: ToggleGroupState = React.useMemo(
     () => ({
-      value,
       disabled,
-      multiple,
-      orientation,
-      loopFocus,
       focused: isFocused,
       focusVisible: isFocusVisible,
+      loopFocus,
+      multiple,
+      orientation,
+      value,
     }),
     [
       value,

@@ -1,16 +1,17 @@
+import { Button } from '@base-ui-rn/button';
 import * as React from 'react';
 import {
-  View,
-  Text,
-  StatusBar,
-  ScrollView,
-  TextInput,
   Keyboard,
+  ScrollView,
+  StatusBar,
+  Text,
+  TextInput,
+  View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button } from '@base-ui-rn/button';
+
+import { BackIcon, CloseIcon, getIconForComponent, SearchIcon } from './icons';
 import { useStyles } from './styles';
-import { getIconForComponent, SearchIcon, CloseIcon, BackIcon } from './icons';
 
 /**
  * Configuration for the Playbook app.
@@ -77,8 +78,8 @@ export const PlaybookApp = ({ registry }: { registry: PlaybookConfig }) => {
       style={[
         styles.container,
         {
-          paddingTop: Math.max(insets.top, 10),
           paddingBottom: insets.bottom,
+          paddingTop: Math.max(insets.top, 10),
         },
       ]}
     >
@@ -91,7 +92,7 @@ export const PlaybookApp = ({ registry }: { registry: PlaybookConfig }) => {
           testID='back-button'
         >
           <View style={styles.backButtonContent}>
-            <BackIcon size={20} color={styles.backButtonText.color} />
+            <BackIcon color={styles.backButtonText.color} size={20} />
             <Text style={styles.backButtonText}>Back to Menu</Text>
           </View>
         </Button>
@@ -117,30 +118,30 @@ export const PlaybookApp = ({ registry }: { registry: PlaybookConfig }) => {
             ]}
           >
             <View style={styles.searchIconContainer}>
-              <SearchIcon size={20} color={styles.searchInput.color} />
+              <SearchIcon color={styles.searchInput.color} size={20} />
             </View>
             <TextInput
-              accessibilityLabel='Text input field'
               accessibilityHint='Filters the components list as you type'
-              style={styles.searchInput}
-              placeholder='Search components...'
-              placeholderTextColor={styles.emptyStateSubtext.color}
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              onFocus={() => setIsSearchFocused(true)}
-              onBlur={() => setIsSearchFocused(false)}
+              accessibilityLabel='Text input field'
               autoCapitalize='none'
               autoCorrect={false}
+              onBlur={() => setIsSearchFocused(false)}
+              onChangeText={setSearchQuery}
+              onFocus={() => setIsSearchFocused(true)}
+              placeholder='Search components...'
+              placeholderTextColor={styles.emptyStateSubtext.color}
+              style={styles.searchInput}
               testID='search-input'
+              value={searchQuery}
             />
             {searchQuery.length > 0 && (
               <Button
-                role='button'
                 onPress={() => setSearchQuery('')}
+                role='button'
                 style={styles.searchClearButton}
                 testID='search-clear'
               >
-                <CloseIcon size={18} color={styles.searchInput.color} />
+                <CloseIcon color={styles.searchInput.color} size={18} />
               </Button>
             )}
           </View>
@@ -148,7 +149,7 @@ export const PlaybookApp = ({ registry }: { registry: PlaybookConfig }) => {
           {filteredComponents.length === 0 ? (
             <View style={styles.emptyState}>
               <View>
-                <SearchIcon size={64} color={styles.emptyStateText.color} />
+                <SearchIcon color={styles.emptyStateText.color} size={64} />
               </View>
               <Text style={styles.emptyStateText}>No components found</Text>
               <Text style={styles.emptyStateSubtext}>
@@ -169,15 +170,15 @@ export const PlaybookApp = ({ registry }: { registry: PlaybookConfig }) => {
                   <Button
                     key={key}
                     onPress={() => setScreen(key)}
-                    testID={config.testID}
                     style={styles.componentButton}
+                    testID={config.testID}
                   >
                     {() => (
                       <View style={styles.componentButtonInner}>
                         <View style={styles.componentButtonIcon}>
                           <Icon
-                            size={24}
                             color={styles.componentButtonTitle.color}
+                            size={24}
                           />
                         </View>
                         <View style={styles.componentButtonContent}>

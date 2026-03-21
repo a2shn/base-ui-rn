@@ -42,10 +42,10 @@ interface Fiber {
 
 /** React fiber WorkTag constants (stable across React 17-19). */
 const WorkTag = {
-  FunctionComponent: 0,
   ClassComponent: 1,
-  HostRoot: 3,
+  FunctionComponent: 0,
   HostComponent: 5, // ← Native <View>, <Pressable> etc. land here
+  HostRoot: 3,
   HostText: 6,
 } as const;
 
@@ -265,10 +265,10 @@ export function inspectNativeProps(ref: unknown): InspectedProps {
         'On Fabric release builds, fiber internals are stripped.',
     );
     return {
-      hostProps: {},
       compositeProps: null,
-      hostComponentType: 'unknown',
       extractionMethod: 'unknown',
+      hostComponentType: 'unknown',
+      hostProps: {},
       warnings,
     };
   }
@@ -329,20 +329,20 @@ export function inspectNativeProps(ref: unknown): InspectedProps {
     const fallback = hostFiber.pendingProps;
     if (fallback && Object.keys(fallback).length > 0) {
       return {
-        hostProps: fallback,
         compositeProps,
-        hostComponentType,
         extractionMethod: method,
+        hostComponentType,
+        hostProps: fallback,
         warnings: [...warnings, 'Used pendingProps as fallback.'],
       };
     }
   }
 
   return {
-    hostProps,
     compositeProps,
-    hostComponentType,
     extractionMethod: method,
+    hostComponentType,
+    hostProps,
     warnings,
   };
 }

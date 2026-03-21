@@ -1,14 +1,14 @@
-import * as React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
-import { ToggleGroup } from '@base-ui-rn/toggle-group';
-import { Toggle, type ToggleState } from '@base-ui-rn/toggle';
 import {
   Gallery,
-  Section,
-  usePlaybookToggles,
   LiveConsole,
+  Section,
   theme,
+  usePlaybookToggles,
 } from '@base-ui-rn/playbook';
+import { Toggle, type ToggleState } from '@base-ui-rn/toggle';
+import { ToggleGroup } from '@base-ui-rn/toggle-group';
+import * as React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 export function ToggleGroupPlaybook() {
   const { alignment, formats, isGroupDisabled } = usePlaybookToggles({
@@ -21,14 +21,14 @@ export function ToggleGroupPlaybook() {
     <Gallery title='ToggleGroup'>
       <Section title='Loop Focus Horizontal'>
         <ToggleGroup
-          orientation='horizontal'
-          loopFocus={true}
           defaultValue={['h1']}
+          loopFocus={true}
+          orientation='horizontal'
           style={[styles.groupBase, styles.row]}
           testID='toggle-group-loop-h'
         >
           {['h1', 'h2', 'h3'].map((val, i) => (
-            <Toggle key={val} value={val} testID={`toggle-h${i + 1}`}>
+            <Toggle key={val} testID={`toggle-h${i + 1}`} value={val}>
               {(state) => (
                 <View style={getToggleStyle(state)}>
                   <Text style={styles.toggleText}>Option {i + 1}</Text>
@@ -44,14 +44,14 @@ export function ToggleGroupPlaybook() {
 
       <Section title='Loop Focus Vertical'>
         <ToggleGroup
-          orientation='vertical'
-          loopFocus={true}
           defaultValue={['v1']}
+          loopFocus={true}
+          orientation='vertical'
           style={[styles.groupBase, styles.column]}
           testID='toggle-group-loop-v'
         >
           {['v1', 'v2', 'v3'].map((val, i) => (
-            <Toggle key={val} value={val} testID={`toggle-v${i + 1}`}>
+            <Toggle key={val} testID={`toggle-v${i + 1}`} value={val}>
               {(state) => (
                 <View style={getToggleStyle(state)}>
                   <Text style={styles.toggleText}>Option {i + 1}</Text>
@@ -68,11 +68,11 @@ export function ToggleGroupPlaybook() {
       <Section title='Uncontrolled Single'>
         <ToggleGroup
           defaultValue={['center']}
-          testID='toggle-group-uncontrolled-single'
           style={[styles.groupBase, styles.row]}
+          testID='toggle-group-uncontrolled-single'
         >
           {['left', 'center', 'right'].map((val) => (
-            <Toggle key={val} value={val} testID={`toggle-${val}`}>
+            <Toggle key={val} testID={`toggle-${val}`} value={val}>
               {(state) => (
                 <View style={getToggleStyle(state)}>
                   <Text style={styles.toggleText}>
@@ -87,13 +87,13 @@ export function ToggleGroupPlaybook() {
 
       <Section title='Controlled Single'>
         <ToggleGroup
-          value={alignment.value as string[]}
           onValueChange={alignment.setValue}
-          testID='toggle-group-controlled-single'
           style={[styles.groupBase, styles.row]}
+          testID='toggle-group-controlled-single'
+          value={alignment.value as string[]}
         >
           {['left', 'center', 'right'].map((val) => (
-            <Toggle key={val} value={val} testID={`toggle-${val}-controlled`}>
+            <Toggle key={val} testID={`toggle-${val}-controlled`} value={val}>
               {(state) => (
                 <View style={getToggleStyle(state)}>
                   <Text style={styles.toggleText}>
@@ -105,22 +105,22 @@ export function ToggleGroupPlaybook() {
           ))}
         </ToggleGroup>
         <LiveConsole
-          title='alignment'
           state={alignment}
           testID='alignment-console'
+          title='alignment'
         />
       </Section>
 
       <Section title='Multiple'>
         <ToggleGroup
           multiple
-          value={formats.value as string[]}
           onValueChange={formats.setValue}
-          testID='toggle-group-multiple'
           style={[styles.groupBase, styles.row]}
+          testID='toggle-group-multiple'
+          value={formats.value as string[]}
         >
           {['bold', 'italic', 'underline'].map((val) => (
-            <Toggle key={val} value={val} testID={`toggle-${val}`}>
+            <Toggle key={val} testID={`toggle-${val}`} value={val}>
               {(state) => (
                 <View style={getToggleStyle(state)}>
                   <Text style={styles.toggleText}>
@@ -131,19 +131,19 @@ export function ToggleGroupPlaybook() {
             </Toggle>
           ))}
         </ToggleGroup>
-        <LiveConsole title='formats' state={formats} testID='formats-console' />
+        <LiveConsole state={formats} testID='formats-console' title='formats' />
       </Section>
 
       <Section title='Disabled'>
         <View style={styles.disabledContainer}>
           <Toggle
-            pressed={isGroupDisabled.value as boolean}
             onPressedChange={isGroupDisabled.setValue}
+            pressed={isGroupDisabled.value as boolean}
             testID='toggle-group-disabled-switch'
           >
             {(state) => (
               <View style={[getToggleStyle(state), styles.alignStart]}>
-                <Text testID='is-disabled-label' style={styles.toggleText}>
+                <Text style={styles.toggleText} testID='is-disabled-label'>
                   {isGroupDisabled.value ? 'Enable Group' : 'Disable Group'}
                 </Text>
               </View>
@@ -151,8 +151,8 @@ export function ToggleGroupPlaybook() {
           </Toggle>
 
           <ToggleGroup
-            disabled={isGroupDisabled.value as boolean}
             defaultValue={['bold']}
+            disabled={isGroupDisabled.value as boolean}
             style={[
               styles.groupBase,
               styles.row,
@@ -161,7 +161,7 @@ export function ToggleGroupPlaybook() {
             testID='toggle-group-disabled'
           >
             {['bold', 'italic'].map((val) => (
-              <Toggle key={val} value={val} testID={`toggle-disabled-${val}`}>
+              <Toggle key={val} testID={`toggle-disabled-${val}`} value={val}>
                 {(state) => (
                   <View style={getToggleStyle(state)}>
                     <Text style={styles.toggleText}>
@@ -174,9 +174,9 @@ export function ToggleGroupPlaybook() {
           </ToggleGroup>
         </View>
         <LiveConsole
-          title='isGroupDisabled'
           state={isGroupDisabled}
           testID='disabled-console'
+          title='isGroupDisabled'
         />
       </Section>
     </Gallery>
@@ -184,58 +184,58 @@ export function ToggleGroupPlaybook() {
 }
 
 const styles = StyleSheet.create({
-  groupBase: {
-    gap: theme.spacing.sm,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    padding: theme.spacing.sm,
-    alignSelf: 'center',
-    backgroundColor: theme.colors.bgCanvas,
-    borderRadius: theme.radius.md,
-  },
-  row: {
-    flexDirection: 'row',
+  alignStart: {
+    alignSelf: 'flex-start',
   },
   column: {
     flexDirection: 'column',
   },
-  toggle: {
-    borderWidth: 0,
-    borderRadius: theme.radius.sm + 2,
+  disabledContainer: {
+    gap: theme.spacing.md,
+  },
+  disabledGroup: {
+    opacity: 0.5,
+  },
+  groupBase: {
+    alignSelf: 'center',
+    backgroundColor: theme.colors.bgCanvas,
+    borderColor: theme.colors.border,
+    borderRadius: theme.radius.md,
+    borderWidth: 1,
+    gap: theme.spacing.sm,
     padding: theme.spacing.sm,
+  },
+  hint: {
+    color: theme.colors.textMuted,
+    fontSize: theme.font.size.xs,
+    marginTop: theme.spacing.xs,
+    textAlign: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+  },
+  toggle: {
     backgroundColor: theme.colors.borderLight,
+    borderRadius: theme.radius.sm + 2,
+    borderWidth: 0,
+    padding: theme.spacing.sm,
+  },
+  toggleDefault: {
+    backgroundColor: 'transparent',
+  },
+  toggleFocused: {
+    backgroundColor: '#333333',
+  },
+  togglePressed: {
+    backgroundColor: theme.colors.border,
   },
   toggleText: {
     color: theme.colors.textPrimary,
     fontSize: theme.font.size.md,
   },
-  togglePressed: {
-    backgroundColor: theme.colors.border,
-  },
-  toggleFocused: {
-    backgroundColor: '#333333',
-  },
-  toggleDefault: {
-    backgroundColor: 'transparent',
-  },
-  hint: {
-    fontSize: theme.font.size.xs,
-    marginTop: theme.spacing.xs,
-    color: theme.colors.textMuted,
-    textAlign: 'center',
-  },
-  disabledGroup: {
-    opacity: 0.5,
-  },
-  disabledContainer: {
-    gap: theme.spacing.md,
-  },
-  alignStart: {
-    alignSelf: 'flex-start',
-  },
 });
 
-function getToggleStyle({ pressed, focusVisible }: ToggleState) {
+function getToggleStyle({ focusVisible, pressed }: ToggleState) {
   return [
     styles.toggle,
     pressed

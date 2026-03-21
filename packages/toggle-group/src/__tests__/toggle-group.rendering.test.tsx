@@ -1,8 +1,9 @@
-import * as React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
-import { render } from '@testing-library/react-native';
-import { ToggleGroup } from '../toggle-group';
 import { Toggle } from '@base-ui-rn/toggle';
+import { render } from '@testing-library/react-native';
+import * as React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+
+import { ToggleGroup } from '../toggle-group';
 
 describe('ToggleGroup - Rendering & Props', () => {
   it('renders a View as the container', () => {
@@ -36,11 +37,11 @@ describe('ToggleGroup - Rendering & Props', () => {
   it('supports style as a function of state', () => {
     const { getByTestId } = render(
       <ToggleGroup
-        testID='group'
-        value={['a']}
         style={({ value }) => ({
           backgroundColor: value.includes('a') ? 'red' : 'blue',
         })}
+        testID='group'
+        value={['a']}
       >
         <Toggle value='a'>
           <Text>A</Text>
@@ -67,9 +68,9 @@ describe('ToggleGroup - Rendering & Props', () => {
   it('forwards other ViewProps to the container', () => {
     const { getByTestId } = render(
       <ToggleGroup
-        testID='group'
-        accessibilityLabel='My Group'
         accessibilityHint='Groups toggles'
+        accessibilityLabel='My Group'
+        testID='group'
       >
         <Toggle value='a'>
           <Text>A</Text>

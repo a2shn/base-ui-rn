@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import type { SwitchState } from './types';
 
 export type SwitchContextValue = SwitchState;

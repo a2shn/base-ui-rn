@@ -1,6 +1,7 @@
-import { useStyles } from '../styles';
 import * as React from 'react';
 import { Text, View } from 'react-native';
+
+import { useStyles } from '../styles';
 
 export type ActionLog<V> = {
   timestamp: string;
@@ -75,8 +76,8 @@ export function usePlaybookToggles<T extends Record<string, unknown>>(
           setLogs((prevLogs) => ({
             ...prevLogs,
             [key]: {
-              timestamp: time,
               from: previousValue,
+              timestamp: time,
               to: resolvedNextValue,
             },
           }));
@@ -94,9 +95,9 @@ export function usePlaybookToggles<T extends Record<string, unknown>>(
 
     for (const key in states) {
       result[key] = {
-        value: states[key],
         log: logs[key],
         setValue: setters[key],
+        value: states[key],
       };
     }
 
@@ -168,9 +169,9 @@ function getValueColor(value: unknown): string {
  * ```
  */
 export const LiveConsole = <V,>({
-  title,
   state,
   testID,
+  title,
 }: {
   title: string;
   state: { value: V; log: ActionLog<V> | null };
@@ -185,10 +186,10 @@ export const LiveConsole = <V,>({
       <Text style={styles.stateIndicatorLabel}>{title}:</Text>
 
       <Text
+        ellipsizeMode='tail'
+        numberOfLines={1}
         style={[styles.stateIndicatorValue, { color: valueColor }]}
         testID={testID ? `${testID}-value` : undefined}
-        numberOfLines={1}
-        ellipsizeMode='tail'
       >
         {formattedValue}
       </Text>

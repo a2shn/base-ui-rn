@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Text } from 'react-native';
-import type { ProgressValueProps } from './types';
+
 import { useProgressContext } from './progress-context';
+import type { ProgressValueProps } from './types';
 
 /**
  * A text element displaying the current value of the progress.
@@ -16,25 +17,25 @@ import { useProgressContext } from './progress-context';
 export const ProgressValue = React.memo(
   React.forwardRef<Text, ProgressValueProps>((props, ref) => {
     const {
-      children,
-      style,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'aria-labelledby': ariaLabelledBy,
+      children,
       'data-complete': dataComplete,
       'data-indeterminate': dataIndeterminate,
       'data-progressing': dataProgressing,
+      style,
       ...other
     } = props;
     const {
-      value,
       formattedValue,
       isComplete,
       isIndeterminate,
       isProgressing,
+      value,
     } = useProgressContext();
 
     const resolvedStyle =
@@ -43,15 +44,15 @@ export const ProgressValue = React.memo(
     return (
       <Text
         {...other}
-        ref={ref}
-        style={resolvedStyle}
-        importantForAccessibility='no-hide-descendants'
-        aria-labelledby={ariaLabelledBy}
+        aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-expanded={ariaExpanded}
-        aria-busy={ariaBusy}
         aria-hidden={ariaHidden ?? true}
+        aria-labelledby={ariaLabelledBy}
+        importantForAccessibility='no-hide-descendants'
+        ref={ref}
+        style={resolvedStyle}
         {...({
           'data-complete': dataComplete ?? (isComplete ? '' : undefined),
           'data-indeterminate':
@@ -65,7 +66,7 @@ export const ProgressValue = React.memo(
           : formattedValue}
       </Text>
     );
-  },
+  }),
 );
 
 ProgressValue.displayName = 'Progress.Value';

@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { View, Text, Platform, StyleSheet } from 'react-native';
-import { Gallery, Section, theme } from '@base-ui-rn/playbook';
 import { Button } from '@base-ui-rn/button';
-import { Toggle } from '@base-ui-rn/toggle';
 import { Shortcut } from '@base-ui-rn/keyboard-shortcuts';
+import { Gallery, Section, theme } from '@base-ui-rn/playbook';
+import { Toggle } from '@base-ui-rn/toggle';
+import * as React from 'react';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 
 const isWeb = Platform.OS === 'web';
 
@@ -41,21 +41,21 @@ export const KeyboardShortcutsPlaybook = () => {
           <Text style={styles.hint}>Try: Ctrl+K, Ctrl+Shift+L, or Escape</Text>
 
           <Shortcut
+            description='Global Search'
             keys={['k']}
             modifiers={['ctrl']}
             onMatch={() => handleGlobalShortcut('Ctrl+K')}
-            description='Global Search'
           />
           <Shortcut
+            description='Toggle Logging'
             keys={['l']}
             modifiers={['ctrl', 'shift']}
             onMatch={() => handleGlobalShortcut('Ctrl+Shift+L')}
-            description='Toggle Logging'
           />
           <Shortcut
+            description='Close everything'
             keys={['Escape']}
             onMatch={() => handleGlobalShortcut('Escape')}
-            description='Close everything'
           />
         </View>
       </Section>
@@ -66,7 +66,7 @@ export const KeyboardShortcutsPlaybook = () => {
 
           <Button
             onPress={() => handleAction('Saved! (Triggered via Ctrl+S)')}
-            shortcut={{ keys: ['s'], modifiers: ['ctrl'], description: 'Save' }}
+            shortcut={{ description: 'Save', keys: ['s'], modifiers: ['ctrl'] }}
             style={styles.buttonBase}
           >
             {({ pressed }) => (
@@ -83,9 +83,9 @@ export const KeyboardShortcutsPlaybook = () => {
               handleAction('Deleted! (Triggered via Ctrl+Backspace)')
             }
             shortcut={{
+              description: 'Delete',
               keys: ['Backspace'],
               modifiers: ['ctrl'],
-              description: 'Delete',
             }}
             style={[styles.buttonBase, styles.deleteButton]}
           >
@@ -97,7 +97,7 @@ export const KeyboardShortcutsPlaybook = () => {
       <Section title='Toggle Shortcuts'>
         <View style={styles.container}>
           <Toggle
-            shortcut={{ keys: ['b'], modifiers: ['ctrl'], description: 'Bold' }}
+            shortcut={{ description: 'Bold', keys: ['b'], modifiers: ['ctrl'] }}
             style={styles.buttonBase}
           >
             {({ pressed }) => (
@@ -118,9 +118,9 @@ export const KeyboardShortcutsPlaybook = () => {
 
           <Toggle
             shortcut={{
+              description: 'Italic',
               keys: ['i'],
               modifiers: ['ctrl'],
-              description: 'Italic',
             }}
             style={styles.buttonBase}
           >
@@ -144,9 +144,9 @@ export const KeyboardShortcutsPlaybook = () => {
             disabled
             onPress={() => handleAction('Error: This should not happen!')}
             shortcut={{
+              description: 'Disabled Action',
               keys: ['d'],
               modifiers: ['ctrl'],
-              description: 'Disabled Action',
             }}
             style={[styles.buttonBase, styles.disabled]}
           >
@@ -160,30 +160,19 @@ export const KeyboardShortcutsPlaybook = () => {
 };
 
 const styles = StyleSheet.create({
+  buttonBase: {
+    alignItems: 'center',
+    backgroundColor: theme.colors.border,
+    borderRadius: theme.radius.md,
+    justifyContent: 'center',
+    paddingHorizontal: theme.spacing.xl,
+    paddingVertical: theme.spacing.md,
+  },
   container: {
-    padding: theme.spacing.sm,
-    gap: theme.spacing.md,
     alignItems: 'center',
     alignSelf: 'center',
-  },
-  label: {
-    fontSize: theme.font.size.md,
-    fontWeight: theme.font.weight.medium,
-    color: theme.colors.textPrimary,
-    textAlign: 'center',
-  },
-  hint: {
-    fontSize: theme.font.size.xs,
-    color: theme.colors.textMuted,
-    textAlign: 'center',
-  },
-  buttonBase: {
-    paddingVertical: theme.spacing.md,
-    paddingHorizontal: theme.spacing.xl,
-    borderRadius: theme.radius.md,
-    backgroundColor: theme.colors.border,
-    alignItems: 'center',
-    justifyContent: 'center',
+    gap: theme.spacing.md,
+    padding: theme.spacing.sm,
   },
   deleteButton: {
     backgroundColor: theme.colors.borderLight,
@@ -191,10 +180,21 @@ const styles = StyleSheet.create({
   disabled: {
     opacity: 0.5,
   },
-  textPrimary: {
+  hint: {
+    color: theme.colors.textMuted,
+    fontSize: theme.font.size.xs,
+    textAlign: 'center',
+  },
+  label: {
     color: theme.colors.textPrimary,
+    fontSize: theme.font.size.md,
+    fontWeight: theme.font.weight.medium,
+    textAlign: 'center',
   },
   pressedOpacity: {
     opacity: 0.5,
+  },
+  textPrimary: {
+    color: theme.colors.textPrimary,
   },
 });

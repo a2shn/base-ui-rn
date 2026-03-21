@@ -1,6 +1,7 @@
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluateStyles } from '@base-ui-rn/core';
+
 import type { AccordionHeaderProps } from './types';
 import { useAccordionHeader } from './use-accordion';
 
@@ -20,49 +21,49 @@ import { useAccordionHeader } from './use-accordion';
 export const AccordionHeader = React.memo(
   React.forwardRef<View, AccordionHeaderProps>((props, ref) => {
     const {
-      children,
-      style,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
-      'aria-hidden': ariaHidden,
       'aria-disabled': ariaDisabled,
+      'aria-expanded': ariaExpanded,
+      'aria-hidden': ariaHidden,
       'aria-keyshortcuts': ariaKeyshortcuts,
-      'data-open': dataOpen,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      children,
       'data-disabled': dataDisabled,
       'data-index': dataIndex,
+      'data-open': dataOpen,
+      style,
       ...otherProps
     } = props;
 
-    const { state, open, disabled, index } = useAccordionHeader({});
+    const { disabled, index, open, state } = useAccordionHeader({});
 
     const resolvedChildren = evaluateStyles(children, state);
 
     return (
       <View
         {...otherProps}
-        ref={ref}
-        style={evaluateStyles(style, state)}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
+        aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
-        aria-expanded={ariaExpanded ?? open}
-        aria-busy={ariaBusy}
-        aria-hidden={ariaHidden}
         aria-disabled={ariaDisabled ?? (disabled ? true : undefined)}
+        aria-expanded={ariaExpanded ?? open}
+        aria-hidden={ariaHidden}
         aria-keyshortcuts={ariaKeyshortcuts}
-        data-open={dataOpen ?? (open ? 'true' : undefined)}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
         data-disabled={dataDisabled ?? (disabled ? 'true' : undefined)}
         data-index={dataIndex ?? index}
+        data-open={dataOpen ?? (open ? 'true' : undefined)}
+        ref={ref}
+        style={evaluateStyles(style, state)}
       >
         {resolvedChildren}
       </View>
     );
-  },
+  }),
 );
 
 AccordionHeader.displayName = 'AccordionHeader';

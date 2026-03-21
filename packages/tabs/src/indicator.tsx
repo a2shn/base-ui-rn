@@ -1,6 +1,7 @@
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluateStyles } from '@base-ui-rn/core';
+
 import type { TabsIndicatorProps } from './types';
 import { useTabsIndicator } from './use-tabs';
 
@@ -15,18 +16,18 @@ import { useTabsIndicator } from './use-tabs';
 export const TabsIndicator = React.memo(
   React.forwardRef<View, TabsIndicatorProps>((props, ref) => {
     const {
-      children,
-      style,
-      tabIndex,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
-      'data-orientation': dataOrientation,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      children,
       'data-activation-direction': dataActivationDirection,
+      'data-orientation': dataOrientation,
+      style,
+      tabIndex,
       ...otherProps
     } = props;
 
@@ -38,21 +39,21 @@ export const TabsIndicator = React.memo(
     return (
       <View
         {...otherProps}
-        ref={ref}
-        style={resolvedStyle}
-        tabIndex={tabIndex}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
+        aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-expanded={ariaExpanded}
-        aria-busy={ariaBusy}
         aria-hidden={ariaHidden ?? true}
-        importantForAccessibility='no-hide-descendants'
-        data-orientation={dataOrientation ?? state.orientation}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
         data-activation-direction={
           dataActivationDirection ?? state.activationDirection
         }
+        data-orientation={dataOrientation ?? state.orientation}
+        importantForAccessibility='no-hide-descendants'
+        ref={ref}
+        style={resolvedStyle}
+        tabIndex={tabIndex}
       >
         {resolvedChildren}
       </View>

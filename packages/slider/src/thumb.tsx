@@ -1,20 +1,21 @@
-import * as React from 'react';
 import {
-  PanResponder,
-  Platform,
-  View,
-  type NativeSyntheticEvent,
-  type TargetedEvent,
-} from 'react-native';
-import {
-  useKeyboardRange,
-  resolveTabIndex,
-  mergeRefs,
   evaluateStyles,
-  PressableWithKeyPress,
   type KeyPressEventData,
+  mergeRefs,
+  PressableWithKeyPress,
+  resolveTabIndex,
+  useKeyboardRange,
 } from '@base-ui-rn/core';
 import { useFocus } from '@base-ui-rn/focus-ring';
+import * as React from 'react';
+import {
+  type NativeSyntheticEvent,
+  PanResponder,
+  Platform,
+  type TargetedEvent,
+  View,
+} from 'react-native';
+
 import { useSliderContext } from './context';
 import type { SliderThumbProps } from './types';
 
@@ -24,43 +25,42 @@ import type { SliderThumbProps } from './types';
 export const SliderThumb = React.memo(
   React.forwardRef<View, SliderThumbProps>(function SliderThumb(props, ref) {
     const {
-      index = 0,
+      accessibilityHint,
+      accessibilityRole = 'adjustable',
+      accessibilityState,
+      'aria-busy': ariaBusy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-hidden': ariaHidden,
+      'aria-keyshortcuts': ariaKeyshortcuts,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
       disabled,
-      onFocus,
-      onBlur,
-      onLayout,
-      onKeyDown,
       disableDefaultFocusRing = false,
       focusRingStyle,
       focusVisible: forceFocusVisible = false,
-      accessibilityRole = 'adjustable',
-      accessibilityState,
-      accessibilityHint,
-      style,
-      tabIndex,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-busy': ariaBusy,
-      'aria-hidden': ariaHidden,
-      'aria-keyshortcuts': ariaKeyshortcuts,
       getAriaLabel,
       getAriaValueText,
-      ...otherProps
+      index = 0,
+      onBlur,
+      onFocus,
+      onKeyDown,
+      onLayout,
+      style,
+      tabIndex,
     } = props;
 
     const {
-      state,
-      stepBy,
+      commitValue,
+      format,
       largeStep,
       locale,
-      format,
       setThumbSize,
+      setValueAtIndex,
+      state,
+      stepBy,
       thumbAlignment,
       thumbRefs,
-      setValueAtIndex,
-      commitValue,
       trackSize,
     } = useSliderContext();
     const isDisabled = state.disabled || disabled;
@@ -84,7 +84,7 @@ export const SliderThumb = React.memo(
 
     const handleLayout = React.useCallback(
       (event: import('react-native').LayoutChangeEvent) => {
-        const { width, height } = event.nativeEvent.layout;
+        const { height, width } = event.nativeEvent.layout;
         setThumbSize(state.orientation === 'horizontal' ? width : height);
 
         if (!isWeb) {
@@ -180,7 +180,6 @@ export const SliderThumb = React.memo(
       if (isWeb || isDisabled) return { panHandlers: {} };
 
       return PanResponder.create({
-        onStartShouldSetPanResponder: () => true,
         onPanResponderGrant: () => {
           initialValue.current = state.value[index];
         },
@@ -202,6 +201,7 @@ export const SliderThumb = React.memo(
         onPanResponderTerminate: () => {
           commitValue('drag');
         },
+        onStartShouldSetPanResponder: () => true,
       });
     }, [
       isWeb,
@@ -217,13 +217,13 @@ export const SliderThumb = React.memo(
     ]);
 
     const handleKeyboardRange = useKeyboardRange({
-      onIncrement: () => stepBy(index, 1),
-      onDecrement: () => stepBy(index, -1),
-      onPageUp: () => stepBy(index, largeStep),
-      onPageDown: () => stepBy(index, -largeStep),
-      onHome: () => stepBy(index, -100000), // Min
-      onEnd: () => stepBy(index, 100000), // Max
       disabled: isDisabled,
+      onDecrement: () => stepBy(index, -1),
+      onEnd: () => stepBy(index, 100000), // Max
+      onHome: () => stepBy(index, -100000), // Min
+      onIncrement: () => stepBy(index, 1),
+      onPageDown: () => stepBy(index, -largeStep),
+      onPageUp: () => stepBy(index, largeStep),
       orientation: state.orientation,
     });
 
@@ -244,16 +244,16 @@ export const SliderThumb = React.memo(
 
       if (isHorizontal) {
         return {
-          position: 'absolute',
           left: `${percent}%` as never,
+          position: 'absolute',
           transform: [
             { translateX: isEdge ? `${-percent}%` : '-50%' } as never,
           ],
         };
       } else {
         return {
-          position: 'absolute',
           bottom: `${percent}%` as never,
+          position: 'absolute',
           transform: [{ translateY: isEdge ? `${percent}%` : '50%' } as never],
         };
       }
@@ -279,12 +279,12 @@ export const SliderThumb = React.memo(
     const hasCustomText = getAriaValueText || format || locale;
     const a11yValue = hasCustomText
       ? { text: resolvedAriaValueText }
-      : { min: state.min, max: state.max, now: valueNow };
+      : { max: state.max, min: state.min, now: valueNow };
 
     const {
       focusVisible,
-      onFocus: handleFocus,
       onBlur: handleBlur,
+      onFocus: handleFocus,
     } = useFocus({
       focusVisible: forceFocusVisible,
     });
@@ -309,22 +309,30 @@ export const SliderThumb = React.memo(
       <PressableWithKeyPress
         {...props}
         {...panResponder.panHandlers}
-
-        ref={mergedRef}
-        onLayout={handleLayout}
-        onFocus={handleFocusCallback}
-        onBlur={handleBlurCallback}
-        accessible
-        role={accessibilityRole as never}
-        accessibilityRole={accessibilityRole}
-        accessibilityLabel={resolvedAriaLabel}
+        accessibilityActions={[
+          { label: 'increment', name: 'increment' },
+          { label: 'decrement', name: 'decrement' },
+        ]}
         accessibilityHint={accessibilityHint}
+        accessibilityLabel={resolvedAriaLabel}
+        accessibilityRole={accessibilityRole}
         accessibilityState={{ disabled: isDisabled, ...accessibilityState }}
         accessibilityValue={a11yValue}
-        accessibilityActions={[
-          { name: 'increment', label: 'increment' },
-          { name: 'decrement', label: 'decrement' },
-        ]}
+        accessible
+        aria-busy={ariaBusy}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
+        aria-hidden={ariaHidden}
+        aria-keyshortcuts={ariaKeyshortcuts}
+        aria-label={resolvedAriaLabel}
+        aria-labelledby={ariaLabelledBy}
+        aria-orientation={state.orientation}
+        aria-valuemax={state.max}
+        aria-valuemin={state.min}
+        aria-valuenow={valueNow}
+        aria-valuetext={resolvedAriaValueText}
+        data-disabled={isDisabled}
+        data-orientation={state.orientation}
         onAccessibilityAction={(event) => {
           if (event.nativeEvent.actionName === 'increment') {
             stepBy(index, 1);
@@ -332,31 +340,22 @@ export const SliderThumb = React.memo(
             stepBy(index, -1);
           }
         }}
+        onBlur={handleBlurCallback}
+        onFocus={handleFocusCallback}
         onKeyDown={handleKeyDown}
-        tabIndex={resolvedTabIndex}
-        aria-label={resolvedAriaLabel}
-        aria-labelledby={ariaLabelledBy}
-        aria-describedby={ariaDescribedBy}
-        aria-details={ariaDetails}
-        aria-busy={ariaBusy}
-        aria-hidden={ariaHidden}
-        aria-keyshortcuts={ariaKeyshortcuts}
-        aria-orientation={state.orientation}
-        data-orientation={state.orientation}
-        data-disabled={isDisabled}
-        aria-valuemin={state.min}
-        aria-valuemax={state.max}
-        aria-valuenow={valueNow}
-        aria-valuetext={resolvedAriaValueText}
+        onLayout={handleLayout}
         pointerEvents={pointerEvents}
+        ref={mergedRef}
+        role={accessibilityRole as never}
         style={[
           dynamicStyle,
           evaluateStyles(
             style,
-            { ...state, index, valueNow, focusVisible },
+            { ...state, focusVisible, index, valueNow },
             { disableDefaultFocusRing, focusRingStyle },
           ),
         ]}
+        tabIndex={resolvedTabIndex}
       />
     );
   }),

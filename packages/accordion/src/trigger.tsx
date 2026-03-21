@@ -1,6 +1,7 @@
-import * as React from 'react';
-import { View, Platform } from 'react-native';
 import { evaluateStyles, PressableWithKeyPress } from '@base-ui-rn/core';
+import * as React from 'react';
+import { Platform, View } from 'react-native';
+
 import { useAccordionItemContext } from './context';
 import type { AccordionTriggerProps } from './types';
 import { useAccordionTrigger } from './use-accordion';
@@ -21,35 +22,35 @@ import { useAccordionTrigger } from './use-accordion';
 export const AccordionTrigger = React.memo(
   React.forwardRef<View, AccordionTriggerProps>((props, ref) => {
     const {
-      children,
-      style,
-      disableDefaultFocusRing = false,
-      focusRingStyle,
-      tabIndex,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
-      'aria-hidden': ariaHidden,
       'aria-disabled': ariaDisabled,
+      'aria-expanded': ariaExpanded,
+      'aria-hidden': ariaHidden,
       'aria-keyshortcuts': ariaKeyshortcuts,
-      'data-panel-open': dataPanelOpen,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      children,
       'data-disabled': dataDisabled,
+      'data-panel-open': dataPanelOpen,
+      disableDefaultFocusRing = false,
+      focusRingStyle,
+      style,
+      tabIndex,
       ...otherProps
     } = props;
 
     const {
       disabled,
-      handlePress,
-      handleKeyDown,
-      handleFocus,
-      handleBlur,
       focused,
       focusVisible,
-      state,
+      handleBlur,
+      handleFocus,
+      handleKeyDown,
+      handlePress,
       open,
+      state,
     } = useAccordionTrigger(props);
 
     const itemContext = useAccordionItemContext();
@@ -73,36 +74,36 @@ export const AccordionTrigger = React.memo(
     return (
       <PressableWithKeyPress
         {...otherProps}
-        ref={internalRef}
-        disabled={disabled}
-        onPress={handlePress}
-        onKeyDown={handleKeyDown}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        style={finalStyle}
+        accessibilityState={{
+          disabled,
+          expanded: open,
+        }}
         accessible
-        role='button'
-        tabIndex={tabIndex}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
+        aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
-        aria-busy={ariaBusy}
-        aria-hidden={ariaHidden}
         aria-disabled={ariaDisabled ?? (disabled ? true : undefined)}
-        aria-keyshortcuts={ariaKeyshortcuts}
-        accessibilityState={{
-          expanded: open,
-          disabled,
-        }}
         aria-expanded={ariaExpanded ?? open}
-        data-panel-open={dataPanelOpen ?? (open ? 'true' : undefined)}
+        aria-hidden={ariaHidden}
+        aria-keyshortcuts={ariaKeyshortcuts}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
         data-disabled={dataDisabled ?? (disabled ? 'true' : undefined)}
+        data-panel-open={dataPanelOpen ?? (open ? 'true' : undefined)}
+        disabled={disabled}
+        onBlur={handleBlur}
+        onFocus={handleFocus}
+        onKeyDown={handleKeyDown}
+        onPress={handlePress}
+        ref={internalRef}
+        role='button'
+        style={finalStyle}
+        tabIndex={tabIndex}
       >
         {evaluateStyles(children, state)}
       </PressableWithKeyPress>
     );
-  },
+  }),
 );
 
 AccordionTrigger.displayName = 'AccordionTrigger';

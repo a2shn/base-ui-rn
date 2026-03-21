@@ -1,5 +1,6 @@
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+
 import { SwitchRoot } from '../index';
 
 describe('Switch - State', () => {
@@ -50,7 +51,7 @@ describe('Switch - State', () => {
   it('does not toggle when readOnly', () => {
     const onCheckedChange = jest.fn();
     const { getByRole } = render(
-      <SwitchRoot readOnly onCheckedChange={onCheckedChange} />,
+      <SwitchRoot onCheckedChange={onCheckedChange} readOnly />,
     );
     const root = getByRole('switch');
 

@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { View } from 'react-native';
+import type { NativeSyntheticEvent } from 'react-native';
+
 import type {
-  Orientation,
   AccordionValueChangeDetails,
   KeyPressEventData,
+  Orientation,
 } from './types';
-import type { NativeSyntheticEvent } from 'react-native';
 
 interface AccordionContextValue {
   baseId: string;

@@ -1,8 +1,9 @@
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluateStyles } from '@base-ui-rn/core';
-import type { ProgressTrackProps } from './types';
+
 import { useProgressContext } from './progress-context';
+import type { ProgressTrackProps } from './types';
 
 /**
  * Contains the progress indicator and represents the entire range of the progress bar.
@@ -17,17 +18,17 @@ import { useProgressContext } from './progress-context';
 export const ProgressTrack = React.memo(
   React.forwardRef<View, ProgressTrackProps>((props, ref) => {
     const {
-      children,
-      style,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'aria-labelledby': ariaLabelledBy,
+      children,
       'data-complete': dataComplete,
       'data-indeterminate': dataIndeterminate,
       'data-progressing': dataProgressing,
+      style,
       ...other
     } = props;
     const context = useProgressContext();
@@ -39,15 +40,15 @@ export const ProgressTrack = React.memo(
     return (
       <View
         {...other}
-        ref={ref}
-        importantForAccessibility='no-hide-descendants'
-        style={resolvedStyle}
-        aria-labelledby={ariaLabelledBy}
+        aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-expanded={ariaExpanded}
-        aria-busy={ariaBusy}
         aria-hidden={ariaHidden ?? true}
+        aria-labelledby={ariaLabelledBy}
+        importantForAccessibility='no-hide-descendants'
+        ref={ref}
+        style={resolvedStyle}
         {...({
           'data-complete': dataComplete ?? (isComplete ? '' : undefined),
           'data-indeterminate':
@@ -59,7 +60,7 @@ export const ProgressTrack = React.memo(
         {resolvedChildren}
       </View>
     );
-  },
+  }),
 );
 
 ProgressTrack.displayName = 'Progress.Track';

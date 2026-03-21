@@ -1,22 +1,22 @@
-import type * as React from 'react';
-import type {
-  ViewProps,
-  PressableProps,
-  StyleProp,
-  ViewStyle,
-  NativeSyntheticEvent,
-  TargetedEvent,
-} from 'react-native';
 import {
-  type KeyPressEventData,
-  type FocusVisibleProps,
   type ARIABaseProps,
   type ARIAFocusProps,
   type ARIALiveProps,
   type ARIATraitDisabled,
   type ARIATraitExpanded,
   type ARIATraitOrientation,
+  type FocusVisibleProps,
+  type KeyPressEventData,
 } from '@base-ui-rn/core';
+import type * as React from 'react';
+import type {
+  NativeSyntheticEvent,
+  PressableProps,
+  StyleProp,
+  TargetedEvent,
+  ViewProps,
+  ViewStyle,
+} from 'react-native';
 
 /**
  * Web-specific accessibility props for Tabs Root.

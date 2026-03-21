@@ -1,25 +1,26 @@
+import { useKeyboardActivation } from '@base-ui-rn/core';
+import { useFocus } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import {
+  type GestureResponderEvent,
   type NativeSyntheticEvent,
   type TargetedEvent,
-  type GestureResponderEvent,
 } from 'react-native';
-import { useFocus } from '@base-ui-rn/focus-ring';
-import { useKeyboardActivation } from '@base-ui-rn/core';
-import type { SwitchRootProps, SwitchState, KeyPressEventData } from './types';
+
+import type { KeyPressEventData, SwitchRootProps, SwitchState } from './types';
 
 export function useSwitchRoot(props: SwitchRootProps) {
   const {
     checked: checkedProp,
     defaultChecked = false,
-    onCheckedChange,
     disabled = false,
-    readOnly = false,
     focusVisible: forceFocusVisible,
-    onPress,
-    onKeyDown,
-    onFocus: onFocusProp,
     onBlur: onBlurProp,
+    onCheckedChange,
+    onFocus: onFocusProp,
+    onKeyDown,
+    onPress,
+    readOnly = false,
   } = props;
 
   const isControlled = checkedProp !== undefined;
@@ -29,7 +30,7 @@ export function useSwitchRoot(props: SwitchRootProps) {
   const checked = isControlled ? checkedProp : uncontrolledChecked;
   const isKeyboardActivationRef = React.useRef(false);
 
-  const { focused, focusVisible, onFocus, onBlur } = useFocus({
+  const { focused, focusVisible, onBlur, onFocus } = useFocus({
     focusVisible: forceFocusVisible,
   });
 
@@ -96,19 +97,19 @@ export function useSwitchRoot(props: SwitchRootProps) {
   const state: SwitchState = {
     checked,
     disabled,
-    readOnly,
     focused,
     focusVisible,
+    readOnly,
   };
 
   return {
-    state,
     checked,
     disabled,
-    readOnly,
-    handlePress,
-    handleKeyDown,
-    handleFocus,
     handleBlur,
+    handleFocus,
+    handleKeyDown,
+    handlePress,
+    readOnly,
+    state,
   };
 }

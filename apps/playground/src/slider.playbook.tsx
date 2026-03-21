@@ -41,11 +41,10 @@ export function SliderPlaybook() {
           >
             <Slider.Label style={styles.label}>Volume</Slider.Label>
 
-              <Slider.Track style={styles.track}>
-                <Slider.Indicator style={styles.indicator} />
-                <Slider.Thumb aria-label='Volume' style={getThumbStyle} />
-              </Slider.Track>
-
+            <Slider.Track style={styles.track}>
+              <Slider.Indicator style={styles.indicator} />
+              <Slider.Thumb aria-label='Volume' style={getThumbStyle} />
+            </Slider.Track>
           </Slider.Root>
           <LiveConsole state={basicValue} title='basicValue' />
         </View>
@@ -67,18 +66,18 @@ export function SliderPlaybook() {
               Multi-thumb Overlap
             </Slider.Label>
 
-              <Slider.Track style={styles.track}>
-                <Slider.Indicator style={styles.indicator} />
+            <Slider.Track style={styles.track}>
+              <Slider.Indicator style={styles.indicator} />
 
-                {(independentValue.value as number[]).map((_, i) => (
-                  <Slider.Thumb
-                    aria-label={`Thumb ${i + 1}`}
-                    index={i}
-                    key={i}
-                    style={getThumbStyle}
-                  />
-                ))}
-              </Slider.Track>
+              {(independentValue.value as number[]).map((_, i) => (
+                <Slider.Thumb
+                  aria-label={`Thumb ${i + 1}`}
+                  index={i}
+                  key={i}
+                  style={getThumbStyle}
+                />
+              ))}
+            </Slider.Track>
 
             <Slider.Value style={styles.value}>
               {(formattedValues) => formattedValues.join(' | ')}
@@ -105,20 +104,20 @@ export function SliderPlaybook() {
           >
             <Slider.Label style={styles.label}>Price range</Slider.Label>
 
-              <Slider.Track style={styles.track}>
-                <Slider.Indicator style={styles.indicator} />
+            <Slider.Track style={styles.track}>
+              <Slider.Indicator style={styles.indicator} />
 
-                <Slider.Thumb
-                  aria-label='Minimum price'
-                  index={0}
-                  style={getThumbStyle}
-                />
-                <Slider.Thumb
-                  aria-label='Maximum price'
-                  index={1}
-                  style={getThumbStyle}
-                />
-              </Slider.Track>
+              <Slider.Thumb
+                aria-label='Minimum price'
+                index={0}
+                style={getThumbStyle}
+              />
+              <Slider.Thumb
+                aria-label='Maximum price'
+                index={1}
+                style={getThumbStyle}
+              />
+            </Slider.Track>
 
             <Slider.Value style={styles.value}>
               {(formattedValues) =>
@@ -146,17 +145,17 @@ export function SliderPlaybook() {
           >
             <Slider.Label style={styles.label}>Multi-thumb push</Slider.Label>
 
-              <Slider.Track style={styles.track}>
-                <Slider.Indicator style={styles.indicator} />
-                {(pushValue.value as number[]).map((_, i) => (
-                  <Slider.Thumb
-                    aria-label={`Thumb ${i + 1}`}
-                    index={i}
-                    key={i}
-                    style={getThumbStyle}
-                  />
-                ))}
-              </Slider.Track>
+            <Slider.Track style={styles.track}>
+              <Slider.Indicator style={styles.indicator} />
+              {(pushValue.value as number[]).map((_, i) => (
+                <Slider.Thumb
+                  aria-label={`Thumb ${i + 1}`}
+                  index={i}
+                  key={i}
+                  style={getThumbStyle}
+                />
+              ))}
+            </Slider.Track>
 
             <Slider.Value style={styles.value}>
               {(formattedValues) => formattedValues.join(' | ')}
@@ -185,17 +184,17 @@ export function SliderPlaybook() {
               Fixed-distance chain
             </Slider.Label>
 
-              <Slider.Track style={styles.track}>
-                <Slider.Indicator style={styles.indicator} />
-                {(fixedValue.value as number[]).map((_, i) => (
-                  <Slider.Thumb
-                    aria-label={`Thumb ${i + 1}`}
-                    index={i}
-                    key={i}
-                    style={getThumbStyle}
-                  />
-                ))}
-              </Slider.Track>
+            <Slider.Track style={styles.track}>
+              <Slider.Indicator style={styles.indicator} />
+              {(fixedValue.value as number[]).map((_, i) => (
+                <Slider.Thumb
+                  aria-label={`Thumb ${i + 1}`}
+                  index={i}
+                  key={i}
+                  style={getThumbStyle}
+                />
+              ))}
+            </Slider.Track>
 
             <Slider.Value style={styles.value}>
               {(formattedValues) => formattedValues.join(' | ')}
@@ -226,19 +225,11 @@ export function SliderPlaybook() {
               Max distance constraint
             </Slider.Label>
 
-              <Slider.Track style={styles.track}>
-                <Slider.Indicator style={styles.indicator} />
-                <Slider.Thumb
-                  aria-label='Min'
-                  index={0}
-                  style={getThumbStyle}
-                />
-                <Slider.Thumb
-                  aria-label='Max'
-                  index={1}
-                  style={getThumbStyle}
-                />
-              </Slider.Track>
+            <Slider.Track style={styles.track}>
+              <Slider.Indicator style={styles.indicator} />
+              <Slider.Thumb aria-label='Min' index={0} style={getThumbStyle} />
+              <Slider.Thumb aria-label='Max' index={1} style={getThumbStyle} />
+            </Slider.Track>
 
             <Slider.Value style={styles.value}>
               {(formattedValues) => formattedValues.join(' | ')}
@@ -257,13 +248,10 @@ export function SliderPlaybook() {
           <Slider.Root defaultValue={40} disabled style={styles.root}>
             <Slider.Label style={styles.label}>Disabled slider</Slider.Label>
 
-              <Slider.Track style={styles.track}>
-                <Slider.Indicator style={styles.indicator} />
-                <Slider.Thumb
-                  aria-label='Disabled value'
-                  style={getThumbStyle}
-                />
-              </Slider.Track>
+            <Slider.Track style={styles.track}>
+              <Slider.Indicator style={styles.indicator} />
+              <Slider.Thumb aria-label='Disabled value' style={getThumbStyle} />
+            </Slider.Track>
 
             <Slider.Value style={styles.value} />
           </Slider.Root>

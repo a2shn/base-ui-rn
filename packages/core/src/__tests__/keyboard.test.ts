@@ -1,7 +1,8 @@
-import { renderHook, act } from '@testing-library/react-hooks';
-import { useKeyboardActivation, useKeyboardRange } from '../keyboard';
+import { act, renderHook } from '@testing-library/react-hooks';
+import { type NativeSyntheticEvent, Platform } from 'react-native';
+
 import { ACTIVATION_KEYS } from '../constants';
-import { Platform, type NativeSyntheticEvent } from 'react-native';
+import { useKeyboardActivation, useKeyboardRange } from '../keyboard';
 import type { KeyPressEventData } from '../types';
 
 // Mock Platform with proper type definitions
@@ -11,10 +12,10 @@ jest.mock('react-native', () => {
     select: jest.fn((options: Record<string, string>) => options.default),
   };
   return {
-    Platform: mockPlatform,
     NativeSyntheticEvent: jest.fn((event: Record<string, unknown>) => ({
       nativeEvent: event,
     })),
+    Platform: mockPlatform,
   };
 });
 
@@ -114,13 +115,13 @@ describe('useKeyboardRange', () => {
 
   beforeEach(() => {
     options = {
-      onIncrement: jest.fn(),
-      onDecrement: jest.fn(),
-      onPageUp: jest.fn(),
-      onPageDown: jest.fn(),
-      onHome: jest.fn(),
-      onEnd: jest.fn(),
       disabled: false,
+      onDecrement: jest.fn(),
+      onEnd: jest.fn(),
+      onHome: jest.fn(),
+      onIncrement: jest.fn(),
+      onPageDown: jest.fn(),
+      onPageUp: jest.fn(),
       orientation: 'horizontal',
     };
   });

@@ -1,13 +1,4 @@
-import type * as React from 'react';
-import type {
-  GestureResponderEvent,
-  TextProps,
-  ViewProps,
-  ViewStyle,
-  NativeSyntheticEvent,
-} from 'react-native';
 import {
-  type KeyPressEventData,
   type ARIABaseProps,
   type ARIAFocusProps,
   type ARIALiveProps,
@@ -15,7 +6,16 @@ import {
   type ARIATraitOrientation,
   type ARIATraitRange,
   type FocusVisibleProps,
+  type KeyPressEventData,
 } from '@base-ui-rn/core';
+import type * as React from 'react';
+import type {
+  GestureResponderEvent,
+  NativeSyntheticEvent,
+  TextProps,
+  ViewProps,
+  ViewStyle,
+} from 'react-native';
 
 /**
  * Web-specific accessibility props for Slider Root.

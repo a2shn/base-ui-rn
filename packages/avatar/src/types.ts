@@ -1,15 +1,15 @@
 import type {
-  ViewProps,
-  ImageProps as RNImageProps,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
-import type {
   ARIABaseProps,
   ARIAFocusProps,
   ARIALiveProps,
   ARIATraitDisabled,
 } from '@base-ui-rn/core';
+import type {
+  ImageProps as RNImageProps,
+  StyleProp,
+  ViewProps,
+  ViewStyle,
+} from 'react-native';
 
 export type ImageLoadingStatus = 'idle' | 'loading' | 'loaded' | 'error';
 

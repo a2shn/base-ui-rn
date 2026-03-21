@@ -1,7 +1,8 @@
+import { evaluateStyles } from '@base-ui-rn/core';
+import { ToggleGroupContext } from '@base-ui-rn/toggle';
 import * as React from 'react';
 import { View } from 'react-native';
-import { ToggleGroupContext } from '@base-ui-rn/toggle';
-import { evaluateStyles } from '@base-ui-rn/core';
+
 import { type ToggleGroupProps } from './types';
 import { useToggleGroup } from './use-toggle-group';
 
@@ -23,31 +24,26 @@ import { useToggleGroup } from './use-toggle-group';
 export const ToggleGroup = React.memo(
   React.forwardRef<View, ToggleGroupProps>((props, ref) => {
     const {
-      children,
-      value,
-      defaultValue,
-      onValueChange,
-      multiple = false,
-      disabled = false,
-      orientation = 'horizontal',
-      loopFocus = true,
-      onFocusChange,
-      style,
       accessibilityRole,
-      tabIndex,
-      'aria-label': ariaLabel,
-      'aria-keyshortcuts': ariaKeyshortcuts,
-      'aria-disabled': ariaDisabled,
-      'aria-orientation': ariaOrientationProp,
-      'data-orientation': dataOrientation,
-      'data-disabled': dataDisabled,
-      'data-multiple': dataMultiple,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
+      'aria-disabled': ariaDisabled,
       'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'aria-keyshortcuts': ariaKeyshortcuts,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-orientation': ariaOrientationProp,
+      children,
+      'data-disabled': dataDisabled,
+      'data-multiple': dataMultiple,
+      'data-orientation': dataOrientation,
+      disabled = false,
+      multiple = false,
+      orientation = 'horizontal',
+      style,
+      tabIndex,
       ...otherViewProps
     } = props;
 
@@ -66,11 +62,11 @@ export const ToggleGroup = React.memo(
     const contextValue = React.useMemo(
       () => ({
         ...state,
+        onToggleKeyDown,
+        registerItem,
+        registerValue,
         toggleValue,
         valueSet,
-        registerValue,
-        registerItem,
-        onToggleKeyDown,
       }),
       [
         state,
@@ -86,29 +82,29 @@ export const ToggleGroup = React.memo(
       <ToggleGroupContext.Provider value={contextValue}>
         <View
           {...otherViewProps}
-          ref={internalRef}
-          style={evaluateStyles(style, state)}
-          role={(accessibilityRole ?? 'group') as unknown as 'checkbox'}
-          tabIndex={tabIndex}
-          aria-label={ariaLabel}
-          aria-keyshortcuts={ariaKeyshortcuts}
-          aria-disabled={ariaDisabled ?? disabled}
-          aria-orientation={ariaOrientationProp ?? orientation}
-          aria-labelledby={ariaLabelledBy}
+          aria-busy={ariaBusy}
           aria-describedby={ariaDescribedBy}
           aria-details={ariaDetails}
+          aria-disabled={ariaDisabled ?? disabled}
           aria-expanded={ariaExpanded}
-          aria-busy={ariaBusy}
           aria-hidden={ariaHidden}
-          data-orientation={dataOrientation ?? orientation}
+          aria-keyshortcuts={ariaKeyshortcuts}
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledBy}
+          aria-orientation={ariaOrientationProp ?? orientation}
           data-disabled={dataDisabled ?? disabled}
           data-multiple={dataMultiple ?? multiple}
+          data-orientation={dataOrientation ?? orientation}
+          ref={internalRef}
+          role={(accessibilityRole ?? 'group') as unknown as 'checkbox'}
+          style={evaluateStyles(style, state)}
+          tabIndex={tabIndex}
         >
           {evaluateStyles(children, state)}
         </View>
       </ToggleGroupContext.Provider>
     );
-  },
-  ));
+  }),
+);
 
 ToggleGroup.displayName = 'ToggleGroup';

@@ -1,8 +1,9 @@
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { Text } from 'react-native';
-import { evaluateStyles } from '@base-ui-rn/core';
-import type { ProgressLabelProps } from './types';
+
 import { useProgressContext } from './progress-context';
+import type { ProgressLabelProps } from './types';
 
 /**
  * An accessible label for the progress bar.
@@ -17,22 +18,22 @@ import { useProgressContext } from './progress-context';
 export const ProgressLabel = React.memo(
   React.forwardRef<Text, ProgressLabelProps>((props, ref) => {
     const {
-      children,
-      nativeID,
-      style,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'aria-labelledby': ariaLabelledBy,
+      children,
       'data-complete': dataComplete,
       'data-indeterminate': dataIndeterminate,
       'data-progressing': dataProgressing,
+      nativeID,
+      style,
       ...other
     } = props;
     const context = useProgressContext();
-    const { labelId, isComplete, isIndeterminate, isProgressing } = context;
+    const { isComplete, isIndeterminate, isProgressing, labelId } = context;
 
     const resolvedChildren = evaluateStyles(children, context);
     const resolvedStyle = evaluateStyles(style, context);
@@ -40,15 +41,15 @@ export const ProgressLabel = React.memo(
     return (
       <Text
         {...other}
-        ref={ref}
-        nativeID={nativeID ?? labelId}
-        style={resolvedStyle}
-        aria-labelledby={ariaLabelledBy}
+        aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-expanded={ariaExpanded}
-        aria-busy={ariaBusy}
         aria-hidden={ariaHidden}
+        aria-labelledby={ariaLabelledBy}
+        nativeID={nativeID ?? labelId}
+        ref={ref}
+        style={resolvedStyle}
         {...({
           'data-complete': dataComplete ?? (isComplete ? '' : undefined),
           'data-indeterminate':
@@ -60,7 +61,7 @@ export const ProgressLabel = React.memo(
         {resolvedChildren}
       </Text>
     );
-  },
+  }),
 );
 
 ProgressLabel.displayName = 'Progress.Label';

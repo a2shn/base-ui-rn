@@ -1,9 +1,13 @@
 {
   "name": "@base-ui-rn/eslint-config",
   "version": "0.0.0",
-  "main": "index.js",
+  "description": "Eslint rules for base-ui-rn",
   "license": "MIT",
   "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint . --fix "
+  },
   "dependencies": {
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-jsonc": "^2.21.1",
@@ -12,14 +16,12 @@
     "jsonc-eslint-parser": "^2.4.2",
     "typescript-eslint": "^8.55.0"
   },
-  "peerDependencies": {
-    "typescript": "^5.9.3"
-  },
   "devDependencies": {
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-package-json": "^0.88.2",
     "eslint-plugin-perfectionist": "^5.7.0",
-    "eslint-plugin-yml": "^3.1.2"
+    "eslint-plugin-yml": "^3.1.2",
+    "typescript": "^5.9.3"
   }
 }

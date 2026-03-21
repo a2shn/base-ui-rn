@@ -1,17 +1,18 @@
 import * as React from 'react';
 import {
-  Pressable,
-  View,
-  type PressableProps,
   type NativeSyntheticEvent,
+  Pressable,
+  type PressableProps,
+  View,
 } from 'react-native';
+
 import type {
-  KeyPressEventData,
   ARIABaseProps,
   ARIAFocusProps,
   ARIALiveProps,
   ARIATraitDisabled,
   ARIATraitExpanded,
+  KeyPressEventData,
 } from './types';
 
 /**

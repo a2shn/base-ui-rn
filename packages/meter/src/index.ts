@@ -1,16 +1,16 @@
-import { MeterRoot } from './meter';
-import { MeterLabel } from './label';
-import { MeterTrack } from './track';
 import { MeterIndicator } from './indicator';
+import { MeterLabel } from './label';
+import { MeterRoot } from './meter';
+import { MeterTrack } from './track';
 import { MeterValue } from './value';
 
 export const Meter = {
-  Root: MeterRoot,
-  Label: MeterLabel,
-  Track: MeterTrack,
   Indicator: MeterIndicator,
+  Label: MeterLabel,
+  Root: MeterRoot,
+  Track: MeterTrack,
   Value: MeterValue,
 };
 
-export { MeterRoot, MeterLabel, MeterTrack, MeterIndicator, MeterValue };
+export { MeterIndicator, MeterLabel, MeterRoot, MeterTrack, MeterValue };
 export * from './types';

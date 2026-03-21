@@ -1,15 +1,16 @@
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
 import { Text } from 'react-native';
-import { PressableWithKeyPress } from '../pressable';
+
 import { useKeyboardNavigation } from '../keyboard';
+import { PressableWithKeyPress } from '../pressable';
 
 // Mock the useKeyboardNavigation hook
 jest.mock('../keyboard', () => ({
   useKeyboardNavigation: jest.fn(() => ({
-    registerItem: jest.fn(),
     handleKeyDown: jest.fn(),
     navigate: jest.fn(),
+    registerItem: jest.fn(),
   })),
 }));
 
@@ -17,13 +18,13 @@ describe('PressableWithKeyPress: Keyboard Navigation', () => {
   it('should call onKeyDown when a key is pressed, allowing parent to handle navigation', () => {
     const mockHandleKeyDown = jest.fn();
     (useKeyboardNavigation as jest.Mock).mockReturnValue({
-      registerItem: jest.fn(),
       handleKeyDown: mockHandleKeyDown,
       navigate: jest.fn(),
+      registerItem: jest.fn(),
     });
 
     const TestComponent = () => {
-      const { registerItem, handleKeyDown } = useKeyboardNavigation();
+      const { handleKeyDown, registerItem } = useKeyboardNavigation();
       const ref = React.useRef(null);
       React.useEffect(() => {
         registerItem('test-item', ref);
@@ -31,9 +32,9 @@ describe('PressableWithKeyPress: Keyboard Navigation', () => {
 
       return (
         <PressableWithKeyPress
-          testID='nav-pressable'
-          ref={ref}
           onKeyDown={(e) => handleKeyDown('test-item', e)}
+          ref={ref}
+          testID='nav-pressable'
         >
           <Text>Navigable Button</Text>
         </PressableWithKeyPress>

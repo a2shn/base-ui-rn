@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
+
 import { useSliderContext } from './context';
 import type { SliderPartProps } from './types';
 
@@ -31,15 +32,15 @@ export const SliderIndicator = React.memo(
     const dynamicStyle: import('react-native').ViewStyle =
       state.orientation === 'horizontal'
         ? {
-            position: 'absolute',
-            left: `${start}%` as never,
-            width: `${Math.max(end - start, 0)}%` as never,
             height: '100%',
+            left: `${start}%` as never,
+            position: 'absolute',
+            width: `${Math.max(end - start, 0)}%` as never,
           }
         : {
-            position: 'absolute',
             bottom: `${start}%` as never,
             height: `${Math.max(end - start, 0)}%` as never,
+            position: 'absolute',
             width: '100%',
           };
 

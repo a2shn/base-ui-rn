@@ -1,29 +1,30 @@
+import {
+  type KeyPressEventData,
+  useKeyboardActivation,
+  useKeyboardNavigation,
+} from '@base-ui-rn/core';
+import { useFocus } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import {
-  type View,
   type LayoutChangeEvent,
   type NativeSyntheticEvent,
   type TargetedEvent,
+  type View,
 } from 'react-native';
-import {
-  useKeyboardNavigation,
-  useKeyboardActivation,
-  type KeyPressEventData,
-} from '@base-ui-rn/core';
-import { useFocus } from '@base-ui-rn/focus-ring';
+
+import { type TabMeasurement, useTabsContext } from './context';
 import type {
-  TabValue,
-  TabsRootProps,
-  TabsRootState,
-  TabsListState,
-  TabProps,
-  TabState,
-  TabsIndicatorState,
+  ActivationDirection,
   TabPanelProps,
   TabPanelState,
-  ActivationDirection,
+  TabProps,
+  TabsIndicatorState,
+  TabsListState,
+  TabsRootProps,
+  TabsRootState,
+  TabState,
+  TabValue,
 } from './types';
-import { useTabsContext, type TabMeasurement } from './context';
 
 /**
  * Manages the state and logic for the Tabs primitive.
@@ -32,13 +33,13 @@ import { useTabsContext, type TabMeasurement } from './context';
  */
 export function useTabsRoot(props: TabsRootProps) {
   const {
-    value: controlledValue,
+    activateOnFocus = false,
     defaultValue,
+    focusVisible: forceFocusVisible = false,
+    onFocusChange,
     onValueChange,
     orientation = 'horizontal',
-    activateOnFocus = false,
-    onFocusChange,
-    focusVisible: forceFocusVisible = false,
+    value: controlledValue,
   } = props;
 
   const { focusVisible } = useFocus({ focusVisible: forceFocusVisible });
@@ -128,10 +129,10 @@ export function useTabsRoot(props: TabsRootProps) {
     [currentValue, isControlled, onValueChange, orientation],
   );
 
-  const { registerItem: registerForNav, handleKeyDown } =
+  const { handleKeyDown, registerItem: registerForNav } =
     useKeyboardNavigation<View | null>({
-      orientation,
       loop: true,
+      orientation,
     });
 
   const onTabKeyDown = React.useCallback(
@@ -149,21 +150,22 @@ export function useTabsRoot(props: TabsRootProps) {
   );
 
   const state: TabsRootState = {
-    value: currentValue,
-    orientation,
     activationDirection,
     focusVisible,
+    orientation,
+    value: currentValue,
   };
 
   return {
-    state,
     contextValue: {
-      value: currentValue,
-      orientation,
       activationDirection,
-      onValueChange: handleValueChange,
-      onFocusChange,
       focusVisible,
+      getTabIndex,
+      onFocusChange,
+      onTabKeyDown,
+      onValueChange: handleValueChange,
+      orientation,
+      registerPanel,
       registerTab: (v: TabValue, ref: React.RefObject<View | null>) => {
         const unregNav = registerForNav(String(v), ref);
         const unregTab = registerTab(v, ref);
@@ -172,12 +174,11 @@ export function useTabsRoot(props: TabsRootProps) {
           unregTab();
         };
       },
-      registerPanel,
-      onTabKeyDown,
-      getTabIndex,
       tabMeasurements,
       updateTabMeasurement,
+      value: currentValue,
     },
+    state,
   };
 }
 
@@ -185,9 +186,9 @@ export function useTabsList() {
   const context = useTabsContext();
 
   const state: TabsListState = {
-    orientation: context.orientation,
     activationDirection: context.activationDirection,
     focusVisible: context.focusVisible ?? false,
+    orientation: context.orientation,
   };
 
   return { state };
@@ -195,11 +196,11 @@ export function useTabsList() {
 
 export function useTab(props: TabProps) {
   const {
-    value,
     disabled = false,
-    onFocus: onFocusProp,
-    onBlur: onBlurProp,
     focusVisible: forceFocusVisible = false,
+    onBlur: onBlurProp,
+    onFocus: onFocusProp,
+    value,
   } = props;
 
   const context = useTabsContext();
@@ -209,7 +210,7 @@ export function useTab(props: TabProps) {
     return context.registerTab(value, ref);
   }, [value, context]);
 
-  const { focused, focusVisible, onFocus, onBlur } = useFocus({
+  const { focused, focusVisible, onBlur, onFocus } = useFocus({
     focusVisible: forceFocusVisible,
   });
 
@@ -263,22 +264,22 @@ export function useTab(props: TabProps) {
   const active = context.value === value;
 
   const state: TabState = {
+    activationDirection: context.activationDirection,
     active,
     disabled,
-    orientation: context.orientation,
-    activationDirection: context.activationDirection,
     focused,
     focusVisible,
+    orientation: context.orientation,
   };
 
   return {
+    handleBlur,
+    handleFocus,
+    handleKeyDown,
+    handlePress,
+    onLayout,
     ref,
     state,
-    handlePress,
-    handleKeyDown,
-    handleFocus,
-    handleBlur,
-    onLayout,
   };
 }
 
@@ -288,20 +289,20 @@ export function useTabsIndicator() {
     context.value !== null ? context.tabMeasurements.get(context.value) : null;
 
   const state: TabsIndicatorState = {
-    orientation: context.orientation,
+    '--active-tab-height': activeMeasurement?.height,
+    '--active-tab-left': activeMeasurement?.x,
+    '--active-tab-top': activeMeasurement?.y,
+    '--active-tab-width': activeMeasurement?.width,
     activationDirection: context.activationDirection,
     focusVisible: context.focusVisible ?? false,
-    '--active-tab-top': activeMeasurement?.y,
-    '--active-tab-left': activeMeasurement?.x,
-    '--active-tab-width': activeMeasurement?.width,
-    '--active-tab-height': activeMeasurement?.height,
+    orientation: context.orientation,
   };
 
   return { state };
 }
 
 export function useTabPanel(props: TabPanelProps) {
-  const { value, keepMounted = false } = props;
+  const { keepMounted = false, value } = props;
   const context = useTabsContext();
 
   React.useLayoutEffect(() => {
@@ -312,14 +313,14 @@ export function useTabPanel(props: TabPanelProps) {
   const index = context.getTabIndex(value);
 
   const state: TabPanelState = {
-    hidden: !active,
-    orientation: context.orientation,
     activationDirection: context.activationDirection,
-    index,
     focusVisible: context.focusVisible ?? false,
+    hidden: !active,
+    index,
+    orientation: context.orientation,
   };
 
   const shouldRender = active || keepMounted;
 
-  return { state, shouldRender };
+  return { shouldRender, state };
 }

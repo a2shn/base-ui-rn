@@ -8,10 +8,10 @@ import { Platform, type ViewStyle } from 'react-native';
  * { top: 10, bottom: 10, left: 10, right: 10 }
  */
 export const DEFAULT_HIT_SLOP = {
-  top: 10,
   bottom: 10,
   left: 10,
   right: 10,
+  top: 10,
 } as const;
 
 /**
@@ -20,13 +20,13 @@ export const DEFAULT_HIT_SLOP = {
  * On native, it uses 'border' as a fallback.
  */
 export const DEFAULT_FOCUS_RING_STYLE = Platform.select({
+  default: {
+    borderColor: '#0071E3',
+    borderWidth: 2,
+  },
   web: {
     outline: '2px solid #0071E3',
   } as unknown as ViewStyle,
-  default: {
-    borderWidth: 2,
-    borderColor: '#0071E3',
-  },
 });
 
 /**

@@ -1,8 +1,8 @@
-import * as React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { FocusRing, type FocusRingRenderProps } from '@base-ui-rn/focus-ring';
 import { Button } from '@base-ui-rn/button';
+import { FocusRing, type FocusRingRenderProps } from '@base-ui-rn/focus-ring';
 import { Gallery, Section } from '@base-ui-rn/playbook';
+import * as React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 export function FocusRingPlaybook() {
   return (
@@ -53,40 +53,40 @@ export function FocusRingPlaybook() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    gap: 12,
-    alignItems: 'center',
-    alignSelf: 'center',
-  },
   buttonBase: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    backgroundColor: '#e0e0e0',
     alignItems: 'center',
+    backgroundColor: '#e0e0e0',
+    borderRadius: 8,
     justifyContent: 'center',
     minWidth: 120,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
   },
-  outline: {
-    borderColor: '#333333',
-    borderWidth: 2,
+  buttonText: {
+    color: '#000000',
+    fontSize: 14,
+  },
+  container: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    gap: 12,
+    padding: 16,
   },
   defaultFocus: {
-    outlineWidth: 2,
     outlineColor: '#0071E3',
+    outlineWidth: 2,
   },
   focused: {
     backgroundColor: '#d0d0d0',
   },
   hint: {
-    fontSize: 12,
     color: '#666666',
+    fontSize: 12,
     textAlign: 'center',
   },
-  buttonText: {
-    fontSize: 14,
-    color: '#000000',
+  outline: {
+    borderColor: '#333333',
+    borderWidth: 2,
   },
 });
 

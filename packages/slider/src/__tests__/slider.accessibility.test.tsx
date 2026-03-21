@@ -1,6 +1,7 @@
-import * as React from 'react';
-import { render } from '@testing-library/react-native';
 import { testAccessibility } from '@base-ui-rn/test-utils';
+import { render } from '@testing-library/react-native';
+import * as React from 'react';
+
 import { Slider } from '../index';
 
 describe('Slider accessibility', () => {
@@ -19,7 +20,7 @@ describe('Slider accessibility', () => {
 
   it('applies range-specific aria attributes to the thumb', () => {
     const { getByLabelText } = render(
-      <Slider.Root min={10} max={50} defaultValue={25}>
+      <Slider.Root defaultValue={25} max={50} min={10}>
         <Slider.Thumb aria-label='Thumb' />
       </Slider.Root>,
     );
@@ -46,8 +47,8 @@ describe('Slider accessibility', () => {
     const { getByLabelText } = render(
       <Slider.Root
         defaultValue={50}
+        format={{ currency: 'USD', style: 'currency' }}
         locale='en-US'
-        format={{ style: 'currency', currency: 'USD' }}
       >
         <Slider.Thumb aria-label='Price thumb' />
       </Slider.Root>,
@@ -62,8 +63,8 @@ describe('Slider accessibility', () => {
       <Slider.Root
         defaultValue={50}
         disabled
-        orientation='vertical'
         minStepsBetweenValues={5}
+        orientation='vertical'
         stepBetweenValues={10}
         testID='root'
       >

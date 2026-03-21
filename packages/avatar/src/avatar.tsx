@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import type { AvatarRootProps, ImageLoadingStatus } from './types';
+
 import { AvatarContext } from './avatar-context';
+import type { AvatarRootProps, ImageLoadingStatus } from './types';
 
 /**
  * Headless avatar root primitive for React Native.
@@ -20,18 +21,18 @@ import { AvatarContext } from './avatar-context';
 export const AvatarRoot = React.forwardRef<View, AvatarRootProps>(
   (props, ref) => {
     const {
-      children,
-      accessible,
-      accessibilityRole,
-      accessibilityLabel,
       accessibilityHint,
-      importantForAccessibility,
+      accessibilityLabel,
+      accessibilityRole,
+      accessible,
       'aria-busy': ariaBusy,
-      'aria-labelledby': ariaLabelledBy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
       'aria-hidden': ariaHidden,
+      'aria-labelledby': ariaLabelledBy,
+      children,
+      importantForAccessibility,
       ...other
     } = props;
     const [loadingStatus, setLoadingStatus] =
@@ -58,18 +59,18 @@ export const AvatarRoot = React.forwardRef<View, AvatarRootProps>(
       <AvatarContext.Provider value={contextValue}>
         <View
           {...other}
-          ref={ref}
-          accessible={accessible !== false}
-          accessibilityRole={accessibilityRole ?? 'image'}
-          accessibilityLabel={accessibilityLabel}
           accessibilityHint={accessibilityHint}
-          importantForAccessibility={importantForAccessibility}
+          accessibilityLabel={accessibilityLabel}
+          accessibilityRole={accessibilityRole ?? 'image'}
+          accessible={accessible !== false}
           aria-busy={ariaBusy ?? isLoading}
-          aria-labelledby={ariaLabelledBy}
           aria-describedby={ariaDescribedBy}
           aria-details={ariaDetails}
           aria-expanded={ariaExpanded}
           aria-hidden={ariaHidden}
+          aria-labelledby={ariaLabelledBy}
+          importantForAccessibility={importantForAccessibility}
+          ref={ref}
         >
           {children}
         </View>

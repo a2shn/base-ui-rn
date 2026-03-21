@@ -27,8 +27,8 @@ export function useFocus(options: { focusVisible?: boolean } = {}) {
     () => ({
       focused,
       focusVisible: isFocusVisible || forceFocusVisible,
-      onFocus,
       onBlur,
+      onFocus,
     }),
     [focused, isFocusVisible, forceFocusVisible, onFocus, onBlur],
   );

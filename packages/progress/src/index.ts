@@ -1,22 +1,22 @@
-import { ProgressRoot } from './progress';
-import { ProgressLabel } from './label';
-import { ProgressTrack } from './track';
 import { ProgressIndicator } from './indicator';
+import { ProgressLabel } from './label';
+import { ProgressRoot } from './progress';
+import { ProgressTrack } from './track';
 import { ProgressValue } from './value';
 
 export const Progress = {
-  Root: ProgressRoot,
-  Label: ProgressLabel,
-  Track: ProgressTrack,
   Indicator: ProgressIndicator,
+  Label: ProgressLabel,
+  Root: ProgressRoot,
+  Track: ProgressTrack,
   Value: ProgressValue,
 };
 
 export {
-  ProgressRoot,
-  ProgressLabel,
-  ProgressTrack,
   ProgressIndicator,
+  ProgressLabel,
+  ProgressRoot,
+  ProgressTrack,
   ProgressValue,
 };
 export * from './types';

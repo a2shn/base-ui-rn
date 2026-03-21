@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Separator } from '@base-ui-rn/separator';
 import { Gallery, Section, theme } from '@base-ui-rn/playbook';
+import { Separator } from '@base-ui-rn/separator';
+import * as React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 export function SeparatorPlaybook() {
   return (
@@ -34,32 +34,32 @@ export function SeparatorPlaybook() {
 }
 
 const styles = StyleSheet.create({
+  sep_horizontal: {
+    backgroundColor: theme.colors.border,
+    height: theme.border,
+    width: 200,
+  },
   sep_row: {
-    gap: theme.spacing.md,
-    padding: theme.spacing.md,
     alignItems: 'center',
     alignSelf: 'center',
+    gap: theme.spacing.md,
+    padding: theme.spacing.md,
+  },
+  sep_vertical: {
+    backgroundColor: theme.colors.border,
+    height: '100%',
+    width: theme.border,
+  },
+  sep_verticalRow: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    gap: theme.spacing.md,
+    height: 40,
+    padding: theme.spacing.md,
   },
   text: {
     color: theme.colors.textPrimary,
     fontSize: theme.font.size.md,
-  },
-  sep_horizontal: {
-    height: theme.border,
-    backgroundColor: theme.colors.border,
-    width: 200,
-  },
-  sep_verticalRow: {
-    flexDirection: 'row',
-    height: 40,
-    alignItems: 'center',
-    gap: theme.spacing.md,
-    padding: theme.spacing.md,
-    alignSelf: 'center',
-  },
-  sep_vertical: {
-    width: theme.border,
-    height: '100%',
-    backgroundColor: theme.colors.border,
   },
 });

@@ -1,12 +1,12 @@
 import { AvatarRoot } from './avatar';
-import { AvatarImage } from './image';
 import { AvatarFallback } from './fallback';
+import { AvatarImage } from './image';
 
 export const Avatar = {
-  Root: AvatarRoot,
-  Image: AvatarImage,
   Fallback: AvatarFallback,
+  Image: AvatarImage,
+  Root: AvatarRoot,
 };
 
-export { AvatarRoot, AvatarImage, AvatarFallback };
+export { AvatarFallback, AvatarImage, AvatarRoot };
 export * from './types';

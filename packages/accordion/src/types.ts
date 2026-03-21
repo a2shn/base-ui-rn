@@ -1,21 +1,21 @@
-import type {
-  ViewProps,
-  PressableProps,
-  StyleProp,
-  ViewStyle,
-  NativeSyntheticEvent,
-  TargetedEvent,
-} from 'react-native';
 import {
-  type KeyPressEventData as CoreKeyPressEventData,
   type ARIABaseProps,
   type ARIAFocusProps,
   type ARIALiveProps,
   type ARIATraitDisabled,
   type ARIATraitExpanded,
   type ARIATraitOrientation,
+  type KeyPressEventData as CoreKeyPressEventData,
   type FocusVisibleProps,
 } from '@base-ui-rn/core';
+import type {
+  NativeSyntheticEvent,
+  PressableProps,
+  StyleProp,
+  TargetedEvent,
+  ViewProps,
+  ViewStyle,
+} from 'react-native';
 
 /**
  * Web-specific accessibility props for Accordion Root.

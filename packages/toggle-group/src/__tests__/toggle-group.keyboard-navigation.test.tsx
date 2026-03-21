@@ -1,14 +1,15 @@
+import { Toggle } from '@base-ui-rn/toggle';
+import { act, fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render, fireEvent, act } from '@testing-library/react-native';
+
 import { ToggleGroup } from '../toggle-group';
-import { Toggle } from '@base-ui-rn/toggle';
 
 describe('ToggleGroup - Keyboard Navigation', () => {
   it('navigates through toggles using arrow keys in horizontal orientation', async () => {
     const onFocusChange = jest.fn();
     const { getByText } = render(
-      <ToggleGroup orientation='horizontal' onFocusChange={onFocusChange}>
+      <ToggleGroup onFocusChange={onFocusChange} orientation='horizontal'>
         <Toggle value='a'>
           <Text>A</Text>
         </Toggle>
@@ -53,7 +54,7 @@ describe('ToggleGroup - Keyboard Navigation', () => {
   it('navigates through toggles using arrow keys in vertical orientation', async () => {
     const onFocusChange = jest.fn();
     const { getByText } = render(
-      <ToggleGroup orientation='vertical' onFocusChange={onFocusChange}>
+      <ToggleGroup onFocusChange={onFocusChange} orientation='vertical'>
         <Toggle value='a'>
           <Text>A</Text>
         </Toggle>
@@ -85,9 +86,9 @@ describe('ToggleGroup - Keyboard Navigation', () => {
     const onFocusChange = jest.fn();
     const { getByText } = render(
       <ToggleGroup
-        orientation='horizontal'
         loopFocus={false}
         onFocusChange={onFocusChange}
+        orientation='horizontal'
       >
         <Toggle value='a'>
           <Text>A</Text>
@@ -118,9 +119,9 @@ describe('ToggleGroup - Keyboard Navigation', () => {
     const onFocusChange = jest.fn();
     const { getByText } = render(
       <ToggleGroup
-        orientation='horizontal'
         disabled
         onFocusChange={onFocusChange}
+        orientation='horizontal'
       >
         <Toggle value='a'>
           <Text>A</Text>

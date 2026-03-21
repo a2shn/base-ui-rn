@@ -1,8 +1,9 @@
+import { DEFAULT_HINT } from '@base-ui-rn/test-utils';
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+
 import { Toggle } from '../toggle';
-import { DEFAULT_HINT } from '@base-ui-rn/test-utils';
 
 describe('Toggle - State Management', () => {
   afterEach(() => {
@@ -14,9 +15,9 @@ describe('Toggle - State Management', () => {
       const onChangeMock = jest.fn();
       const { getByRole } = render(
         <Toggle
+          accessibilityHint={DEFAULT_HINT}
           defaultPressed={false}
           onPressedChange={onChangeMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Uncontrolled Toggle</Text>
         </Toggle>,
@@ -33,7 +34,7 @@ describe('Toggle - State Management', () => {
 
     it('initializes with defaultPressed value', () => {
       const { getByRole } = render(
-        <Toggle defaultPressed={true} accessibilityHint={DEFAULT_HINT}>
+        <Toggle accessibilityHint={DEFAULT_HINT} defaultPressed={true}>
           <Text>Initially Pressed</Text>
         </Toggle>,
       );
@@ -48,9 +49,9 @@ describe('Toggle - State Management', () => {
       const onChangeMock = jest.fn();
       const { getByRole } = render(
         <Toggle
-          pressed={false}
-          onPressedChange={onChangeMock}
           accessibilityHint={DEFAULT_HINT}
+          onPressedChange={onChangeMock}
+          pressed={false}
         >
           <Text>Controlled Toggle</Text>
         </Toggle>,
@@ -68,9 +69,9 @@ describe('Toggle - State Management', () => {
       const onChangeMock = jest.fn();
       const { getByRole, rerender } = render(
         <Toggle
-          pressed={false}
-          onPressedChange={onChangeMock}
           accessibilityHint={DEFAULT_HINT}
+          onPressedChange={onChangeMock}
+          pressed={false}
         >
           <Text>Controlled Toggle</Text>
         </Toggle>,
@@ -81,9 +82,9 @@ describe('Toggle - State Management', () => {
 
       rerender(
         <Toggle
-          pressed={true}
-          onPressedChange={onChangeMock}
           accessibilityHint={DEFAULT_HINT}
+          onPressedChange={onChangeMock}
+          pressed={true}
         >
           <Text>Controlled Toggle</Text>
         </Toggle>,
@@ -99,9 +100,9 @@ describe('Toggle - State Management', () => {
       const onChangeMock = jest.fn();
       const { getByRole } = render(
         <Toggle
+          accessibilityHint={DEFAULT_HINT}
           defaultPressed={false}
           onPressedChange={onChangeMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Press Toggle</Text>
         </Toggle>,
@@ -117,9 +118,9 @@ describe('Toggle - State Management', () => {
       const onChangeMock = jest.fn();
       const { getByRole } = render(
         <Toggle
+          accessibilityHint={DEFAULT_HINT}
           defaultPressed={false}
           onPressedChange={onChangeMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Keyboard Toggle</Text>
         </Toggle>,
@@ -137,9 +138,9 @@ describe('Toggle - State Management', () => {
       const onChangeMock = jest.fn();
       const { getByRole } = render(
         <Toggle
+          accessibilityHint={DEFAULT_HINT}
           defaultPressed={false}
           onPressedChange={onChangeMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Action Toggle</Text>
         </Toggle>,
@@ -161,9 +162,9 @@ describe('Toggle - State Management', () => {
       const onChangeMock = jest.fn();
       const { getByRole } = render(
         <Toggle
+          accessibilityHint={DEFAULT_HINT}
           defaultPressed={false}
           onPressedChange={onChangeMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Toggle</Text>
         </Toggle>,
@@ -191,9 +192,9 @@ describe('Toggle - State Management', () => {
       const onChangeMock = jest.fn();
       const { getByRole } = render(
         <Toggle
+          accessibilityHint={DEFAULT_HINT}
           defaultPressed={false}
           onPressedChange={onChangeMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Consistent Toggle</Text>
         </Toggle>,
@@ -214,9 +215,9 @@ describe('Toggle - State Management', () => {
       const onChangeMock = jest.fn();
       const { getByRole } = render(
         <Toggle
-          pressed={false}
-          onPressedChange={onChangeMock}
           accessibilityHint={DEFAULT_HINT}
+          onPressedChange={onChangeMock}
+          pressed={false}
         >
           <Text>Controlled Toggle</Text>
         </Toggle>,
@@ -237,9 +238,9 @@ describe('Toggle - State Management', () => {
       const onChangeMock = jest.fn();
       const { getByRole } = render(
         <Toggle
+          accessibilityHint={DEFAULT_HINT}
           defaultPressed={false}
           onPressedChange={onChangeMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Toggle</Text>
         </Toggle>,

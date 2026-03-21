@@ -1,6 +1,7 @@
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluateStyles } from '@base-ui-rn/core';
+
 import type { AccordionPanelProps } from './types';
 import { useAccordionPanel } from './use-accordion';
 
@@ -20,34 +21,34 @@ import { useAccordionPanel } from './use-accordion';
 export const AccordionPanel = React.memo(
   React.forwardRef<View, AccordionPanelProps>((props, ref) => {
     const {
-      children,
-      style,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
-      'aria-hidden': ariaHidden,
       'aria-disabled': ariaDisabled,
+      'aria-expanded': ariaExpanded,
+      'aria-hidden': ariaHidden,
       'aria-keyshortcuts': ariaKeyshortcuts,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      children,
+      'data-disabled': dataDisabled,
+      'data-ending-style': dataEndingStyle,
+      'data-index': dataIndex,
       'data-open': dataOpen,
       'data-orientation': dataOrientation,
-      'data-disabled': dataDisabled,
-      'data-index': dataIndex,
       'data-starting-style': dataStartingStyle,
-      'data-ending-style': dataEndingStyle,
+      style,
       ...otherProps
     } = props;
 
     const {
-      state,
-      shouldRender,
+      disabled,
+      index,
       onLayout,
       open,
       orientation,
-      disabled,
-      index,
+      shouldRender,
+      state,
     } = useAccordionPanel(props);
 
     if (!shouldRender) {
@@ -57,29 +58,29 @@ export const AccordionPanel = React.memo(
     return (
       <View
         {...otherProps}
-        ref={ref}
-        style={evaluateStyles(style, state)}
-        onLayout={onLayout}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
+        aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
-        aria-expanded={ariaExpanded ?? open}
-        aria-busy={ariaBusy}
-        aria-hidden={ariaHidden}
         aria-disabled={ariaDisabled ?? (disabled ? true : undefined)}
+        aria-expanded={ariaExpanded ?? open}
+        aria-hidden={ariaHidden}
         aria-keyshortcuts={ariaKeyshortcuts}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
+        data-disabled={dataDisabled ?? (disabled ? 'true' : undefined)}
+        data-ending-style={dataEndingStyle}
+        data-index={dataIndex ?? index}
         data-open={dataOpen ?? (open ? 'true' : undefined)}
         data-orientation={dataOrientation ?? orientation}
-        data-disabled={dataDisabled ?? (disabled ? 'true' : undefined)}
-        data-index={dataIndex ?? index}
         data-starting-style={dataStartingStyle}
-        data-ending-style={dataEndingStyle}
+        onLayout={onLayout}
+        ref={ref}
+        style={evaluateStyles(style, state)}
       >
         {evaluateStyles(children, state)}
       </View>
     );
-  },
+  }),
 );
 
 AccordionPanel.displayName = 'AccordionPanel';

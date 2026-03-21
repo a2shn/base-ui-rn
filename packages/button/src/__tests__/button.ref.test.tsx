@@ -1,8 +1,9 @@
+import { DEFAULT_HINT } from '@base-ui-rn/test-utils';
+import { render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Text, View } from 'react-native';
-import { render } from '@testing-library/react-native';
+
 import { Button } from '../button';
-import { DEFAULT_HINT } from '@base-ui-rn/test-utils';
 
 describe('Button - Ref Forwarding', () => {
   afterEach(() => {
@@ -13,7 +14,7 @@ describe('Button - Ref Forwarding', () => {
     const ref = React.createRef<View>();
 
     render(
-      <Button ref={ref} accessibilityHint={DEFAULT_HINT}>
+      <Button accessibilityHint={DEFAULT_HINT} ref={ref}>
         <Text>Ref Test</Text>
       </Button>,
     );
@@ -25,7 +26,7 @@ describe('Button - Ref Forwarding', () => {
     const ref = React.createRef<View>();
 
     render(
-      <Button ref={ref} accessibilityHint={DEFAULT_HINT}>
+      <Button accessibilityHint={DEFAULT_HINT} ref={ref}>
         <Text>Ref Access</Text>
       </Button>,
     );

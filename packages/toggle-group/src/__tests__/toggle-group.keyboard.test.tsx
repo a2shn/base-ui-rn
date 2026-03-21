@@ -1,9 +1,10 @@
+import { ACTIVATION_KEYS, NON_ACTIVATION_KEYS } from '@base-ui-rn/test-utils';
+import { Toggle } from '@base-ui-rn/toggle';
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+
 import { ToggleGroup } from '../toggle-group';
-import { Toggle } from '@base-ui-rn/toggle';
-import { ACTIVATION_KEYS, NON_ACTIVATION_KEYS } from '@base-ui-rn/test-utils';
 
 describe('ToggleGroup - Keyboard Interaction', () => {
   it('allows activating toggles via ALL hardware activation keys (Enter, Space, Gamepad buttons)', () => {
@@ -75,7 +76,7 @@ describe('ToggleGroup - Keyboard Interaction', () => {
   it('handles multiple toggles with mixed hardware activation', () => {
     const onValueChange = jest.fn();
     const { getByRole } = render(
-      <ToggleGroup onValueChange={onValueChange} multiple>
+      <ToggleGroup multiple onValueChange={onValueChange}>
         <Toggle value='a'>
           <Text>A</Text>
         </Toggle>

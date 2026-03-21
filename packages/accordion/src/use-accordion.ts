@@ -1,27 +1,28 @@
+import { useKeyboardActivation, useKeyboardNavigation } from '@base-ui-rn/core';
+import { useFocus } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import type {
-  View,
   GestureResponderEvent,
-  NativeSyntheticEvent,
   LayoutChangeEvent,
+  NativeSyntheticEvent,
   TargetedEvent,
+  View,
 } from 'react-native';
+
+import { useAccordionContext, useAccordionItemContext } from './context';
 import type {
-  AccordionRootProps,
-  AccordionRootState,
-  AccordionValueChangeDetails,
+  AccordionHeaderState,
   AccordionItemProps,
   AccordionItemState,
-  AccordionTriggerProps,
-  AccordionTriggerState,
-  AccordionHeaderState,
   AccordionPanelProps,
   AccordionPanelState,
+  AccordionRootProps,
+  AccordionRootState,
+  AccordionTriggerProps,
+  AccordionTriggerState,
+  AccordionValueChangeDetails,
   KeyPressEventData,
 } from './types';
-import { useAccordionContext, useAccordionItemContext } from './context';
-import { useKeyboardNavigation, useKeyboardActivation } from '@base-ui-rn/core';
-import { useFocus } from '@base-ui-rn/focus-ring';
 
 function useId(prefix = 'accordion') {
   return React.useMemo(
@@ -43,26 +44,26 @@ function getValueArray(value: string | string[] | undefined): string[] {
 export function useAccordionRoot(props: AccordionRootProps) {
   const {
     defaultValue,
-    value: controlledValue,
-    onValueChange,
-    multiple = false,
     disabled = false,
-    orientation = 'vertical',
-    loopFocus = true,
-    onFocusChange,
     focusVisible: forceFocusVisible = false,
+    loopFocus = true,
+    multiple = false,
+    onFocusChange,
+    onValueChange,
+    orientation = 'vertical',
+    value: controlledValue,
   } = props;
 
   const baseId = useId();
 
-  const { focusVisible, onFocus, onBlur } = useFocus({
+  const { focusVisible, onBlur, onFocus } = useFocus({
     focusVisible: forceFocusVisible,
   });
 
-  const { registerItem: registerTrigger, handleKeyDown } =
+  const { handleKeyDown, registerItem: registerTrigger } =
     useKeyboardNavigation<View | null>({
-      orientation,
       loop: loopFocus,
+      orientation,
     });
 
   const onTriggerKeyDown = React.useCallback(
@@ -146,30 +147,30 @@ export function useAccordionRoot(props: AccordionRootProps) {
   );
 
   const state: AccordionRootState = {
-    open: openItems.size > 0,
-    value: multiple ? currentValue : (currentValue[0] ?? ''),
-    orientation,
     disabled,
-    multiple,
     focusVisible,
+    multiple,
+    open: openItems.size > 0,
+    orientation,
+    value: multiple ? currentValue : (currentValue[0] ?? ''),
   };
 
   return {
     baseId,
-    orientation,
     disabled,
-    multiple,
-    openItems,
-    registerItem,
-    registerTrigger,
-    toggleItem,
+    focusVisible,
     getItemIndex,
     getItemRef,
-    onTriggerKeyDown,
-    state,
-    focusVisible,
-    handleFocus: onFocus,
     handleBlur: onBlur,
+    handleFocus: onFocus,
+    multiple,
+    onTriggerKeyDown,
+    openItems,
+    orientation,
+    registerItem,
+    registerTrigger,
+    state,
+    toggleItem,
   };
 }
 
@@ -180,15 +181,15 @@ export function useAccordionRoot(props: AccordionRootProps) {
  */
 export function useAccordionItem(props: AccordionItemProps) {
   const {
-    value: valueProp,
     disabled = false,
-    onOpenChange: onOpenChangeProp,
     focusVisible: forceFocusVisible = false,
+    onOpenChange: onOpenChangeProp,
+    value: valueProp,
   } = props;
 
   const context = useAccordionContext();
 
-  const { focusVisible, onFocus, onBlur } = useFocus({
+  const { focusVisible, onBlur, onFocus } = useFocus({
     focusVisible: forceFocusVisible,
   });
 
@@ -218,34 +219,34 @@ export function useAccordionItem(props: AccordionItemProps) {
     if (onOpenChangeProp) {
       onOpenChangeProp(open, {
         open,
-        value,
         reason: 'toggle',
+        value,
       });
     }
   }, [open, value, onOpenChangeProp]);
 
   const itemState: AccordionItemState = {
-    open,
     disabled: disabled || context.disabled,
-    index,
-    value,
     focusVisible,
+    index,
+    open,
+    value,
   };
 
   return {
-    value,
-    open,
+    disabled: itemState.disabled,
     focused: isFocused,
     focusVisible,
-    disabled: itemState.disabled,
+    handleBlur: onBlur,
+    handleFocus: onFocus,
     index,
+    open,
     registerTriggerRef: (refItem: React.RefObject<View | null>) => {
       triggerRefRef.current = refItem;
     },
     setFocused: setIsFocused,
-    handleFocus: onFocus,
-    handleBlur: onBlur,
     state: itemState,
+    value,
   };
 }
 
@@ -257,11 +258,11 @@ export function useAccordionItem(props: AccordionItemProps) {
 export function useAccordionTrigger(props: AccordionTriggerProps) {
   const {
     disabled: disabledProp,
-    onPress,
-    onKeyDown,
     focusVisible: forceFocusVisible = false,
-    onFocus: onFocusProp,
     onBlur: onBlurProp,
+    onFocus: onFocusProp,
+    onKeyDown,
+    onPress,
   } = props;
 
   const context = useAccordionContext();
@@ -269,7 +270,7 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
 
   const disabled = disabledProp || itemContext.disabled || context.disabled;
 
-  const { focused, focusVisible, onFocus, onBlur } = useFocus({
+  const { focused, focusVisible, onBlur, onFocus } = useFocus({
     focusVisible: forceFocusVisible,
   });
 
@@ -298,8 +299,8 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
       if (disabled) return;
 
       const details: AccordionValueChangeDetails = {
-        value: itemContext.value,
         reason: 'toggle',
+        value: itemContext.value,
       };
 
       context.toggleItem(itemContext.value, details);
@@ -310,8 +311,8 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
 
   const performKeyboardActivation = React.useCallback(() => {
     const details: AccordionValueChangeDetails = {
-      value: itemContext.value,
       reason: 'toggle',
+      value: itemContext.value,
     };
     context.toggleItem(itemContext.value, details);
   }, [context, itemContext.value]);
@@ -333,22 +334,22 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
   );
 
   const state: AccordionTriggerState = {
-    open: itemContext.open,
     disabled,
     focused,
     focusVisible,
+    open: itemContext.open,
   };
 
   return {
     disabled,
-    handlePress,
-    handleKeyDown,
-    handleFocus,
-    handleBlur,
     focused,
     focusVisible,
-    state,
+    handleBlur,
+    handleFocus,
+    handleKeyDown,
+    handlePress,
     open: itemContext.open,
+    state,
   };
 }
 /**
@@ -359,26 +360,26 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
 export function useAccordionHeader(props: { focusVisible?: boolean }) {
   const itemContext = useAccordionItemContext();
 
-  const { focused, focusVisible, onFocus, onBlur } = useFocus({
+  const { focused, focusVisible, onBlur, onFocus } = useFocus({
     focusVisible: props.focusVisible,
   });
 
   const state: AccordionHeaderState = {
-    open: itemContext.open,
     disabled: itemContext.disabled,
-    index: itemContext.index,
     focusVisible,
+    index: itemContext.index,
+    open: itemContext.open,
   };
 
   return {
-    state,
-    open: itemContext.open,
+    disabled: itemContext.disabled,
     focused,
     focusVisible,
-    disabled: itemContext.disabled,
-    index: itemContext.index,
-    handleFocus: onFocus,
     handleBlur: onBlur,
+    handleFocus: onFocus,
+    index: itemContext.index,
+    open: itemContext.open,
+    state,
   };
 }
 
@@ -389,15 +390,15 @@ export function useAccordionHeader(props: { focusVisible?: boolean }) {
  */
 export function useAccordionPanel(props: AccordionPanelProps) {
   const {
-    keepMounted = false,
-    hiddenUntilFound = false,
     focusVisible: forceFocusVisible = false,
+    hiddenUntilFound = false,
+    keepMounted = false,
   } = props;
 
   const context = useAccordionContext();
   const itemContext = useAccordionItemContext();
 
-  const { focused, focusVisible, onFocus, onBlur } = useFocus({
+  const { focused, focusVisible, onBlur, onFocus } = useFocus({
     focusVisible: forceFocusVisible,
   });
 
@@ -416,25 +417,25 @@ export function useAccordionPanel(props: AccordionPanelProps) {
 
   const shouldRender = keepMounted || hiddenUntilFound || itemContext.open;
   const state: AccordionPanelState = {
-    open: itemContext.open,
-    disabled: itemContext.disabled,
-    index: itemContext.index,
-    focusVisible,
     '--accordion-panel-height': contentHeight,
     '--accordion-panel-width': contentWidth,
+    disabled: itemContext.disabled,
+    focusVisible,
+    index: itemContext.index,
+    open: itemContext.open,
   };
 
   return {
-    state,
-    shouldRender,
+    disabled: itemContext.disabled,
+    focused,
+    focusVisible,
+    handleBlur: onBlur,
+    handleFocus: onFocus,
+    index: itemContext.index,
     onLayout,
     open: itemContext.open,
     orientation: context.orientation,
-    disabled: itemContext.disabled,
-    index: itemContext.index,
-    handleFocus: onFocus,
-    handleBlur: onBlur,
-    focused,
-    focusVisible,
+    shouldRender,
+    state,
   };
 }

@@ -1,6 +1,7 @@
-import * as React from 'react';
 import { render } from '@testing-library/react-native';
+import * as React from 'react';
 import { Text } from 'react-native';
+
 import { PressableWithKeyPress } from '../pressable';
 
 describe('PressableWithKeyPress: Rendering', () => {
@@ -16,9 +17,9 @@ describe('PressableWithKeyPress: Rendering', () => {
   it('should render correctly with basic props', () => {
     const { getByTestId } = render(
       <PressableWithKeyPress
-        testID='test-pressable'
-        accessibilityLabel='Test'
         accessibilityHint='A test hint'
+        accessibilityLabel='Test'
+        testID='test-pressable'
       >
         <Text>Click Me</Text>
       </PressableWithKeyPress>,
@@ -31,7 +32,7 @@ describe('PressableWithKeyPress: Rendering', () => {
   it('should apply styles correctly', () => {
     const customStyle = { backgroundColor: 'blue', padding: 10 };
     const { getByTestId } = render(
-      <PressableWithKeyPress testID='styled-pressable' style={customStyle}>
+      <PressableWithKeyPress style={customStyle} testID='styled-pressable'>
         <Text>Styled</Text>
       </PressableWithKeyPress>,
     );

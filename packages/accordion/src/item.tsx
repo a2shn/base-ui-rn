@@ -1,6 +1,7 @@
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
-import { evaluateStyles } from '@base-ui-rn/core';
+
 import { AccordionItemContext } from './context';
 import type { AccordionItemProps } from './types';
 import { useAccordionItem } from './use-accordion';
@@ -22,42 +23,42 @@ import { useAccordionItem } from './use-accordion';
 export const AccordionItem = React.memo(
   React.forwardRef<View, AccordionItemProps>((props, ref) => {
     const {
-      children,
-      style,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
-      'aria-hidden': ariaHidden,
       'aria-disabled': ariaDisabled,
+      'aria-expanded': ariaExpanded,
+      'aria-hidden': ariaHidden,
       'aria-keyshortcuts': ariaKeyshortcuts,
-      'data-open': dataOpen,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      children,
       'data-disabled': dataDisabled,
       'data-index': dataIndex,
+      'data-open': dataOpen,
+      style,
       ...otherProps
     } = props;
 
     const {
-      value,
-      open,
       disabled,
       index,
+      open,
       registerTriggerRef,
       setFocused,
       state,
+      value,
     } = useAccordionItem(props);
 
     const itemContextValue = React.useMemo(
       () => ({
-        value,
-        open,
         disabled,
         focused: false,
         index,
+        open,
         registerTriggerRef,
         setFocused,
+        value,
       }),
       [value, open, disabled, index, registerTriggerRef, setFocused],
     );
@@ -66,26 +67,26 @@ export const AccordionItem = React.memo(
       <AccordionItemContext.Provider value={itemContextValue}>
         <View
           {...otherProps}
-          ref={ref}
-          style={evaluateStyles(style, state)}
-          aria-label={ariaLabel}
-          aria-labelledby={ariaLabelledBy}
+          aria-busy={ariaBusy}
           aria-describedby={ariaDescribedBy}
           aria-details={ariaDetails}
-          aria-expanded={ariaExpanded ?? open}
-          aria-busy={ariaBusy}
-          aria-hidden={ariaHidden}
           aria-disabled={ariaDisabled ?? (disabled ? true : undefined)}
+          aria-expanded={ariaExpanded ?? open}
+          aria-hidden={ariaHidden}
           aria-keyshortcuts={ariaKeyshortcuts}
-          data-open={dataOpen ?? (open ? 'true' : undefined)}
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledBy}
           data-disabled={dataDisabled ?? (disabled ? 'true' : undefined)}
           data-index={dataIndex ?? index}
+          data-open={dataOpen ?? (open ? 'true' : undefined)}
+          ref={ref}
+          style={evaluateStyles(style, state)}
         >
           {evaluateStyles(children, state)}
         </View>
       </AccordionItemContext.Provider>
     );
-  },
+  }),
 );
 
 AccordionItem.displayName = 'AccordionItem';

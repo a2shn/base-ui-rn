@@ -1,7 +1,8 @@
-import * as React from 'react';
-import { render } from '@testing-library/react-native';
-import { Progress } from '../index';
 import { testAccessibility } from '@base-ui-rn/test-utils';
+import { render } from '@testing-library/react-native';
+import * as React from 'react';
+
+import { Progress } from '../index';
 
 describe('Progress - Accessibility', () => {
   it('has correct default accessibility traits', () => {
@@ -39,8 +40,8 @@ describe('Progress - Accessibility', () => {
   it('supports custom ariaValueText via getAriaValueText', () => {
     const { getByRole } = render(
       <Progress.Root
-        value={80}
         getAriaValueText={(formatted) => `${formatted}% done`}
+        value={80}
       />,
     );
 

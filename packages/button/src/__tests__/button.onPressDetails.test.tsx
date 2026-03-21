@@ -1,8 +1,9 @@
+import { DEFAULT_HINT } from '@base-ui-rn/test-utils';
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+
 import { Button } from '../button';
-import { DEFAULT_HINT } from '@base-ui-rn/test-utils';
 
 describe('Button - onPressDetails', () => {
   afterEach(() => {
@@ -14,8 +15,8 @@ describe('Button - onPressDetails', () => {
       const onPressedChangeMock = jest.fn();
       const { getByRole } = render(
         <Button
-          onPressedChange={onPressedChangeMock}
           accessibilityHint={DEFAULT_HINT}
+          onPressedChange={onPressedChangeMock}
         >
           <Text>Press Me</Text>
         </Button>,
@@ -32,8 +33,8 @@ describe('Button - onPressDetails', () => {
       const onPressedChangeMock = jest.fn();
       const { getByRole } = render(
         <Button
-          onPressedChange={onPressedChangeMock}
           accessibilityHint={DEFAULT_HINT}
+          onPressedChange={onPressedChangeMock}
         >
           <Text>Keyboard Button</Text>
         </Button>,
@@ -60,8 +61,8 @@ describe('Button - onPressDetails', () => {
       const onPressedChangeMock = jest.fn();
       const { getByRole } = render(
         <Button
-          onPressedChange={onPressedChangeMock}
           accessibilityHint={DEFAULT_HINT}
+          onPressedChange={onPressedChangeMock}
         >
           <Text>Action Button</Text>
         </Button>,
@@ -84,9 +85,9 @@ describe('Button - onPressDetails', () => {
       const onPressedChangeMock = jest.fn();
       const { getByRole } = render(
         <Button
+          accessibilityHint={DEFAULT_HINT}
           disabled
           onPressedChange={onPressedChangeMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Disabled Button</Text>
         </Button>,
@@ -102,9 +103,9 @@ describe('Button - onPressDetails', () => {
       const onPressedChangeMock = jest.fn();
       const { getByRole } = render(
         <Button
+          accessibilityHint={DEFAULT_HINT}
           disabled
           onPressedChange={onPressedChangeMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Disabled Button</Text>
         </Button>,
@@ -120,9 +121,9 @@ describe('Button - onPressDetails', () => {
       const onPressedChangeMock = jest.fn();
       const { getByRole } = render(
         <Button
+          accessibilityHint={DEFAULT_HINT}
           disabled
           onPressedChange={onPressedChangeMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Disabled Button</Text>
         </Button>,
@@ -140,10 +141,10 @@ describe('Button - onPressDetails', () => {
       const onPressedChangeMock = jest.fn();
       const { getByRole } = render(
         <Button
+          accessibilityHint={DEFAULT_HINT}
           disabled
           focusableWhenDisabled
           onPressedChange={onPressedChangeMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Loading Button</Text>
         </Button>,
@@ -167,9 +168,9 @@ describe('Button - onPressDetails', () => {
       const onPressMock = jest.fn();
       const { getByRole } = render(
         <Button
-          onPressedChange={onPressedChangeMock}
-          onPress={onPressMock}
           accessibilityHint={DEFAULT_HINT}
+          onPress={onPressMock}
+          onPressedChange={onPressedChangeMock}
         >
           <Text>Both Callbacks</Text>
         </Button>,
@@ -187,9 +188,9 @@ describe('Button - onPressDetails', () => {
       const onPressMock = jest.fn();
       const { getByRole } = render(
         <Button
-          onPressedChange={onPressedChangeMock}
-          onPress={onPressMock}
           accessibilityHint={DEFAULT_HINT}
+          onPress={onPressMock}
+          onPressedChange={onPressedChangeMock}
         >
           <Text>Keyboard Button</Text>
         </Button>,
@@ -207,9 +208,9 @@ describe('Button - onPressDetails', () => {
       const onPressMock = jest.fn();
       const { getByRole } = render(
         <Button
-          onPressedChange={onPressedChangeMock}
-          onPress={onPressMock}
           accessibilityHint={DEFAULT_HINT}
+          onPress={onPressMock}
+          onPressedChange={onPressedChangeMock}
         >
           <Text>Action Button</Text>
         </Button>,
@@ -234,9 +235,9 @@ describe('Button - onPressDetails', () => {
       const onPressMock = jest.fn(() => callOrder.push('onPress'));
       const { getByRole } = render(
         <Button
-          onPressedChange={onPressedChangeMock}
-          onPress={onPressMock}
           accessibilityHint={DEFAULT_HINT}
+          onPress={onPressMock}
+          onPressedChange={onPressedChangeMock}
         >
           <Text>Order Test</Text>
         </Button>,
@@ -254,8 +255,8 @@ describe('Button - onPressDetails', () => {
       const onPressedChangeMock = jest.fn();
       const { getByRole } = render(
         <Button
-          onPressedChange={onPressedChangeMock}
           accessibilityHint={DEFAULT_HINT}
+          onPressedChange={onPressedChangeMock}
         >
           <Text>Multi-Source Button</Text>
         </Button>,
@@ -293,9 +294,9 @@ describe('Button - onPressDetails', () => {
       const onKeyDownMock = jest.fn();
       const { getByRole } = render(
         <Button
-          onPressedChange={onPressedChangeMock}
-          onKeyDown={onKeyDownMock}
           accessibilityHint={DEFAULT_HINT}
+          onKeyDown={onKeyDownMock}
+          onPressedChange={onPressedChangeMock}
         >
           <Text>Keyboard Button</Text>
         </Button>,
@@ -314,10 +315,10 @@ describe('Button - onPressDetails', () => {
       const onAccessibilityActionMock = jest.fn();
       const { getByRole } = render(
         <Button
-          onPressedChange={onPressedChangeMock}
-          onAccessibilityAction={onAccessibilityActionMock}
           accessibilityActions={[{ name: 'activate' }]}
           accessibilityHint={DEFAULT_HINT}
+          onAccessibilityAction={onAccessibilityActionMock}
+          onPressedChange={onPressedChangeMock}
         >
           <Text>Action Button</Text>
         </Button>,

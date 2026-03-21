@@ -1,8 +1,9 @@
+import { evaluateStyles, resolveTabIndex } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
-import { resolveTabIndex, evaluateStyles } from '@base-ui-rn/core';
-import type { ProgressRootProps } from './types';
+
 import { ProgressContext } from './progress-context';
+import type { ProgressRootProps } from './types';
 import { useProgress } from './use-progress';
 
 /**
@@ -22,35 +23,30 @@ import { useProgress } from './use-progress';
 export const ProgressRoot = React.memo(
   React.forwardRef<View, ProgressRootProps>((props, ref) => {
     const {
-      children,
-      value = null,
-      min = 0,
-      max = 100,
-      'aria-valuetext': ariaValueTextProp,
-      getAriaValueText,
-      locale,
-      format,
-      accessible = true,
-      accessibilityRole = 'progressbar',
       accessibilityHint = 'Displays a value within a range',
-      accessibilityState,
       accessibilityLabel,
-      focusable = false,
-      importantForAccessibility = 'yes',
-      tabIndex,
-      style,
-      'aria-valuemin': ariaValueMin,
-      'aria-valuemax': ariaValueMax,
-      'aria-valuenow': ariaValueNow,
-      'aria-labelledby': ariaLabelledBy,
+      accessibilityRole = 'progressbar',
+      accessible = true,
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
-      'aria-busy': ariaBusy,
       'aria-hidden': ariaHidden,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-valuemax': ariaValueMax,
+      'aria-valuemin': ariaValueMin,
+      'aria-valuenow': ariaValueNow,
+      'aria-valuetext': ariaValueTextProp,
+      children,
       'data-complete': dataComplete,
       'data-indeterminate': dataIndeterminate,
       'data-progressing': dataProgressing,
+      focusable = false,
+      importantForAccessibility = 'yes',
+      max = 100,
+      min = 0,
+      style,
+      tabIndex,
       ...otherViewProps
     } = props;
 
@@ -74,40 +70,40 @@ export const ProgressRoot = React.memo(
       <ProgressContext.Provider value={contextValue}>
         <View
           {...otherViewProps}
-          ref={ref}
-          accessible={accessible}
           accessibilityHint={accessibilityHint}
-          accessibilityState={mergedAccessibilityState}
           accessibilityLabel={accessibilityLabel}
-          focusable={focusable}
-          importantForAccessibility={importantForAccessibility}
-          role={(accessibilityRole ?? 'progressbar') as unknown as 'checkbox'}
-          aria-labelledby={
-            ariaLabelledBy ?? (isLabelledByProp ? undefined : labelId)
-          }
           accessibilityLabelledBy={isLabelledByProp ? undefined : [labelId]}
-          aria-describedby={ariaDescribedBy}
-          aria-details={ariaDetails}
-          aria-expanded={ariaExpanded}
-          aria-busy={ariaBusy}
-          aria-hidden={ariaHidden}
-          tabIndex={resolvedTabIndex}
-          aria-valuemin={ariaValueMin ?? min}
-          aria-valuemax={ariaValueMax ?? max}
-          aria-valuenow={ariaValueNow ?? state.value ?? undefined}
-          aria-valuetext={ariaValueTextProp ?? state.ariaValueText}
+          accessibilityState={mergedAccessibilityState}
           accessibilityValue={
             state.isIndeterminate
               ? undefined
               : state.ariaValueText
                 ? { text: state.ariaValueText }
                 : {
-                    min,
                     max,
+                    min,
                     now: state.value!,
                   }
           }
+          accessible={accessible}
+          aria-busy={ariaBusy}
+          aria-describedby={ariaDescribedBy}
+          aria-details={ariaDetails}
+          aria-expanded={ariaExpanded}
+          aria-hidden={ariaHidden}
+          aria-labelledby={
+            ariaLabelledBy ?? (isLabelledByProp ? undefined : labelId)
+          }
+          aria-valuemax={ariaValueMax ?? max}
+          aria-valuemin={ariaValueMin ?? min}
+          aria-valuenow={ariaValueNow ?? state.value ?? undefined}
+          aria-valuetext={ariaValueTextProp ?? state.ariaValueText}
+          focusable={focusable}
+          importantForAccessibility={importantForAccessibility}
+          ref={ref}
+          role={(accessibilityRole ?? 'progressbar') as unknown as 'checkbox'}
           style={resolvedStyle}
+          tabIndex={resolvedTabIndex}
           {...({
             'data-complete':
               dataComplete ?? (state.isComplete ? '' : undefined),
@@ -121,7 +117,7 @@ export const ProgressRoot = React.memo(
         </View>
       </ProgressContext.Provider>
     );
-  },
+  }),
 );
 
 ProgressRoot.displayName = 'Progress.Root';

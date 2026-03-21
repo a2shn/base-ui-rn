@@ -1,6 +1,7 @@
+import { render } from '@testing-library/react-native';
 import * as React from 'react';
 import { View } from 'react-native';
-import { render } from '@testing-library/react-native';
+
 import { Tabs } from '../index';
 
 describe('Tabs - Ref', () => {
@@ -11,13 +12,13 @@ describe('Tabs - Ref', () => {
     const panelRef = React.createRef<View>();
 
     render(
-      <Tabs.Root ref={rootRef} defaultValue='tab-1'>
+      <Tabs.Root defaultValue='tab-1' ref={rootRef}>
         <Tabs.List ref={listRef}>
-          <Tabs.Tab value='tab-1' ref={tabRef}>
+          <Tabs.Tab ref={tabRef} value='tab-1'>
             Tab 1
           </Tabs.Tab>
         </Tabs.List>
-        <Tabs.Panel value='tab-1' ref={panelRef}>
+        <Tabs.Panel ref={panelRef} value='tab-1'>
           Content 1
         </Tabs.Panel>
       </Tabs.Root>,

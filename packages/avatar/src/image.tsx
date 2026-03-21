@@ -1,14 +1,15 @@
 import * as React from 'react';
 import {
+  type ImageErrorEventData,
+  type ImageLoadEventData,
+  type NativeSyntheticEvent,
   Image as RNImage,
   type ImageProps as RNImageProps,
-  type NativeSyntheticEvent,
-  type ImageLoadEventData,
-  type ImageErrorEventData,
 } from 'react-native';
-import type { AvatarImageProps } from './types';
+
 import { useAvatarContext } from './avatar-context';
 import { useAvatarImageLoading } from './avatar-image-loading';
+import type { AvatarImageProps } from './types';
 
 /**
  * The image component for the avatar.
@@ -24,12 +25,12 @@ import { useAvatarImageLoading } from './avatar-image-loading';
 export const AvatarImage = React.forwardRef<RNImage, AvatarImageProps>(
   (props, ref) => {
     const {
-      onLoadingStatusChange: onLoadingStatusChangeProp,
-      source,
       accessible = false,
-      onLoadStart,
-      onLoad,
       onError,
+      onLoad,
+      onLoadingStatusChange: onLoadingStatusChangeProp,
+      onLoadStart,
+      source,
       ...other
     } = props;
     const { onLoadingStatusChange } = useAvatarContext();
@@ -40,9 +41,9 @@ export const AvatarImage = React.forwardRef<RNImage, AvatarImageProps>(
       sourceKey,
       timeoutRef,
     } = useAvatarImageLoading({
-      source,
       onLoadingStatusChange,
       onLoadingStatusChangeProp,
+      source,
     });
 
     const handleLoadStart = React.useCallback(() => {
@@ -89,12 +90,12 @@ export const AvatarImage = React.forwardRef<RNImage, AvatarImageProps>(
     return (
       <RNImage
         {...(other as RNImageProps)}
+        accessible={accessible}
+        onError={handleError}
+        onLoad={handleLoad}
+        onLoadStart={handleLoadStart}
         ref={ref}
         source={source}
-        accessible={accessible}
-        onLoadStart={handleLoadStart}
-        onLoad={handleLoad}
-        onError={handleError}
       />
     );
   },

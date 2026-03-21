@@ -1,6 +1,7 @@
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+
 import { Tabs } from '../index';
 
 describe('Tabs - Keyboard Navigation', () => {
@@ -9,15 +10,15 @@ describe('Tabs - Keyboard Navigation', () => {
     const onFocusChange = jest.fn();
     const { getByTestId } = render(
       <Tabs.Root
-        onValueChange={onValueChange}
-        onFocusChange={onFocusChange}
         defaultValue='tab-1'
+        onFocusChange={onFocusChange}
+        onValueChange={onValueChange}
       >
         <Tabs.List>
-          <Tabs.Tab value='tab-1' testID='tab-1'>
+          <Tabs.Tab testID='tab-1' value='tab-1'>
             <Text>Tab 1</Text>
           </Tabs.Tab>
-          <Tabs.Tab value='tab-2' testID='tab-2'>
+          <Tabs.Tab testID='tab-2' value='tab-2'>
             <Text>Tab 2</Text>
           </Tabs.Tab>
         </Tabs.List>
@@ -35,15 +36,15 @@ describe('Tabs - Keyboard Navigation', () => {
     const onValueChange = jest.fn();
     const { getByTestId } = render(
       <Tabs.Root
-        onValueChange={onValueChange}
-        defaultValue='tab-1'
         activateOnFocus
+        defaultValue='tab-1'
+        onValueChange={onValueChange}
       >
         <Tabs.List>
-          <Tabs.Tab value='tab-1' testID='tab-1'>
+          <Tabs.Tab testID='tab-1' value='tab-1'>
             <Text>Tab 1</Text>
           </Tabs.Tab>
-          <Tabs.Tab value='tab-2' testID='tab-2'>
+          <Tabs.Tab testID='tab-2' value='tab-2'>
             <Text>Tab 2</Text>
           </Tabs.Tab>
         </Tabs.List>
@@ -60,15 +61,15 @@ describe('Tabs - Keyboard Navigation', () => {
     const onFocusChange = jest.fn();
     const { getByTestId } = render(
       <Tabs.Root
-        orientation='vertical'
-        onFocusChange={onFocusChange}
         defaultValue='tab-1'
+        onFocusChange={onFocusChange}
+        orientation='vertical'
       >
         <Tabs.List>
-          <Tabs.Tab value='tab-1' testID='tab-1'>
+          <Tabs.Tab testID='tab-1' value='tab-1'>
             <Text>Tab 1</Text>
           </Tabs.Tab>
-          <Tabs.Tab value='tab-2' testID='tab-2'>
+          <Tabs.Tab testID='tab-2' value='tab-2'>
             <Text>Tab 2</Text>
           </Tabs.Tab>
         </Tabs.List>

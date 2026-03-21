@@ -1,13 +1,14 @@
+import {
+  ACTIVATION_KEYS,
+  DEFAULT_HINT,
+  DPAD_KEYS,
+  NON_ACTIVATION_KEYS,
+} from '@base-ui-rn/test-utils';
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+
 import { Toggle } from '../toggle';
-import {
-  DEFAULT_HINT,
-  ACTIVATION_KEYS,
-  NON_ACTIVATION_KEYS,
-  DPAD_KEYS,
-} from '@base-ui-rn/test-utils';
 
 describe('Toggle - Keyboard Interaction', () => {
   afterEach(() => {
@@ -18,7 +19,7 @@ describe('Toggle - Keyboard Interaction', () => {
     it('toggles state when Space or Enter is pressed', () => {
       const onChangeMock = jest.fn();
       const { getByRole } = render(
-        <Toggle onPressedChange={onChangeMock} accessibilityHint={DEFAULT_HINT}>
+        <Toggle accessibilityHint={DEFAULT_HINT} onPressedChange={onChangeMock}>
           <Text>Keyboard Toggle</Text>
         </Toggle>,
       );
@@ -41,7 +42,7 @@ describe('Toggle - Keyboard Interaction', () => {
     it('triggers onPressedChange for all activation keys', () => {
       const onChangeMock = jest.fn();
       const { getByRole } = render(
-        <Toggle onPressedChange={onChangeMock} accessibilityHint={DEFAULT_HINT}>
+        <Toggle accessibilityHint={DEFAULT_HINT} onPressedChange={onChangeMock}>
           <Text>Keyboard Toggle</Text>
         </Toggle>,
       );
@@ -59,9 +60,9 @@ describe('Toggle - Keyboard Interaction', () => {
       const onChangeMock = jest.fn();
       const { getByRole } = render(
         <Toggle
+          accessibilityHint={DEFAULT_HINT}
           disabled
           onPressedChange={onChangeMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Disabled Keyboard Toggle</Text>
         </Toggle>,
@@ -77,10 +78,10 @@ describe('Toggle - Keyboard Interaction', () => {
       const onChangeMock = jest.fn();
       const { getByRole } = render(
         <Toggle
+          accessibilityHint={DEFAULT_HINT}
           disabled
           focusableWhenDisabled
           onPressedChange={onChangeMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Loading Toggle</Text>
         </Toggle>,
@@ -101,8 +102,8 @@ describe('Toggle - Keyboard Interaction', () => {
       const onPressedChangeMock = jest.fn();
       const { getByRole } = render(
         <Toggle
-          onPressedChange={onPressedChangeMock}
           accessibilityHint={DEFAULT_HINT}
+          onPressedChange={onPressedChangeMock}
         >
           <Text>Keyboard Toggle</Text>
         </Toggle>,
@@ -120,7 +121,7 @@ describe('Toggle - Keyboard Interaction', () => {
     it('does not trigger onPressedChange for D-pad navigation keys', () => {
       const onPressMock = jest.fn();
       const { getByRole } = render(
-        <Toggle onPressedChange={onPressMock} accessibilityHint={DEFAULT_HINT}>
+        <Toggle accessibilityHint={DEFAULT_HINT} onPressedChange={onPressMock}>
           <Text>Keyboard Toggle</Text>
         </Toggle>,
       );
@@ -139,7 +140,7 @@ describe('Toggle - Keyboard Interaction', () => {
     it('forwards all key events to onKeyDown callback', () => {
       const onKeyDownMock = jest.fn();
       const { getByRole } = render(
-        <Toggle onKeyDown={onKeyDownMock} accessibilityHint={DEFAULT_HINT}>
+        <Toggle accessibilityHint={DEFAULT_HINT} onKeyDown={onKeyDownMock}>
           <Text>Keyboard Toggle</Text>
         </Toggle>,
       );
@@ -155,7 +156,7 @@ describe('Toggle - Keyboard Interaction', () => {
     it('forwards both activation and non-activation keys to onKeyDown', () => {
       const onKeyDownMock = jest.fn();
       const { getByRole } = render(
-        <Toggle onKeyDown={onKeyDownMock} accessibilityHint={DEFAULT_HINT}>
+        <Toggle accessibilityHint={DEFAULT_HINT} onKeyDown={onKeyDownMock}>
           <Text>Keyboard Toggle</Text>
         </Toggle>,
       );
@@ -175,10 +176,10 @@ describe('Toggle - Keyboard Interaction', () => {
       const onChangeMock = jest.fn();
       const { getByRole, rerender } = render(
         <Toggle
+          accessibilityHint={DEFAULT_HINT}
           disabled
           focusableWhenDisabled
           onPressedChange={onChangeMock}
-          accessibilityHint={DEFAULT_HINT}
         >
           <Text>Loading Toggle</Text>
         </Toggle>,
@@ -192,7 +193,7 @@ describe('Toggle - Keyboard Interaction', () => {
       expect(onChangeMock).not.toHaveBeenCalled();
 
       rerender(
-        <Toggle onPressedChange={onChangeMock} accessibilityHint={DEFAULT_HINT}>
+        <Toggle accessibilityHint={DEFAULT_HINT} onPressedChange={onChangeMock}>
           <Text>Active Toggle</Text>
         </Toggle>,
       );

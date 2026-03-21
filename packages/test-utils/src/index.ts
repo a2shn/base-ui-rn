@@ -1,5 +1,5 @@
+import { fireEvent, render, RenderResult } from '@testing-library/react-native';
 import * as React from 'react';
-import { render, RenderResult, fireEvent } from '@testing-library/react-native';
 
 export { fireEvent };
 
@@ -47,16 +47,16 @@ export function testAccessibility(
   options: AccessibilityTestOptions,
 ): void {
   const {
-    label,
-    hint,
-    disabled = false,
-    checked,
-    busy,
-    selected,
-    focusable,
-    tabIndex,
     actions,
+    busy,
+    checked,
+    disabled = false,
+    focusable,
+    hint,
     importantForAccessibility,
+    label,
+    selected,
+    tabIndex,
   } = options;
 
   if (label !== undefined) {

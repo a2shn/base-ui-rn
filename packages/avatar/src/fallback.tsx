@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import type { AvatarFallbackProps } from './types';
+
 import { useAvatarContext } from './avatar-context';
+import type { AvatarFallbackProps } from './types';
 
 /**
  * A fallback component rendered when the avatar image is loading or fails to load.
@@ -19,12 +20,12 @@ import { useAvatarContext } from './avatar-context';
 export const AvatarFallback = React.forwardRef<View, AvatarFallbackProps>(
   (props, ref) => {
     const {
-      delay,
-      children,
-      accessible = true,
-      accessibilityRole,
-      accessibilityLabel,
       accessibilityHint,
+      accessibilityLabel,
+      accessibilityRole,
+      accessible = true,
+      children,
+      delay,
       ...other
     } = props;
     const { loadingStatus } = useAvatarContext();
@@ -42,12 +43,12 @@ export const AvatarFallback = React.forwardRef<View, AvatarFallbackProps>(
       return (
         <View
           {...other}
-          ref={ref}
-          accessible={accessible}
-          accessibilityRole={accessibilityRole}
-          accessibilityLabel={accessibilityLabel}
           accessibilityHint={accessibilityHint}
+          accessibilityLabel={accessibilityLabel}
+          accessibilityRole={accessibilityRole}
+          accessible={accessible}
           importantForAccessibility='yes'
+          ref={ref}
         >
           {children}
         </View>

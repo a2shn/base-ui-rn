@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { View } from 'react-native';
+
 import { useSliderContext } from './context';
 import type { SliderPartProps } from './types';
-import { evaluateStyles } from '@base-ui-rn/core';
 
 /**
  * Visual range container for the slider.
@@ -22,15 +22,15 @@ import { evaluateStyles } from '@base-ui-rn/core';
  */
 export const SliderTrack = React.memo(
   React.forwardRef<View, SliderPartProps>(function SliderTrack(
-    { style, onLayout, ...props },
+    { onLayout, style, ...props },
     ref,
   ) {
-    const { state, setTrackSize } = useSliderContext();
+    const { setTrackSize, state } = useSliderContext();
     const resolvedStyle = typeof style === 'function' ? style(state) : style;
 
     const handleLayout = React.useCallback(
       (event: import('react-native').LayoutChangeEvent) => {
-        const { width, height } = event.nativeEvent.layout;
+        const { height, width } = event.nativeEvent.layout;
         setTrackSize(state.orientation === 'horizontal' ? width : height);
         onLayout?.(event);
       },
@@ -40,12 +40,11 @@ export const SliderTrack = React.memo(
     return (
       <View
         {...props}
-        ref={ref}
         onLayout={handleLayout}
+        ref={ref}
         style={resolvedStyle}
       />
     );
-
   }),
 );
 

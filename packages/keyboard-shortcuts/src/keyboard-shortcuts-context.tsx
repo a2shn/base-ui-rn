@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Platform } from 'react-native';
+
 import type { RegisteredShortcut } from './types';
 import { isShortcutMatch } from './utils';
 

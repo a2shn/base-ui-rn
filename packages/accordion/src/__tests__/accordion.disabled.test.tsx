@@ -1,12 +1,13 @@
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+
 import {
-  AccordionRoot,
-  AccordionItem,
   AccordionHeader,
-  AccordionTrigger,
+  AccordionItem,
   AccordionPanel,
+  AccordionRoot,
+  AccordionTrigger,
 } from '../index';
 
 describe('Accordion - Disabled State', () => {
@@ -19,7 +20,7 @@ describe('Accordion - Disabled State', () => {
       const onValueChange = jest.fn();
       const { queryByText } = render(
         <AccordionRoot onValueChange={onValueChange}>
-          <AccordionItem value='item-1' disabled>
+          <AccordionItem disabled value='item-1'>
             <AccordionHeader>
               <AccordionTrigger>
                 <Text>Item 1</Text>
@@ -44,7 +45,7 @@ describe('Accordion - Disabled State', () => {
       const onValueChange = jest.fn();
       const { getByText } = render(
         <AccordionRoot onValueChange={onValueChange}>
-          <AccordionItem value='item-1' disabled>
+          <AccordionItem disabled value='item-1'>
             <AccordionHeader>
               <AccordionTrigger>
                 <Text>Item 1</Text>
@@ -66,7 +67,7 @@ describe('Accordion - Disabled State', () => {
     it('applies disabled accessibility state', () => {
       const { getByRole } = render(
         <AccordionRoot>
-          <AccordionItem value='item-1' disabled>
+          <AccordionItem disabled value='item-1'>
             <AccordionHeader>
               <AccordionTrigger>
                 <Text>Item 1</Text>

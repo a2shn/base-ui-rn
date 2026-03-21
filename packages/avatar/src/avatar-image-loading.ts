@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import type { AvatarImageProps, ImageLoadingStatus } from './types';
 
 const getSourceKey = (source: AvatarImageProps['source']): string => {
@@ -18,9 +19,9 @@ const getSourceKey = (source: AvatarImageProps['source']): string => {
 };
 
 export const useAvatarImageLoading = ({
-  source,
   onLoadingStatusChange,
   onLoadingStatusChangeProp,
+  source,
 }: {
   source: AvatarImageProps['source'];
   onLoadingStatusChange: (status: ImageLoadingStatus) => void;

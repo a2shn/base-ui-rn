@@ -1,19 +1,19 @@
-import type {
-  PressableProps,
-  NativeSyntheticEvent,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
 import {
-  type PressedChangeDetails,
-  type KeyPressEventData,
   type ARIABaseProps,
   type ARIAFocusProps,
   type ARIALiveProps,
   type ARIATraitDisabled,
   type FocusVisibleProps,
+  type KeyPressEventData,
+  type PressedChangeDetails,
 } from '@base-ui-rn/core';
 import type { ShortcutConfig } from '@base-ui-rn/keyboard-shortcuts';
+import type {
+  NativeSyntheticEvent,
+  PressableProps,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
 
 /**
  * Details passed as the second argument to `onPressedChange`.

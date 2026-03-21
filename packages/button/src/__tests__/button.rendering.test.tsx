@@ -1,6 +1,7 @@
-import * as React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
 import { render } from '@testing-library/react-native';
+import * as React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+
 import { Button } from '../button';
 
 describe('Button - Rendering', () => {
@@ -26,11 +27,11 @@ describe('Button - Rendering', () => {
   it('supports style as a function of state', () => {
     const { getByTestId } = render(
       <Button
-        testID='button'
         focusVisible={true}
         style={({ focusVisible }) => ({
           backgroundColor: focusVisible ? 'blue' : 'red',
         })}
+        testID='button'
       >
         <Text>Style</Text>
       </Button>,
@@ -41,7 +42,7 @@ describe('Button - Rendering', () => {
 
   it('provides state to children function', () => {
     const { getByTestId } = render(
-      <Button testID='button' focusVisible={true}>
+      <Button focusVisible={true} testID='button'>
         {({ focusVisible }) => (
           <Text testID='text'>{focusVisible ? 'Focused' : 'Idle'}</Text>
         )}
