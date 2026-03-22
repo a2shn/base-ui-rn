@@ -1,5 +1,5 @@
 import { testAccessibility } from '@base-ui-rn/test-utils';
-import { render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
 
 import { Slider } from '../index';
@@ -89,5 +89,33 @@ describe('Slider accessibility', () => {
     const thumb = getByLabelText('Thumb');
     expect(thumb.props['data-orientation']).toBe('horizontal');
     expect(thumb.props['data-disabled']).toBe(true);
+  });
+
+  it('applies data-index and data-focused to thumbs', () => {
+    const { getByLabelText } = render(
+      <Slider.Root defaultValue={[10, 20]}>
+        <Slider.Thumb aria-label='T0' index={0} />
+        <Slider.Thumb aria-label='T1' index={1} />
+      </Slider.Root>,
+    );
+
+    const t0 = getByLabelText('T0');
+    const t1 = getByLabelText('T1');
+
+    expect(t0.props['data-index']).toBe(0);
+    expect(t1.props['data-index']).toBe(1);
+
+    // Initial state: none focused
+    expect(t0.props['data-focused']).toBe(false);
+    expect(t1.props['data-focused']).toBe(false);
+
+    // Focus T0
+    fireEvent(t0, 'focus');
+    expect(t0.props['data-focused']).toBe(true);
+    expect(t1.props['data-focused']).toBe(false);
+
+    // Blur T0
+    fireEvent(t0, 'blur');
+    expect(t0.props['data-focused']).toBe(false);
   });
 });

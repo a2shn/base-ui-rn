@@ -9,8 +9,8 @@ import {
 import { useFocus } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import {
+  findNodeHandle,
   type NativeSyntheticEvent,
-  PanResponder,
   Platform,
   type TargetedEvent,
   View,
@@ -23,8 +23,8 @@ import type { SliderThumbProps } from './types';
  * Draggable handle that controls a slider value.
  */
 export const SliderThumb = React.memo(
-  React.forwardRef<View, SliderThumbProps>(function SliderThumb(props, ref) {
-    const {
+  React.forwardRef<View, SliderThumbProps>(function SliderThumb(
+    {
       accessibilityHint,
       accessibilityRole = 'adjustable',
       accessibilityState,
@@ -46,28 +46,32 @@ export const SliderThumb = React.memo(
       onFocus,
       onKeyDown,
       onLayout,
+      onPress,
       style,
       tabIndex,
-    } = props;
-
+      ...props
+    },
+    ref,
+  ) {
     const {
-      commitValue,
+      focusedThumbIndex,
+      focusThumb,
       format,
+      formatter,
       largeStep,
       locale,
+      setFocusedThumbIndex,
       setThumbSize,
-      setValueAtIndex,
       state,
       stepBy,
       thumbAlignment,
+      thumbNodeHandles,
       thumbRefs,
-      trackSize,
     } = useSliderContext();
     const isDisabled = state.disabled || disabled;
     const valueNow = state.value[index] ?? state.min;
     const isWeb = Platform.OS === 'web';
-    const resolvedTabIndex = resolveTabIndex(!!isDisabled, tabIndex ?? 0);
-    const pointerEvents = 'auto' as const;
+    const resolvedTabIndex = resolveTabIndex(!!isDisabled, tabIndex);
 
     const innerRef = React.useRef<View>(null);
     const mergedRef = React.useMemo(() => mergeRefs(ref, innerRef), [ref]);
@@ -77,10 +81,18 @@ export const SliderThumb = React.memo(
       const refs = thumbRefs.current;
       refs[index] = innerRef.current;
 
+      if (!isWeb && innerRef.current) {
+        const nodeHandle = findNodeHandle(innerRef.current);
+        if (typeof nodeHandle === 'number') {
+          thumbNodeHandles.current[index] = nodeHandle;
+        }
+      }
+
       return () => {
         refs[index] = null;
+        thumbNodeHandles.current[index] = undefined;
       };
-    }, [index, thumbRefs]);
+    }, [index, thumbRefs, thumbNodeHandles, isWeb]);
 
     const handleLayout = React.useCallback(
       (event: import('react-native').LayoutChangeEvent) => {
@@ -111,116 +123,11 @@ export const SliderThumb = React.memo(
       }
     }, [isWeb, state.orientation, setThumbSize]);
 
-    const initialValue = React.useRef(0);
-    const initialPointerPos = React.useRef(0);
-
-    // --- WEB DRAGGING (Pointer API) ---
-    React.useEffect(() => {
-      if (!isWeb || isDisabled) return;
-
-      const el = (innerRef.current as unknown as HTMLElement) ?? null;
-      if (!el) return;
-
-      const onPointerDown = (e: PointerEvent) => {
-        if (e.button !== 0) return;
-        const isHorizontal = state.orientation === 'horizontal';
-        initialValue.current = state.value[index];
-        initialPointerPos.current = isHorizontal ? e.clientX : e.clientY;
-        el.setPointerCapture(e.pointerId);
-      };
-
-      const onPointerMove = (e: PointerEvent) => {
-        if (!el.hasPointerCapture(e.pointerId)) return;
-        const isHorizontal = state.orientation === 'horizontal';
-        const size = trackSize.current;
-        if (size === 0) return;
-
-        const currentPointerPos = isHorizontal ? e.clientX : e.clientY;
-        const delta = currentPointerPos - initialPointerPos.current;
-        const direction = isHorizontal ? 1 : -1;
-        const range = state.max - state.min;
-        const deltaValue = (delta / size) * range * direction;
-        const newValue = initialValue.current + deltaValue;
-
-        setValueAtIndex(index, newValue, 'drag');
-      };
-
-      const onPointerUp = (e: PointerEvent) => {
-        if (!el.hasPointerCapture(e.pointerId)) return;
-        el.releasePointerCapture(e.pointerId);
-        commitValue('drag');
-      };
-
-      el.addEventListener('pointerdown', onPointerDown);
-      el.addEventListener('pointermove', onPointerMove);
-      el.addEventListener('pointerup', onPointerUp);
-      el.addEventListener('pointercancel', onPointerUp);
-
-      return () => {
-        el.removeEventListener('pointerdown', onPointerDown);
-        el.removeEventListener('pointermove', onPointerMove);
-        el.removeEventListener('pointerup', onPointerUp);
-        el.removeEventListener('pointercancel', onPointerUp);
-      };
-    }, [
-      isWeb,
-      isDisabled,
-      index,
-      state.orientation,
-      state.value,
-      state.max,
-      state.min,
-      setValueAtIndex,
-      commitValue,
-      trackSize,
-    ]);
-
-    // --- NATIVE DRAGGING (PanResponder) ---
-    const panResponder = React.useMemo(() => {
-      if (isWeb || isDisabled) return { panHandlers: {} };
-
-      return PanResponder.create({
-        onPanResponderGrant: () => {
-          initialValue.current = state.value[index];
-        },
-        onPanResponderMove: (_, gestureState) => {
-          const isHorizontal = state.orientation === 'horizontal';
-          const size = trackSize.current;
-          if (size === 0) return;
-
-          const delta = isHorizontal ? gestureState.dx : -gestureState.dy;
-          const range = state.max - state.min;
-          const deltaValue = (delta / size) * range;
-          const newValue = initialValue.current + deltaValue;
-
-          setValueAtIndex(index, newValue, 'drag');
-        },
-        onPanResponderRelease: () => {
-          commitValue('drag');
-        },
-        onPanResponderTerminate: () => {
-          commitValue('drag');
-        },
-        onStartShouldSetPanResponder: () => true,
-      });
-    }, [
-      isWeb,
-      isDisabled,
-      index,
-      state.orientation,
-      state.value,
-      state.max,
-      state.min,
-      trackSize,
-      setValueAtIndex,
-      commitValue,
-    ]);
-
     const handleKeyboardRange = useKeyboardRange({
       disabled: isDisabled,
       onDecrement: () => stepBy(index, -1),
-      onEnd: () => stepBy(index, 100000), // Max
-      onHome: () => stepBy(index, -100000), // Min
+      onEnd: () => stepBy(index, 100000),
+      onHome: () => stepBy(index, -100000),
       onIncrement: () => stepBy(index, 1),
       onPageDown: () => stepBy(index, -largeStep),
       onPageUp: () => stepBy(index, largeStep),
@@ -259,56 +166,74 @@ export const SliderThumb = React.memo(
       }
     }, [state.orientation, percent, thumbAlignment]);
 
-    const formatter = React.useMemo(() => {
-      try {
-        return new Intl.NumberFormat(locale, format);
-      } catch {
-        return null;
-      }
-    }, [locale, format]);
-
     const formattedValue = React.useMemo(() => {
       return formatter ? formatter.format(valueNow) : valueNow.toString();
     }, [formatter, valueNow]);
 
-    const resolvedAriaLabel = getAriaLabel ? getAriaLabel(index) : ariaLabel;
-    const resolvedAriaValueText = getAriaValueText
-      ? getAriaValueText(formattedValue, valueNow, index)
-      : formattedValue;
+    const resolvedAriaLabel = React.useMemo(
+      () => (getAriaLabel ? getAriaLabel(index) : ariaLabel),
+      [getAriaLabel, index, ariaLabel],
+    );
+
+    const resolvedAriaValueText = React.useMemo(
+      () =>
+        getAriaValueText
+          ? getAriaValueText(formattedValue, valueNow, index)
+          : formattedValue,
+      [getAriaValueText, formattedValue, valueNow, index],
+    );
 
     const hasCustomText = getAriaValueText || format || locale;
-    const a11yValue = hasCustomText
-      ? { text: resolvedAriaValueText }
-      : { max: state.max, min: state.min, now: valueNow };
+    const a11yValue = React.useMemo(
+      () =>
+        hasCustomText
+          ? { text: resolvedAriaValueText }
+          : { max: state.max, min: state.min, now: valueNow },
+      [hasCustomText, resolvedAriaValueText, state.max, state.min, valueNow],
+    );
 
-    const {
-      focusVisible,
-      onBlur: handleBlur,
-      onFocus: handleFocus,
-    } = useFocus({
+    const { focusVisible, onBlur: handleBlur } = useFocus({
       focusVisible: forceFocusVisible,
     });
 
     const handleFocusCallback = React.useCallback(
       (e: NativeSyntheticEvent<TargetedEvent>) => {
-        handleFocus();
+        focusThumb(index);
         onFocus?.(e);
       },
-      [handleFocus, onFocus],
+      [focusThumb, index, onFocus],
     );
 
     const handleBlurCallback = React.useCallback(
       (e: NativeSyntheticEvent<TargetedEvent>) => {
         handleBlur();
+        setFocusedThumbIndex(null);
         onBlur?.(e);
       },
-      [handleBlur, onBlur],
+      [handleBlur, onBlur, setFocusedThumbIndex],
+    );
+
+    const handlePress = React.useCallback(
+      (e: import('react-native').GestureResponderEvent) => {
+        focusThumb(index);
+        onPress?.(e);
+      },
+      [focusThumb, index, onPress],
+    );
+
+    const thumbState = React.useMemo(
+      () => ({ ...state, focusVisible, index, valueNow }),
+      [state, focusVisible, index, valueNow],
+    );
+
+    const memoizedStyleOptions = React.useMemo(
+      () => ({ disableDefaultFocusRing, focusRingStyle }),
+      [disableDefaultFocusRing, focusRingStyle],
     );
 
     return (
       <PressableWithKeyPress
         {...props}
-        {...panResponder.panHandlers}
         accessibilityActions={[
           { label: 'increment', name: 'increment' },
           { label: 'decrement', name: 'decrement' },
@@ -332,6 +257,9 @@ export const SliderThumb = React.memo(
         aria-valuenow={valueNow}
         aria-valuetext={resolvedAriaValueText}
         data-disabled={isDisabled}
+        data-dragging={state.dragging}
+        data-focused={focusedThumbIndex === index}
+        data-index={index}
         data-orientation={state.orientation}
         onAccessibilityAction={(event) => {
           if (event.nativeEvent.actionName === 'increment') {
@@ -344,16 +272,12 @@ export const SliderThumb = React.memo(
         onFocus={handleFocusCallback}
         onKeyDown={handleKeyDown}
         onLayout={handleLayout}
-        pointerEvents={pointerEvents}
+        onPress={handlePress}
         ref={mergedRef}
         role={accessibilityRole as never}
         style={[
           dynamicStyle,
-          evaluateStyles(
-            style,
-            { ...state, focusVisible, index, valueNow },
-            { disableDefaultFocusRing, focusRingStyle },
-          ),
+          evaluateStyles(style, thumbState, memoizedStyleOptions),
         ]}
         tabIndex={resolvedTabIndex}
       />

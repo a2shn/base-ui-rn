@@ -18,19 +18,21 @@ import type { SliderPartProps } from './types';
  * ```
  */
 export const SliderIndicator = React.memo(
-  React.forwardRef<View, SliderPartProps>(function SliderIndicator(props, ref) {
-    const { style, ...otherProps } = props;
+  React.forwardRef<View, SliderPartProps>(function SliderIndicator(
+    { style, ...props },
+    ref,
+  ) {
     const { state } = useSliderContext();
 
-    const isRange = state.value.length > 1;
-    const minValue = isRange ? (state.value[0] ?? state.min) : state.min;
-    const maxValue = state.value[state.value.length - 1] ?? state.max;
-    const range = state.max - state.min || 1;
-    const start = ((minValue - state.min) / range) * 100;
-    const end = ((maxValue - state.min) / range) * 100;
+    const dynamicStyle = React.useMemo((): import('react-native').ViewStyle => {
+      const isRange = state.value.length > 1;
+      const minValue = isRange ? (state.value[0] ?? state.min) : state.min;
+      const maxValue = state.value[state.value.length - 1] ?? state.max;
+      const range = state.max - state.min || 1;
+      const start = ((minValue - state.min) / range) * 100;
+      const end = ((maxValue - state.min) / range) * 100;
 
-    const dynamicStyle: import('react-native').ViewStyle =
-      state.orientation === 'horizontal'
+      return state.orientation === 'horizontal'
         ? {
             height: '100%',
             left: `${start}%` as never,
@@ -43,11 +45,20 @@ export const SliderIndicator = React.memo(
             position: 'absolute',
             width: '100%',
           };
+    }, [state.value, state.min, state.max, state.orientation]);
 
     const resolvedStyle = typeof style === 'function' ? style(state) : style;
 
     return (
-      <View {...otherProps} ref={ref} style={[dynamicStyle, resolvedStyle]} />
+      <View
+        {...props}
+        data-disabled={state.disabled}
+        data-dragging={state.dragging}
+        data-focused={state.activeIndex !== null}
+        data-orientation={state.orientation}
+        ref={ref}
+        style={[dynamicStyle, resolvedStyle]}
+      />
     );
   }),
 );

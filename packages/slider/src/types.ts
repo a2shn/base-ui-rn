@@ -36,6 +36,10 @@ export type WebSliderRootAccessibilityProps = ARIABaseProps &
      */
     'data-disabled'?: boolean;
     /**
+     * Present while the user is dragging.
+     */
+    'data-dragging'?: boolean;
+    /**
      * The minimum number of steps between thumbs.
      * @default 0
      */
@@ -70,6 +74,18 @@ export type WebSliderThumbAccessibilityProps = ARIABaseProps &
      * @default false
      */
     'data-disabled'?: boolean;
+    /**
+     * Present while the user is dragging.
+     */
+    'data-dragging'?: boolean;
+    /**
+     * Present when the thumb is focused.
+     */
+    'data-focused'?: boolean;
+    /**
+     * Indicates the index of the thumb in range sliders.
+     */
+    'data-index'?: number;
   };
 
 /**
@@ -121,6 +137,14 @@ export interface SliderState {
    * Whether the slider is disabled.
    */
   disabled: boolean;
+  /**
+   * Whether the user is currently dragging a thumb.
+   */
+  dragging: boolean;
+  /**
+   * The index of the currently focused or dragged thumb.
+   */
+  activeIndex: number | null;
   /**
    * The orientation of the slider.
    */
@@ -247,6 +271,18 @@ export interface SliderRootProps
 export interface SliderPartProps
   extends Omit<ViewProps, 'children' | 'style'>, ARIABaseProps, ARIALiveProps {
   /**
+   * Present while the user is dragging.
+   */
+  'data-dragging'?: boolean;
+  /**
+   * The component orientation.
+   */
+  'data-orientation'?: 'horizontal' | 'vertical';
+  /**
+   * Present when the slider is disabled.
+   */
+  'data-disabled'?: boolean;
+  /**
    * The content of the component.
    */
   children?: React.ReactNode;
@@ -342,6 +378,14 @@ export type WebSliderValueAccessibilityProps = ARIABaseProps & ARIALiveProps;
 export interface SliderLabelProps
   extends TextProps, WebSliderLabelAccessibilityProps {
   /**
+   * Present while the user is dragging.
+   */
+  'data-dragging'?: boolean;
+  /**
+   * Present when the slider is disabled.
+   */
+  'data-disabled'?: boolean;
+  /**
    * The content of the label.
    */
   children?: React.ReactNode;
@@ -352,6 +396,14 @@ export interface SliderLabelProps
  */
 export interface SliderValueProps
   extends Omit<TextProps, 'children'>, WebSliderValueAccessibilityProps {
+  /**
+   * Present while the user is dragging.
+   */
+  'data-dragging'?: boolean;
+  /**
+   * Present when the slider is disabled.
+   */
+  'data-disabled'?: boolean;
   /**
    * A function that returns content based on the formatted values.
    */

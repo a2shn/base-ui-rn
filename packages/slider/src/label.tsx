@@ -41,6 +41,10 @@ export const SliderLabel = React.memo(
         aria-hidden={ariaHidden}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
+        data-disabled={state.disabled}
+        data-dragging={state.dragging}
+        data-focused={state.activeIndex !== null}
+        data-orientation={state.orientation}
         ref={ref}
       >
         {evaluateStyles(children, state)}

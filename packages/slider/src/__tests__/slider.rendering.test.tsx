@@ -9,14 +9,16 @@ describe('Slider rendering', () => {
       <Slider.Root defaultValue={25}>
         <Slider.Label>Volume</Slider.Label>
         <Slider.Value />
-        <Slider.Track>
-          <Slider.Indicator testID='indicator' />
-          <Slider.Thumb aria-label='Volume thumb' />
-        </Slider.Track>
+        <Slider.Control>
+          <Slider.Track>
+            <Slider.Indicator testID='indicator' />
+            <Slider.Thumb aria-label='Volume thumb' />
+          </Slider.Track>
+        </Slider.Control>
       </Slider.Root>,
     );
 
-    expect(getAllByRole('adjustable')).toHaveLength(1); // One for Thumb
+    expect(getAllByRole('adjustable')).toHaveLength(2); // One for Root, one for Thumb
     expect(getByText('Volume')).toBeTruthy();
     expect(getByText('25')).toBeTruthy();
     expect(getByTestId('indicator')).toBeTruthy();

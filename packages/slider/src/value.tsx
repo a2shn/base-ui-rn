@@ -29,15 +29,13 @@ export const SliderValue = React.memo(
       children,
       ...other
     } = props;
-    const { format, locale, state } = useSliderContext();
+    const { formatter, state } = useSliderContext();
 
     const formatted = React.useMemo(() => {
-      const formatter =
-        locale || format ? new Intl.NumberFormat(locale, format) : undefined;
       return state.value.map((item) =>
         formatter ? formatter.format(item) : item.toString(),
       );
-    }, [state.value, locale, format]);
+    }, [state.value, formatter]);
 
     return (
       <Text
@@ -48,6 +46,10 @@ export const SliderValue = React.memo(
         aria-hidden={ariaHidden}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
+        data-disabled={state.disabled}
+        data-dragging={state.dragging}
+        data-focused={state.activeIndex !== null}
+        data-orientation={state.orientation}
         ref={ref}
       >
         {typeof children === 'function'

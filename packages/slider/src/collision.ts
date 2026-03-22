@@ -138,7 +138,7 @@ export function calculateNextValues(options: CollisionOptions): number[] {
     if (next[0] < min) {
       next[0] = min;
       for (let i = 1; i < next.length; i++) {
-        next[i] = Math.max(next[i], next[i - 1] - minDistance);
+        next[i] = Math.max(next[i], next[i - 1] + minDistance);
       }
     }
 

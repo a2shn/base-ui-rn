@@ -18,8 +18,13 @@ interface SliderContextValue {
   largeStep: number;
   setTrackSize: (size: number) => void;
   setThumbSize: (size: number) => void;
-  thumbRefs: React.MutableRefObject<(View | null)[]>;
-  trackSize: React.RefObject<number>;
+  thumbRefs: React.RefObject<(View | null)[]>;
+  thumbNodeHandles: React.RefObject<Array<number | undefined>>;
+  setFocusedThumbIndex: (index: number | null) => void;
+  focusedThumbIndex: number | null;
+  focusThumb: (index: number) => void;
+  formatter: Intl.NumberFormat | null;
+  setDragging: (dragging: boolean) => void;
 }
 
 export const SliderContext = React.createContext<SliderContextValue | null>(

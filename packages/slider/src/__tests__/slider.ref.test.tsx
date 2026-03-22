@@ -9,6 +9,7 @@ describe('Slider refs', () => {
     const rootRef = React.createRef<View>();
     const labelRef = React.createRef<Text>();
     const valueRef = React.createRef<Text>();
+    const controlRef = React.createRef<View>();
     const trackRef = React.createRef<View>();
     const indicatorRef = React.createRef<View>();
     const thumbRef = React.createRef<View>();
@@ -17,16 +18,19 @@ describe('Slider refs', () => {
       <Slider.Root defaultValue={42} ref={rootRef}>
         <Slider.Label ref={labelRef}>Label</Slider.Label>
         <Slider.Value ref={valueRef} />
-        <Slider.Track ref={trackRef}>
-          <Slider.Indicator ref={indicatorRef} />
-          <Slider.Thumb aria-label='Thumb' ref={thumbRef} />
-        </Slider.Track>
+        <Slider.Control ref={controlRef}>
+          <Slider.Track ref={trackRef}>
+            <Slider.Indicator ref={indicatorRef} />
+            <Slider.Thumb aria-label='Thumb' ref={thumbRef} />
+          </Slider.Track>
+        </Slider.Control>
       </Slider.Root>,
     );
 
     expect(rootRef.current).toBeTruthy();
     expect(labelRef.current).toBeTruthy();
     expect(valueRef.current).toBeTruthy();
+    expect(controlRef.current).toBeTruthy();
     expect(trackRef.current).toBeTruthy();
     expect(indicatorRef.current).toBeTruthy();
     expect(thumbRef.current).toBeTruthy();

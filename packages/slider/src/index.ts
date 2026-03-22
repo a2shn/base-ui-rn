@@ -1,3 +1,4 @@
+import { SliderControl } from './control';
 import { SliderIndicator } from './indicator';
 import { SliderLabel } from './label';
 import { SliderRoot } from './slider';
@@ -6,6 +7,7 @@ import { SliderTrack } from './track';
 import { SliderValue } from './value';
 
 export const Slider = {
+  Control: SliderControl,
   Indicator: SliderIndicator,
   Label: SliderLabel,
   Root: SliderRoot,
@@ -15,6 +17,7 @@ export const Slider = {
 };
 
 export {
+  SliderControl,
   SliderIndicator,
   SliderLabel,
   SliderRoot,

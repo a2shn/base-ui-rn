@@ -8,7 +8,7 @@
   "main": "index.ts",
   "scripts": {
     "android": "expo run:android",
-    "dev": "expo start --localhost --android",
+    "dev": "expo start --localhost --web",
     "ios": "expo run:ios",
     "lint": "eslint . --fix && tsc --noEmit"
   },

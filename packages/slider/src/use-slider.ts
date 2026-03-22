@@ -1,6 +1,6 @@
 import { clamp } from '@base-ui-rn/core';
 import * as React from 'react';
-import { Platform } from 'react-native';
+import { Platform, type View } from 'react-native';
 
 import { calculateNextValues } from './collision';
 import type { SliderRootProps, SliderState, SliderValue } from './types';
@@ -44,6 +44,8 @@ export function useSlider(props: SliderRootProps) {
   // Use refs for physical sizes to avoid stale closure issues in rapid updates
   const trackSizeRef = React.useRef(0);
   const thumbSizeRef = React.useRef(0);
+  const thumbRefs = React.useRef<(View | null)[]>([]);
+  const thumbNodeHandles = React.useRef<Array<number | undefined>>([]);
 
   const handleSetTrackSize = React.useCallback((size: number) => {
     trackSizeRef.current = size;
@@ -51,6 +53,30 @@ export function useSlider(props: SliderRootProps) {
 
   const handleSetThumbSize = React.useCallback((size: number) => {
     thumbSizeRef.current = size;
+  }, []);
+
+  const [focusedThumbIndex, setFocusedThumbIndex] = React.useState<
+    number | null
+  >(null);
+
+  const [dragging, setDragging] = React.useState(false);
+
+  const formatter = React.useMemo(() => {
+    try {
+      return new Intl.NumberFormat(locale, format);
+    } catch {
+      return null;
+    }
+  }, [locale, format]);
+
+  const focusThumb = React.useCallback((index: number) => {
+    setFocusedThumbIndex(index);
+    const thumb = thumbRefs.current[index];
+    if (thumb) {
+      if (Platform.OS === 'web') {
+        (thumb as unknown as HTMLElement).focus();
+      }
+    }
   }, []);
 
   const isControlled = value !== undefined;
@@ -139,10 +165,6 @@ export function useSlider(props: SliderRootProps) {
         minDistance = Math.max(minDistance, physicalMinDistance);
       }
 
-      if (thumbCollisionBehavior === 'push' && minDistance === 0) {
-        minDistance = step;
-      }
-
       // Calculate max distance in steps, then convert to value units
       let maxDistanceInValueUnits: number | undefined;
       if (maxStepsBetweenValues !== undefined && maxStepsBetweenValues > 0) {
@@ -194,7 +216,9 @@ export function useSlider(props: SliderRootProps) {
 
   const state: SliderState = React.useMemo(
     () => ({
+      activeIndex: focusedThumbIndex,
       disabled,
+      dragging,
       max,
       maxStepsBetweenValues,
       min,
@@ -209,23 +233,49 @@ export function useSlider(props: SliderRootProps) {
       max,
       step,
       disabled,
+      dragging,
       orientation,
       minStepsBetweenValues,
       maxStepsBetweenValues,
+      focusedThumbIndex,
     ],
   );
 
-  return {
-    commitValue,
-    format,
-    largeStep,
-    locale,
-    setThumbSize: handleSetThumbSize,
-    setTrackSize: handleSetTrackSize,
-    setValueAtIndex,
-    state,
-    stepBy,
-    thumbAlignment,
-    trackSize: trackSizeRef,
-  };
+  return React.useMemo(
+    () => ({
+      commitValue,
+      focusedThumbIndex,
+      focusThumb,
+      format,
+      formatter,
+      largeStep,
+      locale,
+      setDragging,
+      setFocusedThumbIndex,
+      setThumbSize: handleSetThumbSize,
+      setTrackSize: handleSetTrackSize,
+      setValueAtIndex,
+      state,
+      stepBy,
+      thumbAlignment,
+      thumbNodeHandles,
+      thumbRefs,
+    }),
+    [
+      commitValue,
+      focusedThumbIndex,
+      focusThumb,
+      formatter,
+      format,
+      largeStep,
+      locale,
+      setDragging,
+      handleSetThumbSize,
+      handleSetTrackSize,
+      setValueAtIndex,
+      state,
+      stepBy,
+      thumbAlignment,
+    ],
+  );
 }
