@@ -47,6 +47,9 @@ export function useTabsRoot(props: TabsRootProps) {
   const [internalValue, setInternalValue] = React.useState<TabValue | null>(
     defaultValue ?? null,
   );
+  const [focusedValue, setFocusedValue] = React.useState<TabValue | null>(
+    defaultValue ?? null,
+  );
   const [activationDirection, setActivationDirection] =
     React.useState<ActivationDirection>('none');
 
@@ -61,6 +64,12 @@ export function useTabsRoot(props: TabsRootProps) {
   >(new Map());
   const tabOrder = React.useRef<TabValue[]>([]);
   const panelOrder = React.useRef<TabValue[]>([]);
+
+  React.useEffect(() => {
+    if (currentValue !== null) {
+      setFocusedValue(currentValue);
+    }
+  }, [currentValue]);
 
   const registerTab = React.useCallback(
     (value: TabValue, ref: React.RefObject<View | null>) => {
@@ -120,6 +129,7 @@ export function useTabsRoot(props: TabsRootProps) {
       }
 
       setActivationDirection(direction);
+      setFocusedValue(newValue);
 
       if (!isControlled) {
         setInternalValue(newValue);
@@ -139,9 +149,15 @@ export function useTabsRoot(props: TabsRootProps) {
     (value: TabValue, event: NativeSyntheticEvent<KeyPressEventData>) => {
       const nextId = handleKeyDown(String(value), event);
       if (nextId) {
+        const nextValue = tabOrder.current.find((v) => String(v) === nextId);
+
+        if (typeof nextValue === 'undefined') return;
+
         if (activateOnFocus) {
-          handleValueChange(nextId);
+          handleValueChange(nextValue);
         } else {
+          tabRefs.current.get(nextValue)?.current?.focus();
+          setFocusedValue(nextValue);
           onFocusChange?.(nextId);
         }
       }
@@ -159,6 +175,7 @@ export function useTabsRoot(props: TabsRootProps) {
   return {
     contextValue: {
       activationDirection,
+      focusedValue,
       focusVisible,
       getTabIndex,
       onFocusChange,
@@ -174,6 +191,7 @@ export function useTabsRoot(props: TabsRootProps) {
           unregTab();
         };
       },
+      setFocusedValue,
       tabMeasurements,
       updateTabMeasurement,
       value: currentValue,
@@ -214,9 +232,12 @@ export function useTab(props: TabProps) {
     focusVisible: forceFocusVisible,
   });
 
+  const isFocusedFromRoot = context.focusedValue === value;
+
   const handleFocus = React.useCallback(
     (e: NativeSyntheticEvent<TargetedEvent>) => {
       onFocus();
+      context.setFocusedValue(value);
       context.onFocusChange?.(String(value));
       onFocusProp?.(e);
     },
@@ -267,8 +288,8 @@ export function useTab(props: TabProps) {
     activationDirection: context.activationDirection,
     active,
     disabled,
-    focused,
-    focusVisible,
+    focused: focused || isFocusedFromRoot,
+    focusVisible: focusVisible || (isFocusedFromRoot && !!context.focusVisible),
     orientation: context.orientation,
   };
 

@@ -85,7 +85,7 @@ export function SliderPlaybook() {
             </Slider.Value>
           </Slider.Root>
           <Text style={styles.hint}>
-            Thumbs can pass through and overlap each other freely.
+            Thumbs can not pass through but overlap each other freely.
           </Text>
           <LiveConsole state={independentValue} title='independentValue' />
         </View>
@@ -333,7 +333,5 @@ const styles = StyleSheet.create({
 });
 
 function getThumbStyle(state: SliderThumbState) {
-  return state.disabled
-    ? { ...styles.thumb, ...styles.thumbDisabled }
-    : styles.thumb;
+  return styles.thumb;
 }

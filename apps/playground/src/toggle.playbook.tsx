@@ -5,7 +5,7 @@ import {
   theme,
   usePlaybookToggles,
 } from '@base-ui-rn/playbook';
-import { Toggle, type ToggleState } from '@base-ui-rn/toggle';
+import { Toggle } from '@base-ui-rn/toggle';
 import * as React from 'react';
 import { StyleSheet, Text } from 'react-native';
 
@@ -29,7 +29,7 @@ export function TogglePlaybook() {
         <Toggle
           accessibilityHint='Toggles notifications'
           defaultPressed={false}
-          style={getToggleStyle}
+          style={styles.toggle}
           testID='toggle-uncontrolled'
         >
           <Text style={styles.text}>Notifications</Text>
@@ -42,7 +42,7 @@ export function TogglePlaybook() {
           onPressedChange={darkMode.setValue}
           pressed={darkMode.value as boolean}
           role='switch'
-          style={getToggleStyle}
+          style={styles.toggle}
           testID='toggle-dark-mode'
         >
           <Text style={styles.text}>{darkMode.value ? 'ON' : 'OFF'}</Text>
@@ -54,7 +54,7 @@ export function TogglePlaybook() {
         <Toggle
           accessibilityHint='Locked setting'
           disabled
-          style={[styles.toggleBase, styles.disabled]}
+          style={[styles.toggle, styles.disabled]}
           testID='toggle-disabled'
         >
           <Text style={styles.text}>Disabled</Text>
@@ -71,7 +71,7 @@ export function TogglePlaybook() {
           disabled={loading.value as boolean}
           focusableWhenDisabled
           onPress={handleLoadingPress}
-          style={getToggleStyle}
+          style={styles.toggle}
           testID='toggle-disabled-focusable'
         >
           <Text style={styles.text}>
@@ -94,16 +94,12 @@ const styles = StyleSheet.create({
   disabled: {
     opacity: 0.5,
   },
-  pressed: {
-    backgroundColor: '#3D3D3D',
-    opacity: 0.7,
-  },
   text: {
     color: theme.colors.textPrimary,
     fontSize: theme.font.size.md,
     fontWeight: theme.font.weight.medium,
   },
-  toggleBase: {
+  toggle: {
     alignItems: 'center',
     alignSelf: 'center',
     backgroundColor: theme.colors.border,
@@ -113,7 +109,3 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing.md,
   },
 });
-
-function getToggleStyle({ pressed }: ToggleState) {
-  return [styles.toggleBase, pressed && styles.pressed];
-}

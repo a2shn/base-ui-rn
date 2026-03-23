@@ -1,4 +1,4 @@
-import { Platform, type ViewStyle } from 'react-native';
+import { Platform } from 'react-native';
 
 /**
  * Default hit slop for components.
@@ -24,9 +24,7 @@ export const DEFAULT_FOCUS_RING_STYLE = Platform.select({
     borderColor: '#0071E3',
     borderWidth: 2,
   },
-  web: {
-    outline: '2px solid #0071E3',
-  } as unknown as ViewStyle,
+  web: null
 });
 
 /**

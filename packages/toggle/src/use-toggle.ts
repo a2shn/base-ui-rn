@@ -74,6 +74,8 @@ export const useToggle = (
   const [uncontrolledState, setUncontrolledState] =
     React.useState(defaultPressed);
 
+  const isKeyboardActivationRef = React.useRef(false);
+
   const isPressed =
     isInGroup && value !== undefined
       ? groupContext.valueSet.has(value)
@@ -110,13 +112,20 @@ export const useToggle = (
 
   const handlePress = React.useCallback(
     (event: GestureResponderEvent) => {
+      if (isKeyboardActivationRef.current) {
+        return;
+      }
       activateToggle('press', event);
     },
     [activateToggle],
   );
 
   const performKeyboardActivation = React.useCallback(() => {
+    isKeyboardActivationRef.current = true;
     activateToggle('keyboard');
+    setTimeout(() => {
+      isKeyboardActivationRef.current = false;
+    }, 200);
   }, [activateToggle]);
 
   const handleKeyboardActivation = useKeyboardActivation(
@@ -132,6 +141,11 @@ export const useToggle = (
 
   const handleKeyDown = React.useCallback(
     (e: NativeSyntheticEvent<KeyPressEventData>) => {
+      const nativeEvent = e.nativeEvent;
+      const key = nativeEvent?.key;
+      if (key === 'Enter' || key === ' ') {
+        e.stopPropagation?.();
+      }
       handleKeyboardActivation(e);
       onKeyDown?.(e);
       if (isInGroup && value !== undefined) {

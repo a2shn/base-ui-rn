@@ -51,10 +51,6 @@ export interface ToggleGroupState {
    * Whether keyboard focus should loop.
    */
   loopFocus: boolean;
-  /**
-   * Whether the group is currently focused.
-   */
-  focused: boolean;
 }
 
 export interface ToggleGroupProps

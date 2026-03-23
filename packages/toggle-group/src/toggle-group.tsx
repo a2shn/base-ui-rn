@@ -43,7 +43,6 @@ export const ToggleGroup = React.memo(
       multiple = false,
       orientation = 'horizontal',
       style,
-      tabIndex,
       ...otherViewProps
     } = props;
 
@@ -98,7 +97,6 @@ export const ToggleGroup = React.memo(
           ref={internalRef}
           role={(accessibilityRole ?? 'group') as unknown as 'checkbox'}
           style={evaluateStyles(style, state)}
-          tabIndex={tabIndex}
         >
           {evaluateStyles(children, state)}
         </View>

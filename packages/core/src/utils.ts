@@ -142,22 +142,31 @@ export function evaluateStyles<T, S>(
   const resolvedValue =
     typeof value === 'function' ? (value as (state: S) => T)(state) : value;
 
-  if (!isStyle(resolvedValue)) {
-    return resolvedValue;
-  }
-
   const focusVisible = (state as { focusVisible?: boolean }).focusVisible;
-  if (!focusVisible) {
-    return resolvedValue as StyleProp<ViewStyle>;
-  }
-
   const focusRing = resolveFocusRingStyle(
-    focusVisible,
+    !!focusVisible,
     disableDefaultFocusRing,
     focusRingStyle,
   );
 
-  if (focusRing === null) {
+  const isStyleContext = Object.keys(options).length > 0;
+
+  if (!isStyle(resolvedValue)) {
+    // If it's a style context and the value is null/undefined, return the focus ring if visible.
+    if (
+      isStyleContext &&
+      focusVisible &&
+      focusRing !== null &&
+      resolvedValue == null
+    ) {
+      return focusRing;
+    }
+    return resolvedValue;
+  }
+
+  // Only add the focus ring if we are in a style context (meaning the component opted in)
+  // and focus is visible.
+  if (!isStyleContext || !focusVisible || focusRing === null) {
     return resolvedValue as StyleProp<ViewStyle>;
   }
 
