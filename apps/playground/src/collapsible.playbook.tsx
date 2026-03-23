@@ -1,4 +1,7 @@
-import { Collapsible } from '@base-ui-rn/collapsible';
+import {
+  Collapsible,
+  type CollapsiblePanelState,
+} from '@base-ui-rn/collapsible';
 import {
   Gallery,
   Section,
@@ -97,6 +100,30 @@ export function CollapsiblePlaybook() {
           </Collapsible.Root>
         </View>
       </Section>
+
+      <Section title='Panel Dimensions'>
+        <View style={styles.container}>
+          <Collapsible.Root defaultOpen>
+            <Collapsible.Trigger style={styles.trigger}>
+              {({ open }) => (
+                <>
+                  <ChevronIcon style={[styles.icon, open && styles.iconOpen]} />
+                  <Text style={styles.text}>Panel Dimensions</Text>
+                </>
+              )}
+            </Collapsible.Trigger>
+            <Collapsible.Panel keepMounted style={getPanelDimensionsStyle}>
+              <View style={styles.content}>
+                <Text style={styles.text}>
+                  Use state.panel.height and state.panel.width for custom
+                  animations.
+                </Text>
+              </View>
+            </Collapsible.Panel>
+          </Collapsible.Root>
+        </View>
+      </Section>
+
       <Section title='Disabled'>
         <View style={styles.container}>
           <Collapsible.Root disabled>
@@ -116,6 +143,34 @@ export function CollapsiblePlaybook() {
                 <Text style={styles.text}>alien-bean-pasta</Text>
                 <Text style={styles.text}>wild-irish-burrito</Text>
                 <Text style={styles.text}>horse-battery-staple</Text>
+              </View>
+            </Collapsible.Panel>
+          </Collapsible.Root>
+        </View>
+      </Section>
+
+      <Section title='Keep Mounted with Animation'>
+        <View style={styles.container}>
+          <Collapsible.Root>
+            <Collapsible.Trigger
+              style={styles.trigger}
+              testID='collapsible-trigger-animated'
+            >
+              {({ open }) => (
+                <>
+                  <ChevronIcon style={[styles.icon, open && styles.iconOpen]} />
+                  <Text style={styles.text}>Animated Panel</Text>
+                </>
+              )}
+            </Collapsible.Trigger>
+            <Collapsible.Panel keepMounted style={getPanelAnimatedStyle}>
+              <View style={styles.content}>
+                <Text style={styles.text}>
+                  This panel stays mounted but animates its height and opacity.
+                </Text>
+                <Text style={styles.text}>
+                  It uses dynamic styles based on the 'open' state.
+                </Text>
               </View>
             </Collapsible.Panel>
           </Collapsible.Root>
@@ -185,3 +240,28 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
 });
+
+function getPanelAnimatedStyle(
+  state: CollapsiblePanelState,
+): StyleProp<ViewStyle> {
+  return [
+    styles.panel,
+    {
+      height: state.open ? undefined : 0,
+      opacity: state.open ? 1 : 0,
+      paddingVertical: state.open ? theme.spacing.lg : 0,
+    },
+  ];
+}
+
+function getPanelDimensionsStyle(
+  state: CollapsiblePanelState,
+): StyleProp<ViewStyle> {
+  return [
+    styles.panel,
+    {
+      minHeight: 60,
+      opacity: state.open ? 1 : 0,
+    },
+  ];
+}

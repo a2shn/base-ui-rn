@@ -159,8 +159,8 @@ function getIndicatorStyle(state: TabsIndicatorState) {
     {
       bottom: 0,
       height: 0, // Hidden for this style
-      transform: [{ translateX: state['--active-tab-left'] ?? 0 }],
-      width: state['--active-tab-width'],
+      transform: [{ translateX: state.tab.left ?? 0 }],
+      width: state.tab.width,
     },
   ];
 }
@@ -169,9 +169,9 @@ function getVerticalIndicatorStyle(state: TabsIndicatorState) {
   return [
     styles.indicator,
     {
-      height: state['--active-tab-height'],
+      height: state.tab.height,
       right: 0,
-      transform: [{ translateY: state['--active-tab-top'] ?? 0 }],
+      transform: [{ translateY: state.tab.top ?? 0 }],
       width: 0, // Hidden for this style
     },
   ];
