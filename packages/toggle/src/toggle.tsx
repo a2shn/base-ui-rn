@@ -68,12 +68,10 @@ export const Toggle = React.memo(
       resolvedTabIndex,
     } = useToggle(props, groupContext);
 
-    if (process.env.NODE_ENV !== 'production') {
-      if (isInGroup && value === undefined) {
-        console.warn(
-          'Toggle: A Toggle used within a ToggleGroup must have a "value" prop.',
-        );
-      }
+    if (isInGroup && value === undefined) {
+      console.warn(
+        'Toggle: A Toggle used within a ToggleGroup must have a "value" prop.',
+      );
     }
 
     const internalRef = React.useRef<View>(null);

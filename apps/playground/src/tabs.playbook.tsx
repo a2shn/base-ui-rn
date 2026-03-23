@@ -1,5 +1,5 @@
 import { Gallery, Section, theme } from '@base-ui-rn/playbook';
-import { Tabs, type TabsIndicatorState, type TabState } from '@base-ui-rn/tabs';
+import { Tabs, type TabsIndicatorState } from '@base-ui-rn/tabs';
 import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -10,7 +10,7 @@ export function TabsPlaybook() {
         <View style={styles.container}>
           <Tabs.Root defaultValue='tab-1'>
             <Tabs.List style={styles.list}>
-              <Tabs.Tab style={getTabStyle} value='tab-1'>
+              <Tabs.Tab style={styles.tab} value='tab-1'>
                 {({ active }) => (
                   <Text
                     style={[styles.tabText, active && styles.activeTabText]}
@@ -19,7 +19,7 @@ export function TabsPlaybook() {
                   </Text>
                 )}
               </Tabs.Tab>
-              <Tabs.Tab style={getTabStyle} value='tab-2'>
+              <Tabs.Tab style={styles.tab} value='tab-2'>
                 {({ active }) => (
                   <Text
                     style={[styles.tabText, active && styles.activeTabText]}
@@ -28,7 +28,7 @@ export function TabsPlaybook() {
                   </Text>
                 )}
               </Tabs.Tab>
-              <Tabs.Tab style={getTabStyle} value='tab-3'>
+              <Tabs.Tab style={styles.tab} value='tab-3'>
                 {({ active }) => (
                   <Text
                     style={[styles.tabText, active && styles.activeTabText]}
@@ -57,7 +57,7 @@ export function TabsPlaybook() {
           <Tabs.Root defaultValue='tab-1' orientation='vertical'>
             <View style={styles.verticalWrapper}>
               <Tabs.List style={styles.verticalList}>
-                <Tabs.Tab style={getTabStyle} value='tab-1'>
+                <Tabs.Tab style={styles.tab} value='tab-1'>
                   {({ active }) => (
                     <Text
                       style={[styles.tabText, active && styles.activeTabText]}
@@ -66,7 +66,7 @@ export function TabsPlaybook() {
                     </Text>
                   )}
                 </Tabs.Tab>
-                <Tabs.Tab style={getTabStyle} value='tab-2'>
+                <Tabs.Tab style={styles.tab} value='tab-2'>
                   {({ active }) => (
                     <Text
                       style={[styles.tabText, active && styles.activeTabText]}
@@ -148,10 +148,6 @@ const styles = StyleSheet.create({
     gap: theme.spacing.xl,
   },
 });
-
-function getTabStyle({ active }: TabState) {
-  return [styles.tab, active && { backgroundColor: theme.colors.border }];
-}
 
 function getIndicatorStyle(state: TabsIndicatorState) {
   return [

@@ -1,6 +1,5 @@
 import type { KeyPressEventData } from '@base-ui-rn/core';
 import { useKeyboardNavigation } from '@base-ui-rn/core';
-import { useFocus } from '@base-ui-rn/focus-ring';
 import type { ToggleGroupChangeEventDetails } from '@base-ui-rn/toggle';
 import * as React from 'react';
 import type { NativeSyntheticEvent } from 'react-native';
@@ -18,13 +17,6 @@ export const useToggleGroup = (props: ToggleGroupProps) => {
     orientation = 'horizontal',
     value: controlledValue,
   } = props;
-
-  const {
-    focused: isFocused,
-    focusVisible: isFocusVisible,
-    onBlur: onFocusOut,
-    onFocus: onFocusIn,
-  } = useFocus({});
 
   const { handleKeyDown, registerItem } = useKeyboardNavigation({
     loop: loopFocus,
@@ -89,27 +81,15 @@ export const useToggleGroup = (props: ToggleGroupProps) => {
   const state: ToggleGroupState = React.useMemo(
     () => ({
       disabled,
-      focused: isFocused,
-      focusVisible: isFocusVisible,
       loopFocus,
       multiple,
       orientation,
       value,
     }),
-    [
-      value,
-      disabled,
-      multiple,
-      orientation,
-      loopFocus,
-      isFocused,
-      isFocusVisible,
-    ],
+    [value, disabled, multiple, orientation, loopFocus],
   );
 
   return {
-    onBlur: onFocusOut,
-    onFocus: onFocusIn,
     onToggleKeyDown,
     registerItem,
     registerValue,

@@ -18,6 +18,8 @@ export interface TabMeasurement {
 
 export interface TabsContextValue extends FocusVisibleProps {
   value: TabValue | null;
+  focusedValue: TabValue | null;
+  setFocusedValue: (value: TabValue | null) => void;
   orientation: Orientation;
   activationDirection: ActivationDirection;
   onValueChange: (value: TabValue | null) => void;

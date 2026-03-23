@@ -40,6 +40,7 @@ export const Tab = React.memo(
       disabled,
       disableDefaultFocusRing = false,
       focusRingStyle,
+      focusVisible: forceFocusVisible = false,
       style,
       tabIndex,
       value,
@@ -56,6 +57,7 @@ export const Tab = React.memo(
       state,
     } = useTab({
       disabled,
+      focusVisible: forceFocusVisible,
       value,
     });
 

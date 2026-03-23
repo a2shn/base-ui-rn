@@ -142,22 +142,30 @@ export function evaluateStyles<T, S>(
   const resolvedValue =
     typeof value === 'function' ? (value as (state: S) => T)(state) : value;
 
-  if (!isStyle(resolvedValue)) {
-    return resolvedValue;
-  }
-
   const focusVisible = (state as { focusVisible?: boolean }).focusVisible;
-  if (!focusVisible) {
-    return resolvedValue as StyleProp<ViewStyle>;
-  }
-
   const focusRing = resolveFocusRingStyle(
-    focusVisible,
+    !!focusVisible,
     disableDefaultFocusRing,
     focusRingStyle,
   );
 
-  if (focusRing === null) {
+  if (!isStyle(resolvedValue)) {
+    // If it's a style context (we have options provided in the call) and the value is null/undefined,
+    // we return the focus ring if it's visible. We check for 'disableDefaultFocusRing' or 'focusRingStyle'
+    // or just the fact that options was passed as a non-empty object (primitives always pass it for styles).
+    const isStyleContext = Object.keys(options).length > 0;
+    if (
+      isStyleContext &&
+      focusVisible &&
+      focusRing !== null &&
+      resolvedValue == null
+    ) {
+      return focusRing;
+    }
+    return resolvedValue;
+  }
+
+  if (!focusVisible || focusRing === null) {
     return resolvedValue as StyleProp<ViewStyle>;
   }
 
