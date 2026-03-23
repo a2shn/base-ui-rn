@@ -250,22 +250,12 @@ export interface TabsIndicatorState {
   orientation: Orientation;
   activationDirection: ActivationDirection;
   focusVisible: boolean;
-  /**
-   * The distance from the top of the parent container to the active tab.
-   */
-  '--active-tab-top'?: number;
-  /**
-   * The distance from the left of the parent container to the active tab.
-   */
-  '--active-tab-left'?: number;
-  /**
-   * The width of the active tab.
-   */
-  '--active-tab-width'?: number;
-  /**
-   * The height of the active tab.
-   */
-  '--active-tab-height'?: number;
+  tab: {
+    height?: number;
+    left?: number;
+    top?: number;
+    width?: number;
+  };
 }
 
 export interface TabsIndicatorProps

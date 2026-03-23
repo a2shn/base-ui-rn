@@ -11,6 +11,9 @@ import type {
   ViewStyle,
 } from 'react-native';
 
+/**
+ * The loading status of the avatar image.
+ */
 export type ImageLoadingStatus = 'idle' | 'loading' | 'loaded' | 'error';
 
 /**
@@ -41,12 +44,24 @@ export interface AvatarState {
   loadingStatus: ImageLoadingStatus;
 }
 
+/**
+ * Props for the Avatar root component.
+ */
 export interface AvatarRootProps
   extends Omit<ViewProps, 'children'>, WebAvatarRootAccessibilityProps {
+  /**
+   * The content of the avatar.
+   */
   children?: React.ReactNode;
+  /**
+   * Style applied to the avatar root.
+   */
   style?: StyleProp<ViewStyle>;
 }
 
+/**
+ * Props for the Avatar image component.
+ */
 export interface AvatarImageProps
   extends Omit<RNImageProps, 'style'>, WebAvatarImageAccessibilityProps {
   /**
@@ -64,10 +79,27 @@ export interface AvatarImageProps
   style?: StyleProp<ViewStyle>;
 }
 
+/**
+ * Props for the Avatar fallback component.
+ */
 export interface AvatarFallbackProps
   extends Omit<ViewProps, 'children'>, WebAvatarFallbackAccessibilityProps {
+  /**
+   * The content of the fallback (usually initials or icon).
+   */
   children?: React.ReactNode;
+  /**
+   * Delay in milliseconds before showing the fallback.
+   * @default 0
+   */
   delay?: number;
+  /**
+   * Whether the fallback is an accessibility element.
+   * @default true
+   */
   accessible?: boolean;
+  /**
+   * Style applied to the fallback view.
+   */
   style?: StyleProp<ViewStyle>;
 }

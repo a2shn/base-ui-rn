@@ -148,14 +148,10 @@ export interface AccordionPanelState {
   disabled: boolean;
   index: number;
   focusVisible: boolean;
-  /**
-   * The accordion panel's height.
-   */
-  '--accordion-panel-height'?: number;
-  /**
-   * The accordion panel's width.
-   */
-  '--accordion-panel-width'?: number;
+  panel: {
+    height?: number;
+    width?: number;
+  };
 }
 
 export interface AccordionValueChangeDetails {

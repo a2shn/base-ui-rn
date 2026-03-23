@@ -417,12 +417,14 @@ export function useAccordionPanel(props: AccordionPanelProps) {
 
   const shouldRender = keepMounted || hiddenUntilFound || itemContext.open;
   const state: AccordionPanelState = {
-    '--accordion-panel-height': contentHeight,
-    '--accordion-panel-width': contentWidth,
     disabled: itemContext.disabled,
     focusVisible,
     index: itemContext.index,
     open: itemContext.open,
+    panel: {
+      height: contentHeight,
+      width: contentWidth,
+    },
   };
 
   return {

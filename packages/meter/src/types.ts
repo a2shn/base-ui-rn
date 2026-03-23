@@ -127,30 +127,3 @@ export interface MeterContextValue {
    */
   labelId?: string;
 }
-
-export interface MeterTrackProps
-  extends ViewProps, ARIABaseProps, ARIAFocusProps, ARIALiveProps {
-  children?: React.ReactNode;
-}
-
-export interface MeterIndicatorProps
-  extends ViewProps, ARIABaseProps, ARIAFocusProps, ARIALiveProps {}
-
-export interface MeterValueProps
-  extends
-    Omit<TextProps, 'children'>,
-    ARIABaseProps,
-    ARIAFocusProps,
-    ARIALiveProps {
-  children?: (formattedValue: string, value: number) => React.ReactNode;
-}
-
-export interface MeterContextValue {
-  value: number;
-  min: number;
-  max: number;
-  percentage: number;
-  formattedValue: string;
-  ariaValueText?: string;
-  labelId?: string;
-}

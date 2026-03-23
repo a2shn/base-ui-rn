@@ -289,13 +289,15 @@ export function useTabsIndicator() {
     context.value !== null ? context.tabMeasurements.get(context.value) : null;
 
   const state: TabsIndicatorState = {
-    '--active-tab-height': activeMeasurement?.height,
-    '--active-tab-left': activeMeasurement?.x,
-    '--active-tab-top': activeMeasurement?.y,
-    '--active-tab-width': activeMeasurement?.width,
     activationDirection: context.activationDirection,
     focusVisible: context.focusVisible ?? false,
     orientation: context.orientation,
+    tab: {
+      height: activeMeasurement?.height,
+      left: activeMeasurement?.x,
+      top: activeMeasurement?.y,
+      width: activeMeasurement?.width,
+    },
   };
 
   return { state };

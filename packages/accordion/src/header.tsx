@@ -42,7 +42,6 @@ export const AccordionHeader = React.memo(
 
     const resolvedChildren = evaluateStyles(children, state);
 
-
     return (
       <View
         {...otherProps}

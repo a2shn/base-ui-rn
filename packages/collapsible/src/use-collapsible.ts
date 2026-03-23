@@ -2,9 +2,9 @@ import { useKeyboardActivation } from '@base-ui-rn/core';
 import { useFocus } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import type {
-  GestureResponderEvent,
   LayoutChangeEvent,
   NativeSyntheticEvent,
+  TargetedEvent,
 } from 'react-native';
 
 import { useCollapsibleContext } from './context';
@@ -87,7 +87,7 @@ export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
   });
 
   const handleFocus = React.useCallback(
-    (event: NativeSyntheticEvent<any>) => {
+    (event: NativeSyntheticEvent<TargetedEvent>) => {
       onFocus();
       onFocusProp?.(event);
     },
@@ -95,20 +95,17 @@ export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
   );
 
   const handleBlur = React.useCallback(
-    (event: NativeSyntheticEvent<any>) => {
+    (event: NativeSyntheticEvent<TargetedEvent>) => {
       onBlur();
       onBlurProp?.(event);
     },
     [onBlur, onBlurProp],
   );
 
-  const handlePress = React.useCallback(
-    (event: GestureResponderEvent) => {
-      if (disabled) return;
-      context.toggle();
-    },
-    [disabled, context],
-  );
+  const handlePress = React.useCallback(() => {
+    if (disabled) return;
+    context.toggle();
+  }, [disabled, context]);
 
   const performKeyboardActivation = React.useCallback(() => {
     context.toggle();
@@ -172,11 +169,13 @@ export function useCollapsiblePanel(props: CollapsiblePanelProps) {
   const shouldRender = keepMounted || hiddenUntilFound || context.open;
 
   const state: CollapsiblePanelState = {
-    '--collapsible-panel-height': contentHeight,
-    '--collapsible-panel-width': contentWidth,
     disabled: context.disabled,
     focusVisible,
     open: context.open,
+    panel: {
+      height: contentHeight,
+      width: contentWidth,
+    },
   };
 
   return {
