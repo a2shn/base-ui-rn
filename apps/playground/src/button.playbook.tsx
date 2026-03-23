@@ -1,4 +1,4 @@
-import { Button, type ButtonState } from '@base-ui-rn/button';
+import { Button } from '@base-ui-rn/button';
 import {
   Gallery,
   LiveConsole,
@@ -29,7 +29,7 @@ export function ButtonPlaybook() {
         <Button
           accessibilityHint='Increments the counter'
           onPress={() => count.setValue(count.value + 1)}
-          style={getButtonStyle}
+          style={styles.buttonBase}
           testID='button-counter'
         >
           <Text style={styles.textWhite}>{count.value}</Text>
@@ -60,7 +60,7 @@ export function ButtonPlaybook() {
           disabled={loading.value as boolean}
           focusableWhenDisabled
           onPress={handleLoadingPress}
-          style={getButtonStyle}
+          style={styles.buttonBase}
           testID='button-disabled-focusable'
         >
           <Text style={styles.textWhite}>
@@ -111,10 +111,6 @@ const styles = StyleSheet.create({
   disabled: {
     opacity: 0.5,
   },
-  pressed: {
-    backgroundColor: theme.colors.borderLight,
-    opacity: 0.7,
-  },
   textSecondary: {
     color: theme.colors.textSecondary,
     fontWeight: theme.font.weight.regular,
@@ -127,7 +123,3 @@ const styles = StyleSheet.create({
     fontWeight: theme.font.weight.bold,
   },
 });
-
-function getButtonStyle({ pressed }: ButtonState) {
-  return [styles.buttonBase, pressed && styles.pressed];
-}

@@ -6,6 +6,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AccordionPlaybook } from './src/accordion.playbook';
 import { AvatarPlaybook } from './src/avatar.playbook';
 import { ButtonPlaybook } from './src/button.playbook';
+import { CollapsiblePlaybook } from './src/collapsible.playbook';
 import { FocusRingPlaybook } from './src/focus-ring.playbook';
 import { KeyboardShortcutsPlaybook } from './src/keyboard-shortcuts.playbook';
 import { MeterPlaybook } from './src/meter.playbook';
@@ -31,6 +32,11 @@ const REGISTRY: PlaybookConfig = {
     component: ButtonPlaybook,
     testID: 'button',
     title: 'Button',
+  },
+  Collapsible: {
+    component: CollapsiblePlaybook,
+    testID: 'collapsible',
+    title: 'Collapsible',
   },
   FocusRing: {
     component: FocusRingPlaybook,

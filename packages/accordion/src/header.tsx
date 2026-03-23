@@ -42,6 +42,7 @@ export const AccordionHeader = React.memo(
 
     const resolvedChildren = evaluateStyles(children, state);
 
+
     return (
       <View
         {...otherProps}
@@ -58,7 +59,7 @@ export const AccordionHeader = React.memo(
         data-index={dataIndex ?? index}
         data-open={dataOpen ?? (open ? 'true' : undefined)}
         ref={ref}
-        style={evaluateStyles(style, state)}
+        style={[evaluateStyles(style, state), { zIndex: 1 }]}
       >
         {resolvedChildren}
       </View>

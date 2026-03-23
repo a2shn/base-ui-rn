@@ -1,4 +1,4 @@
-import { Accordion, type AccordionTriggerState } from '@base-ui-rn/accordion';
+import { Accordion } from '@base-ui-rn/accordion';
 import {
   Gallery,
   Section,
@@ -22,7 +22,7 @@ export function AccordionPlaybook() {
             <Accordion.Item value='item-1'>
               <Accordion.Header>
                 <Accordion.Trigger
-                  style={getTriggerStyle}
+                  style={styles.trigger}
                   testID='accordion-trigger-1'
                 >
                   {({ open }) => (
@@ -44,7 +44,7 @@ export function AccordionPlaybook() {
             <Accordion.Item value='item-2'>
               <Accordion.Header>
                 <Accordion.Trigger
-                  style={getTriggerStyle}
+                  style={styles.trigger}
                   testID='accordion-trigger-2'
                 >
                   {({ open }) => (
@@ -67,7 +67,7 @@ export function AccordionPlaybook() {
             <Accordion.Item value='item-3'>
               <Accordion.Header>
                 <Accordion.Trigger
-                  style={getTriggerStyle}
+                  style={styles.trigger}
                   testID='accordion-trigger-3'
                 >
                   {({ open }) => (
@@ -95,7 +95,7 @@ export function AccordionPlaybook() {
           <Accordion.Root onValueChange={() => {}} value='item-1'>
             <Accordion.Item value='item-1'>
               <Accordion.Header>
-                <Accordion.Trigger style={getTriggerStyle}>
+                <Accordion.Trigger style={styles.trigger}>
                   {({ open }) => (
                     <>
                       <Text style={styles.textPrimary}>Pre-opened item</Text>
@@ -113,7 +113,7 @@ export function AccordionPlaybook() {
 
             <Accordion.Item value='item-2'>
               <Accordion.Header>
-                <Accordion.Trigger style={getTriggerStyle}>
+                <Accordion.Trigger style={styles.trigger}>
                   {({ open }) => (
                     <>
                       <Text style={styles.textPrimary}>Another item</Text>
@@ -137,7 +137,7 @@ export function AccordionPlaybook() {
           <Accordion.Root multiple>
             <Accordion.Item value='item-1'>
               <Accordion.Header>
-                <Accordion.Trigger style={getTriggerStyle}>
+                <Accordion.Trigger style={styles.trigger}>
                   {({ open }) => (
                     <>
                       <Text style={styles.textPrimary}>First item</Text>
@@ -155,7 +155,7 @@ export function AccordionPlaybook() {
 
             <Accordion.Item value='item-2'>
               <Accordion.Header>
-                <Accordion.Trigger style={getTriggerStyle}>
+                <Accordion.Trigger style={styles.trigger}>
                   {({ open }) => (
                     <>
                       <Text style={styles.textPrimary}>Second item</Text>
@@ -179,7 +179,7 @@ export function AccordionPlaybook() {
           <Accordion.Root>
             <Accordion.Item value='item-1'>
               <Accordion.Header>
-                <Accordion.Trigger style={getTriggerStyle}>
+                <Accordion.Trigger style={styles.trigger}>
                   {({ open }) => (
                     <>
                       <Text style={styles.textPrimary}>Enabled item</Text>
@@ -195,7 +195,7 @@ export function AccordionPlaybook() {
 
             <Accordion.Item disabled value='item-2'>
               <Accordion.Header>
-                <Accordion.Trigger style={getTriggerStyle}>
+                <Accordion.Trigger style={styles.trigger}>
                   {({ open }) => (
                     <>
                       <Text style={styles.textPrimary}>Disabled item</Text>
@@ -211,7 +211,7 @@ export function AccordionPlaybook() {
 
             <Accordion.Item value='item-3'>
               <Accordion.Header>
-                <Accordion.Trigger style={getTriggerStyle}>
+                <Accordion.Trigger style={styles.trigger}>
                   {({ open }) => (
                     <>
                       <Text style={styles.textPrimary}>Another enabled</Text>
@@ -273,15 +273,4 @@ const styles = StyleSheet.create({
   triggerDefault: {
     backgroundColor: 'transparent',
   },
-  triggerOpen: {
-    backgroundColor: theme.colors.borderLight,
-  },
 });
-
-function getTriggerStyle({ disabled, open }: AccordionTriggerState) {
-  return [
-    styles.trigger,
-    open ? styles.triggerOpen : styles.triggerDefault,
-    disabled && styles.disabled,
-  ];
-}

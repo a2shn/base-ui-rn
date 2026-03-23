@@ -1,31 +1,40 @@
-import { Gallery, Section, theme } from '@base-ui-rn/playbook';
+import {
+  Gallery,
+  Section,
+  theme,
+  usePlaybookToggles,
+} from '@base-ui-rn/playbook';
 import { Progress, type ProgressState } from '@base-ui-rn/progress';
 import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 export function ProgressPlaybook() {
-  const [value, setValue] = React.useState(0);
+  const { progressValue } = usePlaybookToggles({
+    progressValue: 0,
+  });
 
   // Simulate changes
   React.useEffect(() => {
     let timeout: ReturnType<typeof setTimeout>;
 
-    if (value >= 100) {
-      timeout = setTimeout(() => setValue(0), 2000);
+    if (progressValue.value >= 100) {
+      return () => clearTimeout(timeout);
     } else {
       timeout = setTimeout(() => {
-        setValue((v) => Math.min(100, v + Math.floor(Math.random() * 5) + 1));
+        progressValue.setValue((v) =>
+          Math.min(100, v + Math.floor(Math.random() * 5) + 1),
+        );
       }, 100);
     }
 
     return () => clearTimeout(timeout);
-  }, [value]);
+  }, [progressValue.value]);
 
   return (
     <Gallery title='Progress'>
       <Section title='Basic'>
         <View style={styles.container}>
-          <Progress.Root style={styles.meterRoot} value={value}>
+          <Progress.Root style={styles.meterRoot} value={progressValue.value}>
             <View style={styles.meterHeader}>
               <Progress.Label style={styles.meterLabel}>
                 Exporting data...
@@ -33,10 +42,15 @@ export function ProgressPlaybook() {
               <Progress.Value style={styles.meterValue} />
             </View>
             <Progress.Track style={styles.meterTrack}>
-              <Progress.Indicator style={styles.meterIndicator} />
+              <Progress.Indicator
+                style={(state) => [
+                  styles.meterIndicator,
+                  { width: state.percentage ? `${state.percentage}%` : '0%' },
+                ]}
+              />
             </Progress.Track>
           </Progress.Root>
-          <Text style={styles.hint}>Value: {value}%</Text>
+          <Text style={styles.hint}>Value: {progressValue.value}%</Text>
         </View>
       </Section>
 
@@ -76,7 +90,11 @@ export function ProgressPlaybook() {
             </View>
             <Progress.Track style={styles.meterTrack}>
               <Progress.Indicator
-                style={[styles.meterIndicator, styles.indicatorSuccess]}
+                style={(state) => [
+                  styles.meterIndicator,
+                  styles.indicatorSuccess,
+                  { width: state.percentage ? `${state.percentage}%` : '0%' },
+                ]}
               />
             </Progress.Track>
           </Progress.Root>
@@ -85,19 +103,19 @@ export function ProgressPlaybook() {
 
       <Section title='State Data Attributes'>
         <View style={styles.container}>
-          <Progress.Root style={styles.meterRoot} value={value}>
-            {(state) => (
-              <>
-                <Progress.Label style={getProgressLabelStyle(state)}>
-                  {state.isComplete ? '✓ Completed' : 'Processing...'}
-                </Progress.Label>
-                <Progress.Track style={styles.meterTrack}>
-                  <Progress.Indicator
-                    style={[styles.meterIndicator, styles.indicatorComplete]}
-                  />
-                </Progress.Track>
-              </>
-            )}
+          <Progress.Root style={styles.meterRoot} value={progressValue.value}>
+            <Progress.Label style={(state) => getProgressLabelStyle(state)}>
+              {(state) => (state.isComplete ? '✓ Completed' : 'Processing...')}
+            </Progress.Label>
+            <Progress.Track style={styles.meterTrack}>
+              <Progress.Indicator
+                style={(state) => [
+                  styles.meterIndicator,
+                  styles.indicatorComplete,
+                  { width: state.percentage ? `${state.percentage}%` : '0%' },
+                ]}
+              />
+            </Progress.Track>
           </Progress.Root>
           <Text style={styles.hint}>
             Uses render function to style based on isComplete
@@ -142,7 +160,6 @@ const styles = StyleSheet.create({
   meterIndicator: {
     backgroundColor: '#4A90D9', // Accent color
     height: '100%',
-    width: '100%',
   },
   meterLabel: {
     color: theme.colors.textPrimary,
