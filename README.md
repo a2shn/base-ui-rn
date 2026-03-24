@@ -4,3 +4,4 @@
 
 - [] Switch
 - [] Slider
+- [] Input

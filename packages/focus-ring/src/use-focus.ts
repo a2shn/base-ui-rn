@@ -1,3 +1,4 @@
+import type { FocusVisibleProps } from '@base-ui-rn/core';
 import * as React from 'react';
 
 /**
@@ -8,7 +9,9 @@ import * as React from 'react';
  *
  * @returns An object containing the current focus state and focus event handlers.
  */
-export function useFocus(options: { focusVisible?: boolean } = {}) {
+export function useFocus(
+  options: Pick<FocusVisibleProps, 'focusVisible'> = {},
+) {
   const { focusVisible: forceFocusVisible = false } = options;
   const [focused, setFocused] = React.useState(false);
   const [isFocusVisible, setFocusVisible] = React.useState(forceFocusVisible);

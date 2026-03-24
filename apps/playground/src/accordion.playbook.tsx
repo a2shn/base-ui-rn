@@ -92,7 +92,7 @@ export function AccordionPlaybook() {
 
       <Section title='Controlled'>
         <View style={styles.container}>
-          <Accordion.Root onValueChange={() => { }} value='item-1'>
+          <Accordion.Root onValueChange={() => {}} value='item-1'>
             <Accordion.Item value='item-1'>
               <Accordion.Header>
                 <Accordion.Trigger style={styles.trigger}>

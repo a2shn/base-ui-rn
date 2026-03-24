@@ -5,7 +5,7 @@ import {
   theme,
   usePlaybookToggles,
 } from '@base-ui-rn/playbook';
-import { Slider, type SliderThumbState } from '@base-ui-rn/slider';
+import { Slider } from '@base-ui-rn/slider';
 import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -332,6 +332,6 @@ const styles = StyleSheet.create({
   },
 });
 
-function getThumbStyle(state: SliderThumbState) {
+function getThumbStyle() {
   return styles.thumb;
 }

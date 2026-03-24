@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 
 import { DEFAULT_FOCUS_RING_STYLE } from './constants';
+import type { FocusVisibleProps } from './types';
 
 /**
  * Clamps a value between a minimum and maximum bound.
@@ -42,34 +43,7 @@ export function mergeRefs<T>(
 }
 
 /**
- * Converts border styles to outline styles for web compatibility.
- * On web, focus rings should use outline instead of border.
- */
-function convertBorderToOutline(style: ViewStyle): ViewStyle {
-  if (Platform.OS !== 'web') return style;
-
-  const outlineStyle: ViewStyle = {};
-  if (style.borderWidth !== undefined) {
-    outlineStyle.outlineWidth = style.borderWidth;
-  }
-  if (style.borderColor !== undefined) {
-    outlineStyle.outlineColor = style.borderColor;
-  }
-  if (style.borderRadius !== undefined) {
-    outlineStyle.outlineOffset = -style.borderRadius;
-  }
-
-  return Object.keys(outlineStyle).length > 0 ? outlineStyle : style;
-}
-
-/**
  * Resolves the focus ring style based on the provided options.
- *
- * @param focusVisible - Whether the focus ring should be visible.
- * @param disableDefault - Whether to disable the default focus ring style.
- * @param customStyle - Custom style to apply for the focus ring.
- * @param defaultStyle - The default focus ring style to apply.
- * @returns The resolved style or null.
  */
 export function resolveFocusRingStyle(
   focusVisible: boolean,
@@ -78,97 +52,56 @@ export function resolveFocusRingStyle(
   defaultStyle: StyleProp<ViewStyle> = DEFAULT_FOCUS_RING_STYLE,
 ) {
   if (!focusVisible) return null;
-  if (customStyle) {
-    const flatStyle = StyleSheet.flatten(customStyle);
-    return convertBorderToOutline(flatStyle as ViewStyle);
-  }
+  if (customStyle) return customStyle;
   if (disableDefault) return null;
   return defaultStyle;
 }
 
 /**
- * Checks if a value is a style (StyleProp<ViewStyle>).
- * Returns true for: null, undefined, numbers (dimension values), style objects, arrays of styles.
- * Returns false for: React elements, strings, booleans, functions.
+ * Checks if a value is a StyleProp<ViewStyle>.
  */
 function isStyle(value: unknown): boolean {
-  if (value === null || value === undefined) return false;
-  if (typeof value === 'number') return true;
-  if (typeof value === 'string' || typeof value === 'boolean') return false;
-  if (typeof value === 'function') return false;
-  if (Array.isArray(value)) return value.every(isStyle);
-  if (typeof value === 'object') {
-    if (React.isValidElement(value)) return false;
-    const obj = value as Record<string, unknown>;
-    if ('$$typeof' in obj) return false;
-    if ('ref' in obj) return false;
-    if ('type' in obj && 'props' in obj) return false;
-    return true;
-  }
-  return false;
+  if (value == null) return false;
+  const t = typeof value;
+  if (t === 'number') return true;
+  if (t !== 'object') return false; // covers string, boolean, function
+  if (Array.isArray(value)) return (value as unknown[]).every(isStyle);
+  // $$typeof covers React elements, forwardRef, memo, etc.
+  return !('$$typeof' in (value as object));
 }
 
 /**
- * Evaluates a value that can be a static value or a function that returns a value based on state.
- * When used with styles, merges the result with focus ring style if state has focusVisible.
+ * Evaluates a value or state-fn, merging focus ring style when focusVisible.
+ * focusRingStyle / disableDefaultFocusRing always take priority.
  */
-export function evaluateStyles<T extends StyleProp<ViewStyle>, S>(
+export function evaluateStyles<
+  T,
+  S,
+  R = T extends StyleProp<ViewStyle> ? StyleProp<ViewStyle> : T,
+>(
   value: T | ((state: S) => T),
   state: S,
-  options?: {
-    disableDefaultFocusRing?: boolean;
-    focusRingStyle?: StyleProp<ViewStyle>;
-  },
-): StyleProp<ViewStyle>;
-
-export function evaluateStyles<T, S>(
-  value: T | ((state: S) => T),
-  state: S,
-  options?: {
-    disableDefaultFocusRing?: boolean;
-    focusRingStyle?: StyleProp<ViewStyle>;
-  },
-): T;
-
-export function evaluateStyles<T, S>(
-  value: T | ((state: S) => T),
-  state: S,
-  options: {
-    disableDefaultFocusRing?: boolean;
-    focusRingStyle?: StyleProp<ViewStyle>;
-  } = {},
-): T | StyleProp<ViewStyle> {
-  const { disableDefaultFocusRing, focusRingStyle } = options;
+  options: Omit<FocusVisibleProps, 'focusVisible'> = {},
+): R {
   const resolvedValue =
     typeof value === 'function' ? (value as (state: S) => T)(state) : value;
 
-  const focusVisible = (state as { focusVisible?: boolean }).focusVisible;
+  // Fast path: skip all focus-ring logic when not focused.
+  if (!(state as { focusVisible?: boolean }).focusVisible) {
+    return resolvedValue as unknown as R;
+  }
+
   const focusRing = resolveFocusRingStyle(
-    !!focusVisible,
-    disableDefaultFocusRing,
-    focusRingStyle,
+    true,
+    options.disableDefaultFocusRing,
+    options.focusRingStyle,
   );
 
-  const isStyleContext = Object.keys(options).length > 0;
+  if (focusRing === null) return resolvedValue as unknown as R;
 
   if (!isStyle(resolvedValue)) {
-    // If it's a style context and the value is null/undefined, return the focus ring if visible.
-    if (
-      isStyleContext &&
-      focusVisible &&
-      focusRing !== null &&
-      resolvedValue == null
-    ) {
-      return focusRing;
-    }
-    return resolvedValue;
+    return (resolvedValue == null ? focusRing : resolvedValue) as unknown as R;
   }
 
-  // Only add the focus ring if we are in a style context (meaning the component opted in)
-  // and focus is visible.
-  if (!isStyleContext || !focusVisible || focusRing === null) {
-    return resolvedValue as StyleProp<ViewStyle>;
-  }
-
-  return [resolvedValue, focusRing] as StyleProp<ViewStyle>;
+  return [resolvedValue, focusRing] as R;
 }

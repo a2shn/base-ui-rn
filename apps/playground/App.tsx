@@ -8,6 +8,7 @@ import { AvatarPlaybook } from './src/avatar.playbook';
 import { ButtonPlaybook } from './src/button.playbook';
 import { CollapsiblePlaybook } from './src/collapsible.playbook';
 import { FocusRingPlaybook } from './src/focus-ring.playbook';
+import { InputPlaybook } from './src/input.playbook';
 import { KeyboardShortcutsPlaybook } from './src/keyboard-shortcuts.playbook';
 import { MeterPlaybook } from './src/meter.playbook';
 import { ProgressPlaybook } from './src/progress.playbook';
@@ -42,6 +43,11 @@ const REGISTRY: PlaybookConfig = {
     component: FocusRingPlaybook,
     testID: 'focus-ring',
     title: 'Focus Ring',
+  },
+  Input: {
+    component: InputPlaybook,
+    testID: 'input',
+    title: 'Input',
   },
   Meter: {
     component: MeterPlaybook,

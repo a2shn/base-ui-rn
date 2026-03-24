@@ -24,7 +24,7 @@ export const DEFAULT_FOCUS_RING_STYLE = Platform.select({
     borderColor: '#0071E3',
     borderWidth: 2,
   },
-  web: null
+  web: null,
 });
 
 /**
