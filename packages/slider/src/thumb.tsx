@@ -231,6 +231,11 @@ export const SliderThumb = React.memo(
       [disableDefaultFocusRing, focusRingStyle],
     );
 
+    const webStyle = React.useMemo(() => {
+      if (Platform.OS !== 'web') return {};
+      return { touchAction: 'none' } as import('react-native').ViewStyle;
+    }, []);
+
     return (
       <PressableWithKeyPress
         {...props}
@@ -278,6 +283,7 @@ export const SliderThumb = React.memo(
         style={[
           dynamicStyle,
           evaluateStyles(style, thumbState, memoizedStyleOptions),
+          webStyle,
         ]}
         tabIndex={resolvedTabIndex}
       />

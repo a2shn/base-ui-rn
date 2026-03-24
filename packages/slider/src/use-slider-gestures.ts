@@ -114,6 +114,8 @@ export function useSliderGestures(options: SliderGesturesOptions) {
       const { disabled, max, min, value } = stateRef.current;
       if (disabled) return;
 
+      e.preventDefault();
+
       const rawValue = pagePositionToValue(
         e.clientX,
         e.clientY,
@@ -154,7 +156,7 @@ export function useSliderGestures(options: SliderGesturesOptions) {
       setValueAtIndexRef.current(activeIndexRef.current, rawValue, 'drag');
     };
 
-    const onPointerUp = () => {
+    const onPointerUp = (e?: PointerEvent) => {
       if (activeIndexRef.current === -1) return;
 
       if (pointerIdRef.current !== null) {
@@ -171,16 +173,22 @@ export function useSliderGestures(options: SliderGesturesOptions) {
       commitValueRef.current('drag');
     };
 
+    const onLostPointerCapture = () => {
+      onPointerUp();
+    };
+
     el.addEventListener('pointerdown', onPointerDown);
     el.addEventListener('pointermove', onPointerMove);
     el.addEventListener('pointerup', onPointerUp);
     el.addEventListener('pointercancel', onPointerUp);
+    el.addEventListener('lostpointercapture', onLostPointerCapture);
 
     return () => {
       el.removeEventListener('pointerdown', onPointerDown);
       el.removeEventListener('pointermove', onPointerMove);
       el.removeEventListener('pointerup', onPointerUp);
       el.removeEventListener('pointercancel', onPointerUp);
+      el.removeEventListener('lostpointercapture', onLostPointerCapture);
     };
   }, [isHorizontal, isWeb, containerRef, layoutRef]);
 

@@ -93,10 +93,20 @@ export function useSliderControl(options: SliderControlOptions = {}) {
     innerRef.current = node;
   }, []);
 
-  const resolvedStyle = React.useMemo(
-    () => evaluateStyles(style, state),
-    [style, state],
-  );
+  const resolvedStyle = React.useMemo(() => {
+    const evaluated = evaluateStyles(style, state);
+    if (isWeb) {
+      const webSpecific = {
+        touchAction: 'none',
+        userSelect: 'none',
+      } as ViewStyle;
+      if (Array.isArray(evaluated)) {
+        return [webSpecific, ...evaluated];
+      }
+      return [webSpecific, evaluated];
+    }
+    return evaluated;
+  }, [style, state, isWeb]);
 
   const resolvedTabIndex = resolveTabIndex(state.disabled, -1);
 
