@@ -1,10 +1,5 @@
 import * as React from 'react';
-import {
-  Platform,
-  type StyleProp,
-  StyleSheet,
-  type ViewStyle,
-} from 'react-native';
+import { type StyleProp, StyleSheet, type ViewStyle } from 'react-native';
 
 import { DEFAULT_FOCUS_RING_STYLE } from './constants';
 import type { FocusVisibleProps } from './types';
@@ -71,24 +66,32 @@ function isStyle(value: unknown): boolean {
 }
 
 /**
- * Evaluates a value or state-fn, merging focus ring style when focusVisible.
- * focusRingStyle / disableDefaultFocusRing always take priority.
+ * Evaluates a value that can be a static value or a function that returns a value based on state.
+ * When used with styles, merges the result with focus ring style if state has focusVisible.
  */
-export function evaluateStyles<
-  T,
-  S,
-  R = T extends StyleProp<ViewStyle> ? StyleProp<ViewStyle> : T,
->(
+export function evaluateStyles<T extends StyleProp<ViewStyle>, S>(
+  value: T | ((state: S) => T),
+  state: S,
+  options?: Omit<FocusVisibleProps, 'focusVisible'>,
+): StyleProp<ViewStyle>;
+
+export function evaluateStyles<T, S>(
+  value: T | ((state: S) => T),
+  state: S,
+  options?: Omit<FocusVisibleProps, 'focusVisible'>,
+): T;
+
+export function evaluateStyles<T, S>(
   value: T | ((state: S) => T),
   state: S,
   options: Omit<FocusVisibleProps, 'focusVisible'> = {},
-): R {
+): any {
   const resolvedValue =
     typeof value === 'function' ? (value as (state: S) => T)(state) : value;
 
   // Fast path: skip all focus-ring logic when not focused.
   if (!(state as { focusVisible?: boolean }).focusVisible) {
-    return resolvedValue as unknown as R;
+    return resolvedValue;
   }
 
   const focusRing = resolveFocusRingStyle(
@@ -97,11 +100,11 @@ export function evaluateStyles<
     options.focusRingStyle,
   );
 
-  if (focusRing === null) return resolvedValue as unknown as R;
+  if (focusRing === null) return resolvedValue;
 
   if (!isStyle(resolvedValue)) {
-    return (resolvedValue == null ? focusRing : resolvedValue) as unknown as R;
+    return resolvedValue == null ? focusRing : resolvedValue;
   }
 
-  return [resolvedValue, focusRing] as R;
+  return [resolvedValue, focusRing];
 }

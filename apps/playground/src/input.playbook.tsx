@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 
 export function InputPlaybook() {
-  const { name, disabled, invalid } = usePlaybookToggles({
+  const { disabled, invalid, name } = usePlaybookToggles({
     disabled: false,
     invalid: false,
     name: '',
@@ -61,7 +61,10 @@ export function InputPlaybook() {
                 </Text>
                 <Text
                   onPress={() => invalid.setValue(!invalid.value)}
-                  style={[styles.control, invalid.value && styles.activeControl]}
+                  style={[
+                    styles.control,
+                    invalid.value && styles.activeControl,
+                  ]}
                 >
                   Invalid: {String(invalid.value)}
                 </Text>
@@ -84,7 +87,6 @@ export function InputPlaybook() {
               style={styles.input}
             />
           </Section>
-
         </Gallery>
       </ScrollView>
     </KeyboardAvoidingView>
