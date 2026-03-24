@@ -1,8 +1,4 @@
-import {
-  Gallery,
-  Section,
-  theme,
-} from '@base-ui-rn/playbook';
+import { Gallery, Section, theme } from '@base-ui-rn/playbook';
 import {
   ScrollArea,
   type ScrollAreaScrollbarState,
@@ -11,10 +7,10 @@ import {
 import * as React from 'react';
 import {
   Platform,
+  type StyleProp,
   StyleSheet,
   Text,
   View,
-  type StyleProp,
   type ViewStyle,
 } from 'react-native';
 
@@ -103,15 +99,16 @@ export function ScrollAreaPlaybook() {
         </ScrollArea.Root>
       </Section>
 
-      <Section
-        title={`Both Orientations`}
-      >
+      <Section title={`Both Orientations`}>
         <ScrollArea.Root style={styles.rootSquare}>
           {Platform.OS === 'web' ? (
             <ScrollArea.Viewport
               style={[
                 styles.viewport,
-                { overflow: 'auto', touchAction: 'auto' } as any,
+                {
+                  overflow: 'auto',
+                  touchAction: 'auto',
+                } as unknown as ViewStyle,
               ]}
             >
               <ScrollArea.Content style={styles.gridContent}>

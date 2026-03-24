@@ -1,6 +1,12 @@
 import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
-import { type LayoutChangeEvent, View } from 'react-native';
+import {
+  type LayoutChangeEvent,
+  Platform,
+  type StyleProp,
+  View,
+  type ViewStyle,
+} from 'react-native';
 
 import { useScrollAreaContext } from './context';
 import type {
@@ -70,7 +76,7 @@ export const Scrollbar = React.memo(
     const resolvedStyle = evaluateStyles(style, scrollbarState);
 
     const webStyle: StyleProp<ViewStyle> =
-      Platform.OS === 'web' ? ({ touchAction: 'none' } as any) : {};
+      Platform.OS === 'web' ? ({ touchAction: 'none' } as ViewStyle) : {};
 
     return (
       <ScrollbarContext.Provider value={{ orientation }}>
