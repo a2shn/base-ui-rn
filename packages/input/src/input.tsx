@@ -28,9 +28,13 @@ export const Input = React.memo(
       'aria-hidden': ariaHidden,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      defaultValue,
       disableDefaultFocusRing = false,
       focusRingStyle,
       style,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      value: valueProp,
       ...otherProps
     } = props;
 

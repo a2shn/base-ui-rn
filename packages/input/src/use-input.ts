@@ -24,6 +24,17 @@ export function useInput(props: InputProps) {
     value: controlledValue,
   } = props;
 
+  if (__DEV__) {
+    if (controlledValue !== undefined && defaultValue !== undefined) {
+      console.error(
+        'Input: Input components must be either controlled or uncontrolled ' +
+          '(specify either the value prop, or the defaultValue prop, but not both). ' +
+          'Decide between using a controlled or uncontrolled input element and remove one of these props. ' +
+          'More info: https://react.dev/link/controlled-components',
+      );
+    }
+  }
+
   const [internalValue, setInternalValue] = React.useState(defaultValue ?? '');
   const [internalDirty, setInternalDirty] = React.useState(false);
   const [internalTouched, setInternalTouched] = React.useState(false);
