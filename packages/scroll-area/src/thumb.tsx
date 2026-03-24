@@ -237,6 +237,7 @@ export const Thumb = React.memo(
       default: {},
       web: {
         cursor: isDragging ? 'grabbing' : 'grab',
+        touchAction: 'none',
       } as unknown as ViewStyle,
     });
 

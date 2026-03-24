@@ -69,6 +69,9 @@ export const Scrollbar = React.memo(
 
     const resolvedStyle = evaluateStyles(style, scrollbarState);
 
+    const webStyle: StyleProp<ViewStyle> =
+      Platform.OS === 'web' ? ({ touchAction: 'none' } as any) : {};
+
     return (
       <ScrollbarContext.Provider value={{ orientation }}>
         <View
@@ -82,7 +85,7 @@ export const Scrollbar = React.memo(
           onLayout={handleLayout}
           ref={ref}
           role='scrollbar'
-          style={resolvedStyle}
+          style={[resolvedStyle, webStyle]}
         >
           {children}
         </View>
