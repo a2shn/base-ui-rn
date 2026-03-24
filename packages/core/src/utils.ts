@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { type StyleProp, StyleSheet, type ViewStyle } from 'react-native';
+import { type StyleProp, type ViewStyle } from 'react-native';
 
 import { DEFAULT_FOCUS_RING_STYLE } from './constants';
 import type { FocusVisibleProps } from './types';
@@ -85,7 +85,7 @@ export function evaluateStyles<T, S>(
   value: T | ((state: S) => T),
   state: S,
   options: Omit<FocusVisibleProps, 'focusVisible'> = {},
-): any {
+): unknown {
   const resolvedValue =
     typeof value === 'function' ? (value as (state: S) => T)(state) : value;
 
@@ -106,5 +106,8 @@ export function evaluateStyles<T, S>(
     return resolvedValue == null ? focusRing : resolvedValue;
   }
 
-  return [resolvedValue, focusRing];
+  return [
+    resolvedValue as Exclude<StyleProp<ViewStyle>, null | undefined>,
+    focusRing,
+  ];
 }
