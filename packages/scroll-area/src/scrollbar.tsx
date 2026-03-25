@@ -84,14 +84,13 @@ export const Scrollbar = React.memo(
       <ScrollbarContext.Provider value={{ orientation }}>
         <View
           {...other}
-          focusable={false}
-          importantForAccessibility='no-hide-descendants'
           aria-describedby={ariaDescribedBy}
           aria-details={ariaDetails}
           aria-hidden={ariaHidden}
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
           aria-orientation={ariaOrientationProp ?? orientation}
+          focusable={false}
           onLayout={handleLayout}
           ref={ref}
           role='scrollbar'

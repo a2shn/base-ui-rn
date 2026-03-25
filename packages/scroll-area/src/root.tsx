@@ -6,6 +6,7 @@ import {
   StyleSheet,
   type TargetedEvent,
   View,
+  type ViewStyle,
 } from 'react-native';
 
 import { ScrollAreaContext } from './context';
@@ -158,11 +159,27 @@ export const Root = React.memo(
     const focusRingOverlayStyle = evaluateStyles(
       undefined,
       state,
-      !isWeb ? { disableDefaultFocusRing, focusRingStyle } : { disableDefaultFocusRing: true }
+      !isWeb
+        ? { disableDefaultFocusRing, focusRingStyle }
+        : { disableDefaultFocusRing: true },
     );
 
+    const contextValue = React.useMemo(
+      () => ({
+        ...scrollArea,
+        disableDefaultFocusRing,
+        focusRingStyle,
+      }),
+      [scrollArea, disableDefaultFocusRing, focusRingStyle],
+    );
+
+    // Extract styles to match rounding and border width
+    const flattened = (StyleSheet.flatten(resolvedStyle) || {}) as ViewStyle;
+    const borderRadius = flattened.borderRadius || 0;
+    const borderWidth = flattened.borderWidth || 0;
+
     return (
-      <ScrollAreaContext.Provider value={scrollArea}>
+      <ScrollAreaContext.Provider value={contextValue}>
         <View
           {...other}
           {...webOnlyProps}
@@ -179,10 +196,19 @@ export const Root = React.memo(
           style={resolvedStyle}
         >
           {children}
-          {!isWeb && (
+          {!isWeb && state.focusVisible && (
             <View
-              pointerEvents="none"
-              style={[StyleSheet.absoluteFill, focusRingOverlayStyle]}
+              pointerEvents='none'
+              style={[
+                StyleSheet.absoluteFill,
+                focusRingOverlayStyle,
+                {
+                  // Match parent border exactly to prevent "cut out" edges
+                  borderRadius,
+                  // Offset by parent border width if present
+                  margin: -borderWidth,
+                },
+              ]}
             />
           )}
         </View>

@@ -247,13 +247,12 @@ export const Thumb = React.memo(
       <Animated.View
         {...other}
         {...panResponder.panHandlers}
-        focusable={false}
-        importantForAccessibility='no-hide-descendants'
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-hidden={ariaHidden}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
+        focusable={false}
         ref={ref as React.Ref<View>}
         style={[sizeStyle, resolvedStyle, webStyle, { transform }]}
       >

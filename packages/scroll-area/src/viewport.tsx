@@ -99,24 +99,24 @@ export const Viewport = React.memo(
 
     const webStyle: StyleProp<ViewStyle> = isWeb
       ? ({
-        outline: 'none',
-        touchAction: 'auto',
-      } as unknown as ViewStyle)
+          outline: 'none',
+          touchAction: 'auto',
+        } as unknown as ViewStyle)
       : {};
 
     const nativeProps = !isWeb
       ? {
-        collapsable: false,
-        focusable: true,
-        onBlur: (e: NativeSyntheticEvent<TargetedEvent>) => {
-          handleBlur();
-          other.onBlur?.(e);
-        },
-        onFocus: (e: NativeSyntheticEvent<TargetedEvent>) => {
-          handleFocus();
-          other.onFocus?.(e);
-        },
-      }
+          collapsable: false,
+          focusable: true,
+          onBlur: (e: NativeSyntheticEvent<TargetedEvent>) => {
+            handleBlur();
+            other.onBlur?.(e);
+          },
+          onFocus: (e: NativeSyntheticEvent<TargetedEvent>) => {
+            handleFocus();
+            other.onFocus?.(e);
+          },
+        }
       : {};
 
     return (
