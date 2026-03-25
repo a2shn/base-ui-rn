@@ -1,3 +1,4 @@
+import { useFocus } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import { Animated, type ScrollView } from 'react-native';
 
@@ -6,7 +7,11 @@ import type { ScrollAreaRootProps, ScrollAreaRootState } from './types';
 export type UseScrollAreaProps = ScrollAreaRootProps;
 
 export function useScrollArea(props: UseScrollAreaProps) {
-  const { overflowEdgeThreshold = 0, scrollbarVisibility = 'auto' } = props;
+  const {
+    focusVisible: forceFocusVisible = false,
+    overflowEdgeThreshold = 0,
+    scrollbarVisibility = 'auto',
+  } = props;
 
   const [viewportWidth, setViewportWidth] = React.useState(0);
   const [viewportHeight, setViewportHeight] = React.useState(0);
@@ -32,6 +37,10 @@ export function useScrollArea(props: UseScrollAreaProps) {
   }, []);
 
   const [isHovering, setIsHovering] = React.useState(false);
+
+  const { focused, focusVisible, onBlur, onFocus } = useFocus({
+    focusVisible: forceFocusVisible,
+  });
 
   const scrollX = React.useRef(new Animated.Value(0)).current;
   const scrollY = React.useRef(new Animated.Value(0)).current;
@@ -94,6 +103,8 @@ export function useScrollArea(props: UseScrollAreaProps) {
 
   const state: ScrollAreaRootState = React.useMemo(
     () => ({
+      focused,
+      focusVisible,
       hasOverflowX,
       hasOverflowY,
       isHovering,
@@ -105,6 +116,8 @@ export function useScrollArea(props: UseScrollAreaProps) {
       overflowYStart,
     }),
     [
+      focused,
+      focusVisible,
       hasOverflowX,
       hasOverflowY,
       isScrolling,
@@ -120,6 +133,8 @@ export function useScrollArea(props: UseScrollAreaProps) {
   return {
     contentHeight,
     contentWidth,
+    onBlur,
+    onFocus,
     rawScrollX,
     rawScrollY,
     scrollbarHeight,

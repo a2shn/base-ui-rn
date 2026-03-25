@@ -1,4 +1,8 @@
-import type { ARIABaseProps, ARIATraitOrientation } from '@base-ui-rn/core';
+import type {
+  ARIABaseProps,
+  ARIATraitOrientation,
+  FocusVisibleProps,
+} from '@base-ui-rn/core';
 import type * as React from 'react';
 import type {
   ScrollViewProps,
@@ -21,6 +25,8 @@ export interface ScrollAreaRootState {
   overflowXEnd: boolean;
   overflowYStart: boolean;
   overflowYEnd: boolean;
+  focusVisible: boolean;
+  focused: boolean;
 }
 
 export type ScrollAreaViewportState = ScrollAreaRootState;
@@ -37,7 +43,7 @@ export interface ScrollAreaThumbState {
 export type ScrollAreaCornerState = Record<string, never>;
 
 export interface ScrollAreaRootProps
-  extends Omit<ViewProps, 'style'>, ARIABaseProps {
+  extends Omit<ViewProps, 'style'>, ARIABaseProps, FocusVisibleProps {
   /**
    * The visibility of the scrollbars.
    * - 'auto': Visible when scrolling and when hovering.
@@ -68,7 +74,10 @@ export interface ScrollAreaRootProps
 }
 
 export interface ScrollAreaViewportProps
-  extends Omit<ScrollViewProps, 'style' | 'children'>, ARIABaseProps {
+  extends
+    Omit<ScrollViewProps, 'style' | 'children'>,
+    ARIABaseProps,
+    FocusVisibleProps {
   children?: React.ReactNode;
   style?:
     | StyleProp<ViewStyle>

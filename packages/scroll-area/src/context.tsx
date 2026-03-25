@@ -16,6 +16,8 @@ export interface ScrollAreaContextValue {
   viewportRef: React.RefObject<ScrollView | null>;
   rawScrollX: React.RefObject<number>;
   rawScrollY: React.RefObject<number>;
+  onBlur: () => void;
+  onFocus: () => void;
   setViewportWidth: (w: number) => void;
   setViewportHeight: (h: number) => void;
   setContentWidth: (w: number) => void;
