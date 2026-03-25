@@ -21,7 +21,7 @@ import type { ScrollAreaContentProps } from './types';
 export const Content = React.memo(
   React.forwardRef<View, ScrollAreaContentProps>((props, ref) => {
     const { children, onLayout, ...other } = props;
-    const { setContentHeight, setContentWidth } = useScrollAreaContext();
+    const { setContentHeight, setContentWidth, state } = useScrollAreaContext();
 
     const handleLayout = (event: LayoutChangeEvent) => {
       const { height, width } = event.nativeEvent.layout;
@@ -30,8 +30,18 @@ export const Content = React.memo(
       onLayout?.(event);
     };
 
+    const contentDataAttrs = {
+      'data-has-overflow-x': state.hasOverflowX || undefined,
+      'data-has-overflow-y': state.hasOverflowY || undefined,
+      'data-overflow-x-end': state.overflowXEnd || undefined,
+      'data-overflow-x-start': state.overflowXStart || undefined,
+      'data-overflow-y-end': state.overflowYEnd || undefined,
+      'data-overflow-y-start': state.overflowYStart || undefined,
+      'data-scrolling': state.isScrolling || undefined,
+    };
+
     return (
-      <View {...other} onLayout={handleLayout} ref={ref}>
+      <View {...other} {...contentDataAttrs} onLayout={handleLayout} ref={ref}>
         {children}
       </View>
     );

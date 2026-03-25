@@ -104,32 +104,51 @@ export const Viewport = React.memo(
       disableDefaultFocusRing: true,
     });
 
-    const webStyle: StyleProp<ViewStyle> = isWeb
-      ? ({
-          outline: 'none',
-          touchAction: 'auto',
-        } as unknown as ViewStyle)
-      : {};
+    let webStyle: StyleProp<ViewStyle> = {};
+    if (isWeb) {
+      webStyle = {
+        outline: 'none',
+        touchAction: 'auto',
+      } as unknown as ViewStyle;
+    }
 
-    const nativeProps = !isWeb
-      ? {
-          collapsable: false,
-          focusable: true,
-          onBlur: (e: NativeSyntheticEvent<TargetedEvent>) => {
-            handleBlur();
-            other.onBlur?.(e);
-          },
-          onFocus: (e: NativeSyntheticEvent<TargetedEvent>) => {
-            handleFocus();
-            other.onFocus?.(e);
-          },
-        }
-      : {};
+    let nativeProps = {};
+    if (!isWeb) {
+      nativeProps = {
+        collapsable: false,
+        focusable: true,
+        onBlur: (e: NativeSyntheticEvent<TargetedEvent>) => {
+          handleBlur();
+          other.onBlur?.(e);
+        },
+        onFocus: (e: NativeSyntheticEvent<TargetedEvent>) => {
+          handleFocus();
+          other.onFocus?.(e);
+        },
+      };
+    }
+
+    const viewportDataAttrs = {
+      'data-has-overflow-x':
+        dataHasOverflowX ?? (state.hasOverflowX || undefined),
+      'data-has-overflow-y':
+        dataHasOverflowY ?? (state.hasOverflowY || undefined),
+      'data-overflow-x-end':
+        dataOverflowXEnd ?? (state.overflowXEnd || undefined),
+      'data-overflow-x-start':
+        dataOverflowXStart ?? (state.overflowXStart || undefined),
+      'data-overflow-y-end':
+        dataOverflowYEnd ?? (state.overflowYEnd || undefined),
+      'data-overflow-y-start':
+        dataOverflowYStart ?? (state.overflowYStart || undefined),
+      'data-scrolling': dataScrolling ?? (state.isScrolling || undefined),
+    };
 
     return (
       <Animated.ScrollView
         {...other}
         {...nativeProps}
+        {...viewportDataAttrs}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-hidden={ariaHidden}
@@ -139,25 +158,6 @@ export const Viewport = React.memo(
           { flexGrow: 1 },
           contentContainerStyle as StyleProp<ViewStyle>,
         ]}
-        data-has-overflow-x={
-          dataHasOverflowX ?? (state.hasOverflowX || undefined)
-        }
-        data-has-overflow-y={
-          dataHasOverflowY ?? (state.hasOverflowY || undefined)
-        }
-        data-overflow-x-end={
-          dataOverflowXEnd ?? (state.overflowXEnd || undefined)
-        }
-        data-overflow-x-start={
-          dataOverflowXStart ?? (state.overflowXStart || undefined)
-        }
-        data-overflow-y-end={
-          dataOverflowYEnd ?? (state.overflowYEnd || undefined)
-        }
-        data-overflow-y-start={
-          dataOverflowYStart ?? (state.overflowYStart || undefined)
-        }
-        data-scrolling={dataScrolling ?? (state.isScrolling || undefined)}
         horizontal={horizontal}
         nestedScrollEnabled
         onLayout={handleLayout}
@@ -176,4 +176,4 @@ export const Viewport = React.memo(
   }),
 );
 
-Viewport.displayName = 'ScrollArea.Viewport';
+Viewport.displayName = 'Viewport';

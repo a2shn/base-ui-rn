@@ -2,8 +2,8 @@ import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import {
   Animated,
-  PanResponder,
   Platform,
+  type ScrollView,
   type StyleProp,
   View,
   type ViewStyle,
@@ -12,6 +12,7 @@ import {
 import { useScrollAreaContext } from './context';
 import { ScrollbarContext } from './scrollbar';
 import type { ScrollAreaThumbProps, ScrollAreaThumbState } from './types';
+import { useGesture } from './use-gesture';
 
 /**
  * The part of the scrollbar that indicates the current scroll position.
@@ -62,10 +63,56 @@ export const Thumb = React.memo(
       viewportWidth,
     } = context;
 
-    const [isDragging, setIsDragging] = React.useState(false);
+    const isHorizontal = orientation === 'horizontal';
+
+    const thumbSize = React.useMemo(() => {
+      let scrollbarDim = scrollbarHeight;
+      let contentDim = contentHeight;
+      let viewportDim = viewportHeight;
+
+      if (isHorizontal) {
+        scrollbarDim = scrollbarWidth;
+        contentDim = contentWidth;
+        viewportDim = viewportWidth;
+      }
+
+      if (scrollbarDim === 0 || contentDim === 0) {
+        return 0;
+      }
+
+      const ratio = viewportDim / contentDim;
+      // Minimum thumb size of 40px, maximum of 100px
+      const size = scrollbarDim * ratio;
+      return Math.min(Math.max(40, size), 100);
+    }, [
+      isHorizontal,
+      contentWidth,
+      viewportWidth,
+      scrollbarWidth,
+      contentHeight,
+      viewportHeight,
+      scrollbarHeight,
+    ]);
+
+    const { isDragging, panHandlers } = useGesture({
+      contentHeight,
+      contentWidth,
+      orientation,
+      rawScrollX,
+      rawScrollY,
+      scrollbarHeight,
+      scrollbarWidth,
+      setIsScrolling,
+      thumbSize,
+      viewportHeight,
+      viewportRef: viewportRef as React.RefObject<ScrollView | null>,
+      viewportWidth,
+    });
 
     React.useEffect(() => {
-      if (Platform.OS !== 'web' || !isDragging) return;
+      if (Platform.OS !== 'web' || !isDragging) {
+        return;
+      }
 
       const doc = (
         globalThis as unknown as {
@@ -79,7 +126,10 @@ export const Thumb = React.memo(
           };
         }
       ).document;
-      if (!doc?.body) return;
+
+      if (!doc?.body) {
+        return;
+      }
 
       const originalCursor = doc.body.style.cursor;
       const originalUserSelect = doc.body.style.userSelect;
@@ -93,96 +143,6 @@ export const Thumb = React.memo(
       };
     }, [isDragging]);
 
-    // Stable refs for gesture logic
-    const contentDimRef = React.useRef(0);
-    const viewportDimRef = React.useRef(0);
-    const scrollbarDimRef = React.useRef(0);
-    const initialScrollRef = React.useRef(0);
-    const isHorizontal = orientation === 'horizontal';
-
-    contentDimRef.current = isHorizontal ? contentWidth : contentHeight;
-    viewportDimRef.current = isHorizontal ? viewportWidth : viewportHeight;
-    scrollbarDimRef.current = isHorizontal ? scrollbarWidth : scrollbarHeight;
-
-    const thumbSize = React.useMemo(() => {
-      if (scrollbarDimRef.current === 0 || contentDimRef.current === 0)
-        return 0;
-      const ratio = viewportDimRef.current / contentDimRef.current;
-      // Minimum thumb size of 40px, maximum of 100px
-      const size = scrollbarDimRef.current * ratio;
-      return Math.min(Math.max(40, size), 100);
-    }, [
-      isHorizontal,
-      contentWidth,
-      viewportWidth,
-      scrollbarWidth,
-      contentHeight,
-      viewportHeight,
-      scrollbarHeight,
-    ]);
-
-    const panResponder = React.useMemo(
-      () =>
-        PanResponder.create({
-          onMoveShouldSetPanResponder: (_, gestureState) => {
-            const { dx, dy } = gestureState;
-            const isFarEnough = isHorizontal
-              ? Math.abs(dx) > 2
-              : Math.abs(dy) > 2;
-            const isCorrectDirection = isHorizontal
-              ? Math.abs(dx) > Math.abs(dy)
-              : Math.abs(dy) > Math.abs(dx);
-            return isFarEnough && isCorrectDirection;
-          },
-          onPanResponderGrant: () => {
-            setIsDragging(true);
-            setIsScrolling(true);
-            initialScrollRef.current = isHorizontal
-              ? rawScrollX.current
-              : rawScrollY.current;
-          },
-          onPanResponderMove: (_, gestureState) => {
-            if (scrollbarDimRef.current === thumbSize) return;
-
-            const scrollRange = contentDimRef.current - viewportDimRef.current;
-            const scrollbarRange = scrollbarDimRef.current - thumbSize;
-
-            if (scrollbarRange <= 0) return;
-
-            // How much scroll changes per pixel of drag
-            const ratio = scrollRange / scrollbarRange;
-            const dragPos = isHorizontal ? gestureState.dx : gestureState.dy;
-
-            const nextScroll = Math.max(
-              0,
-              Math.min(scrollRange, initialScrollRef.current + dragPos * ratio),
-            );
-
-            viewportRef.current?.scrollTo({
-              animated: false,
-              x: isHorizontal ? nextScroll : rawScrollX.current,
-              y: isHorizontal ? rawScrollY.current : nextScroll,
-            });
-            setIsScrolling(true);
-          },
-          onPanResponderRelease: () => {
-            setIsDragging(false);
-          },
-          onPanResponderTerminate: () => {
-            setIsDragging(false);
-          },
-          onStartShouldSetPanResponder: () => false,
-        }),
-      [
-        isHorizontal,
-        thumbSize,
-        viewportRef,
-        rawScrollX,
-        rawScrollY,
-        setIsScrolling,
-      ],
-    );
-
     const thumbState: ScrollAreaThumbState = React.useMemo(
       () => ({ isDragging, orientation }),
       [orientation, isDragging],
@@ -191,7 +151,9 @@ export const Thumb = React.memo(
     const transform = React.useMemo(() => {
       if (isHorizontal) {
         const range = contentWidth - viewportWidth;
-        if (range <= 0) return [{ translateX: 0 }];
+        if (range <= 0) {
+          return [{ translateX: 0 }];
+        }
         return [
           {
             translateX: scrollX.interpolate({
@@ -201,19 +163,21 @@ export const Thumb = React.memo(
             }),
           },
         ];
-      } else {
-        const range = contentHeight - viewportHeight;
-        if (range <= 0) return [{ translateY: 0 }];
-        return [
-          {
-            translateY: scrollY.interpolate({
-              extrapolate: 'clamp',
-              inputRange: [0, range],
-              outputRange: [0, scrollbarHeight - thumbSize],
-            }),
-          },
-        ];
       }
+
+      const range = contentHeight - viewportHeight;
+      if (range <= 0) {
+        return [{ translateY: 0 }];
+      }
+      return [
+        {
+          translateY: scrollY.interpolate({
+            extrapolate: 'clamp',
+            inputRange: [0, range],
+            outputRange: [0, scrollbarHeight - thumbSize],
+          }),
+        },
+      ];
     }, [
       isHorizontal,
       contentWidth,
@@ -231,22 +195,24 @@ export const Thumb = React.memo(
       disableDefaultFocusRing: true,
     });
 
-    const sizeStyle: StyleProp<ViewStyle> = isHorizontal
-      ? { height: '100%', width: thumbSize }
-      : { height: thumbSize, width: '100%' };
+    let sizeStyle: StyleProp<ViewStyle> = { height: thumbSize, width: '100%' };
+    if (isHorizontal) {
+      sizeStyle = { height: '100%', width: thumbSize };
+    }
 
     const isWeb = Platform.OS === 'web';
-    const webStyle = isWeb
-      ? ({
-          cursor: isDragging ? 'grabbing' : 'grab',
-          touchAction: 'none',
-        } as unknown as ViewStyle)
-      : {};
+    let webStyle: ViewStyle = {};
+    if (isWeb) {
+      webStyle = {
+        cursor: isDragging ? 'grabbing' : 'grab',
+        touchAction: 'none',
+      } as unknown as ViewStyle;
+    }
 
     return (
       <Animated.View
         {...other}
-        {...panResponder.panHandlers}
+        {...panHandlers}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-hidden={ariaHidden}

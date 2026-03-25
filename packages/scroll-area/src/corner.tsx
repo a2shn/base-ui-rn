@@ -41,9 +41,20 @@ export const Corner = React.memo(
       return null;
     }
 
+    const cornerDataAttrs = {
+      'data-has-overflow-x': state.hasOverflowX || undefined,
+      'data-has-overflow-y': state.hasOverflowY || undefined,
+      'data-overflow-x-end': state.overflowXEnd || undefined,
+      'data-overflow-x-start': state.overflowXStart || undefined,
+      'data-overflow-y-end': state.overflowYEnd || undefined,
+      'data-overflow-y-start': state.overflowYStart || undefined,
+      'data-scrolling': state.isScrolling || undefined,
+    };
+
     return (
       <View
         {...other}
+        {...cornerDataAttrs}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-hidden={ariaHidden}

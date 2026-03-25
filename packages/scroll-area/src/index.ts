@@ -1,6 +1,6 @@
 import { Content } from './content';
 import { Corner } from './corner';
-import { Root } from './root';
+import { Root } from './scroll-area';
 import { Scrollbar } from './scrollbar';
 import { Thumb } from './thumb';
 import { Viewport } from './viewport';

@@ -58,22 +58,35 @@ export function useScrollArea(props: UseScrollAreaProps) {
     yStart: 0,
   });
 
+  const lastUpdateRef = React.useRef(0);
+
+  const updateOverflowDistances = React.useCallback(
+    (x: number, y: number) => {
+      const now = Date.now();
+      // Throttle updates to ~60fps (16ms) to improve performance during scrolling
+      if (now - lastUpdateRef.current < 16) {
+        return;
+      }
+      lastUpdateRef.current = now;
+
+      setOverflowDistances({
+        xEnd: Math.max(0, contentWidth - viewportWidth - x),
+        xStart: x,
+        yEnd: Math.max(0, contentHeight - viewportHeight - y),
+        yStart: y,
+      });
+    },
+    [contentWidth, viewportWidth, contentHeight, viewportHeight],
+  );
+
   React.useEffect(() => {
     const idX = scrollX.addListener(({ value }) => {
       rawScrollX.current = value;
-      setOverflowDistances((prev) => ({
-        ...prev,
-        xEnd: Math.max(0, contentWidth - viewportWidth - value),
-        xStart: value,
-      }));
+      updateOverflowDistances(value, rawScrollY.current);
     });
     const idY = scrollY.addListener(({ value }) => {
       rawScrollY.current = value;
-      setOverflowDistances((prev) => ({
-        ...prev,
-        yEnd: Math.max(0, contentHeight - viewportHeight - value),
-        yStart: value,
-      }));
+      updateOverflowDistances(rawScrollX.current, value);
     });
     return () => {
       scrollX.removeListener(idX);
@@ -82,14 +95,7 @@ export function useScrollArea(props: UseScrollAreaProps) {
         clearTimeout(scrollingTimeoutRef.current);
       }
     };
-  }, [
-    scrollX,
-    scrollY,
-    contentWidth,
-    contentHeight,
-    viewportWidth,
-    viewportHeight,
-  ]);
+  }, [scrollX, scrollY, updateOverflowDistances]);
 
   const hasOverflowX = contentWidth > viewportWidth;
   const hasOverflowY = contentHeight > viewportHeight;

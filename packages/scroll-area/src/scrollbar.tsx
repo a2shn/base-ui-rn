@@ -74,9 +74,14 @@ export const Scrollbar = React.memo(
       onLayout?.(event);
     };
 
-    const isVisible =
-      keepMounted ||
-      (orientation === 'horizontal' ? state.hasOverflowX : state.hasOverflowY);
+    let isVisible = state.hasOverflowY;
+    if (orientation === 'horizontal') {
+      isVisible = state.hasOverflowX;
+    }
+
+    if (keepMounted) {
+      isVisible = true;
+    }
 
     if (!isVisible) {
       return null;
@@ -87,41 +92,40 @@ export const Scrollbar = React.memo(
     });
 
     const isWeb = Platform.OS === 'web';
-    const webStyle: StyleProp<ViewStyle> = isWeb
-      ? ({ touchAction: 'none' } as ViewStyle)
-      : {};
+    let webStyle: StyleProp<ViewStyle> = {};
+    if (isWeb) {
+      webStyle = { touchAction: 'none' } as ViewStyle;
+    }
+
+    const scrollbarDataAttrs = {
+      'data-has-overflow-x':
+        dataHasOverflowX ?? (state.hasOverflowX || undefined),
+      'data-has-overflow-y':
+        dataHasOverflowY ?? (state.hasOverflowY || undefined),
+      'data-hovering': dataHovering ?? (state.isHovering || undefined),
+      'data-orientation': dataOrientation ?? orientation,
+      'data-overflow-x-end':
+        dataOverflowXEnd ?? (state.overflowXEnd || undefined),
+      'data-overflow-x-start':
+        dataOverflowXStart ?? (state.overflowXStart || undefined),
+      'data-overflow-y-end':
+        dataOverflowYEnd ?? (state.overflowYEnd || undefined),
+      'data-overflow-y-start':
+        dataOverflowYStart ?? (state.overflowYStart || undefined),
+      'data-scrolling': dataScrolling ?? (state.isScrolling || undefined),
+    };
 
     return (
       <ScrollbarContext.Provider value={{ orientation }}>
         <View
           {...other}
+          {...scrollbarDataAttrs}
           aria-describedby={ariaDescribedBy}
           aria-details={ariaDetails}
           aria-hidden={ariaHidden}
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
           aria-orientation={ariaOrientationProp ?? orientation}
-          data-has-overflow-x={
-            dataHasOverflowX ?? (state.hasOverflowX || undefined)
-          }
-          data-has-overflow-y={
-            dataHasOverflowY ?? (state.hasOverflowY || undefined)
-          }
-          data-hovering={dataHovering ?? (state.isHovering || undefined)}
-          data-orientation={dataOrientation ?? orientation}
-          data-overflow-x-end={
-            dataOverflowXEnd ?? (state.overflowXEnd || undefined)
-          }
-          data-overflow-x-start={
-            dataOverflowXStart ?? (state.overflowXStart || undefined)
-          }
-          data-overflow-y-end={
-            dataOverflowYEnd ?? (state.overflowYEnd || undefined)
-          }
-          data-overflow-y-start={
-            dataOverflowYStart ?? (state.overflowYStart || undefined)
-          }
-          data-scrolling={dataScrolling ?? (state.isScrolling || undefined)}
           focusable={false}
           onLayout={handleLayout}
           ref={ref}
