@@ -3,6 +3,7 @@ import * as React from 'react';
 import {
   type NativeSyntheticEvent,
   Platform,
+  StyleSheet,
   type TargetedEvent,
   View,
 } from 'react-native';
@@ -64,8 +65,9 @@ export const Root = React.memo(
 
     const isWeb = Platform.OS === 'web';
 
-    // On web, Root renders the focus ring (default browser outline).
-    // On native, Viewport renders the focus ring to avoid parent re-layout "jumps".
+    // On web, Root is the focus target.
+    // On native, Viewport is the focus target, but Root renders the "ring" visuals
+    // via an absolute overlay to avoid layout-driven focus "jumps".
     const resolvedStyle = evaluateStyles(
       style,
       state,
@@ -161,6 +163,12 @@ export const Root = React.memo(
       [scrollArea, disableDefaultFocusRing, focusRingStyle],
     );
 
+    const focusRingOverlayStyle = evaluateStyles(
+      undefined,
+      state,
+      !isWeb ? { disableDefaultFocusRing, focusRingStyle } : { disableDefaultFocusRing: true }
+    );
+
     return (
       <ScrollAreaContext.Provider value={contextValue}>
         <View
@@ -179,6 +187,12 @@ export const Root = React.memo(
           style={resolvedStyle}
         >
           {children}
+          {!isWeb && (
+            <View
+              pointerEvents="none"
+              style={[StyleSheet.absoluteFill, focusRingOverlayStyle]}
+            />
+          )}
         </View>
       </ScrollAreaContext.Provider>
     );
