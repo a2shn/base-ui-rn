@@ -24,8 +24,8 @@ export const DEFAULT_FOCUS_RING_STYLE = Platform.select({
     borderColor: '#1a73e8',
     borderWidth: 3,
   },
-  web: null
-})
+  web: null,
+});
 /**
  * Keys that should activate a button or toggle component.
  * Supports a wide range of platforms including mobile, web, and TV.

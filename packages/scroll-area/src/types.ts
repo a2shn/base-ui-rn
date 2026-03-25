@@ -11,49 +11,158 @@ import type {
   ViewStyle,
 } from 'react-native';
 
+/**
+ * The orientation of the scrollbar.
+ */
 export type ScrollAreaOrientation = 'horizontal' | 'vertical';
 
+/**
+ * Controls when the scrollbar is visible.
+ */
 export type ScrollAreaVisibility = 'auto' | 'always' | 'scroll' | 'hover';
 
+/**
+ * State for the ScrollArea root element.
+ */
 export interface ScrollAreaRootState {
+  /**
+   * Whether there is overflow in the horizontal direction.
+   * @default false
+   */
   hasOverflowX: boolean;
+  /**
+   * Whether there is overflow in the vertical direction.
+   * @default false
+   */
   hasOverflowY: boolean;
+  /**
+   * Whether the user is currently scrolling.
+   * @default false
+   */
   isScrolling: boolean;
+  /**
+   * Whether the user is hovering over the scroll area.
+   * @default false
+   */
   isHovering: boolean;
+  /**
+   * Whether the scrollbar is visible.
+   * @default false
+   */
   isVisible: boolean;
+  /**
+   * Whether the overflow is at the start in the horizontal direction.
+   * @default false
+   */
   overflowXStart: boolean;
+  /**
+   * Whether the overflow is at the end in the horizontal direction.
+   * @default false
+   */
   overflowXEnd: boolean;
+  /**
+   * Whether the overflow is at the start in the vertical direction.
+   * @default false
+   */
   overflowYStart: boolean;
+  /**
+   * Whether the overflow is at the end in the vertical direction.
+   * @default false
+   */
   overflowYEnd: boolean;
+  /**
+   * Whether the scroll area should show a focus ring.
+   * @default false
+   */
   focusVisible: boolean;
+  /**
+   * Whether the scroll area is focused.
+   * @default false
+   */
   focused: boolean;
   corner: {
+    /**
+     * The height of the corner element.
+     * @default 0
+     */
     height: number;
+    /**
+     * The width of the corner element.
+     * @default 0
+     */
     width: number;
   };
   thumb: {
+    /**
+     * The height of the thumb element.
+     * @default 0
+     */
     height: number;
+    /**
+     * The width of the thumb element.
+     * @default 0
+     */
     width: number;
   };
   overflow: {
+    /**
+     * The overflow at the start in the horizontal direction.
+     * @default 0
+     */
     xStart: number;
+    /**
+     * The overflow at the end in the horizontal direction.
+     * @default 0
+     */
     xEnd: number;
+    /**
+     * The overflow at the start in the vertical direction.
+     * @default 0
+     */
     yStart: number;
+    /**
+     * The overflow at the end in the vertical direction.
+     * @default 0
+     */
     yEnd: number;
   };
 }
 
+/**
+ * State for the ScrollArea viewport element.
+ */
 export type ScrollAreaViewportState = ScrollAreaRootState;
 
+/**
+ * State for the ScrollArea scrollbar element.
+ */
 export interface ScrollAreaScrollbarState extends ScrollAreaRootState {
+  /**
+   * The orientation of the scrollbar.
+   * @default 'vertical'
+   */
   orientation: ScrollAreaOrientation;
 }
 
+/**
+ * State for the ScrollArea thumb element.
+ */
 export interface ScrollAreaThumbState {
+  /**
+   * The orientation of the thumb.
+   * @default 'vertical'
+   */
   orientation: ScrollAreaOrientation;
+  /**
+   * Whether the thumb is being dragged.
+   * @default false
+   */
   isDragging: boolean;
 }
 
+/**
+ * State for the ScrollArea corner element.
+ */
 export type ScrollAreaCornerState = ScrollAreaRootState;
 
 /**
@@ -163,6 +272,9 @@ export interface ScrollAreaViewportProps
   measure?: boolean;
 }
 
+/**
+ * Props for the ScrollArea content element.
+ */
 export interface ScrollAreaContentProps extends ViewProps {
   children?: React.ReactNode;
 }

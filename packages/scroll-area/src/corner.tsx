@@ -33,7 +33,9 @@ export const Corner = React.memo(
     } = props;
     const { state } = useScrollAreaContext();
 
-    const resolvedStyle = evaluateStyles(style, state);
+    const resolvedStyle = evaluateStyles(style, state, {
+      disableDefaultFocusRing: true,
+    });
 
     if (!state.hasOverflowX || !state.hasOverflowY) {
       return null;
@@ -47,6 +49,7 @@ export const Corner = React.memo(
         aria-hidden={ariaHidden}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
+        focusable={false}
         ref={ref}
         style={[{ backgroundColor: 'transparent' }, resolvedStyle]}
       />

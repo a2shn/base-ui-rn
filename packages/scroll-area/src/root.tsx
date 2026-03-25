@@ -86,10 +86,16 @@ export const Root = React.memo(
     // On web, Root is also the focus target.
     // On native, the Viewport is the focus target but tells the Root to show the ring via context.
     // We use an absolute overlay on native to prevent layout-driven focus "jumps".
-    const resolvedStyle = evaluateStyles(style, state, {
-      disableDefaultFocusRing,
-      focusRingStyle,
-    });
+    const resolvedStyle = evaluateStyles(
+      style,
+      state,
+      isWeb
+        ? {
+            disableDefaultFocusRing,
+            focusRingStyle,
+          }
+        : { disableDefaultFocusRing: true },
+    );
 
     const handleWebKeyDown = (e: React.KeyboardEvent) => {
       if (!viewportRef.current) return;
