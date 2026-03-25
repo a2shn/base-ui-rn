@@ -61,6 +61,7 @@ export interface ScrollAreaRootProps
         yEnd?: number;
       };
   children?: React.ReactNode;
+  onKeyDown?: (event: React.KeyboardEvent) => void;
   style?:
     | StyleProp<ViewStyle>
     | ((state: ScrollAreaRootState) => StyleProp<ViewStyle>);

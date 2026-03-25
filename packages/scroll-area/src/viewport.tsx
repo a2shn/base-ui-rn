@@ -86,23 +86,17 @@ export const Viewport = React.memo(
 
     const resolvedStyle = evaluateStyles(style, state);
 
-    const webProps =
-      Platform.OS === 'web'
-        ? {
-            focusable: true,
-            tabIndex: 0 as 0 | -1,
-          }
-        : {};
-
     const webStyle: StyleProp<ViewStyle> =
       Platform.OS === 'web'
-        ? ({ touchAction: 'auto' } as unknown as ViewStyle)
+        ? ({
+            outline: 'none',
+            touchAction: 'auto',
+          } as unknown as ViewStyle)
         : {};
 
     return (
       <Animated.ScrollView
         {...other}
-        {...webProps}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-hidden={ariaHidden}

@@ -21,12 +21,11 @@ export const DEFAULT_HIT_SLOP = {
  */
 export const DEFAULT_FOCUS_RING_STYLE = Platform.select({
   default: {
-    borderColor: '#0071E3',
-    borderWidth: 2,
+    borderColor: '#1a73e8',
+    borderWidth: 3,
   },
-  web: null,
-});
-
+  web: null
+})
 /**
  * Keys that should activate a button or toggle component.
  * Supports a wide range of platforms including mobile, web, and TV.
