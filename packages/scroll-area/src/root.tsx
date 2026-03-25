@@ -1,6 +1,11 @@
 import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
-import { Platform, View } from 'react-native';
+import {
+  type NativeSyntheticEvent,
+  Platform,
+  type TargetedEvent,
+  View,
+} from 'react-native';
 
 import { ScrollAreaContext } from './context';
 import type { ScrollAreaRootProps } from './types';
@@ -57,15 +62,20 @@ export const Root = React.memo(
       viewportRef,
     } = scrollArea;
 
-    const resolvedStyle = evaluateStyles(style, state, {
-      disableDefaultFocusRing,
-      focusRingStyle,
-    });
+    const isWeb = Platform.OS === 'web';
 
-    const focusProps = {
-      focusable: true,
-      tabIndex: 0 as 0 | -1,
-    };
+    // On web, Root renders the focus ring (default browser outline).
+    // On native, Viewport renders the focus ring to avoid parent re-layout "jumps".
+    const resolvedStyle = evaluateStyles(
+      style,
+      state,
+      isWeb
+        ? {
+            disableDefaultFocusRing,
+            focusRingStyle,
+          }
+        : { disableDefaultFocusRing: true },
+    );
 
     const handleWebKeyDown = (e: React.KeyboardEvent) => {
       if (!viewportRef.current) return;
@@ -116,7 +126,7 @@ export const Root = React.memo(
         case 'End':
           viewportRef.current.scrollTo({
             animated: false,
-            y: 9999999, // ScrollView handles bounds
+            y: 9999999,
           });
           break;
         default:
@@ -126,29 +136,43 @@ export const Root = React.memo(
       e.preventDefault();
     };
 
-    const webOnlyProps =
-      Platform.OS === 'web' ? { onKeyDown: handleWebKeyDown } : {};
+    const webOnlyProps = isWeb
+      ? {
+          focusable: true,
+          onBlur: (e: NativeSyntheticEvent<TargetedEvent>) => {
+            handleBlur();
+            onBlur?.(e);
+          },
+          onFocus: (e: NativeSyntheticEvent<TargetedEvent>) => {
+            handleFocus();
+            onFocus?.(e);
+          },
+          onKeyDown: handleWebKeyDown,
+          tabIndex: 0 as 0 | -1,
+        }
+      : {};
+
+    const contextValue = React.useMemo(
+      () => ({
+        ...scrollArea,
+        disableDefaultFocusRing,
+        focusRingStyle,
+      }),
+      [scrollArea, disableDefaultFocusRing, focusRingStyle],
+    );
 
     return (
-      <ScrollAreaContext.Provider value={scrollArea}>
+      <ScrollAreaContext.Provider value={contextValue}>
         <View
           {...other}
-          {...focusProps}
           {...webOnlyProps}
-          accessible={true}
+          accessible={isWeb}
           aria-describedby={ariaDescribedBy}
           aria-details={ariaDetails}
           aria-hidden={ariaHidden}
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
-          onBlur={(e) => {
-            handleBlur();
-            onBlur?.(e);
-          }}
-          onFocus={(e) => {
-            handleFocus();
-            onFocus?.(e);
-          }}
+          collapsable={false}
           onPointerEnter={() => scrollArea.setIsHovering(true)}
           onPointerLeave={() => scrollArea.setIsHovering(false)}
           ref={ref}

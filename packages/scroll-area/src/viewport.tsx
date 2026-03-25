@@ -3,9 +3,11 @@ import * as React from 'react';
 import {
   Animated,
   type LayoutChangeEvent,
+  type NativeSyntheticEvent,
   Platform,
   type ScrollView,
   type StyleProp,
+  type TargetedEvent,
   type ViewStyle,
 } from 'react-native';
 
@@ -43,6 +45,10 @@ export const Viewport = React.memo(
       ...other
     } = props;
     const {
+      disableDefaultFocusRing,
+      focusRingStyle,
+      onBlur: handleBlur,
+      onFocus: handleFocus,
       scrollX,
       scrollY,
       setIsScrolling,
@@ -52,7 +58,7 @@ export const Viewport = React.memo(
       viewportRef,
     } = useScrollAreaContext();
 
-    const mergedRef = mergeRefs(ref, viewportRef);
+    const mergedRef = mergeRefs(ref, measure ? viewportRef : undefined);
 
     const handleLayout = (event: LayoutChangeEvent) => {
       if (measure) {
@@ -84,19 +90,48 @@ export const Viewport = React.memo(
       },
     );
 
-    const resolvedStyle = evaluateStyles(style, state);
+    const isWeb = Platform.OS === 'web';
 
-    const webStyle: StyleProp<ViewStyle> =
-      Platform.OS === 'web'
-        ? ({
-            outline: 'none',
-            touchAction: 'auto',
-          } as unknown as ViewStyle)
-        : {};
+    // On native, Viewport renders the focus ring to avoid parent re-layout "jumps".
+    // On web, Viewport suppresses the default outline.
+    const resolvedStyle = evaluateStyles(
+      style,
+      state,
+      !isWeb
+        ? {
+            disableDefaultFocusRing,
+            focusRingStyle,
+          }
+        : { disableDefaultFocusRing: true },
+    );
+
+    const webStyle: StyleProp<ViewStyle> = isWeb
+      ? ({
+          outline: 'none',
+          touchAction: 'auto',
+        } as unknown as ViewStyle)
+      : {};
+
+    const nativeProps = !isWeb
+      ? {
+          accessible: true,
+          collapsable: false,
+          focusable: true,
+          onBlur: (e: NativeSyntheticEvent<TargetedEvent>) => {
+            handleBlur();
+            other.onBlur?.(e);
+          },
+          onFocus: (e: NativeSyntheticEvent<TargetedEvent>) => {
+            handleFocus();
+            other.onFocus?.(e);
+          },
+        }
+      : {};
 
     return (
       <Animated.ScrollView
         {...other}
+        {...nativeProps}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-hidden={ariaHidden}
