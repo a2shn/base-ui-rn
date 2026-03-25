@@ -235,13 +235,13 @@ export const Thumb = React.memo(
       ? { height: '100%', width: thumbSize }
       : { height: thumbSize, width: '100%' };
 
-    const webStyle = Platform.select({
-      default: {},
-      web: {
-        cursor: isDragging ? 'grabbing' : 'grab',
-        touchAction: 'none',
-      } as unknown as ViewStyle,
-    });
+    const isWeb = Platform.OS === 'web';
+    const webStyle = isWeb
+      ? ({
+          cursor: isDragging ? 'grabbing' : 'grab',
+          touchAction: 'none',
+        } as unknown as ViewStyle)
+      : {};
 
     return (
       <Animated.View
@@ -252,6 +252,7 @@ export const Thumb = React.memo(
         aria-hidden={ariaHidden}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
+        data-orientation={orientation}
         focusable={false}
         ref={ref as React.Ref<View>}
         style={[sizeStyle, resolvedStyle, webStyle, { transform }]}

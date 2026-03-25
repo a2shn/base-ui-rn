@@ -38,6 +38,13 @@ export const Viewport = React.memo(
       'aria-labelledby': ariaLabelledBy,
       children,
       contentContainerStyle,
+      'data-has-overflow-x': dataHasOverflowX,
+      'data-has-overflow-y': dataHasOverflowY,
+      'data-overflow-x-end': dataOverflowXEnd,
+      'data-overflow-x-start': dataOverflowXStart,
+      'data-overflow-y-end': dataOverflowYEnd,
+      'data-overflow-y-start': dataOverflowYStart,
+      'data-scrolling': dataScrolling,
       horizontal = false,
       measure = true,
       onLayout,
@@ -132,6 +139,25 @@ export const Viewport = React.memo(
           { flexGrow: 1 },
           contentContainerStyle as StyleProp<ViewStyle>,
         ]}
+        data-has-overflow-x={
+          dataHasOverflowX ?? (state.hasOverflowX || undefined)
+        }
+        data-has-overflow-y={
+          dataHasOverflowY ?? (state.hasOverflowY || undefined)
+        }
+        data-overflow-x-end={
+          dataOverflowXEnd ?? (state.overflowXEnd || undefined)
+        }
+        data-overflow-x-start={
+          dataOverflowXStart ?? (state.overflowXStart || undefined)
+        }
+        data-overflow-y-end={
+          dataOverflowYEnd ?? (state.overflowYEnd || undefined)
+        }
+        data-overflow-y-start={
+          dataOverflowYStart ?? (state.overflowYStart || undefined)
+        }
+        data-scrolling={dataScrolling ?? (state.isScrolling || undefined)}
         horizontal={horizontal}
         nestedScrollEnabled
         onLayout={handleLayout}

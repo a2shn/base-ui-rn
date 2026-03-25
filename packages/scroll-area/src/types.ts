@@ -27,6 +27,20 @@ export interface ScrollAreaRootState {
   overflowYEnd: boolean;
   focusVisible: boolean;
   focused: boolean;
+  corner: {
+    height: number;
+    width: number;
+  };
+  thumb: {
+    height: number;
+    width: number;
+  };
+  overflow: {
+    xStart: number;
+    xEnd: number;
+    yStart: number;
+    yEnd: number;
+  };
 }
 
 export type ScrollAreaViewportState = ScrollAreaRootState;
@@ -40,10 +54,58 @@ export interface ScrollAreaThumbState {
   isDragging: boolean;
 }
 
-export type ScrollAreaCornerState = Record<string, never>;
+export type ScrollAreaCornerState = ScrollAreaRootState;
+
+/**
+ * Web-specific accessibility and data attributes for ScrollArea Root.
+ */
+export interface WebScrollAreaRootProps extends ARIABaseProps {
+  'data-has-overflow-x'?: boolean;
+  'data-has-overflow-y'?: boolean;
+  'data-overflow-x-end'?: boolean;
+  'data-overflow-x-start'?: boolean;
+  'data-overflow-y-end'?: boolean;
+  'data-overflow-y-start'?: boolean;
+  'data-scrolling'?: boolean;
+}
+
+/**
+ * Web-specific accessibility and data attributes for ScrollArea Viewport.
+ */
+export interface WebScrollAreaViewportProps extends ARIABaseProps {
+  'data-has-overflow-x'?: boolean;
+  'data-has-overflow-y'?: boolean;
+  'data-overflow-x-end'?: boolean;
+  'data-overflow-x-start'?: boolean;
+  'data-overflow-y-end'?: boolean;
+  'data-overflow-y-start'?: boolean;
+  'data-scrolling'?: boolean;
+}
+
+/**
+ * Web-specific accessibility and data attributes for ScrollArea Scrollbar.
+ */
+export interface WebScrollAreaScrollbarProps extends ARIABaseProps {
+  'data-orientation'?: ScrollAreaOrientation;
+  'data-has-overflow-x'?: boolean;
+  'data-has-overflow-y'?: boolean;
+  'data-hovering'?: boolean;
+  'data-overflow-x-end'?: boolean;
+  'data-overflow-x-start'?: boolean;
+  'data-overflow-y-end'?: boolean;
+  'data-overflow-y-start'?: boolean;
+  'data-scrolling'?: boolean;
+}
+
+/**
+ * Web-specific accessibility and data attributes for ScrollArea Thumb.
+ */
+export interface WebScrollAreaThumbProps extends ARIABaseProps {
+  'data-orientation'?: ScrollAreaOrientation;
+}
 
 export interface ScrollAreaRootProps
-  extends Omit<ViewProps, 'style'>, ARIABaseProps, FocusVisibleProps {
+  extends Omit<ViewProps, 'style'>, WebScrollAreaRootProps, FocusVisibleProps {
   /**
    * The visibility of the scrollbars.
    * - 'auto': Visible when scrolling and when hovering.
@@ -66,6 +128,17 @@ export interface ScrollAreaRootProps
         yStart?: number;
         yEnd?: number;
       };
+  /**
+   * The number of pixels to scroll when using arrow keys on web.
+   * @default 40
+   */
+  keyboardStep?: number;
+  /**
+   * The percentage of the viewport to scroll when using Page Up/Down keys on web.
+   * Accepts a value between 0 and 1.
+   * @default 0.9
+   */
+  keyboardPageStep?: number;
   children?: React.ReactNode;
   onKeyDown?: (event: React.KeyboardEvent) => void;
   style?:
@@ -76,7 +149,7 @@ export interface ScrollAreaRootProps
 export interface ScrollAreaViewportProps
   extends
     Omit<ScrollViewProps, 'style' | 'children'>,
-    ARIABaseProps,
+    WebScrollAreaViewportProps,
     FocusVisibleProps {
   children?: React.ReactNode;
   style?:
@@ -95,7 +168,10 @@ export interface ScrollAreaContentProps extends ViewProps {
 }
 
 export interface ScrollAreaScrollbarProps
-  extends Omit<ViewProps, 'style'>, ARIABaseProps, ARIATraitOrientation {
+  extends
+    Omit<ViewProps, 'style'>,
+    WebScrollAreaScrollbarProps,
+    ARIATraitOrientation {
   /**
    * Whether the scrollbar controls vertical or horizontal scroll.
    * @default 'vertical'
@@ -113,7 +189,7 @@ export interface ScrollAreaScrollbarProps
 }
 
 export interface ScrollAreaThumbProps
-  extends Omit<ViewProps, 'style'>, ARIABaseProps {
+  extends Omit<ViewProps, 'style'>, WebScrollAreaThumbProps {
   children?: React.ReactNode;
   style?:
     | StyleProp<ViewStyle>

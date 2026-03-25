@@ -9,6 +9,8 @@ export type UseScrollAreaProps = ScrollAreaRootProps;
 export function useScrollArea(props: UseScrollAreaProps) {
   const {
     focusVisible: forceFocusVisible = false,
+    keyboardPageStep = 0.9,
+    keyboardStep = 40,
     overflowEdgeThreshold = 0,
     scrollbarVisibility = 'auto',
   } = props;
@@ -49,12 +51,29 @@ export function useScrollArea(props: UseScrollAreaProps) {
   const rawScrollX = React.useRef(0);
   const rawScrollY = React.useRef(0);
 
+  const [overflowDistances, setOverflowDistances] = React.useState({
+    xEnd: 0,
+    xStart: 0,
+    yEnd: 0,
+    yStart: 0,
+  });
+
   React.useEffect(() => {
     const idX = scrollX.addListener(({ value }) => {
       rawScrollX.current = value;
+      setOverflowDistances((prev) => ({
+        ...prev,
+        xEnd: Math.max(0, contentWidth - viewportWidth - value),
+        xStart: value,
+      }));
     });
     const idY = scrollY.addListener(({ value }) => {
       rawScrollY.current = value;
+      setOverflowDistances((prev) => ({
+        ...prev,
+        yEnd: Math.max(0, contentHeight - viewportHeight - value),
+        yStart: value,
+      }));
     });
     return () => {
       scrollX.removeListener(idX);
@@ -63,7 +82,14 @@ export function useScrollArea(props: UseScrollAreaProps) {
         clearTimeout(scrollingTimeoutRef.current);
       }
     };
-  }, [scrollX, scrollY]);
+  }, [
+    scrollX,
+    scrollY,
+    contentWidth,
+    contentHeight,
+    viewportWidth,
+    viewportHeight,
+  ]);
 
   const hasOverflowX = contentWidth > viewportWidth;
   const hasOverflowY = contentHeight > viewportHeight;
@@ -101,8 +127,26 @@ export function useScrollArea(props: UseScrollAreaProps) {
     return isScrolling || isHovering; // 'auto'
   }, [scrollbarVisibility, isScrolling, isHovering]);
 
+  const thumbSizeX = React.useMemo(() => {
+    if (scrollbarWidth === 0 || contentWidth === 0) return 0;
+    const ratio = viewportWidth / contentWidth;
+    const size = scrollbarWidth * ratio;
+    return Math.min(Math.max(40, size), 100);
+  }, [scrollbarWidth, contentWidth, viewportWidth]);
+
+  const thumbSizeY = React.useMemo(() => {
+    if (scrollbarHeight === 0 || contentHeight === 0) return 0;
+    const ratio = viewportHeight / contentHeight;
+    const size = scrollbarHeight * ratio;
+    return Math.min(Math.max(40, size), 100);
+  }, [scrollbarHeight, contentHeight, viewportHeight]);
+
   const state: ScrollAreaRootState = React.useMemo(
     () => ({
+      corner: {
+        height: scrollbarHeight,
+        width: scrollbarWidth,
+      },
       focused,
       focusVisible,
       hasOverflowX,
@@ -110,10 +154,15 @@ export function useScrollArea(props: UseScrollAreaProps) {
       isHovering,
       isScrolling,
       isVisible,
+      overflow: overflowDistances,
       overflowXEnd,
       overflowXStart,
       overflowYEnd,
       overflowYStart,
+      thumb: {
+        height: thumbSizeY,
+        width: thumbSizeX,
+      },
     }),
     [
       focused,
@@ -127,6 +176,11 @@ export function useScrollArea(props: UseScrollAreaProps) {
       overflowXEnd,
       overflowYStart,
       overflowYEnd,
+      scrollbarHeight,
+      scrollbarWidth,
+      thumbSizeY,
+      thumbSizeX,
+      overflowDistances,
     ],
   );
 
@@ -134,6 +188,8 @@ export function useScrollArea(props: UseScrollAreaProps) {
     () => ({
       contentHeight,
       contentWidth,
+      keyboardPageStep,
+      keyboardStep,
       onBlur,
       onFocus,
       rawScrollX,
@@ -158,6 +214,8 @@ export function useScrollArea(props: UseScrollAreaProps) {
     [
       contentHeight,
       contentWidth,
+      keyboardPageStep,
+      keyboardStep,
       onBlur,
       onFocus,
       rawScrollX,

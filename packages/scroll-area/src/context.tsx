@@ -23,6 +23,8 @@ export interface ScrollAreaContextValue {
   rawScrollY: React.RefObject<number>;
   disableDefaultFocusRing?: boolean;
   focusRingStyle?: StyleProp<ViewStyle>;
+  keyboardStep: number;
+  keyboardPageStep: number;
   onBlur: () => void;
   onFocus: () => void;
   setViewportWidth: (w: number) => void;

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { View } from 'react-native';
 
 import { useScrollAreaContext } from './context';
-import type { ScrollAreaCornerProps, ScrollAreaCornerState } from './types';
+import type { ScrollAreaCornerProps } from './types';
 
 /**
  * A small rectangular area that appears at the intersection of horizontal and vertical scrollbars.
@@ -33,8 +33,7 @@ export const Corner = React.memo(
     } = props;
     const { state } = useScrollAreaContext();
 
-    const cornerState: ScrollAreaCornerState = React.useMemo(() => ({}), []);
-    const resolvedStyle = evaluateStyles(style, cornerState);
+    const resolvedStyle = evaluateStyles(style, state);
 
     if (!state.hasOverflowX || !state.hasOverflowY) {
       return null;

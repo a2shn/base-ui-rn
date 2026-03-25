@@ -36,9 +36,18 @@ export const Root = React.memo(
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       children,
+      'data-has-overflow-x': dataHasOverflowX,
+      'data-has-overflow-y': dataHasOverflowY,
+      'data-overflow-x-end': dataOverflowXEnd,
+      'data-overflow-x-start': dataOverflowXStart,
+      'data-overflow-y-end': dataOverflowYEnd,
+      'data-overflow-y-start': dataOverflowYStart,
+      'data-scrolling': dataScrolling,
       disableDefaultFocusRing,
       focusRingStyle,
       focusVisible: forceFocusVisible,
+      keyboardPageStep,
+      keyboardStep,
       onBlur,
       onFocus,
       onKeyDown,
@@ -50,21 +59,25 @@ export const Root = React.memo(
 
     const scrollArea = useScrollArea({
       focusVisible: forceFocusVisible,
+      keyboardPageStep,
+      keyboardStep,
       overflowEdgeThreshold,
       scrollbarVisibility,
     });
 
     const {
+      contentHeight,
+      contentWidth,
+      keyboardPageStep: currentPageStep,
+      keyboardStep: currentStep,
       onBlur: handleBlur,
       onFocus: handleFocus,
       rawScrollX,
       rawScrollY,
       state,
       viewportHeight,
-      viewportWidth,
-      contentWidth,
-      contentHeight,
       viewportRef,
+      viewportWidth,
     } = scrollArea;
 
     const isWeb = Platform.OS === 'web';
@@ -73,92 +86,84 @@ export const Root = React.memo(
     // On web, Root is also the focus target.
     // On native, the Viewport is the focus target but tells the Root to show the ring via context.
     // We use an absolute overlay on native to prevent layout-driven focus "jumps".
-    const resolvedStyle = evaluateStyles(
-      style,
-      state,
-      isWeb
-        ? {
-            disableDefaultFocusRing,
-            focusRingStyle,
-          }
-        : { disableDefaultFocusRing: true },
-    );
+    const resolvedStyle = evaluateStyles(style, state, {
+      disableDefaultFocusRing,
+      focusRingStyle,
+    });
 
     const handleWebKeyDown = (e: React.KeyboardEvent) => {
       if (!viewportRef.current) return;
 
-      const step = 40;
+      const step = currentStep;
+      let nextX = rawScrollX.current;
+      let nextY = rawScrollY.current;
+      let handled = true;
 
       switch (e.key) {
         case 'ArrowUp':
-          // Scroll Y, or fallback to X if only horizontal overflow exists
           if (!state.hasOverflowY && state.hasOverflowX) {
-            viewportRef.current.scrollTo({ animated: false, x: rawScrollX.current - step });
+            nextX -= step;
           } else {
-            viewportRef.current.scrollTo({ animated: false, y: rawScrollY.current - step });
+            nextY -= step;
           }
           break;
         case 'ArrowDown':
           if (!state.hasOverflowY && state.hasOverflowX) {
-            viewportRef.current.scrollTo({ animated: false, x: rawScrollX.current + step });
+            nextX += step;
           } else {
-            viewportRef.current.scrollTo({ animated: false, y: rawScrollY.current + step });
+            nextY += step;
           }
           break;
         case 'ArrowLeft':
-          // Scroll X, or fallback to Y if only vertical overflow exists
           if (!state.hasOverflowX && state.hasOverflowY) {
-            viewportRef.current.scrollTo({ animated: false, y: rawScrollY.current - step });
+            nextY -= step;
           } else {
-            viewportRef.current.scrollTo({ animated: false, x: rawScrollX.current - step });
+            nextX -= step;
           }
           break;
         case 'ArrowRight':
           if (!state.hasOverflowX && state.hasOverflowY) {
-            viewportRef.current.scrollTo({ animated: false, y: rawScrollY.current + step });
+            nextY += step;
           } else {
-            viewportRef.current.scrollTo({ animated: false, x: rawScrollX.current + step });
+            nextX += step;
           }
           break;
         case 'PageUp': {
-          const stepX = (viewportWidth || 0) * 0.9;
-          const stepY = (viewportHeight || 200) * 0.9;
-          viewportRef.current.scrollTo({
-            animated: false,
-            x: state.hasOverflowX ? rawScrollX.current - stepX : undefined,
-            y: state.hasOverflowY ? rawScrollY.current - stepY : undefined,
-          });
+          const stepX = (viewportWidth || 0) * currentPageStep;
+          const stepY = (viewportHeight || 200) * currentPageStep;
+          if (state.hasOverflowX) nextX -= stepX;
+          if (state.hasOverflowY) nextY -= stepY;
           break;
         }
         case 'PageDown': {
-          const stepX = (viewportWidth || 0) * 0.9;
-          const stepY = (viewportHeight || 200) * 0.9;
-          viewportRef.current.scrollTo({
-            animated: false,
-            x: state.hasOverflowX ? rawScrollX.current + stepX : undefined,
-            y: state.hasOverflowY ? rawScrollY.current + stepY : undefined,
-          });
+          const stepX = (viewportWidth || 0) * currentPageStep;
+          const stepY = (viewportHeight || 200) * currentPageStep;
+          if (state.hasOverflowX) nextX += stepX;
+          if (state.hasOverflowY) nextY += stepY;
           break;
         }
         case 'Home':
-          viewportRef.current.scrollTo({
-            animated: false,
-            x: state.hasOverflowX ? 0 : undefined,
-            y: state.hasOverflowY ? 0 : undefined,
-          });
+          if (state.hasOverflowX) nextX = 0;
+          if (state.hasOverflowY) nextY = 0;
           break;
         case 'End':
-          viewportRef.current.scrollTo({
-            animated: false,
-            x: state.hasOverflowX ? contentWidth : undefined,
-            y: state.hasOverflowY ? contentHeight : undefined,
-          });
+          if (state.hasOverflowX) nextX = contentWidth;
+          if (state.hasOverflowY) nextY = contentHeight;
           break;
         default:
+          handled = false;
           onKeyDown?.(e);
-          return;
+          break;
       }
-      e.preventDefault();
+
+      if (handled) {
+        e.preventDefault();
+        viewportRef.current.scrollTo({
+          animated: false,
+          x: nextX,
+          y: nextY,
+        });
+      }
     };
 
     const webOnlyProps = isWeb
@@ -211,6 +216,25 @@ export const Root = React.memo(
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
           collapsable={false}
+          data-has-overflow-x={
+            dataHasOverflowX ?? (state.hasOverflowX || undefined)
+          }
+          data-has-overflow-y={
+            dataHasOverflowY ?? (state.hasOverflowY || undefined)
+          }
+          data-overflow-x-end={
+            dataOverflowXEnd ?? (state.overflowXEnd || undefined)
+          }
+          data-overflow-x-start={
+            dataOverflowXStart ?? (state.overflowXStart || undefined)
+          }
+          data-overflow-y-end={
+            dataOverflowYEnd ?? (state.overflowYEnd || undefined)
+          }
+          data-overflow-y-start={
+            dataOverflowYStart ?? (state.overflowYStart || undefined)
+          }
+          data-scrolling={dataScrolling ?? (state.isScrolling || undefined)}
           onPointerEnter={() => scrollArea.setIsHovering(true)}
           onPointerLeave={() => scrollArea.setIsHovering(false)}
           ref={ref}

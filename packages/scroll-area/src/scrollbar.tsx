@@ -40,6 +40,15 @@ export const Scrollbar = React.memo(
       'aria-labelledby': ariaLabelledBy,
       'aria-orientation': ariaOrientationProp,
       children,
+      'data-has-overflow-x': dataHasOverflowX,
+      'data-has-overflow-y': dataHasOverflowY,
+      'data-hovering': dataHovering,
+      'data-orientation': dataOrientation,
+      'data-overflow-x-end': dataOverflowXEnd,
+      'data-overflow-x-start': dataOverflowXStart,
+      'data-overflow-y-end': dataOverflowYEnd,
+      'data-overflow-y-start': dataOverflowYStart,
+      'data-scrolling': dataScrolling,
       keepMounted = false,
       onLayout,
       orientation = 'vertical',
@@ -77,8 +86,10 @@ export const Scrollbar = React.memo(
       disableDefaultFocusRing: true,
     });
 
-    const webStyle: StyleProp<ViewStyle> =
-      Platform.OS === 'web' ? ({ touchAction: 'none' } as ViewStyle) : {};
+    const isWeb = Platform.OS === 'web';
+    const webStyle: StyleProp<ViewStyle> = isWeb
+      ? ({ touchAction: 'none' } as ViewStyle)
+      : {};
 
     return (
       <ScrollbarContext.Provider value={{ orientation }}>
@@ -90,6 +101,27 @@ export const Scrollbar = React.memo(
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
           aria-orientation={ariaOrientationProp ?? orientation}
+          data-has-overflow-x={
+            dataHasOverflowX ?? (state.hasOverflowX || undefined)
+          }
+          data-has-overflow-y={
+            dataHasOverflowY ?? (state.hasOverflowY || undefined)
+          }
+          data-hovering={dataHovering ?? (state.isHovering || undefined)}
+          data-orientation={dataOrientation ?? orientation}
+          data-overflow-x-end={
+            dataOverflowXEnd ?? (state.overflowXEnd || undefined)
+          }
+          data-overflow-x-start={
+            dataOverflowXStart ?? (state.overflowXStart || undefined)
+          }
+          data-overflow-y-end={
+            dataOverflowYEnd ?? (state.overflowYEnd || undefined)
+          }
+          data-overflow-y-start={
+            dataOverflowYStart ?? (state.overflowYStart || undefined)
+          }
+          data-scrolling={dataScrolling ?? (state.isScrolling || undefined)}
           focusable={false}
           onLayout={handleLayout}
           ref={ref}
