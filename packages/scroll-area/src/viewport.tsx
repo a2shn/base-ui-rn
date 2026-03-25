@@ -176,4 +176,4 @@ export const Viewport = React.memo(
   }),
 );
 
-Viewport.displayName = 'Viewport';
+Viewport.displayName = 'ScrollArea.Viewport';
