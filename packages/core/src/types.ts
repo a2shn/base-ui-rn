@@ -1,4 +1,3 @@
-import { StyleProp, ViewStyle } from 'react-native';
 
 /**
  * Data structure for keyboard events.
@@ -118,38 +117,75 @@ export interface ARIATraitRange {
 }
 
 /**
- * Attributes for components that show a focus ring.
- */
-export interface FocusVisibleProps {
-  /**
-   * Whether to force the focus-visible state.
-   * Useful for manual control or debugging.
-   * @default false
-   */
-  focusVisible?: boolean;
-  /**
-   * Whether to disable the default focus ring style.
-   * @default false
-   */
-  disableDefaultFocusRing?: boolean;
-  /**
-   * Custom style applied for the focus ring when visible.
-   * Overrides the default focus ring style.
-   */
-  focusRingStyle?: StyleProp<ViewStyle>;
-}
-
-/**
  * Base type for press/toggle activation details.
  * Describes how a component was activated.
  */
 export interface PressedChangeDetails {
   /**
    * How the component was activated.
-   *
-   * - `'press'`               — touch or mouse press
-   * - `'keyboard'`            — hardware keyboard key (Enter / Space / Select / OK …)
-   * - `'accessibilityAction'` — screen reader action (activate / click / magicTap)
-   */
+   /**
+    * - `'press'`               — touch or mouse press
+    * - `'keyboard'`            — hardware keyboard key (Enter / Space / Select / OK …)
+    * - `'accessibilityAction'` — screen reader action (activate / click / magicTap)
+    */
   source: 'press' | 'keyboard' | 'accessibilityAction';
+}
+
+export type KeyboardDirection = 'next' | 'prev' | 'first' | 'last';
+
+export interface KeyboardNavigationOptions {
+  /**
+   * The orientation of the navigation.
+   * @default 'horizontal'
+   */
+  orientation?: 'horizontal' | 'vertical' | 'both';
+  /**
+   * Whether navigation should loop around when reaching the start or end.
+   * @default true
+   */
+  loop?: boolean;
+  /**
+   * Custom key mappings for navigation.
+   */
+  keyMap?: Partial<Record<KeyboardDirection, string[]>>;
+}
+
+export interface KeyboardOptions {
+  /**
+   * Callback fired for ArrowUp key press.
+   */
+  onArrowUp?: () => void;
+  /**
+   * Callback fired for ArrowDown key press.
+   */
+  onArrowDown?: () => void;
+  /**
+   * Callback fired for ArrowLeft key press.
+   */
+  onArrowLeft?: () => void;
+  /**
+   * Callback fired for ArrowRight key press.
+   */
+  onArrowRight?: () => void;
+  /**
+   * Callback fired for PageUp key press.
+   */
+  onPageUp?: () => void;
+  /**
+   * Callback fired for PageDown key press.
+   */
+  onPageDown?: () => void;
+  /**
+   * Callback fired for Home key press.
+   */
+  onHome?: () => void;
+  /**
+   * Callback fired for End key press.
+   */
+  onEnd?: () => void;
+  /**
+   * Whether the component is disabled.
+   * @default false
+   */
+  disabled?: boolean;
 }

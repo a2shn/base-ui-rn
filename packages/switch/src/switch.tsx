@@ -1,6 +1,6 @@
 import { evaluateStyles, PressableWithKeyPress } from '@base-ui-rn/core';
 import * as React from 'react';
-import { View } from 'react-native';
+import { StyleProp, View, ViewStyle } from 'react-native';
 
 import { SwitchContext } from './context';
 import type { SwitchRootProps } from './types';
@@ -29,8 +29,7 @@ export const SwitchRoot = React.memo(
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       children,
-      disableDefaultFocusRing = false,
-      focusRingStyle,
+      disableDefaultFocusRing,
       style,
       ...otherProps
     } = props;
@@ -38,6 +37,7 @@ export const SwitchRoot = React.memo(
     const {
       checked,
       disabled,
+      focusRingStyle,
       handleBlur,
       handleFocus,
       handleKeyDown,
@@ -56,6 +56,14 @@ export const SwitchRoot = React.memo(
       }),
       [checked, disabled, readOnly, state.focused, state.focusVisible],
     );
+
+    const resolvedStyle = React.useMemo<StyleProp<ViewStyle>>(() => {
+      const baseStyle = evaluateStyles(style, state);
+      if (focusRingStyle) {
+        return [baseStyle, focusRingStyle];
+      }
+      return baseStyle;
+    }, [style, state, focusRingStyle]);
 
     return (
       <SwitchContext.Provider value={contextValue}>
@@ -84,12 +92,7 @@ export const SwitchRoot = React.memo(
           onPress={handlePress}
           ref={ref}
           role='switch'
-          style={() =>
-            evaluateStyles(style, state, {
-              disableDefaultFocusRing,
-              focusRingStyle,
-            })
-          }
+          style={resolvedStyle}
         >
           {evaluateStyles(children, state)}
         </PressableWithKeyPress>

@@ -1,6 +1,6 @@
 import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
-import { TextInput } from 'react-native';
+import { StyleProp, TextInput, ViewStyle } from 'react-native';
 
 import type { InputProps } from './types';
 import { useInput } from './use-input';
@@ -28,18 +28,29 @@ export const Input = React.memo(
       'aria-hidden': ariaHidden,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       defaultValue,
-      disableDefaultFocusRing = false,
-      focusRingStyle,
+      disableDefaultFocusRing,
       style,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       value: valueProp,
       ...otherProps
     } = props;
 
-    const { handleBlur, handleChangeText, handleFocus, state, value } =
-      useInput(props);
+    const {
+      focusRingStyle,
+      handleBlur,
+      handleChangeText,
+      handleFocus,
+      state,
+      value,
+    } = useInput(props);
+
+    const resolvedStyle = React.useMemo<StyleProp<ViewStyle>>(() => {
+      const baseStyle = evaluateStyles(style, state);
+      if (focusRingStyle) {
+        return [baseStyle, focusRingStyle];
+      }
+      return baseStyle;
+    }, [style, state, focusRingStyle]);
 
     return (
       <TextInput
@@ -62,10 +73,7 @@ export const Input = React.memo(
         onChangeText={handleChangeText}
         onFocus={handleFocus}
         ref={ref}
-        style={evaluateStyles(style, state, {
-          disableDefaultFocusRing,
-          focusRingStyle,
-        })}
+        style={resolvedStyle}
         value={value}
       />
     );

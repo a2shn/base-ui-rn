@@ -1,8 +1,4 @@
-import type {
-  ARIABaseProps,
-  ARIATraitOrientation,
-  FocusVisibleProps,
-} from '@base-ui-rn/core';
+import type { ARIABaseProps, ARIATraitOrientation } from '@base-ui-rn/core';
 import type * as React from 'react';
 import type {
   ScrollViewProps,
@@ -298,7 +294,7 @@ export interface WebScrollAreaThumbProps extends ARIABaseProps {
  * Props for the ScrollArea root element.
  */
 export interface ScrollAreaRootProps
-  extends Omit<ViewProps, 'style'>, WebScrollAreaRootProps, FocusVisibleProps {
+  extends Omit<ViewProps, 'style'>, WebScrollAreaRootProps {
   /**
    * The visibility of the scrollbars.
    * - 'auto': Visible when scrolling and when hovering.
@@ -368,8 +364,7 @@ export interface ScrollAreaRootProps
 export interface ScrollAreaViewportProps
   extends
     Omit<ScrollViewProps, 'style' | 'children'>,
-    WebScrollAreaViewportProps,
-    FocusVisibleProps {
+    WebScrollAreaViewportProps {
   /**
    * The children of the component.
    */

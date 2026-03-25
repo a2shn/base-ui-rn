@@ -1,5 +1,5 @@
 import { useKeyboardActivation, useKeyboardNavigation } from '@base-ui-rn/core';
-import { useFocus } from '@base-ui-rn/focus-ring';
+import { useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import type {
   GestureResponderEvent,
@@ -45,7 +45,6 @@ export function useAccordionRoot(props: AccordionRootProps) {
   const {
     defaultValue,
     disabled = false,
-    focusVisible: forceFocusVisible = false,
     loopFocus = true,
     multiple = false,
     onFocusChange,
@@ -56,9 +55,7 @@ export function useAccordionRoot(props: AccordionRootProps) {
 
   const baseId = useId();
 
-  const { focusVisible, onBlur, onFocus } = useFocus({
-    focusVisible: forceFocusVisible,
-  });
+  const { focusVisible, onBlur, onFocus } = useFocusRing();
 
   const { handleKeyDown, registerItem: registerTrigger } =
     useKeyboardNavigation<View | null>({
@@ -182,16 +179,13 @@ export function useAccordionRoot(props: AccordionRootProps) {
 export function useAccordionItem(props: AccordionItemProps) {
   const {
     disabled = false,
-    focusVisible: forceFocusVisible = false,
     onOpenChange: onOpenChangeProp,
     value: valueProp,
   } = props;
 
   const context = useAccordionContext();
 
-  const { focusVisible, onBlur, onFocus } = useFocus({
-    focusVisible: forceFocusVisible,
-  });
+  const { focusVisible, onBlur, onFocus } = useFocusRing();
 
   const triggerRefRef = React.useRef<React.RefObject<View | null>>({
     current: null,
@@ -258,7 +252,7 @@ export function useAccordionItem(props: AccordionItemProps) {
 export function useAccordionTrigger(props: AccordionTriggerProps) {
   const {
     disabled: disabledProp,
-    focusVisible: forceFocusVisible = false,
+    disableDefaultFocusRing = false,
     onBlur: onBlurProp,
     onFocus: onFocusProp,
     onKeyDown,
@@ -270,9 +264,8 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
 
   const disabled = disabledProp || itemContext.disabled || context.disabled;
 
-  const { focused, focusVisible, onBlur, onFocus } = useFocus({
-    focusVisible: forceFocusVisible,
-  });
+  const { focused, focusRingStyle, focusVisible, onBlur, onFocus } =
+    useFocusRing({ disableDefaultFocusRing });
 
   React.useEffect(() => {
     itemContext.setFocused(focused);
@@ -343,6 +336,7 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
   return {
     disabled,
     focused,
+    focusRingStyle,
     focusVisible,
     handleBlur,
     handleFocus,
@@ -360,9 +354,7 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
 export function useAccordionHeader(props: { focusVisible?: boolean }) {
   const itemContext = useAccordionItemContext();
 
-  const { focused, focusVisible, onBlur, onFocus } = useFocus({
-    focusVisible: props.focusVisible,
-  });
+  const { focused, focusVisible, onBlur, onFocus } = useFocusRing();
 
   const state: AccordionHeaderState = {
     disabled: itemContext.disabled,
@@ -389,18 +381,12 @@ export function useAccordionHeader(props: { focusVisible?: boolean }) {
  * @returns State and event handlers for the component.
  */
 export function useAccordionPanel(props: AccordionPanelProps) {
-  const {
-    focusVisible: forceFocusVisible = false,
-    hiddenUntilFound = false,
-    keepMounted = false,
-  } = props;
+  const { hiddenUntilFound = false, keepMounted = false } = props;
 
   const context = useAccordionContext();
   const itemContext = useAccordionItemContext();
 
-  const { focused, focusVisible, onBlur, onFocus } = useFocus({
-    focusVisible: forceFocusVisible,
-  });
+  const { focused, focusVisible, onBlur, onFocus } = useFocusRing();
 
   const [contentHeight, setContentHeight] = React.useState<number | undefined>(
     undefined,

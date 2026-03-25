@@ -1,4 +1,3 @@
-import { FocusVisibleProps } from '@base-ui-rn/core';
 import * as React from 'react';
 import type { NativeSyntheticEvent, View } from 'react-native';
 
@@ -16,7 +15,7 @@ export interface TabMeasurement {
   height: number;
 }
 
-export interface TabsContextValue extends FocusVisibleProps {
+export interface TabsContextValue {
   value: TabValue | null;
   focusedValue: TabValue | null;
   setFocusedValue: (value: TabValue | null) => void;

@@ -1,34 +1,33 @@
-import * as React from 'react';
+import type { StyleProp, ViewStyle } from 'react-native';
 
-/**
- * Render props provided to the children function of FocusRing.
- */
-export interface FocusRingRenderProps {
+export interface UseFocusRingOptions {
+  /**
+   * Disable the default focus ring styling.
+   * @default false
+   */
+  disableDefaultFocusRing?: boolean;
+}
+
+export interface UseFocusRingReturn {
   /**
    * Whether the component is currently focused.
    */
   focused: boolean;
   /**
    * Whether the focus ring should be visible.
-   * Usually true when focused via keyboard or non-touch navigation.
+   * Keyboard on web, always on native.
    */
   focusVisible: boolean;
-}
-
-/**
- * Props for the FocusRing component.
- */
-export interface FocusRingProps {
   /**
-   * The child element or a render function.
-   * If a render function is provided, it receives the focus state.
+   * Callback to handle focus events.
    */
-  children:
-    | React.ReactNode
-    | ((props: FocusRingRenderProps) => React.ReactNode);
+  onFocus: () => void;
   /**
-   * Whether the focus ring should be visible even during touch interactions.
-   * @default false
+   * Callback to handle blur events.
    */
-  focusVisible?: boolean;
+  onBlur: () => void;
+  /**
+   * The focus ring style (null if disabled, default style otherwise).
+   */
+  focusRingStyle: StyleProp<ViewStyle> | null;
 }

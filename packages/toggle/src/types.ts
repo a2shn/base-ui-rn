@@ -1,9 +1,7 @@
 import {
   type ARIABaseProps,
   type ARIAFocusProps,
-  type ARIALiveProps,
   type ARIATraitDisabled,
-  type FocusVisibleProps,
   type KeyPressEventData,
   type PressedChangeDetails,
 } from '@base-ui-rn/core';
@@ -26,7 +24,6 @@ export type TogglePressedChangeDetails = PressedChangeDetails;
  */
 export type WebToggleAccessibilityProps = ARIABaseProps &
   ARIAFocusProps &
-  ARIALiveProps &
   ARIATraitDisabled & {
     /**
      * Reflects pressed state for the ARIA button-toggle pattern on web.
@@ -60,9 +57,8 @@ export interface ToggleState {
 
 export interface ToggleProps
   extends
-    Omit<PressableProps, 'role' | 'children' | 'style'>,
-    WebToggleAccessibilityProps,
-    FocusVisibleProps {
+    Omit<PressableProps, 'role' | 'children' | 'style' | 'aria-pressed'>,
+    WebToggleAccessibilityProps {
   /**
    * The content of the toggle.
    */
@@ -130,4 +126,10 @@ export interface ToggleProps
    * @default { top: 14, bottom: 14, left: 14, right: 14 }
    */
   hitSlop?: PressableProps['hitSlop'];
+
+  /**
+   * Disable the default focus ring styling.
+   * @default false
+   */
+  disableDefaultFocusRing?: boolean;
 }

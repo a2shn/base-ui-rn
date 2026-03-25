@@ -3,7 +3,7 @@ import {
   useKeyboardActivation,
   useKeyboardNavigation,
 } from '@base-ui-rn/core';
-import { useFocus } from '@base-ui-rn/focus-ring';
+import { useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import {
   type LayoutChangeEvent,
@@ -35,14 +35,16 @@ export function useTabsRoot(props: TabsRootProps) {
   const {
     activateOnFocus = false,
     defaultValue,
-    focusVisible: forceFocusVisible = false,
+    disableDefaultFocusRing = false,
     onFocusChange,
     onValueChange,
     orientation = 'horizontal',
     value: controlledValue,
   } = props;
 
-  const { focusVisible } = useFocus({ focusVisible: forceFocusVisible });
+  const { focusVisible } = useFocusRing({
+    disableDefaultFocusRing,
+  });
 
   const [internalValue, setInternalValue] = React.useState<TabValue | null>(
     defaultValue ?? null,
@@ -176,7 +178,6 @@ export function useTabsRoot(props: TabsRootProps) {
     contextValue: {
       activationDirection,
       focusedValue,
-      focusVisible,
       getTabIndex,
       onFocusChange,
       onTabKeyDown,
@@ -205,7 +206,7 @@ export function useTabsList() {
 
   const state: TabsListState = {
     activationDirection: context.activationDirection,
-    focusVisible: context.focusVisible ?? false,
+    focusVisible: false,
     orientation: context.orientation,
   };
 
@@ -215,7 +216,7 @@ export function useTabsList() {
 export function useTab(props: TabProps) {
   const {
     disabled = false,
-    focusVisible: forceFocusVisible = false,
+    disableDefaultFocusRing = false,
     onBlur: onBlurProp,
     onFocus: onFocusProp,
     value,
@@ -228,9 +229,10 @@ export function useTab(props: TabProps) {
     return context.registerTab(value, ref);
   }, [value, context]);
 
-  const { focused, focusVisible, onBlur, onFocus } = useFocus({
-    focusVisible: forceFocusVisible,
-  });
+  const { focused, focusRingStyle, focusVisible, onBlur, onFocus } =
+    useFocusRing({
+      disableDefaultFocusRing,
+    });
 
   const isFocusedFromRoot = context.focusedValue === value;
 
@@ -289,11 +291,12 @@ export function useTab(props: TabProps) {
     active,
     disabled,
     focused: focused || isFocusedFromRoot,
-    focusVisible: focusVisible || (isFocusedFromRoot && !!context.focusVisible),
+    focusVisible: focusVisible || isFocusedFromRoot,
     orientation: context.orientation,
   };
 
   return {
+    focusRingStyle,
     handleBlur,
     handleFocus,
     handleKeyDown,
@@ -311,7 +314,7 @@ export function useTabsIndicator() {
 
   const state: TabsIndicatorState = {
     activationDirection: context.activationDirection,
-    focusVisible: context.focusVisible ?? false,
+    focusVisible: false,
     orientation: context.orientation,
     tab: {
       height: activeMeasurement?.height,
@@ -337,7 +340,7 @@ export function useTabPanel(props: TabPanelProps) {
 
   const state: TabPanelState = {
     activationDirection: context.activationDirection,
-    focusVisible: context.focusVisible ?? false,
+    focusVisible: false,
     hidden: !active,
     index,
     orientation: context.orientation,

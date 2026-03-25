@@ -1,4 +1,4 @@
-import { useFocus } from '@base-ui-rn/focus-ring';
+import { useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import { Animated, type ScrollView } from 'react-native';
 
@@ -8,7 +8,7 @@ export type UseScrollAreaProps = ScrollAreaRootProps;
 
 export function useScrollArea(props: UseScrollAreaProps) {
   const {
-    focusVisible: forceFocusVisible = false,
+    disableDefaultFocusRing = false,
     keyboardPageStep = 0.9,
     keyboardStep = 40,
     overflowEdgeThreshold = 0,
@@ -40,9 +40,10 @@ export function useScrollArea(props: UseScrollAreaProps) {
 
   const [isHovering, setIsHovering] = React.useState(false);
 
-  const { focused, focusVisible, onBlur, onFocus } = useFocus({
-    focusVisible: forceFocusVisible,
-  });
+  const { focused, focusRingStyle, focusVisible, onBlur, onFocus } =
+    useFocusRing({
+      disableDefaultFocusRing,
+    });
 
   const scrollX = React.useRef(new Animated.Value(0)).current;
   const scrollY = React.useRef(new Animated.Value(0)).current;
@@ -194,6 +195,7 @@ export function useScrollArea(props: UseScrollAreaProps) {
     () => ({
       contentHeight,
       contentWidth,
+      focusRingStyle,
       keyboardPageStep,
       keyboardStep,
       onBlur,
@@ -220,6 +222,7 @@ export function useScrollArea(props: UseScrollAreaProps) {
     [
       contentHeight,
       contentWidth,
+      focusRingStyle,
       keyboardPageStep,
       keyboardStep,
       onBlur,

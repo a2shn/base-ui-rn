@@ -4,7 +4,12 @@ import {
   PressableWithKeyPress,
 } from '@base-ui-rn/core';
 import * as React from 'react';
-import { type NativeSyntheticEvent, View } from 'react-native';
+import type {
+  NativeSyntheticEvent,
+  StyleProp,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 import type { TabProps } from './types';
 import { useTab } from './use-tabs';
@@ -39,8 +44,6 @@ export const Tab = React.memo(
       'data-orientation': dataOrientation,
       disabled,
       disableDefaultFocusRing = false,
-      focusRingStyle,
-      focusVisible: forceFocusVisible = false,
       style,
       tabIndex,
       value,
@@ -48,6 +51,7 @@ export const Tab = React.memo(
     } = props;
 
     const {
+      focusRingStyle,
       handleBlur,
       handleFocus,
       handleKeyDown,
@@ -57,11 +61,19 @@ export const Tab = React.memo(
       state,
     } = useTab({
       disabled,
-      focusVisible: forceFocusVisible,
+      disableDefaultFocusRing,
       value,
     });
 
     React.useImperativeHandle(forwardedRef, () => ref.current!);
+
+    const resolvedStyle = React.useMemo<StyleProp<ViewStyle>>(() => {
+      const baseStyle = evaluateStyles(style, state);
+      if (focusRingStyle) {
+        return [baseStyle, focusRingStyle];
+      }
+      return baseStyle;
+    }, [style, state, focusRingStyle]);
 
     return (
       <PressableWithKeyPress
@@ -93,12 +105,7 @@ export const Tab = React.memo(
         onPress={handlePress}
         ref={ref}
         role='tab'
-        style={() =>
-          evaluateStyles(style, state, {
-            disableDefaultFocusRing,
-            focusRingStyle,
-          })
-        }
+        style={resolvedStyle}
         tabIndex={tabIndex}
       >
         {evaluateStyles(children, state)}

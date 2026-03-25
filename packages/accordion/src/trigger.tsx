@@ -1,5 +1,6 @@
 import { evaluateStyles, PressableWithKeyPress } from '@base-ui-rn/core';
 import * as React from 'react';
+import type { StyleProp, ViewStyle } from 'react-native';
 import { Platform, View } from 'react-native';
 
 import { useAccordionItemContext } from './context';
@@ -34,8 +35,6 @@ export const AccordionTrigger = React.memo(
       children,
       'data-disabled': dataDisabled,
       'data-panel-open': dataPanelOpen,
-      disableDefaultFocusRing = false,
-      focusRingStyle,
       style,
       tabIndex,
       ...otherProps
@@ -44,6 +43,7 @@ export const AccordionTrigger = React.memo(
     const {
       disabled,
       focused,
+      focusRingStyle,
       focusVisible,
       handleBlur,
       handleFocus,
@@ -61,15 +61,19 @@ export const AccordionTrigger = React.memo(
       itemContext.registerTriggerRef(internalRef);
     }, [itemContext]);
 
-    const finalStyle = [
-      evaluateStyles(style, state, {
-        disableDefaultFocusRing,
-        focusRingStyle,
-      }),
-      Platform.select({
-        web: open || focused || focusVisible ? { zIndex: 1 } : undefined,
-      }),
-    ];
+    const finalStyle = React.useMemo<StyleProp<ViewStyle>>(() => {
+      const baseStyle = evaluateStyles(style, state);
+      const focusStyles: StyleProp<ViewStyle>[] = [baseStyle];
+      if (focusRingStyle) {
+        focusStyles.push(focusRingStyle);
+      }
+      focusStyles.push(
+        Platform.select({
+          web: open || focused || focusVisible ? { zIndex: 1 } : undefined,
+        }),
+      );
+      return focusStyles;
+    }, [style, state, focusRingStyle, open, focused, focusVisible]);
 
     return (
       <PressableWithKeyPress

@@ -33,9 +33,7 @@ export const Corner = React.memo(
     } = props;
     const { state } = useScrollAreaContext();
 
-    const resolvedStyle = evaluateStyles(style, state, {
-      disableDefaultFocusRing: true,
-    });
+    const resolvedStyle = evaluateStyles(style, state);
 
     if (!state.hasOverflowX || !state.hasOverflowY) {
       return null;

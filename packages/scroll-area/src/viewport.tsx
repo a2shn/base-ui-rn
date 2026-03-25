@@ -100,9 +100,7 @@ export const Viewport = React.memo(
     // On native, Viewport is the focus target but the Root renders the "ring" visuals
     // via an absolute overlay to prevent layout shifts.
     // On web, Viewport is NOT focusable and suppresses the default outline.
-    const resolvedStyle = evaluateStyles(style, state, {
-      disableDefaultFocusRing: true,
-    });
+    const resolvedStyle = evaluateStyles(style, state);
 
     let webStyle: StyleProp<ViewStyle> = {};
     if (isWeb) {

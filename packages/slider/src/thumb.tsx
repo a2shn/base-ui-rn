@@ -4,9 +4,9 @@ import {
   mergeRefs,
   PressableWithKeyPress,
   resolveTabIndex,
-  useKeyboardRange,
+  useKeyboard,
 } from '@base-ui-rn/core';
-import { useFocus } from '@base-ui-rn/focus-ring';
+import { useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import {
   findNodeHandle,
@@ -37,8 +37,6 @@ export const SliderThumb = React.memo(
       'aria-labelledby': ariaLabelledBy,
       disabled,
       disableDefaultFocusRing = false,
-      focusRingStyle,
-      focusVisible: forceFocusVisible = false,
       getAriaLabel,
       getAriaValueText,
       index = 0,
@@ -217,8 +215,12 @@ export const SliderThumb = React.memo(
       [hasCustomText, resolvedAriaValueText, state.max, state.min, valueNow],
     );
 
-    const { focusVisible, onBlur: handleBlur } = useFocus({
-      focusVisible: forceFocusVisible,
+    const {
+      focusRingStyle,
+      focusVisible,
+      onBlur: handleBlur,
+    } = useFocusRing({
+      disableDefaultFocusRing,
     });
 
     const handleFocusCallback = React.useCallback(
@@ -249,11 +251,6 @@ export const SliderThumb = React.memo(
     const thumbState = React.useMemo(
       () => ({ ...state, focusVisible, index, valueNow }),
       [state, focusVisible, index, valueNow],
-    );
-
-    const memoizedStyleOptions = React.useMemo(
-      () => ({ disableDefaultFocusRing, focusRingStyle }),
-      [disableDefaultFocusRing, focusRingStyle],
     );
 
     const webStyle = React.useMemo(() => {
@@ -307,7 +304,8 @@ export const SliderThumb = React.memo(
         role={accessibilityRole as never}
         style={[
           dynamicStyle,
-          evaluateStyles(style, thumbState, memoizedStyleOptions),
+          evaluateStyles(style, thumbState),
+          focusRingStyle,
           webStyle,
         ]}
         tabIndex={resolvedTabIndex}

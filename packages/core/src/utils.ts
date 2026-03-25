@@ -1,9 +1,6 @@
 import * as React from 'react';
 import { type StyleProp, type ViewStyle } from 'react-native';
 
-import { DEFAULT_FOCUS_RING_STYLE } from './constants';
-import type { FocusVisibleProps } from './types';
-
 /**
  * Clamps a value between a minimum and maximum bound.
  */
@@ -38,76 +35,33 @@ export function mergeRefs<T>(
 }
 
 /**
- * Resolves the focus ring style based on the provided options.
- */
-export function resolveFocusRingStyle(
-  focusVisible: boolean,
-  disableDefault: boolean = false,
-  customStyle?: StyleProp<ViewStyle>,
-  defaultStyle: StyleProp<ViewStyle> = DEFAULT_FOCUS_RING_STYLE,
-) {
-  if (!focusVisible) return null;
-  if (customStyle) return customStyle;
-  if (disableDefault) return null;
-  return defaultStyle;
-}
-
-/**
  * Checks if a value is a StyleProp<ViewStyle>.
  */
 function isStyle(value: unknown): boolean {
   if (value == null) return false;
   const t = typeof value;
   if (t === 'number') return true;
-  if (t !== 'object') return false; // covers string, boolean, function
+  if (t !== 'object') return false;
   if (Array.isArray(value)) return (value as unknown[]).every(isStyle);
-  // $$typeof covers React elements, forwardRef, memo, etc.
   return !('$$typeof' in (value as object));
 }
 
 /**
  * Evaluates a value that can be a static value or a function that returns a value based on state.
- * When used with styles, merges the result with focus ring style if state has focusVisible.
  */
 export function evaluateStyles<T extends StyleProp<ViewStyle>, S>(
   value: T | ((state: S) => T),
   state: S,
-  options?: Omit<FocusVisibleProps, 'focusVisible'>,
 ): StyleProp<ViewStyle>;
 
-export function evaluateStyles<T, S>(
-  value: T | ((state: S) => T),
-  state: S,
-  options?: Omit<FocusVisibleProps, 'focusVisible'>,
-): T;
+export function evaluateStyles<T, S>(value: T | ((state: S) => T), state: S): T;
 
 export function evaluateStyles<T, S>(
   value: T | ((state: S) => T),
   state: S,
-  options: Omit<FocusVisibleProps, 'focusVisible'> = {},
 ): unknown {
-  const resolvedValue =
-    typeof value === 'function' ? (value as (state: S) => T)(state) : value;
-
-  // Fast path: skip all focus-ring logic when not focused.
-  if (!(state as { focusVisible?: boolean }).focusVisible) {
-    return resolvedValue;
+  if (typeof value === 'function') {
+    return (value as (state: S) => T)(state);
   }
-
-  const focusRing = resolveFocusRingStyle(
-    true,
-    options.disableDefaultFocusRing,
-    options.focusRingStyle,
-  );
-
-  if (focusRing === null) return resolvedValue;
-
-  if (!isStyle(resolvedValue)) {
-    return resolvedValue == null ? focusRing : resolvedValue;
-  }
-
-  return [
-    resolvedValue as Exclude<StyleProp<ViewStyle>, null | undefined>,
-    focusRing,
-  ];
+  return value;
 }

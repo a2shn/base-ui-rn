@@ -1,4 +1,4 @@
-import { evaluateStyles, useKeyboardRange } from '@base-ui-rn/core';
+import { evaluateStyles, useKeyboard } from '@base-ui-rn/core';
 import * as React from 'react';
 import {
   type NativeSyntheticEvent,
@@ -44,8 +44,6 @@ export const Root = React.memo(
       'data-overflow-y-start': dataOverflowYStart,
       'data-scrolling': dataScrolling,
       disableDefaultFocusRing,
-      focusRingStyle,
-      focusVisible: forceFocusVisible,
       keyboardPageStep,
       keyboardStep,
       onBlur,
@@ -58,7 +56,7 @@ export const Root = React.memo(
     } = props;
 
     const scrollArea = useScrollArea({
-      focusVisible: forceFocusVisible,
+      disableDefaultFocusRing,
       keyboardPageStep,
       keyboardStep,
       overflowEdgeThreshold,
@@ -68,6 +66,7 @@ export const Root = React.memo(
     const {
       contentHeight,
       contentWidth,
+      focusRingStyle: hookFocusRingStyle,
       keyboardPageStep: currentPageStep,
       keyboardStep: currentStep,
       onBlur: handleBlur,
@@ -82,17 +81,33 @@ export const Root = React.memo(
 
     const isWeb = Platform.OS === 'web';
 
-    const handleWebRangeKeyDown = useKeyboardRange({
-      // ArrowDown/ArrowLeft trigger onDecrement in core
-      onDecrement: () => {
+    const baseHandleWebKeyDown = useKeyboard({
+      onArrowDown: () => {
+        if (!viewportRef.current) return;
+        const nextX = rawScrollX.current;
+        let nextY = rawScrollY.current;
+        nextY += currentStep;
+        viewportRef.current.scrollTo({ animated: false, x: nextX, y: nextY });
+      },
+      onArrowLeft: () => {
         if (!viewportRef.current) return;
         let nextX = rawScrollX.current;
+        const nextY = rawScrollY.current;
+        nextX -= currentStep;
+        viewportRef.current.scrollTo({ animated: false, x: nextX, y: nextY });
+      },
+      onArrowRight: () => {
+        if (!viewportRef.current) return;
+        let nextX = rawScrollX.current;
+        const nextY = rawScrollY.current;
+        nextX += currentStep;
+        viewportRef.current.scrollTo({ animated: false, x: nextX, y: nextY });
+      },
+      onArrowUp: () => {
+        if (!viewportRef.current) return;
+        const nextX = rawScrollX.current;
         let nextY = rawScrollY.current;
-        if (!state.hasOverflowY && state.hasOverflowX) {
-          nextX -= currentStep; // ArrowLeft
-        } else {
-          nextY += currentStep; // ArrowDown
-        }
+        nextY -= currentStep;
         viewportRef.current.scrollTo({ animated: false, x: nextX, y: nextY });
       },
       onEnd: () => {
@@ -109,18 +124,6 @@ export const Root = React.memo(
         let nextY = rawScrollY.current;
         if (state.hasOverflowX) nextX = 0;
         if (state.hasOverflowY) nextY = 0;
-        viewportRef.current.scrollTo({ animated: false, x: nextX, y: nextY });
-      },
-      // ArrowUp/ArrowRight trigger onIncrement in core
-      onIncrement: () => {
-        if (!viewportRef.current) return;
-        let nextX = rawScrollX.current;
-        let nextY = rawScrollY.current;
-        if (!state.hasOverflowY && state.hasOverflowX) {
-          nextX += currentStep; // ArrowRight
-        } else {
-          nextY -= currentStep; // ArrowUp
-        }
         viewportRef.current.scrollTo({ animated: false, x: nextX, y: nextY });
       },
       onPageDown: () => {
@@ -146,52 +149,13 @@ export const Root = React.memo(
     });
 
     const handleWebKeyDown = (e: React.KeyboardEvent) => {
-      if (!viewportRef.current) return;
-
-      // Handle dual-axis arrows manually because useKeyboardRange is one-dimensional
-      const step = currentStep;
-      let nextX = rawScrollX.current;
-      let nextY = rawScrollY.current;
-      let handled = false;
-
-      if (e.key === 'ArrowUp') {
-        nextY -= step;
-        handled = true;
-      } else if (e.key === 'ArrowDown') {
-        nextY += step;
-        handled = true;
-      } else if (e.key === 'ArrowLeft') {
-        nextX -= step;
-        handled = true;
-      } else if (e.key === 'ArrowRight') {
-        nextX += step;
-        handled = true;
-      }
-
-      if (handled) {
-        e.preventDefault();
-        viewportRef.current.scrollTo({ animated: false, x: nextX, y: nextY });
-        return;
-      }
-
-      handleWebRangeKeyDown(
+      baseHandleWebKeyDown(
         e as unknown as NativeSyntheticEvent<{ key: string }> | KeyboardEvent,
       );
       onKeyDown?.(e);
     };
 
-    let evaluateStylesOptions: Omit<ScrollAreaRootProps, 'children' | 'style'> =
-      {
-        disableDefaultFocusRing: true,
-      };
-    if (isWeb) {
-      evaluateStylesOptions = {
-        disableDefaultFocusRing,
-        focusRingStyle,
-      };
-    }
-
-    const resolvedStyle = evaluateStyles(style, state, evaluateStylesOptions);
+    const resolvedStyle = evaluateStyles(style, state);
 
     let webOnlyProps = {};
     if (isWeb) {
@@ -213,27 +177,11 @@ export const Root = React.memo(
     const contextValue = React.useMemo(
       () => ({
         ...scrollArea,
-        disableDefaultFocusRing,
-        focusRingStyle,
       }),
-      [scrollArea, disableDefaultFocusRing, focusRingStyle],
+      [scrollArea],
     );
 
-    let focusRingOverlayOptions: Omit<
-      ScrollAreaRootProps,
-      'children' | 'style'
-    > = {
-      disableDefaultFocusRing: true,
-    };
-    if (!isWeb) {
-      focusRingOverlayOptions = { disableDefaultFocusRing, focusRingStyle };
-    }
-
-    const focusRingOverlayStyle = evaluateStyles(
-      undefined,
-      state,
-      focusRingOverlayOptions,
-    );
+    const focusRingOverlayStyle = hookFocusRingStyle;
 
     // Extract styles to match rounding and border width
     const flattened = (StyleSheet.flatten(resolvedStyle) || {}) as ViewStyle;

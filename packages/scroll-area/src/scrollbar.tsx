@@ -87,9 +87,7 @@ export const Scrollbar = React.memo(
       return null;
     }
 
-    const resolvedStyle = evaluateStyles(style, scrollbarState, {
-      disableDefaultFocusRing: true,
-    });
+    const resolvedStyle = evaluateStyles(style, scrollbarState);
 
     const isWeb = Platform.OS === 'web';
     let webStyle: StyleProp<ViewStyle> = {};

@@ -1,69 +1,84 @@
-import { Button } from '@base-ui-rn/button';
-import { FocusRing, type FocusRingRenderProps } from '@base-ui-rn/focus-ring';
+import { useFocusRing } from '@base-ui-rn/focus-ring';
 import { Gallery, Section } from '@base-ui-rn/playbook';
 import * as React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
+
+const isWeb = Platform.OS === 'web';
 
 export function FocusRingPlaybook() {
   return (
     <Gallery title='FocusRing'>
-      <Section title='Themed Outline'>
+      <Section title='Default'>
         <View style={styles.container}>
-          <FocusRing>
-            {({ focusVisible }) => (
-              <Button style={getOutlineButtonStyle({ focusVisible })}>
-                <Text style={styles.buttonText}>Focus Me</Text>
-              </Button>
-            )}
-          </FocusRing>
+          <DefaultFocusRingView />
           <Text style={styles.hint}>
-            Custom themed outline only (no default).
+            Uses focusRingStyle from useFocusRing when focusVisible is true.
           </Text>
         </View>
       </Section>
 
-      <Section title='Default Style'>
+      <Section title='Themed Outline'>
         <View style={styles.container}>
-          <FocusRing>
-            {({ focusVisible }) => (
-              <Button style={getDefaultButtonStyle({ focusVisible })}>
-                <Text style={styles.buttonText}>Focus Me</Text>
-              </Button>
-            )}
-          </FocusRing>
-          <Text style={styles.hint}>Default browser focus ring style.</Text>
-        </View>
-      </Section>
-
-      <Section title='Custom Style'>
-        <View style={styles.container}>
-          <FocusRing>
-            {({ focused }) => (
-              <Button style={getCustomButtonStyle({ focused })}>
-                <Text style={styles.buttonText}>
-                  {focused ? 'Focused' : 'Idle'}
-                </Text>
-              </Button>
-            )}
-          </FocusRing>
+          <ThemedFocusRingView style={getOutlineStyle} />
+          <Text style={styles.hint}>
+            Custom themed outline (disableDefaultFocusRing: true).
+          </Text>
         </View>
       </Section>
     </Gallery>
   );
 }
 
+function DefaultFocusRingView() {
+  const { focusVisible, focusRingStyle, onFocus, onBlur } = useFocusRing();
+
+  return (
+    <View
+      onFocus={onFocus}
+      onBlur={onBlur}
+      tabIndex={0}
+      style={[styles.viewBase, focusRingStyle]}
+    >
+      <Text style={styles.viewText}>
+        {focusVisible ? 'Focused' : 'Focus Me'}
+      </Text>
+    </View>
+  );
+}
+
+function ThemedFocusRingView({
+  style,
+}: {
+  style: (state: { focusVisible: boolean }) => object;
+}) {
+  const { focusVisible, onFocus, onBlur } = useFocusRing({
+    disableDefaultFocusRing: true,
+  });
+
+  return (
+    <View
+      onFocus={onFocus}
+      onBlur={onBlur}
+      tabIndex={0}
+      style={style({ focusVisible })}
+    >
+      <Text style={styles.viewText}>Focus Me</Text>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
-  buttonBase: {
+  viewBase: {
     alignItems: 'center',
-    backgroundColor: '#e0e0e0',
+    backgroundColor: '#333333',
     borderRadius: 8,
     justifyContent: 'center',
     minWidth: 120,
     paddingHorizontal: 24,
     paddingVertical: 12,
   },
-  buttonText: {
-    color: '#000000',
+  viewText: {
+    color: '#ffffff',
     fontSize: 14,
   },
   container: {
@@ -72,36 +87,22 @@ const styles = StyleSheet.create({
     gap: 12,
     padding: 16,
   },
-  defaultFocus: {
-    outlineColor: '#0071E3',
-    outlineWidth: 2,
-  },
-  focused: {
-    backgroundColor: '#d0d0d0',
-  },
   hint: {
     color: '#666666',
     fontSize: 12,
     textAlign: 'center',
   },
   outline: {
-    borderColor: '#333333',
-    borderWidth: 2,
+    borderColor: '#FF6B35',
+    borderWidth: 4,
+    outlineWidth: 0,
   },
 });
 
-function getOutlineButtonStyle({
-  focusVisible,
-}: Partial<FocusRingRenderProps>) {
-  return [styles.buttonBase, focusVisible && styles.outline];
-}
+function getOutlineStyle({ focusVisible }: { focusVisible: boolean }) {
+  const baseStyles = isWeb
+    ? [styles.viewBase, { outlineStyle: 'none' as const }]
+    : [styles.viewBase];
 
-function getDefaultButtonStyle({
-  focusVisible,
-}: Partial<FocusRingRenderProps>) {
-  return [styles.buttonBase, focusVisible && styles.defaultFocus];
-}
-
-function getCustomButtonStyle({ focused }: Partial<FocusRingRenderProps>) {
-  return [styles.buttonBase, focused && styles.focused];
+  return [...baseStyles, focusVisible && styles.outline];
 }

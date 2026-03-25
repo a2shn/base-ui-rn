@@ -3,7 +3,6 @@ import type {
   ARIAFocusProps,
   ARIALiveProps,
   ARIATraitDisabled,
-  FocusVisibleProps,
   KeyPressEventData,
 } from '@base-ui-rn/core';
 import type {
@@ -19,12 +18,11 @@ import type {
  */
 export type WebSwitchRootAccessibilityProps = ARIABaseProps &
   ARIAFocusProps &
-  ARIALiveProps &
   ARIATraitDisabled & {
     /**
      * Reflects checked state for the ARIA switch pattern on web.
      */
-    'aria-checked'?: boolean | 'mixed';
+    'aria-checked': boolean | 'mixed';
     /**
      * Reflects read-only state for the ARIA switch pattern on web.
      */
@@ -82,9 +80,8 @@ export interface SwitchState {
 
 export interface SwitchRootProps
   extends
-    Omit<PressableProps, 'children' | 'style'>,
-    WebSwitchRootAccessibilityProps,
-    FocusVisibleProps {
+    Omit<PressableProps, 'children' | 'style' | 'aria-checked'>,
+    WebSwitchRootAccessibilityProps {
   /**
    * The content of the switch root.
    */
@@ -127,6 +124,12 @@ export interface SwitchRootProps
    * Callback fired when a key is pressed down.
    */
   onKeyDown?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
+
+  /**
+   * Disable the default focus ring styling.
+   * @default false
+   */
+  disableDefaultFocusRing?: boolean;
 }
 
 export interface SwitchThumbProps

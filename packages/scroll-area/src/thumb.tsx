@@ -191,9 +191,7 @@ export const Thumb = React.memo(
       scrollY,
     ]);
 
-    const resolvedStyle = evaluateStyles(style, thumbState, {
-      disableDefaultFocusRing: true,
-    });
+    const resolvedStyle = evaluateStyles(style, thumbState);
 
     let sizeStyle: StyleProp<ViewStyle> = { height: thumbSize, width: '100%' };
     if (isHorizontal) {

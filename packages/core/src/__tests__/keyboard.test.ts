@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import { type NativeSyntheticEvent, Platform } from 'react-native';
 
 import { ACTIVATION_KEYS } from '../constants';
-import { useKeyboardActivation, useKeyboardRange } from '../keyboard';
+import { useKeyboard, useKeyboardActivation } from '../keyboard';
 import type { KeyPressEventData } from '../types';
 
 // Mock Platform with proper type definitions
@@ -101,65 +101,76 @@ describe('useKeyboardActivation', () => {
   });
 });
 
-describe('useKeyboardRange', () => {
+describe('useKeyboard', () => {
   let options: {
-    onIncrement: jest.Mock;
-    onDecrement: jest.Mock;
+    onArrowUp: jest.Mock;
+    onArrowDown: jest.Mock;
+    onArrowLeft: jest.Mock;
+    onArrowRight: jest.Mock;
     onPageUp: jest.Mock;
     onPageDown: jest.Mock;
     onHome: jest.Mock;
     onEnd: jest.Mock;
     disabled: boolean;
-    orientation: 'horizontal' | 'vertical';
   };
 
   beforeEach(() => {
     options = {
       disabled: false,
-      onDecrement: jest.fn(),
+      onArrowDown: jest.fn(),
+      onArrowLeft: jest.fn(),
+      onArrowRight: jest.fn(),
+      onArrowUp: jest.fn(),
       onEnd: jest.fn(),
       onHome: jest.fn(),
-      onIncrement: jest.fn(),
       onPageDown: jest.fn(),
       onPageUp: jest.fn(),
-      orientation: 'horizontal',
     };
   });
 
-  it('should call onIncrement for ArrowRight/ArrowUp', () => {
-    const { result } = renderHook(() => useKeyboardRange(options));
+  it('should call onArrowRight for ArrowRight', () => {
+    const { result } = renderHook(() => useKeyboard(options));
     const handler = result.current;
 
     act(() => {
       handler(createMockKeyboardEvent('ArrowRight'));
     });
-    expect(options.onIncrement).toHaveBeenCalledTimes(1);
-    expect(options.onDecrement).not.toHaveBeenCalled();
+    expect(options.onArrowRight).toHaveBeenCalledTimes(1);
+    expect(options.onArrowUp).not.toHaveBeenCalled();
+  });
+
+  it('should call onArrowUp for ArrowUp', () => {
+    const { result } = renderHook(() => useKeyboard(options));
+    const handler = result.current;
 
     act(() => {
       handler(createMockKeyboardEvent('ArrowUp'));
     });
-    expect(options.onIncrement).toHaveBeenCalledTimes(2);
+    expect(options.onArrowUp).toHaveBeenCalledTimes(1);
   });
 
-  it('should call onDecrement for ArrowLeft/ArrowDown', () => {
-    const { result } = renderHook(() => useKeyboardRange(options));
+  it('should call onArrowLeft for ArrowLeft', () => {
+    const { result } = renderHook(() => useKeyboard(options));
     const handler = result.current;
 
     act(() => {
       handler(createMockKeyboardEvent('ArrowLeft'));
     });
-    expect(options.onDecrement).toHaveBeenCalledTimes(1);
-    expect(options.onIncrement).not.toHaveBeenCalled();
+    expect(options.onArrowLeft).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call onArrowDown for ArrowDown', () => {
+    const { result } = renderHook(() => useKeyboard(options));
+    const handler = result.current;
 
     act(() => {
       handler(createMockKeyboardEvent('ArrowDown'));
     });
-    expect(options.onDecrement).toHaveBeenCalledTimes(2);
+    expect(options.onArrowDown).toHaveBeenCalledTimes(1);
   });
 
   it('should call onPageUp for PageUp', () => {
-    const { result } = renderHook(() => useKeyboardRange(options));
+    const { result } = renderHook(() => useKeyboard(options));
     const handler = result.current;
 
     act(() => {
@@ -169,7 +180,7 @@ describe('useKeyboardRange', () => {
   });
 
   it('should call onPageDown for PageDown', () => {
-    const { result } = renderHook(() => useKeyboardRange(options));
+    const { result } = renderHook(() => useKeyboard(options));
     const handler = result.current;
 
     act(() => {
@@ -179,7 +190,7 @@ describe('useKeyboardRange', () => {
   });
 
   it('should call onHome for Home', () => {
-    const { result } = renderHook(() => useKeyboardRange(options));
+    const { result } = renderHook(() => useKeyboard(options));
     const handler = result.current;
 
     act(() => {
@@ -189,7 +200,7 @@ describe('useKeyboardRange', () => {
   });
 
   it('should call onEnd for End', () => {
-    const { result } = renderHook(() => useKeyboardRange(options));
+    const { result } = renderHook(() => useKeyboard(options));
     const handler = result.current;
 
     act(() => {
@@ -200,7 +211,7 @@ describe('useKeyboardRange', () => {
 
   it('should prevent default event behavior for handled keys', () => {
     const preventDefault = jest.fn();
-    const { result } = renderHook(() => useKeyboardRange(options));
+    const { result } = renderHook(() => useKeyboard(options));
     const handler = result.current;
 
     act(() => {
@@ -214,7 +225,7 @@ describe('useKeyboardRange', () => {
 
   it('should not prevent default event behavior for unhandled keys', () => {
     const preventDefault = jest.fn();
-    const { result } = renderHook(() => useKeyboardRange(options));
+    const { result } = renderHook(() => useKeyboard(options));
     const handler = result.current;
 
     act(() => {
@@ -228,14 +239,14 @@ describe('useKeyboardRange', () => {
 
   it('should not call any callbacks if disabled', () => {
     options.disabled = true;
-    const { result } = renderHook(() => useKeyboardRange(options));
+    const { result } = renderHook(() => useKeyboard(options));
     const handler = result.current;
 
     act(() => {
       handler(createMockKeyboardEvent('ArrowRight'));
     });
-    expect(options.onIncrement).not.toHaveBeenCalled();
-    expect(options.onDecrement).not.toHaveBeenCalled();
+    expect(options.onArrowRight).not.toHaveBeenCalled();
+    expect(options.onArrowLeft).not.toHaveBeenCalled();
     expect(options.onHome).not.toHaveBeenCalled();
     expect(options.onEnd).not.toHaveBeenCalled();
   });

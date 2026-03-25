@@ -4,7 +4,6 @@ import {
   type ARIALiveProps,
   type ARIATraitDisabled,
   type ARIATraitExpanded,
-  type FocusVisibleProps,
   type KeyPressEventData,
   type PressedChangeDetails,
 } from '@base-ui-rn/core';
@@ -49,8 +48,7 @@ export interface ButtonState {
 export interface ButtonProps
   extends
     Omit<PressableProps, 'children' | 'style'>,
-    WebButtonAccessibilityProps,
-    FocusVisibleProps {
+    WebButtonAccessibilityProps {
   /**
    * The content of the button.
    */
@@ -99,6 +97,12 @@ export interface ButtonProps
    * @default { top: 10, bottom: 10, left: 10, right: 10 }
    */
   hitSlop?: PressableProps['hitSlop'];
+
+  /**
+   * Disable the default focus ring styling.
+   * @default false
+   */
+  disableDefaultFocusRing?: boolean;
 }
 
 export type { KeyPressEventData };

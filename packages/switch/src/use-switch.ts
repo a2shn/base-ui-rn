@@ -1,5 +1,5 @@
 import { useKeyboardActivation } from '@base-ui-rn/core';
-import { useFocus } from '@base-ui-rn/focus-ring';
+import { useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import {
   type GestureResponderEvent,
@@ -13,8 +13,8 @@ export function useSwitchRoot(props: SwitchRootProps) {
   const {
     checked: checkedProp,
     defaultChecked = false,
+    disableDefaultFocusRing = false,
     disabled = false,
-    focusVisible: forceFocusVisible,
     onBlur: onBlurProp,
     onCheckedChange,
     onFocus: onFocusProp,
@@ -30,9 +30,10 @@ export function useSwitchRoot(props: SwitchRootProps) {
   const checked = isControlled ? checkedProp : uncontrolledChecked;
   const isKeyboardActivationRef = React.useRef(false);
 
-  const { focused, focusVisible, onBlur, onFocus } = useFocus({
-    focusVisible: forceFocusVisible,
-  });
+  const { focused, focusVisible, focusRingStyle, onBlur, onFocus } =
+    useFocusRing({
+      disableDefaultFocusRing,
+    });
 
   const toggleState = React.useCallback(() => {
     if (disabled || readOnly) return;
@@ -58,8 +59,6 @@ export function useSwitchRoot(props: SwitchRootProps) {
     isKeyboardActivationRef.current = true;
     toggleState();
 
-    // Reset the ref after a delay to ensure it catches the browser's follow-up click event.
-    // 100ms is safe for most browsers.
     setTimeout(() => {
       isKeyboardActivationRef.current = false;
     }, 100);
@@ -105,6 +104,7 @@ export function useSwitchRoot(props: SwitchRootProps) {
   return {
     checked,
     disabled,
+    focusRingStyle,
     handleBlur,
     handleFocus,
     handleKeyDown,

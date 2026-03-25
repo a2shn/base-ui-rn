@@ -5,7 +5,6 @@ import {
   type ARIATraitDisabled,
   type ARIATraitOrientation,
   type ARIATraitRange,
-  type FocusVisibleProps,
   type KeyPressEventData,
 } from '@base-ui-rn/core';
 import type * as React from 'react';
@@ -186,128 +185,6 @@ export interface SliderRootProps
     value: SliderValue,
     eventDetails: ChangeEventDetails,
   ) => void;
-  /**
-   * Callback fired when the value is committed.
-   */
-  onValueCommitted?: (
-    value: SliderValue,
-    eventDetails: CommitEventDetails,
-  ) => void;
-  /**
-   * The minimum allowed value.
-   * @default 0
-   */
-  min?: number;
-  /**
-   * The maximum allowed value.
-   * @default 100
-   */
-  max?: number;
-  /**
-   * The granularity with which the slider can step through values.
-   * @default 1
-   */
-  step?: number;
-  /**
-   * The granularity when using Page Up/Down or Shift + Arrow keys.
-   * @default 10
-   */
-  largeStep?: number;
-  /**
-   * The minimum steps between values in a range slider.
-   * @default 0
-   */
-  minStepsBetweenValues?: number;
-  /**
-   * The maximum steps between values in a range slider.
-   * @default 0 (no maximum)
-   */
-  maxStepsBetweenValues?: number;
-  /**
-   * The fixed number of steps between values in a range slider.
-   */
-  stepBetweenValues?: number;
-  /**
-   * The locale used for formatting.
-   */
-  locale?: Intl.LocalesArgument;
-  /**
-   * Options to format the input value.
-   */
-  format?: Intl.NumberFormatOptions;
-  /**
-   * How the thumb(s) are aligned relative to the control.
-   * @default 'center'
-   */
-  thumbAlignment?: 'center' | 'edge' | 'edge-client-only';
-  /**
-   * Controls how thumbs behave when they collide.
-   * @default 'push'
-   */
-  thumbCollisionBehavior?: 'push' | 'swap' | 'none';
-  /**
-   * Whether the slider should ignore user interaction.
-   * @default false
-   */
-  disabled?: boolean;
-  /**
-   * The component orientation.
-   * @default 'horizontal'
-   */
-  orientation?: 'horizontal' | 'vertical';
-  /**
-   * The content of the slider.
-   */
-  children?: React.ReactNode | ((state: SliderState) => React.ReactNode);
-  /**
-   * Style applied to the root view.
-   */
-  style?: ViewStyle | ((state: SliderState) => ViewStyle | undefined);
-}
-
-/**
- * Props for the Slider sub-components.
- */
-export interface SliderPartProps
-  extends Omit<ViewProps, 'children' | 'style'>, ARIABaseProps, ARIALiveProps {
-  /**
-   * Present while the user is dragging.
-   */
-  'data-dragging'?: boolean;
-  /**
-   * The component orientation.
-   */
-  'data-orientation'?: 'horizontal' | 'vertical';
-  /**
-   * Present when the slider is disabled.
-   */
-  'data-disabled'?: boolean;
-  /**
-   * The content of the component.
-   */
-  children?: React.ReactNode;
-  /**
-   * Style applied to the component.
-   */
-  style?: ViewStyle | ((state: SliderState) => ViewStyle | undefined);
-}
-
-/**
- * The state of a specific slider thumb.
- */
-export interface SliderThumbState extends SliderState {
-  /**
-   * The index of the thumb.
-   */
-  index: number;
-  /**
-   * The current value of this thumb.
-   */
-  valueNow: number;
-  /**
-   * Whether the thumb is currently focused via keyboard.
-   */
-  focusVisible: boolean;
 }
 
 /**
@@ -316,8 +193,12 @@ export interface SliderThumbState extends SliderState {
 export interface SliderThumbProps
   extends
     Omit<ViewProps, 'style' | 'disabled'>,
-    WebSliderThumbAccessibilityProps,
-    FocusVisibleProps {
+    WebSliderThumbAccessibilityProps {
+  /**
+   * Whether to disable the default focus ring.
+   * @default false
+   */
+  disableDefaultFocusRing?: boolean;
   /**
    * The index of the thumb in a range slider.
    * @default 0
@@ -360,6 +241,21 @@ export interface SliderThumbProps
    * Style applied to the thumb view.
    */
   style?: ViewStyle | ((state: SliderThumbState) => ViewStyle | undefined);
+}
+
+export interface SliderThumbState extends SliderState {
+  /**
+   * The index of the thumb.
+   */
+  index: number;
+  /**
+   * The current value of this thumb.
+   */
+  valueNow: number;
+  /**
+   * Whether the thumb is currently focused via keyboard.
+   */
+  focusVisible: boolean;
 }
 
 /**

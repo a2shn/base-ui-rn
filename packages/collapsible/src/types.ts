@@ -1,7 +1,4 @@
-import {
-  type FocusVisibleProps,
-  type KeyPressEventData,
-} from '@base-ui-rn/core';
+import { type KeyPressEventData } from '@base-ui-rn/core';
 import type {
   NativeSyntheticEvent,
   PressableProps,
@@ -97,42 +94,46 @@ export interface CollapsibleRootOpenChangeDetails {
 /**
  * Props for the Collapsible root component.
  */
-export type CollapsibleRootProps = Omit<ViewProps, 'children' | 'style'> &
-  FocusVisibleProps & {
-    /**
-     * The content of the collapsible.
-     */
-    children?:
-      | React.ReactNode
-      | ((state: CollapsibleRootState) => React.ReactNode);
-    /**
-     * Style applied to the root view.
-     */
-    style?:
-      | StyleProp<ViewStyle>
-      | ((state: CollapsibleRootState) => StyleProp<ViewStyle>);
-    /**
-     * Whether the collapsible is open by default.
-     * @default false
-     */
-    defaultOpen?: boolean;
-    /**
-     * The controlled open state of the collapsible.
-     */
-    open?: boolean;
-    /**
-     * Callback fired when the open state changes.
-     */
-    onOpenChange?: (
-      open: boolean,
-      details: CollapsibleRootOpenChangeDetails,
-    ) => void;
-    /**
-     * Whether the collapsible is disabled.
-     * @default false
-     */
-    disabled?: boolean;
-  };
+export type CollapsibleRootProps = Omit<ViewProps, 'children' | 'style'> & {
+  /**
+   * Whether to disable the default focus ring style.
+   * @default false
+   */
+  disableDefaultFocusRing?: boolean;
+  /**
+   * The content of the collapsible.
+   */
+  children?:
+    | React.ReactNode
+    | ((state: CollapsibleRootState) => React.ReactNode);
+  /**
+   * Style applied to the root view.
+   */
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: CollapsibleRootState) => StyleProp<ViewStyle>);
+  /**
+   * Whether the collapsible is open by default.
+   * @default false
+   */
+  defaultOpen?: boolean;
+  /**
+   * The controlled open state of the collapsible.
+   */
+  open?: boolean;
+  /**
+   * Callback fired when the open state changes.
+   */
+  onOpenChange?: (
+    open: boolean,
+    details: CollapsibleRootOpenChangeDetails,
+  ) => void;
+  /**
+   * Whether the collapsible is disabled.
+   * @default false
+   */
+  disabled?: boolean;
+};
 
 /**
  * Props for the Collapsible trigger component.
@@ -140,55 +141,63 @@ export type CollapsibleRootProps = Omit<ViewProps, 'children' | 'style'> &
 export type CollapsibleTriggerProps = Omit<
   PressableProps,
   'children' | 'style'
-> &
-  FocusVisibleProps & {
-    /**
-     * The content of the trigger.
-     */
-    children?:
-      | React.ReactNode
-      | ((state: CollapsibleTriggerState) => React.ReactNode);
-    /**
-     * Style applied to the trigger view.
-     */
-    style?:
-      | StyleProp<ViewStyle>
-      | ((state: CollapsibleTriggerState) => StyleProp<ViewStyle>);
-    /**
-     * Callback fired when the trigger gains focus.
-     */
-    onFocus?: (e: NativeSyntheticEvent<TargetedEvent>) => void;
-    /**
-     * Callback fired when the trigger loses focus.
-     */
-    onBlur?: (e: NativeSyntheticEvent<TargetedEvent>) => void;
-  };
+> & {
+  /**
+   * Whether to disable the default focus ring style.
+   * @default false
+   */
+  disableDefaultFocusRing?: boolean;
+  /**
+   * The content of the trigger.
+   */
+  children?:
+    | React.ReactNode
+    | ((state: CollapsibleTriggerState) => React.ReactNode);
+  /**
+   * Style applied to the trigger view.
+   */
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: CollapsibleTriggerState) => StyleProp<ViewStyle>);
+  /**
+   * Callback fired when the trigger gains focus.
+   */
+  onFocus?: (e: NativeSyntheticEvent<TargetedEvent>) => void;
+  /**
+   * Callback fired when the trigger loses focus.
+   */
+  onBlur?: (e: NativeSyntheticEvent<TargetedEvent>) => void;
+};
 
 /**
  * Props for the Collapsible panel component.
  */
-export type CollapsiblePanelProps = Omit<ViewProps, 'children' | 'style'> &
-  FocusVisibleProps & {
-    /**
-     * The content of the panel.
-     */
-    children?:
-      | React.ReactNode
-      | ((state: CollapsiblePanelState) => React.ReactNode);
-    /**
-     * Style applied to the panel view.
-     */
-    style?:
-      | StyleProp<ViewStyle>
-      | ((state: CollapsiblePanelState) => StyleProp<ViewStyle>);
-    /**
-     * Whether to hide the panel until a search is performed.
-     * @default false
-     */
-    hiddenUntilFound?: boolean;
-    /**
-     * Whether to keep the panel mounted when closed.
-     * @default false
-     */
-    keepMounted?: boolean;
-  };
+export type CollapsiblePanelProps = Omit<ViewProps, 'children' | 'style'> & {
+  /**
+   * Whether to disable the default focus ring style.
+   * @default false
+   */
+  disableDefaultFocusRing?: boolean;
+  /**
+   * The content of the panel.
+   */
+  children?:
+    | React.ReactNode
+    | ((state: CollapsiblePanelState) => React.ReactNode);
+  /**
+   * Style applied to the panel view.
+   */
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: CollapsiblePanelState) => StyleProp<ViewStyle>);
+  /**
+   * Whether to hide the panel until a search is performed.
+   * @default false
+   */
+  hiddenUntilFound?: boolean;
+  /**
+   * Whether to keep the panel mounted when closed.
+   * @default false
+   */
+  keepMounted?: boolean;
+};

@@ -1,5 +1,5 @@
 import { useKeyboardActivation } from '@base-ui-rn/core';
-import { useFocus } from '@base-ui-rn/focus-ring';
+import { useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import type {
   LayoutChangeEvent,
@@ -74,6 +74,7 @@ export function useCollapsibleRoot(props: CollapsibleRootProps) {
 export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
   const {
     disabled: disabledProp,
+    disableDefaultFocusRing = false,
     onBlur: onBlurProp,
     onFocus: onFocusProp,
   } = props;
@@ -82,9 +83,10 @@ export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
 
   const disabled = disabledProp || context.disabled;
 
-  const { focused, focusVisible, onBlur, onFocus } = useFocus({
-    focusVisible: false,
-  });
+  const { focused, focusRingStyle, focusVisible, onBlur, onFocus } =
+    useFocusRing({
+      disableDefaultFocusRing,
+    });
 
   const handleFocus = React.useCallback(
     (event: NativeSyntheticEvent<TargetedEvent>) => {
@@ -134,6 +136,7 @@ export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
   return {
     disabled,
     focused,
+    focusRingStyle,
     focusVisible,
     handleBlur,
     handleFocus,
@@ -145,12 +148,16 @@ export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
 }
 
 export function useCollapsiblePanel(props: CollapsiblePanelProps) {
-  const { hiddenUntilFound = false, keepMounted = false } = props;
+  const {
+    disableDefaultFocusRing = false,
+    hiddenUntilFound = false,
+    keepMounted = false,
+  } = props;
 
   const context = useCollapsibleContext();
 
-  const { focused, focusVisible, onBlur, onFocus } = useFocus({
-    focusVisible: false,
+  const { focused, focusVisible, onBlur, onFocus } = useFocusRing({
+    disableDefaultFocusRing,
   });
 
   const [contentHeight, setContentHeight] = React.useState<number | undefined>(

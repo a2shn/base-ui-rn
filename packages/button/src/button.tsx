@@ -4,7 +4,7 @@ import {
   PressableWithKeyPress,
 } from '@base-ui-rn/core';
 import * as React from 'react';
-import { type Role, View } from 'react-native';
+import { type Role, StyleProp, View, ViewStyle } from 'react-native';
 
 import { type ButtonProps } from './types';
 import { useButton } from './use-button';
@@ -35,8 +35,7 @@ export const Button = React.memo(
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       children,
-      disableDefaultFocusRing = false,
-      focusRingStyle,
+      disableDefaultFocusRing,
       hitSlop = DEFAULT_HIT_SLOP,
       style,
       ...otherProps
@@ -47,6 +46,7 @@ export const Button = React.memo(
 
     const {
       focused,
+      focusRingStyle,
       focusVisible,
       handleAccessibilityAction,
       handleBlur,
@@ -60,6 +60,18 @@ export const Button = React.memo(
       resolvedAriaKeyshortcuts,
       resolvedTabIndex,
     } = useButton(props);
+
+    const resolvedStyle = React.useMemo<StyleProp<ViewStyle>>(() => {
+      const baseStyle = evaluateStyles(style, {
+        focused,
+        focusVisible,
+        pressed: false,
+      });
+      if (focusRingStyle) {
+        return [baseStyle, focusRingStyle];
+      }
+      return baseStyle;
+    }, [style, focused, focusVisible, focusRingStyle]);
 
     return (
       <PressableWithKeyPress
@@ -87,13 +99,7 @@ export const Button = React.memo(
         onPress={handlePress}
         ref={internalRef}
         role={(accessibilityRole ?? 'button') as Role}
-        style={(pressableState) =>
-          evaluateStyles(
-            style,
-            { ...pressableState, focused, focusVisible },
-            { disableDefaultFocusRing, focusRingStyle },
-          )
-        }
+        style={resolvedStyle}
         tabIndex={resolvedTabIndex}
       >
         {(pressableState) =>

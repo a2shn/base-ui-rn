@@ -1,10 +1,5 @@
 import * as React from 'react';
-import {
-  Animated,
-  type ScrollView,
-  type StyleProp,
-  type ViewStyle,
-} from 'react-native';
+import { Animated, type ScrollView } from 'react-native';
 
 import type { ScrollAreaRootState } from './types';
 
@@ -21,8 +16,6 @@ export interface ScrollAreaContextValue {
   viewportRef: React.RefObject<ScrollView | null>;
   rawScrollX: React.RefObject<number>;
   rawScrollY: React.RefObject<number>;
-  disableDefaultFocusRing?: boolean;
-  focusRingStyle?: StyleProp<ViewStyle>;
   keyboardStep: number;
   keyboardPageStep: number;
   onBlur: () => void;

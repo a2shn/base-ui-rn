@@ -1,4 +1,4 @@
-import { useFocus } from '@base-ui-rn/focus-ring';
+import { useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import type { NativeSyntheticEvent, TextInputProps } from 'react-native';
 
@@ -13,6 +13,7 @@ export function useInput(props: InputProps) {
   const {
     defaultValue,
     dirty: controlledDirty,
+    disableDefaultFocusRing = false,
     disabled = false,
     invalid = false,
     onBlur: onBlurProp,
@@ -45,9 +46,10 @@ export function useInput(props: InputProps) {
   const isTouched =
     controlledTouched !== undefined ? controlledTouched : internalTouched;
 
-  const { focused, focusVisible, onBlur, onFocus } = useFocus({
-    focusVisible: props.focusVisible,
-  });
+  const { focused, focusVisible, focusRingStyle, onBlur, onFocus } =
+    useFocusRing({
+      disableDefaultFocusRing,
+    });
 
   const handleFocus = React.useCallback(
     (e: Parameters<NonNullable<TextInputProps['onFocus']>>[0]) => {
@@ -104,6 +106,7 @@ export function useInput(props: InputProps) {
   );
 
   return {
+    focusRingStyle,
     handleBlur,
     handleChangeText,
     handleFocus,

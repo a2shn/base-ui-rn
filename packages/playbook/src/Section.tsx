@@ -30,7 +30,7 @@ import { useInspector } from './utils/useInspector';
  * @param showAllProps
  * Whether to include non-serializable or unstable props during inspection.
  *
- * @default showAllProps false
+ * @default showAllProps true
  *
  * @example
  * ```tsx
@@ -43,7 +43,7 @@ export const Section = ({
   children,
   contentStyle,
   description,
-  showAllProps = false,
+  showAllProps = true,
   title,
 }: SectionProps) => {
   const styles = useStyles();

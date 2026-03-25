@@ -2,7 +2,6 @@ import type {
   ARIABaseProps,
   ARIAFocusProps,
   ARIATraitDisabled,
-  FocusVisibleProps,
 } from '@base-ui-rn/core';
 import type {
   NativeSyntheticEvent,
@@ -67,8 +66,7 @@ export interface InputProps
     Omit<TextInputProps, 'style'>,
     ARIABaseProps,
     ARIAFocusProps,
-    ARIATraitDisabled,
-    FocusVisibleProps {
+    ARIATraitDisabled {
   /**
    * Style applied to the input component.
    */
@@ -106,4 +104,10 @@ export interface InputProps
    * Whether the input has been "touched" or interacted with.
    */
   touched?: boolean;
+
+  /**
+   * Disable the default focus ring styling.
+   * @default false
+   */
+  disableDefaultFocusRing?: boolean;
 }

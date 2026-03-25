@@ -4,7 +4,7 @@ import {
   PressableWithKeyPress,
 } from '@base-ui-rn/core';
 import * as React from 'react';
-import { type Role, View } from 'react-native';
+import { type Role, StyleProp, View, ViewStyle } from 'react-native';
 
 import { useToggleGroupContext } from './group-context';
 import { type ToggleProps } from './types';
@@ -36,8 +36,7 @@ export const Toggle = React.memo(
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       children,
-      disableDefaultFocusRing = false,
-      focusRingStyle,
+      disableDefaultFocusRing,
       hitSlop = DEFAULT_HIT_SLOP,
       role = 'checkbox',
       style,
@@ -50,6 +49,7 @@ export const Toggle = React.memo(
     const {
       focused,
       focusVisible,
+      focusRingStyle,
       handleAccessibilityAction,
       handleBlur,
       handleFocus,
@@ -91,6 +91,19 @@ export const Toggle = React.memo(
       return undefined;
     }, [value, groupContext]);
 
+    const resolvedStyle = React.useMemo<StyleProp<ViewStyle>>(() => {
+      const baseStyle = evaluateStyles(style, {
+        pressed: false,
+        focused,
+        focusVisible,
+        disabled: isDisabled,
+      });
+      if (focusRingStyle) {
+        return [baseStyle, focusRingStyle];
+      }
+      return baseStyle;
+    }, [style, focused, focusVisible, isDisabled, focusRingStyle]);
+
     return (
       <PressableWithKeyPress
         {...otherProps}
@@ -120,13 +133,7 @@ export const Toggle = React.memo(
         onPress={handlePress}
         ref={internalRef}
         role={(accessibilityRole ?? role) as Role}
-        style={(pressableState) =>
-          evaluateStyles(
-            style,
-            { ...pressableState, focused, focusVisible, pressed: isPressed },
-            { disableDefaultFocusRing, focusRingStyle },
-          )
-        }
+        style={resolvedStyle}
         tabIndex={resolvedTabIndex}
       >
         {(pressableState) =>

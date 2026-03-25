@@ -5,7 +5,6 @@ import {
   type ARIATraitDisabled,
   type ARIATraitExpanded,
   type ARIATraitOrientation,
-  type FocusVisibleProps,
   type KeyPressEventData,
 } from '@base-ui-rn/core';
 import type * as React from 'react';
@@ -134,10 +133,12 @@ export interface TabsRootState {
 }
 
 export interface TabsRootProps
-  extends
-    Omit<ViewProps, 'children' | 'style'>,
-    WebTabsRootAccessibilityProps,
-    FocusVisibleProps {
+  extends Omit<ViewProps, 'children' | 'style'>, WebTabsRootAccessibilityProps {
+  /**
+   * Whether to disable the default focus ring style.
+   * @default false
+   */
+  disableDefaultFocusRing?: boolean;
   /**
    * The content of the tabs.
    */
@@ -184,10 +185,12 @@ export interface TabsListState {
 }
 
 export interface TabsListProps
-  extends
-    Omit<ViewProps, 'children' | 'style'>,
-    WebTabsListAccessibilityProps,
-    FocusVisibleProps {
+  extends Omit<ViewProps, 'children' | 'style'>, WebTabsListAccessibilityProps {
+  /**
+   * Whether to disable the default focus ring style.
+   * @default false
+   */
+  disableDefaultFocusRing?: boolean;
   /**
    * The content of the tabs list.
    */
@@ -217,8 +220,12 @@ export interface TabState {
 export interface TabProps
   extends
     Omit<PressableProps, 'children' | 'style'>,
-    WebTabsTabAccessibilityProps,
-    FocusVisibleProps {
+    WebTabsTabAccessibilityProps {
+  /**
+   * Whether to disable the default focus ring style.
+   * @default false
+   */
+  disableDefaultFocusRing?: boolean;
   /**
    * The content of the tab.
    */
@@ -261,8 +268,12 @@ export interface TabsIndicatorState {
 export interface TabsIndicatorProps
   extends
     Omit<ViewProps, 'children' | 'style'>,
-    WebTabsIndicatorAccessibilityProps,
-    FocusVisibleProps {
+    WebTabsIndicatorAccessibilityProps {
+  /**
+   * Whether to disable the default focus ring style.
+   * @default false
+   */
+  disableDefaultFocusRing?: boolean;
   /**
    * The content of the indicator.
    */
@@ -286,8 +297,12 @@ export interface TabPanelState {
 export interface TabPanelProps
   extends
     Omit<ViewProps, 'children' | 'style'>,
-    WebTabsPanelAccessibilityProps,
-    FocusVisibleProps {
+    WebTabsPanelAccessibilityProps {
+  /**
+   * Whether to disable the default focus ring style.
+   * @default false
+   */
+  disableDefaultFocusRing?: boolean;
   /**
    * The content of the panel.
    */

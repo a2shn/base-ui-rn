@@ -6,7 +6,6 @@ import {
   type ARIATraitExpanded,
   type ARIATraitOrientation,
   type KeyPressEventData as CoreKeyPressEventData,
-  type FocusVisibleProps,
 } from '@base-ui-rn/core';
 import type {
   NativeSyntheticEvent,
@@ -168,8 +167,7 @@ export interface AccordionItemOpenChangeDetails {
 export interface AccordionRootProps
   extends
     Omit<ViewProps, 'children' | 'style'>,
-    WebAccordionRootAccessibilityProps,
-    FocusVisibleProps {
+    WebAccordionRootAccessibilityProps {
   /**
    * The content of the accordion.
    */
@@ -224,8 +222,7 @@ export interface AccordionRootProps
 export interface AccordionItemProps
   extends
     Omit<ViewProps, 'children' | 'style'>,
-    WebAccordionItemAccessibilityProps,
-    FocusVisibleProps {
+    WebAccordionItemAccessibilityProps {
   /**
    * The content of the accordion item.
    */
@@ -258,8 +255,7 @@ export interface AccordionItemProps
 export interface AccordionHeaderProps
   extends
     Omit<ViewProps, 'children' | 'style'>,
-    WebAccordionItemAccessibilityProps,
-    FocusVisibleProps {
+    WebAccordionItemAccessibilityProps {
   /**
    * The content of the accordion header.
    */
@@ -277,8 +273,7 @@ export interface AccordionHeaderProps
 export interface AccordionTriggerProps
   extends
     Omit<PressableProps, 'children' | 'style'>,
-    WebAccordionTriggerAccessibilityProps,
-    FocusVisibleProps {
+    WebAccordionTriggerAccessibilityProps {
   /**
    * The content of the accordion trigger.
    */
@@ -291,6 +286,11 @@ export interface AccordionTriggerProps
   style?:
     | StyleProp<ViewStyle>
     | ((state: AccordionTriggerState) => StyleProp<ViewStyle>);
+  /**
+   * Disable the default focus ring styling.
+   * @default false
+   */
+  disableDefaultFocusRing?: boolean;
   /**
    * Callback fired when a key is pressed down.
    */
@@ -308,8 +308,7 @@ export interface AccordionTriggerProps
 export interface AccordionPanelProps
   extends
     Omit<ViewProps, 'children' | 'style'>,
-    WebAccordionPanelAccessibilityProps,
-    FocusVisibleProps {
+    WebAccordionPanelAccessibilityProps {
   /**
    * The content of the accordion panel.
    */

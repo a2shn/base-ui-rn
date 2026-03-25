@@ -2,26 +2,12 @@ import * as React from 'react';
 import { type NativeSyntheticEvent, Platform } from 'react-native';
 
 import { isActivationKey } from './constants';
-import type { KeyPressEventData } from './types';
-
-export type KeyboardDirection = 'next' | 'prev' | 'first' | 'last';
-
-export interface KeyboardNavigationOptions {
-  /**
-   * The orientation of the navigation.
-   * @default 'horizontal'
-   */
-  orientation?: 'horizontal' | 'vertical' | 'both';
-  /**
-   * Whether navigation should loop around when reaching the start or end.
-   * @default true
-   */
-  loop?: boolean;
-  /**
-   * Custom key mappings for navigation.
-   */
-  keyMap?: Partial<Record<KeyboardDirection, string[]>>;
-}
+import type {
+  KeyboardDirection,
+  KeyboardNavigationOptions,
+  KeyboardOptions,
+  KeyPressEventData,
+} from './types';
 
 const DEFAULT_KEY_MAP: Record<KeyboardDirection, string[]> = {
   first: ['Home'],
@@ -32,149 +18,150 @@ const DEFAULT_KEY_MAP: Record<KeyboardDirection, string[]> = {
 
 /**
  * A hook that handles keyboard activation (Space, Enter, Gamepad A/Select, etc.).
- * Calls the provided `onActivate` callback when an activation key is pressed.
+ *
+ * Use this hook for components that act like buttons or links, where pressing
+ * Space or Enter should trigger an action. It automatically handles
+ * preventDefault() on web to avoid double-activation and scrolling.
  *
  * @param onActivate Callback fired on an activation key press.
  * @param isDisabled Whether the component is disabled, which blocks activation.
  * @returns A generic onKeyDown handler to spread onto a component.
+ *
+ * @example
+ * ```tsx
+ * function MyButton({ onPress }) {
+ *   const onKeyDown = useKeyboardActivation(onPress);
+ *   return <View onKeyDown={onKeyDown} accessible role="button" />;
+ * }
+ * ```
  */
 export function useKeyboardActivation(
   onActivate: () => void,
   isDisabled = false,
 ) {
+  const onActivateRef = React.useRef(onActivate);
+  onActivateRef.current = onActivate;
+
+  const isDisabledRef = React.useRef(isDisabled);
+  isDisabledRef.current = isDisabled;
+
   return React.useCallback(
     (e: NativeSyntheticEvent<KeyPressEventData> | KeyboardEvent) => {
       const nativeEvent = (e as NativeSyntheticEvent<KeyPressEventData>)
         .nativeEvent;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const key = nativeEvent?.key || (e as any).key;
+      const key = nativeEvent?.key || (e as unknown as KeyPressEventData).key;
       if (!key) return;
 
-      if (isActivationKey(key) && !isDisabled) {
+      if (isActivationKey(key) && !isDisabledRef.current) {
         if (e.preventDefault) e.preventDefault();
-        onActivate();
+        onActivateRef.current();
       }
     },
-    [onActivate, isDisabled],
+    [],
   );
 }
 
-export interface KeyboardRangeOptions {
-  /**
-   * Callback fired for incrementing the value by a small step.
-   */
-  onIncrement?: () => void;
-  /**
-   * Callback fired for decrementing the value by a small step.
-   */
-  onDecrement?: () => void;
-  /**
-   * Callback fired for incrementing the value by a large step.
-   */
-  onPageUp?: () => void;
-  /**
-   * Callback fired for decrementing the value by a large step.
-   */
-  onPageDown?: () => void;
-  /**
-   * Callback fired for setting the value to its minimum.
-   */
-  onHome?: () => void;
-  /**
-   * Callback fired for setting the value to its maximum.
-   */
-  onEnd?: () => void;
-  /**
-   * Whether the component is disabled.
-   * @default false
-   */
-  disabled?: boolean;
-  /**
-   * The orientation of the range widget.
-   * @default 'horizontal'
-   */
-  orientation?: 'horizontal' | 'vertical';
-}
-
 /**
- * A hook that handles keyboard interactions for range-like components (Slider, Meter, Progress).
- * Follows WAI-ARIA slider design pattern.
+ * A hook that handles physical key presses (Arrows, PageUp/Down, Home/End).
  *
- * @param options Keyboard range options.
+ * Use this hook for components that need to respond to specific physical keys
+ * regardless of logical orientation or focus navigation. It is ideal for
+ * primitives like Sliders, ScrollAreas, or custom pickers.
+ *
+ * Unlike `useKeyboardNavigation`, this hook does not manage focus between
+ * siblings; it only maps key presses to provided callbacks.
+ *
+ * @param options Keyboard options mapped to specific keys.
  * @returns A generic onKeyDown handler.
+ *
+ * @example
+ * ```tsx
+ * const onKeyDown = useKeyboard({
+ *   onArrowUp: () => setVolume(v => v + 1),
+ *   onArrowDown: () => setVolume(v => v - 1),
+ * });
+ * return <View onKeyDown={onKeyDown} />;
+ * ```
  */
-export function useKeyboardRange(options: KeyboardRangeOptions) {
-  const {
-    disabled = false,
-    onDecrement,
-    onEnd,
-    onHome,
-    onIncrement,
-    onPageDown,
-    onPageUp,
-    orientation = 'horizontal',
-  } = options;
+export function useKeyboard(options: KeyboardOptions) {
+  const optionsRef = React.useRef(options);
+  optionsRef.current = options;
 
   return React.useCallback(
     (e: NativeSyntheticEvent<KeyPressEventData> | KeyboardEvent) => {
+      const {
+        disabled = false,
+        onArrowDown,
+        onArrowLeft,
+        onArrowRight,
+        onArrowUp,
+        onEnd,
+        onHome,
+        onPageDown,
+        onPageUp,
+      } = optionsRef.current;
+
       if (disabled) return;
 
       const nativeEvent = (e as NativeSyntheticEvent<KeyPressEventData>)
         .nativeEvent;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const key = nativeEvent?.key || (e as any).key;
+      const key = nativeEvent?.key || (e as unknown as KeyPressEventData).key;
       if (!key) return;
 
-      let handled = false;
+      const handlers: Record<string, (() => void) | undefined> = {
+        ArrowDown: onArrowDown,
+        ArrowLeft: onArrowLeft,
+        ArrowRight: onArrowRight,
+        ArrowUp: onArrowUp,
+        End: onEnd,
+        Home: onHome,
+        PageDown: onPageDown,
+        PageUp: onPageUp,
+      };
 
-      // ARIA: ArrowRight/Up increment, ArrowLeft/Down decrement regardless of orientation.
-      if (key === 'ArrowRight' || key === 'ArrowUp') {
-        onIncrement?.();
-        handled = true;
-      } else if (key === 'ArrowLeft' || key === 'ArrowDown') {
-        onDecrement?.();
-        handled = true;
-      } else if (key === 'PageUp') {
-        onPageUp?.();
-        handled = true;
-      } else if (key === 'PageDown') {
-        onPageDown?.();
-        handled = true;
-      } else if (key === 'Home') {
-        onHome?.();
-        handled = true;
-      } else if (key === 'End') {
-        onEnd?.();
-        handled = true;
-      }
-
-      if (handled && e.preventDefault) {
-        e.preventDefault();
+      const handler = handlers[key];
+      if (handler) {
+        handler();
+        if (e.preventDefault) e.preventDefault();
       }
     },
-    [
-      onIncrement,
-      onDecrement,
-      onPageUp,
-      onPageDown,
-      onHome,
-      onEnd,
-      disabled,
-      orientation,
-    ],
+    [],
   );
 }
 
 /**
  * A modular hook for managing keyboard navigation within a group of elements.
  *
- * It provides a centralized way to handle arrow key navigation, Home/End keys,
- * and focus management.
+ * Use this hook for composite widgets where the user navigates between sibling
+ * items using arrow keys (roving tabindex pattern). It automatically manages
+ * registration of items, calculating the next item in the order, and
+ * moving focus to the correct element.
+ *
+ * Ideal for primitives like Tabs, Accordion, or ToggleGroup.
+ *
+ * @param options Navigation configuration (orientation, looping, etc.).
+ * @returns Registration and key handling functions.
+ *
+ * @example
+ * ```tsx
+ * const { registerItem, handleKeyDown } = useKeyboardNavigation();
+ *
+ * // In the parent:
+ * <View onKeyDown={(e) => handleKeyDown(currentId, e)}>
+ *   {items.map(item => (
+ *     <Item
+ *       key={item.id}
+ *       ref={registerItem(item.id, React.createRef())}
+ *     />
+ *   ))}
+ * </View>
+ * ```
  */
 export function useKeyboardNavigation<T = unknown>(
   options: KeyboardNavigationOptions = {},
 ) {
-  const { keyMap = {}, loop = true, orientation = 'horizontal' } = options;
+  const optionsRef = React.useRef(options);
+  optionsRef.current = options;
 
   const items = React.useRef<Map<string, React.RefObject<T>>>(new Map());
   const itemOrder = React.useRef<string[]>([]);
@@ -195,6 +182,7 @@ export function useKeyboardNavigation<T = unknown>(
 
   const navigate = React.useCallback(
     (currentId: string, direction: KeyboardDirection): string | null => {
+      const { loop = true } = optionsRef.current;
       const order = itemOrder.current;
       const index = order.indexOf(currentId);
       if (index === -1) return null;
@@ -223,7 +211,7 @@ export function useKeyboardNavigation<T = unknown>(
 
       return order[nextIndex] ?? null;
     },
-    [loop],
+    [],
   );
 
   const handleKeyDown = React.useCallback(
@@ -231,10 +219,11 @@ export function useKeyboardNavigation<T = unknown>(
       currentId: string,
       event: NativeSyntheticEvent<KeyPressEventData> | KeyboardEvent,
     ) => {
+      const { keyMap = {}, orientation = 'horizontal' } = optionsRef.current;
       const nativeEvent = (event as NativeSyntheticEvent<KeyPressEventData>)
         .nativeEvent;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const key = nativeEvent?.key || (event as any).key;
+      const key =
+        nativeEvent?.key || (event as unknown as KeyPressEventData).key;
       if (!key) return null;
 
       const mergedKeyMap = { ...DEFAULT_KEY_MAP, ...keyMap };
@@ -247,25 +236,17 @@ export function useKeyboardNavigation<T = unknown>(
         direction = 'last';
       } else {
         // Handle next/prev keys based on orientation
-        if (
-          (orientation === 'horizontal' || orientation === 'both') &&
-          mergedKeyMap.next.includes(key)
-        ) {
+        const isHorizontal =
+          orientation === 'horizontal' || orientation === 'both';
+        const isVertical = orientation === 'vertical' || orientation === 'both';
+
+        if (isHorizontal && (key === 'ArrowRight' || key === 'ArrowLeft')) {
+          direction = key === 'ArrowRight' ? 'next' : 'prev';
+        } else if (isVertical && (key === 'ArrowDown' || key === 'ArrowUp')) {
+          direction = key === 'ArrowDown' ? 'next' : 'prev';
+        } else if (mergedKeyMap.next.includes(key)) {
           direction = 'next';
-        } else if (
-          (orientation === 'horizontal' || orientation === 'both') &&
-          mergedKeyMap.prev.includes(key)
-        ) {
-          direction = 'prev';
-        } else if (
-          (orientation === 'vertical' || orientation === 'both') &&
-          mergedKeyMap.next.includes(key)
-        ) {
-          direction = 'next';
-        } else if (
-          (orientation === 'vertical' || orientation === 'both') &&
-          mergedKeyMap.prev.includes(key)
-        ) {
+        } else if (mergedKeyMap.prev.includes(key)) {
           direction = 'prev';
         }
       }
@@ -277,14 +258,12 @@ export function useKeyboardNavigation<T = unknown>(
           if (nextRef?.current) {
             const element = nextRef.current as { focus?: () => void };
             if (typeof element.focus === 'function') {
-              // Prevent default scroll behavior on web
               if (event.preventDefault) event.preventDefault();
 
               const isWeb = Platform.OS === 'web';
               if (isWeb) {
                 element.focus();
               } else {
-                // On native, sometimes a small delay helps
                 setTimeout(() => element.focus?.(), 0);
               }
               return nextId;
@@ -295,7 +274,7 @@ export function useKeyboardNavigation<T = unknown>(
 
       return null;
     },
-    [orientation, navigate, keyMap],
+    [navigate],
   );
 
   return React.useMemo(

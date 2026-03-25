@@ -7,7 +7,6 @@ export type {
   ARIATraitExpanded,
   ARIATraitOrientation,
   ARIATraitRange,
-  FocusVisibleProps,
   KeyPressEventData,
   PressedChangeDetails,
 } from './types';
@@ -32,23 +31,18 @@ export {
 } from './accessibility';
 
 export {
+  useKeyboard,
   useKeyboardActivation,
   useKeyboardNavigation,
-  useKeyboardRange,
 } from './keyboard';
 export type {
   KeyboardDirection,
   KeyboardNavigationOptions,
-  KeyboardRangeOptions,
+  KeyboardOptions,
 } from './keyboard';
 
 // Utils
-export {
-  clamp,
-  evaluateStyles,
-  mergeRefs,
-  resolveFocusRingStyle,
-} from './utils';
+export { clamp, evaluateStyles, mergeRefs } from './utils';
 
 // Components
 export { PressableWithKeyPress } from './pressable';
