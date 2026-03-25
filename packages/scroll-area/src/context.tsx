@@ -1,10 +1,5 @@
 import * as React from 'react';
-import {
-  Animated,
-  type ScrollView,
-  type StyleProp,
-  type ViewStyle,
-} from 'react-native';
+import { Animated, type ScrollView, type StyleProp, type ViewStyle } from 'react-native';
 
 import type { ScrollAreaRootState } from './types';
 

@@ -43,7 +43,9 @@ export interface ScrollAreaThumbState {
 export type ScrollAreaCornerState = Record<string, never>;
 
 export interface ScrollAreaRootProps
-  extends Omit<ViewProps, 'style'>, ARIABaseProps, FocusVisibleProps {
+  extends Omit<ViewProps, 'style'>,
+    ARIABaseProps,
+    FocusVisibleProps {
   /**
    * The visibility of the scrollbars.
    * - 'auto': Visible when scrolling and when hovering.
@@ -74,8 +76,7 @@ export interface ScrollAreaRootProps
 }
 
 export interface ScrollAreaViewportProps
-  extends
-    Omit<ScrollViewProps, 'style' | 'children'>,
+  extends Omit<ScrollViewProps, 'style' | 'children'>,
     ARIABaseProps,
     FocusVisibleProps {
   children?: React.ReactNode;
@@ -95,7 +96,9 @@ export interface ScrollAreaContentProps extends ViewProps {
 }
 
 export interface ScrollAreaScrollbarProps
-  extends Omit<ViewProps, 'style'>, ARIABaseProps, ARIATraitOrientation {
+  extends Omit<ViewProps, 'style'>,
+    ARIABaseProps,
+    ARIATraitOrientation {
   /**
    * Whether the scrollbar controls vertical or horizontal scroll.
    * @default 'vertical'
@@ -113,7 +116,8 @@ export interface ScrollAreaScrollbarProps
 }
 
 export interface ScrollAreaThumbProps
-  extends Omit<ViewProps, 'style'>, ARIABaseProps {
+  extends Omit<ViewProps, 'style'>,
+    ARIABaseProps {
   children?: React.ReactNode;
   style?:
     | StyleProp<ViewStyle>
@@ -121,7 +125,8 @@ export interface ScrollAreaThumbProps
 }
 
 export interface ScrollAreaCornerProps
-  extends Omit<ViewProps, 'style'>, ARIABaseProps {
+  extends Omit<ViewProps, 'style'>,
+    ARIABaseProps {
   style?:
     | StyleProp<ViewStyle>
     | ((state: ScrollAreaCornerState) => StyleProp<ViewStyle>);

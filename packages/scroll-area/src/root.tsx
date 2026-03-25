@@ -65,9 +65,10 @@ export const Root = React.memo(
 
     const isWeb = Platform.OS === 'web';
 
-    // On web, Root is the focus target.
-    // On native, Viewport is the focus target, but Root renders the "ring" visuals
-    // via an absolute overlay to avoid layout-driven focus "jumps".
+    // The Root is responsible for rendering the focus ring visuals on all platforms.
+    // On web, Root is also the focus target.
+    // On native, the Viewport is the focus target but tells the Root to show the ring via context.
+    // We use an absolute overlay on native to prevent layout-driven focus "jumps".
     const resolvedStyle = evaluateStyles(
       style,
       state,
@@ -154,15 +155,6 @@ export const Root = React.memo(
         }
       : {};
 
-    const contextValue = React.useMemo(
-      () => ({
-        ...scrollArea,
-        disableDefaultFocusRing,
-        focusRingStyle,
-      }),
-      [scrollArea, disableDefaultFocusRing, focusRingStyle],
-    );
-
     const focusRingOverlayStyle = evaluateStyles(
       undefined,
       state,
@@ -170,7 +162,7 @@ export const Root = React.memo(
     );
 
     return (
-      <ScrollAreaContext.Provider value={contextValue}>
+      <ScrollAreaContext.Provider value={scrollArea}>
         <View
           {...other}
           {...webOnlyProps}

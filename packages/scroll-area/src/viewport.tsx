@@ -93,32 +93,30 @@ export const Viewport = React.memo(
     // On native, Viewport is the focus target but the Root renders the "ring" visuals
     // via an absolute overlay to prevent layout shifts.
     // On web, Viewport is NOT focusable and suppresses the default outline.
-    const resolvedStyle = evaluateStyles(
-      style,
-      state,
-      { disableDefaultFocusRing: true }
-    );
+    const resolvedStyle = evaluateStyles(style, state, {
+      disableDefaultFocusRing: true,
+    });
 
     const webStyle: StyleProp<ViewStyle> = isWeb
       ? ({
-          outline: 'none',
-          touchAction: 'auto',
-        } as unknown as ViewStyle)
+        outline: 'none',
+        touchAction: 'auto',
+      } as unknown as ViewStyle)
       : {};
 
     const nativeProps = !isWeb
       ? {
-          collapsable: false,
-          focusable: true,
-          onBlur: (e: NativeSyntheticEvent<TargetedEvent>) => {
-            handleBlur();
-            other.onBlur?.(e);
-          },
-          onFocus: (e: NativeSyntheticEvent<TargetedEvent>) => {
-            handleFocus();
-            other.onFocus?.(e);
-          },
-        }
+        collapsable: false,
+        focusable: true,
+        onBlur: (e: NativeSyntheticEvent<TargetedEvent>) => {
+          handleBlur();
+          other.onBlur?.(e);
+        },
+        onFocus: (e: NativeSyntheticEvent<TargetedEvent>) => {
+          handleFocus();
+          other.onFocus?.(e);
+        },
+      }
       : {};
 
     return (
@@ -144,7 +142,7 @@ export const Viewport = React.memo(
         scrollEventThrottle={16}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
-        style={[resolvedStyle, webStyle]}
+        style={[{ flex: 1 }, resolvedStyle, webStyle]}
       >
         {children}
       </Animated.ScrollView>
@@ -152,4 +150,4 @@ export const Viewport = React.memo(
   }),
 );
 
-Viewport.displayName = 'Viewport';
+Viewport.displayName = 'ScrollArea.Viewport';

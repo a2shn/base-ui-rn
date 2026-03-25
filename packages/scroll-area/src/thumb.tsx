@@ -227,7 +227,9 @@ export const Thumb = React.memo(
       scrollY,
     ]);
 
-    const resolvedStyle = evaluateStyles(style, thumbState);
+    const resolvedStyle = evaluateStyles(style, thumbState, {
+      disableDefaultFocusRing: true,
+    });
 
     const sizeStyle: StyleProp<ViewStyle> = isHorizontal
       ? { height: '100%', width: thumbSize }
@@ -245,6 +247,8 @@ export const Thumb = React.memo(
       <Animated.View
         {...other}
         {...panResponder.panHandlers}
+        focusable={false}
+        importantForAccessibility='no-hide-descendants'
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-hidden={ariaHidden}

@@ -73,7 +73,9 @@ export const Scrollbar = React.memo(
       return null;
     }
 
-    const resolvedStyle = evaluateStyles(style, scrollbarState);
+    const resolvedStyle = evaluateStyles(style, scrollbarState, {
+      disableDefaultFocusRing: true,
+    });
 
     const webStyle: StyleProp<ViewStyle> =
       Platform.OS === 'web' ? ({ touchAction: 'none' } as ViewStyle) : {};
@@ -82,6 +84,8 @@ export const Scrollbar = React.memo(
       <ScrollbarContext.Provider value={{ orientation }}>
         <View
           {...other}
+          focusable={false}
+          importantForAccessibility='no-hide-descendants'
           aria-describedby={ariaDescribedBy}
           aria-details={ariaDetails}
           aria-hidden={ariaHidden}
