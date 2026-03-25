@@ -61,6 +61,9 @@ export const Root = React.memo(
       rawScrollY,
       state,
       viewportHeight,
+      viewportWidth,
+      contentWidth,
+      contentHeight,
       viewportRef,
     } = scrollArea;
 
@@ -85,52 +88,70 @@ export const Root = React.memo(
       if (!viewportRef.current) return;
 
       const step = 40;
-      const pageStep = (viewportHeight || 200) * 0.9;
 
       switch (e.key) {
         case 'ArrowUp':
-          viewportRef.current.scrollTo({
-            animated: false,
-            y: rawScrollY.current - step,
-          });
+          // Scroll Y, or fallback to X if only horizontal overflow exists
+          if (!state.hasOverflowY && state.hasOverflowX) {
+            viewportRef.current.scrollTo({ animated: false, x: rawScrollX.current - step });
+          } else {
+            viewportRef.current.scrollTo({ animated: false, y: rawScrollY.current - step });
+          }
           break;
         case 'ArrowDown':
-          viewportRef.current.scrollTo({
-            animated: false,
-            y: rawScrollY.current + step,
-          });
+          if (!state.hasOverflowY && state.hasOverflowX) {
+            viewportRef.current.scrollTo({ animated: false, x: rawScrollX.current + step });
+          } else {
+            viewportRef.current.scrollTo({ animated: false, y: rawScrollY.current + step });
+          }
           break;
         case 'ArrowLeft':
-          viewportRef.current.scrollTo({
-            animated: false,
-            x: rawScrollX.current - step,
-          });
+          // Scroll X, or fallback to Y if only vertical overflow exists
+          if (!state.hasOverflowX && state.hasOverflowY) {
+            viewportRef.current.scrollTo({ animated: false, y: rawScrollY.current - step });
+          } else {
+            viewportRef.current.scrollTo({ animated: false, x: rawScrollX.current - step });
+          }
           break;
         case 'ArrowRight':
+          if (!state.hasOverflowX && state.hasOverflowY) {
+            viewportRef.current.scrollTo({ animated: false, y: rawScrollY.current + step });
+          } else {
+            viewportRef.current.scrollTo({ animated: false, x: rawScrollX.current + step });
+          }
+          break;
+        case 'PageUp': {
+          const stepX = (viewportWidth || 0) * 0.9;
+          const stepY = (viewportHeight || 200) * 0.9;
           viewportRef.current.scrollTo({
             animated: false,
-            x: rawScrollX.current + step,
+            x: state.hasOverflowX ? rawScrollX.current - stepX : undefined,
+            y: state.hasOverflowY ? rawScrollY.current - stepY : undefined,
           });
           break;
-        case 'PageUp':
+        }
+        case 'PageDown': {
+          const stepX = (viewportWidth || 0) * 0.9;
+          const stepY = (viewportHeight || 200) * 0.9;
           viewportRef.current.scrollTo({
             animated: false,
-            y: rawScrollY.current - pageStep,
+            x: state.hasOverflowX ? rawScrollX.current + stepX : undefined,
+            y: state.hasOverflowY ? rawScrollY.current + stepY : undefined,
           });
           break;
-        case 'PageDown':
-          viewportRef.current.scrollTo({
-            animated: false,
-            y: rawScrollY.current + pageStep,
-          });
-          break;
+        }
         case 'Home':
-          viewportRef.current.scrollTo({ animated: false, x: 0, y: 0 });
+          viewportRef.current.scrollTo({
+            animated: false,
+            x: state.hasOverflowX ? 0 : undefined,
+            y: state.hasOverflowY ? 0 : undefined,
+          });
           break;
         case 'End':
           viewportRef.current.scrollTo({
             animated: false,
-            y: 9999999,
+            x: state.hasOverflowX ? contentWidth : undefined,
+            y: state.hasOverflowY ? contentHeight : undefined,
           });
           break;
         default:
