@@ -23,41 +23,19 @@ export interface SliderGesturesOptions {
 function pagePositionToValue(
   pageX: number,
   pageY: number,
-  target: HTMLElement | View,
-  layoutRef: React.MutableRefObject<{
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  }>,
+  rect: { x: number; y: number; width: number; height: number },
   isHorizontal: boolean,
-  isWeb: boolean,
   min: number,
   max: number,
 ): number {
-  if (isWeb) {
-    const el = target as HTMLElement;
-    const rect = el.getBoundingClientRect();
-    if (isHorizontal) {
-      const ratio = rect.width > 0 ? (pageX - rect.left) / rect.width : 0;
-      const clamped = Math.min(Math.max(ratio, 0), 1);
-      return min + clamped * (max - min);
-    } else {
-      const ratio = rect.height > 0 ? 1 - (pageY - rect.top) / rect.height : 0;
-      const clamped = Math.min(Math.max(ratio, 0), 1);
-      return min + clamped * (max - min);
-    }
+  if (isHorizontal) {
+    const ratio = rect.width > 0 ? (pageX - rect.x) / rect.width : 0;
+    const clamped = Math.min(Math.max(ratio, 0), 1);
+    return min + clamped * (max - min);
   } else {
-    const { height, width, x, y } = layoutRef.current;
-    if (isHorizontal) {
-      const ratio = width > 0 ? (pageX - x) / width : 0;
-      const clamped = Math.min(Math.max(ratio, 0), 1);
-      return min + clamped * (max - min);
-    } else {
-      const ratio = height > 0 ? 1 - (pageY - y) / height : 0;
-      const clamped = Math.min(Math.max(ratio, 0), 1);
-      return min + clamped * (max - min);
-    }
+    const ratio = rect.height > 0 ? 1 - (pageY - rect.y) / rect.height : 0;
+    const clamped = Math.min(Math.max(ratio, 0), 1);
+    return min + clamped * (max - min);
   }
 }
 
@@ -90,6 +68,13 @@ export function useSliderGestures(options: SliderGesturesOptions) {
 
   const activeIndexRef = React.useRef(-1);
   const pointerIdRef = React.useRef<number | null>(null);
+  const frameIdRef = React.useRef<number | null>(null);
+  const cachedRectRef = React.useRef<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } | null>(null);
 
   // Stable refs for reactive values to prevent re-creating handlers
   const stateRef = React.useRef(state);
@@ -116,13 +101,20 @@ export function useSliderGestures(options: SliderGesturesOptions) {
 
       e.preventDefault();
 
+      const domRect = el.getBoundingClientRect();
+      const rect = {
+        height: domRect.height,
+        width: domRect.width,
+        x: domRect.left,
+        y: domRect.top,
+      };
+      cachedRectRef.current = rect;
+
       const rawValue = pagePositionToValue(
         e.clientX,
         e.clientY,
-        el,
-        layoutRef,
+        rect,
         isHorizontal,
-        isWeb,
         min,
         max,
       );
@@ -141,23 +133,38 @@ export function useSliderGestures(options: SliderGesturesOptions) {
     };
 
     const onPointerMove = (e: PointerEvent) => {
-      if (activeIndexRef.current === -1) return;
-      const { max, min } = stateRef.current;
-      const rawValue = pagePositionToValue(
-        e.clientX,
-        e.clientY,
-        el,
-        layoutRef,
-        isHorizontal,
-        isWeb,
-        min,
-        max,
-      );
-      setValueAtIndexRef.current(activeIndexRef.current, rawValue, 'drag');
+      if (activeIndexRef.current === -1 || !cachedRectRef.current) return;
+
+      const clientX = e.clientX;
+      const clientY = e.clientY;
+
+      if (frameIdRef.current !== null) {
+        cancelAnimationFrame(frameIdRef.current);
+      }
+
+      frameIdRef.current = requestAnimationFrame(() => {
+        if (activeIndexRef.current === -1 || !cachedRectRef.current) return;
+
+        const { max, min } = stateRef.current;
+        const rawValue = pagePositionToValue(
+          clientX,
+          clientY,
+          cachedRectRef.current,
+          isHorizontal,
+          min,
+          max,
+        );
+        setValueAtIndexRef.current(activeIndexRef.current, rawValue, 'drag');
+      });
     };
 
     const onPointerUp = (e?: PointerEvent) => {
       if (activeIndexRef.current === -1) return;
+
+      if (frameIdRef.current !== null) {
+        cancelAnimationFrame(frameIdRef.current);
+        frameIdRef.current = null;
+      }
 
       if (pointerIdRef.current !== null) {
         try {
@@ -169,6 +176,7 @@ export function useSliderGestures(options: SliderGesturesOptions) {
       }
 
       activeIndexRef.current = -1;
+      cachedRectRef.current = null;
       setDraggingRef.current(false);
       commitValueRef.current('drag');
     };
@@ -202,14 +210,13 @@ export function useSliderGestures(options: SliderGesturesOptions) {
 
       onPanResponderGrant: (evt) => {
         const { max, min, value } = stateRef.current;
-        const { pageX, pageY, target } = evt.nativeEvent;
+        const { pageX, pageY } = evt.nativeEvent;
+        const layout = layoutRef.current;
         const rawValue = pagePositionToValue(
           pageX,
           pageY,
-          target as unknown as View,
-          layoutRef,
+          layout,
           isHorizontal,
-          isWeb,
           min,
           max,
         );
@@ -224,14 +231,13 @@ export function useSliderGestures(options: SliderGesturesOptions) {
       onPanResponderMove: (evt) => {
         if (activeIndexRef.current === -1) return;
         const { max, min } = stateRef.current;
-        const { pageX, pageY, target } = evt.nativeEvent;
+        const { pageX, pageY } = evt.nativeEvent;
+        const layout = layoutRef.current;
         const rawValue = pagePositionToValue(
           pageX,
           pageY,
-          target as unknown as View,
-          layoutRef,
+          layout,
           isHorizontal,
-          isWeb,
           min,
           max,
         );

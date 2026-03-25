@@ -123,14 +123,39 @@ export const SliderThumb = React.memo(
       }
     }, [isWeb, state.orientation, setThumbSize]);
 
+    const onDecrement = React.useCallback(
+      () => stepBy(index, -1),
+      [index, stepBy],
+    );
+    const onEnd = React.useCallback(
+      () => stepBy(index, 100000),
+      [index, stepBy],
+    );
+    const onHome = React.useCallback(
+      () => stepBy(index, -100000),
+      [index, stepBy],
+    );
+    const onIncrement = React.useCallback(
+      () => stepBy(index, 1),
+      [index, stepBy],
+    );
+    const onPageDown = React.useCallback(
+      () => stepBy(index, -largeStep),
+      [index, largeStep, stepBy],
+    );
+    const onPageUp = React.useCallback(
+      () => stepBy(index, largeStep),
+      [index, largeStep, stepBy],
+    );
+
     const handleKeyboardRange = useKeyboardRange({
       disabled: isDisabled,
-      onDecrement: () => stepBy(index, -1),
-      onEnd: () => stepBy(index, 100000),
-      onHome: () => stepBy(index, -100000),
-      onIncrement: () => stepBy(index, 1),
-      onPageDown: () => stepBy(index, -largeStep),
-      onPageUp: () => stepBy(index, largeStep),
+      onDecrement,
+      onEnd,
+      onHome,
+      onIncrement,
+      onPageDown,
+      onPageUp,
       orientation: state.orientation,
     });
 
