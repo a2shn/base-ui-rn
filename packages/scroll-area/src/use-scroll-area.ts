@@ -9,6 +9,7 @@ export type UseScrollAreaProps = ScrollAreaRootProps;
 export function useScrollArea(props: UseScrollAreaProps) {
   const {
     disableDefaultFocusRing = false,
+    focusableWhenDisabled = false,
     keyboardPageStep = 0.9,
     keyboardStep = 40,
     overflowEdgeThreshold = 0,
@@ -40,10 +41,11 @@ export function useScrollArea(props: UseScrollAreaProps) {
 
   const [isHovering, setIsHovering] = React.useState(false);
 
-  const { focused, focusRingStyle, focusVisible, onBlur, onFocus } =
-    useFocusRing({
-      disableDefaultFocusRing,
-    });
+  const { focused, focusRingStyle, onBlur, onFocus } = useFocusRing({
+    disabled: false,
+    disableDefaultFocusRing,
+    focusableWhenDisabled,
+  });
 
   const scrollX = React.useRef(new Animated.Value(0)).current;
   const scrollY = React.useRef(new Animated.Value(0)).current;
@@ -155,7 +157,6 @@ export function useScrollArea(props: UseScrollAreaProps) {
         width: scrollbarWidth,
       },
       focused,
-      focusVisible,
       hasOverflowX,
       hasOverflowY,
       isHovering,
@@ -173,7 +174,6 @@ export function useScrollArea(props: UseScrollAreaProps) {
     }),
     [
       focused,
-      focusVisible,
       hasOverflowX,
       hasOverflowY,
       isScrolling,

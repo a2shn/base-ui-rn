@@ -38,7 +38,7 @@ export const AccordionHeader = React.memo(
       ...otherProps
     } = props;
 
-    const { disabled, index, open, state } = useAccordionHeader({});
+    const { disabled, index, open, state } = useAccordionHeader();
 
     const resolvedChildren = evaluateStyles(children, state);
 

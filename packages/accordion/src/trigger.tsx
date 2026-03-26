@@ -35,6 +35,7 @@ export const AccordionTrigger = React.memo(
       children,
       'data-disabled': dataDisabled,
       'data-panel-open': dataPanelOpen,
+      focusableWhenDisabled,
       style,
       tabIndex,
       ...otherProps
@@ -44,14 +45,16 @@ export const AccordionTrigger = React.memo(
       disabled,
       focused,
       focusRingStyle,
-      focusVisible,
       handleBlur,
       handleFocus,
       handleKeyDown,
       handlePress,
       open,
       state,
-    } = useAccordionTrigger(props);
+    } = useAccordionTrigger({
+      ...props,
+      focusableWhenDisabled,
+    });
 
     const itemContext = useAccordionItemContext();
     const internalRef = React.useRef<View>(null);
@@ -69,11 +72,11 @@ export const AccordionTrigger = React.memo(
       }
       focusStyles.push(
         Platform.select({
-          web: open || focused || focusVisible ? { zIndex: 1 } : undefined,
+          web: open || focused ? { zIndex: 1 } : undefined,
         }),
       );
       return focusStyles;
-    }, [style, state, focusRingStyle, open, focused, focusVisible]);
+    }, [style, state, focusRingStyle, open, focused]);
 
     return (
       <PressableWithKeyPress

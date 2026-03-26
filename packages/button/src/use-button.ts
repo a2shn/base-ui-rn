@@ -35,8 +35,7 @@ export const useButton = (props: ButtonProps) => {
     accessibilityActions,
     accessibilityState,
     'aria-disabled': ariaDisabled,
-    disabled,
-    disableDefaultFocusRing = false,
+    disabled = false,
     focusableWhenDisabled = false,
     onAccessibilityAction,
     onBlur,
@@ -54,10 +53,13 @@ export const useButton = (props: ButtonProps) => {
   const {
     focused: isFocused,
     focusRingStyle,
-    focusVisible: isFocusVisible,
     onBlur: onFocusOut,
     onFocus: onFocusIn,
-  } = useFocusRing({ disableDefaultFocusRing });
+  } = useFocusRing({
+    disabled: isDisabled,
+    focusableWhenDisabled,
+    disableDefaultFocusRing: false,
+  });
 
   const mergedAccessibilityState = React.useMemo(
     () =>
@@ -156,7 +158,6 @@ export const useButton = (props: ButtonProps) => {
   return {
     focused: isFocused,
     focusRingStyle,
-    focusVisible: isFocusVisible,
     handleAccessibilityAction,
     handleBlur,
     handleFocus,

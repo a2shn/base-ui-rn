@@ -37,6 +37,7 @@ export const SliderThumb = React.memo(
       'aria-labelledby': ariaLabelledBy,
       disabled,
       disableDefaultFocusRing = false,
+      focusableWhenDisabled = false,
       getAriaLabel,
       getAriaValueText,
       index = 0,
@@ -67,12 +68,23 @@ export const SliderThumb = React.memo(
       thumbRefs,
     } = useSliderContext();
     const isDisabled = state.disabled || disabled;
+    const isDisabledBoolean = Boolean(isDisabled);
     const valueNow = state.value[index] ?? state.min;
     const isWeb = Platform.OS === 'web';
-    const resolvedTabIndex = resolveTabIndex(!!isDisabled, tabIndex);
+    const resolvedTabIndex = resolveTabIndex(isDisabledBoolean, tabIndex);
 
     const innerRef = React.useRef<View>(null);
     const mergedRef = React.useMemo(() => mergeRefs(ref, innerRef), [ref]);
+
+    const {
+      focused,
+      focusRingStyle,
+      onBlur: handleBlur,
+    } = useFocusRing({
+      disabled: isDisabledBoolean,
+      disableDefaultFocusRing,
+      focusableWhenDisabled: focusableWhenDisabled ?? false,
+    });
 
     // Register thumb ref with control for PanResponder coordination
     React.useEffect(() => {
@@ -215,14 +227,6 @@ export const SliderThumb = React.memo(
       [hasCustomText, resolvedAriaValueText, state.max, state.min, valueNow],
     );
 
-    const {
-      focusRingStyle,
-      focusVisible,
-      onBlur: handleBlur,
-    } = useFocusRing({
-      disableDefaultFocusRing,
-    });
-
     const handleFocusCallback = React.useCallback(
       (e: NativeSyntheticEvent<TargetedEvent>) => {
         focusThumb(index);
@@ -249,8 +253,8 @@ export const SliderThumb = React.memo(
     );
 
     const thumbState = React.useMemo(
-      () => ({ ...state, focusVisible, index, valueNow }),
-      [state, focusVisible, index, valueNow],
+      () => ({ ...state, focused, index, valueNow }),
+      [state, focused, index, valueNow],
     );
 
     const webStyle = React.useMemo(() => {

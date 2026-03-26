@@ -7,6 +7,7 @@ import {
   type ARIATraitOrientation,
   type KeyPressEventData,
 } from '@base-ui-rn/core';
+import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type * as React from 'react';
 import type {
   NativeSyntheticEvent,
@@ -125,11 +126,10 @@ export type TabValue = string | number;
 export type Orientation = 'horizontal' | 'vertical';
 export type ActivationDirection = 'left' | 'right' | 'up' | 'down' | 'none';
 
-export interface TabsRootState {
+export interface TabsRootState extends FocusRingState {
   value: TabValue | null;
   orientation: Orientation;
   activationDirection: ActivationDirection;
-  focusVisible: boolean;
 }
 
 export interface TabsRootProps
@@ -139,6 +139,11 @@ export interface TabsRootProps
    * @default false
    */
   disableDefaultFocusRing?: boolean;
+  /**
+   * Whether the component remains focusable when disabled.
+   * @default false
+   */
+  focusableWhenDisabled?: boolean;
   /**
    * The content of the tabs.
    */
@@ -178,10 +183,9 @@ export interface TabsRootProps
   onFocusChange?: (value: string) => void;
 }
 
-export interface TabsListState {
+export interface TabsListState extends FocusRingState {
   orientation: Orientation;
   activationDirection: ActivationDirection;
-  focusVisible: boolean;
 }
 
 export interface TabsListProps
@@ -191,6 +195,11 @@ export interface TabsListProps
    * @default false
    */
   disableDefaultFocusRing?: boolean;
+  /**
+   * Whether the component remains focusable when disabled.
+   * @default false
+   */
+  focusableWhenDisabled?: boolean;
   /**
    * The content of the tabs list.
    */
@@ -208,13 +217,11 @@ export interface TabsListProps
   loopFocus?: boolean;
 }
 
-export interface TabState {
+export interface TabState extends FocusRingState {
   active: boolean;
   disabled: boolean;
   orientation: Orientation;
   activationDirection: ActivationDirection;
-  focused: boolean;
-  focusVisible: boolean;
 }
 
 export interface TabProps
@@ -226,6 +233,11 @@ export interface TabProps
    * @default false
    */
   disableDefaultFocusRing?: boolean;
+  /**
+   * Whether the component remains focusable when disabled.
+   * @default false
+   */
+  focusableWhenDisabled?: boolean;
   /**
    * The content of the tab.
    */
@@ -253,10 +265,9 @@ export interface TabProps
   onBlur?: (e: NativeSyntheticEvent<TargetedEvent>) => void;
 }
 
-export interface TabsIndicatorState {
+export interface TabsIndicatorState extends FocusRingState {
   orientation: Orientation;
   activationDirection: ActivationDirection;
-  focusVisible: boolean;
   tab: {
     height?: number;
     left?: number;
@@ -275,6 +286,11 @@ export interface TabsIndicatorProps
    */
   disableDefaultFocusRing?: boolean;
   /**
+   * Whether the component remains focusable when disabled.
+   * @default false
+   */
+  focusableWhenDisabled?: boolean;
+  /**
    * The content of the indicator.
    */
   children?: React.ReactNode | ((state: TabsIndicatorState) => React.ReactNode);
@@ -286,12 +302,11 @@ export interface TabsIndicatorProps
     | ((state: TabsIndicatorState) => StyleProp<ViewStyle>);
 }
 
-export interface TabPanelState {
+export interface TabPanelState extends FocusRingState {
   hidden: boolean;
   orientation: Orientation;
   activationDirection: ActivationDirection;
   index: number;
-  focusVisible: boolean;
 }
 
 export interface TabPanelProps
@@ -303,6 +318,11 @@ export interface TabPanelProps
    * @default false
    */
   disableDefaultFocusRing?: boolean;
+  /**
+   * Whether the component remains focusable when disabled.
+   * @default false
+   */
+  focusableWhenDisabled?: boolean;
   /**
    * The content of the panel.
    */

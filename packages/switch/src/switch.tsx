@@ -30,6 +30,7 @@ export const SwitchRoot = React.memo(
       'aria-labelledby': ariaLabelledBy,
       children,
       disableDefaultFocusRing,
+      focusableWhenDisabled,
       style,
       ...otherProps
     } = props;
@@ -51,10 +52,9 @@ export const SwitchRoot = React.memo(
         checked,
         disabled,
         focused: state.focused,
-        focusVisible: state.focusVisible,
         readOnly,
       }),
-      [checked, disabled, readOnly, state.focused, state.focusVisible],
+      [checked, disabled, readOnly, state.focused],
     );
 
     const resolvedStyle = React.useMemo<StyleProp<ViewStyle>>(() => {

@@ -30,6 +30,7 @@ export const Input = React.memo(
       'aria-labelledby': ariaLabelledBy,
       defaultValue,
       disableDefaultFocusRing,
+      focusableWhenDisabled,
       style,
       value: valueProp,
       ...otherProps

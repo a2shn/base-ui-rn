@@ -1,4 +1,5 @@
 import { type KeyPressEventData } from '@base-ui-rn/core';
+import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type {
   NativeSyntheticEvent,
   PressableProps,
@@ -13,7 +14,7 @@ export type { KeyPressEventData };
 /**
  * The state of the Collapsible root.
  */
-export interface CollapsibleRootState {
+export interface CollapsibleRootState extends FocusRingState {
   /**
    * Whether the collapsible is open.
    */
@@ -22,16 +23,12 @@ export interface CollapsibleRootState {
    * Whether the collapsible is disabled.
    */
   disabled: boolean;
-  /**
-   * Whether the component should show a focus ring.
-   */
-  focusVisible: boolean;
 }
 
 /**
  * The state of the Collapsible trigger.
  */
-export interface CollapsibleTriggerState {
+export interface CollapsibleTriggerState extends FocusRingState {
   /**
    * Whether the collapsible is open.
    */
@@ -40,20 +37,12 @@ export interface CollapsibleTriggerState {
    * Whether the collapsible is disabled.
    */
   disabled: boolean;
-  /**
-   * Whether the trigger is focused.
-   */
-  focused: boolean;
-  /**
-   * Whether the trigger should show a focus ring.
-   */
-  focusVisible: boolean;
 }
 
 /**
  * The state of the Collapsible panel.
  */
-export interface CollapsiblePanelState {
+export interface CollapsiblePanelState extends FocusRingState {
   /**
    * Whether the collapsible is open.
    */
@@ -62,10 +51,6 @@ export interface CollapsiblePanelState {
    * Whether the collapsible is disabled.
    */
   disabled: boolean;
-  /**
-   * Whether the panel should show a focus ring.
-   */
-  focusVisible: boolean;
   /**
    * The measured dimensions of the panel content.
    */
@@ -147,6 +132,11 @@ export type CollapsibleTriggerProps = Omit<
    * @default false
    */
   disableDefaultFocusRing?: boolean;
+  /**
+   * Whether the trigger remains focusable when disabled.
+   * @default false
+   */
+  focusableWhenDisabled?: boolean;
   /**
    * The content of the trigger.
    */

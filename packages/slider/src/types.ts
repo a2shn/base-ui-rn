@@ -7,6 +7,7 @@ import {
   type ARIATraitRange,
   type KeyPressEventData,
 } from '@base-ui-rn/core';
+import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type * as React from 'react';
 import type {
   GestureResponderEvent,
@@ -195,6 +196,11 @@ export interface SliderThumbProps
     Omit<ViewProps, 'style' | 'disabled'>,
     WebSliderThumbAccessibilityProps {
   /**
+   * Whether the thumb remains focusable when disabled.
+   * @default false
+   */
+  focusableWhenDisabled?: boolean;
+  /**
    * Whether to disable the default focus ring.
    * @default false
    */
@@ -243,7 +249,7 @@ export interface SliderThumbProps
   style?: ViewStyle | ((state: SliderThumbState) => ViewStyle | undefined);
 }
 
-export interface SliderThumbState extends SliderState {
+export interface SliderThumbState extends SliderState, FocusRingState {
   /**
    * The index of the thumb.
    */
@@ -252,10 +258,6 @@ export interface SliderThumbState extends SliderState {
    * The current value of this thumb.
    */
   valueNow: number;
-  /**
-   * Whether the thumb is currently focused via keyboard.
-   */
-  focusVisible: boolean;
 }
 
 /**

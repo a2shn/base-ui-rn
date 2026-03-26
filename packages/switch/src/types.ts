@@ -1,3 +1,4 @@
+import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type {
   ARIABaseProps,
   ARIAFocusProps,
@@ -55,7 +56,7 @@ export type WebSwitchThumbAccessibilityProps = ARIABaseProps &
     'data-disabled'?: 'true';
   };
 
-export interface SwitchState {
+export interface SwitchState extends FocusRingState {
   /**
    * Whether the switch is currently checked.
    */
@@ -68,14 +69,6 @@ export interface SwitchState {
    * Whether the switch is read-only.
    */
   readOnly: boolean;
-  /**
-   * Whether the switch is currently focused.
-   */
-  focused: boolean;
-  /**
-   * Whether the switch should show a focus ring.
-   */
-  focusVisible: boolean;
 }
 
 export interface SwitchRootProps
@@ -130,6 +123,12 @@ export interface SwitchRootProps
    * @default false
    */
   disableDefaultFocusRing?: boolean;
+
+  /**
+   * Whether the switch remains focusable when disabled.
+   * @default false
+   */
+  focusableWhenDisabled?: boolean;
 }
 
 export interface SwitchThumbProps

@@ -1,4 +1,5 @@
 import type { ARIABaseProps, ARIATraitOrientation } from '@base-ui-rn/core';
+import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type * as React from 'react';
 import type {
   ScrollViewProps,
@@ -20,7 +21,7 @@ export type ScrollAreaVisibility = 'auto' | 'always' | 'scroll' | 'hover';
 /**
  * State for the ScrollArea root element.
  */
-export interface ScrollAreaRootState {
+export interface ScrollAreaRootState extends FocusRingState {
   /**
    * Whether there is overflow in the horizontal direction.
    * @default false
@@ -66,16 +67,6 @@ export interface ScrollAreaRootState {
    * @default false
    */
   overflowYEnd: boolean;
-  /**
-   * Whether the scroll area should show a focus ring.
-   * @default false
-   */
-  focusVisible: boolean;
-  /**
-   * Whether the scroll area is focused.
-   * @default false
-   */
-  focused: boolean;
   /**
    * Dimensions of the corner element.
    */
@@ -356,6 +347,11 @@ export interface ScrollAreaRootProps
    * @default false
    */
   focusVisible?: boolean;
+  /**
+   * Whether the element should remain focusable when disabled.
+   * @default false
+   */
+  focusableWhenDisabled?: boolean;
 }
 
 /**

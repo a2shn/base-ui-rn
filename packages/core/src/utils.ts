@@ -34,17 +34,6 @@ export function mergeRefs<T>(
   };
 }
 
-/**
- * Checks if a value is a StyleProp<ViewStyle>.
- */
-function isStyle(value: unknown): boolean {
-  if (value == null) return false;
-  const t = typeof value;
-  if (t === 'number') return true;
-  if (t !== 'object') return false;
-  if (Array.isArray(value)) return (value as unknown[]).every(isStyle);
-  return !('$$typeof' in (value as object));
-}
 
 /**
  * Evaluates a value that can be a static value or a function that returns a value based on state.

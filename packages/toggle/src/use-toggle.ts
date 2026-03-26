@@ -64,11 +64,15 @@ export const useToggle = (
 
   const {
     focused: isFocused,
-    focusVisible: isFocusVisible,
     focusRingStyle,
     onBlur: onFocusOut,
     onFocus: onFocusIn,
-  } = useFocusRing({ disableDefaultFocusRing });
+  } = useFocusRing({
+    disabled: isDisabled,
+    focusableWhenDisabled,
+    disableDefaultFocusRing,
+  });
+
 
   const [uncontrolledState, setUncontrolledState] =
     React.useState(defaultPressed);
@@ -212,7 +216,6 @@ export const useToggle = (
 
   return {
     focused: isFocused,
-    focusVisible: isFocusVisible,
     focusRingStyle,
     handleAccessibilityAction,
     handleBlur,

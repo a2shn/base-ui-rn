@@ -44,6 +44,7 @@ export const Root = React.memo(
       'data-overflow-y-start': dataOverflowYStart,
       'data-scrolling': dataScrolling,
       disableDefaultFocusRing,
+      focusableWhenDisabled,
       keyboardPageStep,
       keyboardStep,
       onBlur,
@@ -57,6 +58,7 @@ export const Root = React.memo(
 
     const scrollArea = useScrollArea({
       disableDefaultFocusRing,
+      focusableWhenDisabled,
       keyboardPageStep,
       keyboardStep,
       overflowEdgeThreshold,
@@ -223,7 +225,7 @@ export const Root = React.memo(
           style={resolvedStyle}
         >
           {children}
-          {!isWeb && state.focusVisible && (
+          {!isWeb && state.focused && hookFocusRingStyle && (
             <View
               pointerEvents='none'
               style={[

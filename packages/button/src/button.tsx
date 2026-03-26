@@ -35,7 +35,8 @@ export const Button = React.memo(
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       children,
-      disableDefaultFocusRing,
+      focusableWhenDisabled = false,
+      disableDefaultFocusRing = false,
       hitSlop = DEFAULT_HIT_SLOP,
       style,
       ...otherProps
@@ -47,7 +48,6 @@ export const Button = React.memo(
     const {
       focused,
       focusRingStyle,
-      focusVisible,
       handleAccessibilityAction,
       handleBlur,
       handleFocus,
@@ -62,16 +62,12 @@ export const Button = React.memo(
     } = useButton(props);
 
     const resolvedStyle = React.useMemo<StyleProp<ViewStyle>>(() => {
-      const baseStyle = evaluateStyles(style, {
-        focused,
-        focusVisible,
-        pressed: false,
-      });
+      const baseStyle = evaluateStyles(style, { focused, pressed: false });
       if (focusRingStyle) {
         return [baseStyle, focusRingStyle];
       }
       return baseStyle;
-    }, [style, focused, focusVisible, focusRingStyle]);
+    }, [style, focused, focusRingStyle]);
 
     return (
       <PressableWithKeyPress
@@ -103,7 +99,7 @@ export const Button = React.memo(
         tabIndex={resolvedTabIndex}
       >
         {(pressableState) =>
-          evaluateStyles(children, { ...pressableState, focused, focusVisible })
+          evaluateStyles(children, { ...pressableState, focused })
         }
       </PressableWithKeyPress>
     );

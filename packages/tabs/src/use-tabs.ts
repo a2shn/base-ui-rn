@@ -36,14 +36,17 @@ export function useTabsRoot(props: TabsRootProps) {
     activateOnFocus = false,
     defaultValue,
     disableDefaultFocusRing = false,
+    focusableWhenDisabled = false,
     onFocusChange,
     onValueChange,
     orientation = 'horizontal',
     value: controlledValue,
   } = props;
 
-  const { focusVisible } = useFocusRing({
+  const { focused } = useFocusRing({
+    disabled: false,
     disableDefaultFocusRing,
+    focusableWhenDisabled,
   });
 
   const [internalValue, setInternalValue] = React.useState<TabValue | null>(
@@ -169,7 +172,7 @@ export function useTabsRoot(props: TabsRootProps) {
 
   const state: TabsRootState = {
     activationDirection,
-    focusVisible,
+    focused,
     orientation,
     value: currentValue,
   };
@@ -206,7 +209,7 @@ export function useTabsList() {
 
   const state: TabsListState = {
     activationDirection: context.activationDirection,
-    focusVisible: false,
+    focused: false,
     orientation: context.orientation,
   };
 
@@ -217,6 +220,7 @@ export function useTab(props: TabProps) {
   const {
     disabled = false,
     disableDefaultFocusRing = false,
+    focusableWhenDisabled = false,
     onBlur: onBlurProp,
     onFocus: onFocusProp,
     value,
@@ -229,10 +233,11 @@ export function useTab(props: TabProps) {
     return context.registerTab(value, ref);
   }, [value, context]);
 
-  const { focused, focusRingStyle, focusVisible, onBlur, onFocus } =
-    useFocusRing({
-      disableDefaultFocusRing,
-    });
+  const { focused, focusRingStyle, onBlur, onFocus } = useFocusRing({
+    disabled,
+    disableDefaultFocusRing,
+    focusableWhenDisabled,
+  });
 
   const isFocusedFromRoot = context.focusedValue === value;
 
@@ -291,7 +296,6 @@ export function useTab(props: TabProps) {
     active,
     disabled,
     focused: focused || isFocusedFromRoot,
-    focusVisible: focusVisible || isFocusedFromRoot,
     orientation: context.orientation,
   };
 
@@ -314,7 +318,7 @@ export function useTabsIndicator() {
 
   const state: TabsIndicatorState = {
     activationDirection: context.activationDirection,
-    focusVisible: false,
+    focused: false,
     orientation: context.orientation,
     tab: {
       height: activeMeasurement?.height,
@@ -340,7 +344,7 @@ export function useTabPanel(props: TabPanelProps) {
 
   const state: TabPanelState = {
     activationDirection: context.activationDirection,
-    focusVisible: false,
+    focused: false,
     hidden: !active,
     index,
     orientation: context.orientation,

@@ -57,7 +57,7 @@ export function useCollapsibleRoot(props: CollapsibleRootProps) {
 
   const state: CollapsibleRootState = {
     disabled,
-    focusVisible: false,
+    focused: false,
     open,
   };
 
@@ -75,6 +75,7 @@ export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
   const {
     disabled: disabledProp,
     disableDefaultFocusRing = false,
+    focusableWhenDisabled = false,
     onBlur: onBlurProp,
     onFocus: onFocusProp,
   } = props;
@@ -83,10 +84,11 @@ export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
 
   const disabled = disabledProp || context.disabled;
 
-  const { focused, focusRingStyle, focusVisible, onBlur, onFocus } =
-    useFocusRing({
-      disableDefaultFocusRing,
-    });
+  const { focused, focusRingStyle, onBlur, onFocus } = useFocusRing({
+    disabled,
+    disableDefaultFocusRing,
+    focusableWhenDisabled,
+  });
 
   const handleFocus = React.useCallback(
     (event: NativeSyntheticEvent<TargetedEvent>) => {
@@ -129,7 +131,6 @@ export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
   const state: CollapsibleTriggerState = {
     disabled,
     focused,
-    focusVisible,
     open: context.open,
   };
 
@@ -137,7 +138,6 @@ export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
     disabled,
     focused,
     focusRingStyle,
-    focusVisible,
     handleBlur,
     handleFocus,
     handleKeyDown,
@@ -156,8 +156,10 @@ export function useCollapsiblePanel(props: CollapsiblePanelProps) {
 
   const context = useCollapsibleContext();
 
-  const { focused, focusVisible, onBlur, onFocus } = useFocusRing({
+  const { focused, onBlur, onFocus } = useFocusRing({
+    disabled: context.disabled,
     disableDefaultFocusRing,
+    focusableWhenDisabled: false,
   });
 
   const [contentHeight, setContentHeight] = React.useState<number | undefined>(
@@ -177,7 +179,7 @@ export function useCollapsiblePanel(props: CollapsiblePanelProps) {
 
   const state: CollapsiblePanelState = {
     disabled: context.disabled,
-    focusVisible,
+    focused: false,
     open: context.open,
     panel: {
       height: contentHeight,
@@ -188,7 +190,6 @@ export function useCollapsiblePanel(props: CollapsiblePanelProps) {
   return {
     disabled: context.disabled,
     focused,
-    focusVisible,
     handleBlur: onBlur,
     handleFocus: onFocus,
     onLayout,

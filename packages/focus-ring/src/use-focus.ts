@@ -8,23 +8,27 @@ import type { UseFocusRingOptions, UseFocusRingReturn } from './types';
 /**
  * A hook that manages focus state and focus-visible logic.
  *
- * @param options Options for the focus ring hook.
+ * @param options Options for the focus ring hook (all required).
  * @returns An object containing the current focus state, event handlers, and focus ring style.
  */
-export function useFocusRing(
-  options: UseFocusRingOptions = {},
-): UseFocusRingReturn {
-  const { disableDefaultFocusRing = false } = options;
+export function useFocusRing(options: UseFocusRingOptions): UseFocusRingReturn {
+  const { disabled, focusableWhenDisabled, disableDefaultFocusRing } = options;
   const [focused, setFocused] = React.useState(false);
   const [isFocusVisible, setFocusVisible] = React.useState(false);
 
+  const isFocusable = React.useMemo(
+    () => !disabled || focusableWhenDisabled,
+    [disabled, focusableWhenDisabled],
+  );
+
   const onFocus = React.useCallback(() => {
+    if (!isFocusable) return;
     const modality = getInteractionModality();
     const isVisible = Platform.OS !== 'web' || modality === 'keyboard';
 
     setFocused(true);
     setFocusVisible(isVisible);
-  }, []);
+  }, [isFocusable]);
 
   const onBlur = React.useCallback(() => {
     setFocused(false);
@@ -41,11 +45,10 @@ export function useFocusRing(
   return React.useMemo(
     () => ({
       focused,
-      focusVisible: isFocusVisible,
       onBlur,
       onFocus,
       focusRingStyle,
     }),
-    [focused, isFocusVisible, onFocus, onBlur, focusRingStyle],
+    [focused, onFocus, onBlur, focusRingStyle],
   );
 }

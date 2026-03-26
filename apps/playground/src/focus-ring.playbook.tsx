@@ -12,7 +12,7 @@ export function FocusRingPlaybook() {
         <View style={styles.container}>
           <DefaultFocusRingView />
           <Text style={styles.hint}>
-            Uses focusRingStyle from useFocusRing when focusVisible is true.
+            Uses focusRingStyle from useFocusRing when focused.
           </Text>
         </View>
       </Section>
@@ -30,7 +30,11 @@ export function FocusRingPlaybook() {
 }
 
 function DefaultFocusRingView() {
-  const { focusVisible, focusRingStyle, onFocus, onBlur } = useFocusRing();
+  const { focused, focusRingStyle, onFocus, onBlur } = useFocusRing({
+    disabled: false,
+    focusableWhenDisabled: false,
+    disableDefaultFocusRing: false,
+  });
 
   return (
     <View
@@ -39,9 +43,7 @@ function DefaultFocusRingView() {
       tabIndex={0}
       style={[styles.viewBase, focusRingStyle]}
     >
-      <Text style={styles.viewText}>
-        {focusVisible ? 'Focused' : 'Focus Me'}
-      </Text>
+      <Text style={styles.viewText}>{focused ? 'Focused' : 'Focus Me'}</Text>
     </View>
   );
 }
@@ -49,9 +51,11 @@ function DefaultFocusRingView() {
 function ThemedFocusRingView({
   style,
 }: {
-  style: (state: { focusVisible: boolean }) => object;
+  style: (state: { focused: boolean }) => object;
 }) {
-  const { focusVisible, onFocus, onBlur } = useFocusRing({
+  const { focused, onFocus, onBlur } = useFocusRing({
+    disabled: false,
+    focusableWhenDisabled: false,
     disableDefaultFocusRing: true,
   });
 
@@ -60,7 +64,7 @@ function ThemedFocusRingView({
       onFocus={onFocus}
       onBlur={onBlur}
       tabIndex={0}
-      style={style({ focusVisible })}
+      style={style({ focused })}
     >
       <Text style={styles.viewText}>Focus Me</Text>
     </View>
@@ -99,10 +103,10 @@ const styles = StyleSheet.create({
   },
 });
 
-function getOutlineStyle({ focusVisible }: { focusVisible: boolean }) {
+function getOutlineStyle({ focused }: { focused: boolean }) {
   const baseStyles = isWeb
     ? [styles.viewBase, { outlineStyle: 'none' as const }]
     : [styles.viewBase];
 
-  return [...baseStyles, focusVisible && styles.outline];
+  return [...baseStyles, focused && styles.outline];
 }

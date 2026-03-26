@@ -15,6 +15,7 @@ export function useSwitchRoot(props: SwitchRootProps) {
     defaultChecked = false,
     disableDefaultFocusRing = false,
     disabled = false,
+    focusableWhenDisabled = false,
     onBlur: onBlurProp,
     onCheckedChange,
     onFocus: onFocusProp,
@@ -30,10 +31,11 @@ export function useSwitchRoot(props: SwitchRootProps) {
   const checked = isControlled ? checkedProp : uncontrolledChecked;
   const isKeyboardActivationRef = React.useRef(false);
 
-  const { focused, focusVisible, focusRingStyle, onBlur, onFocus } =
-    useFocusRing({
-      disableDefaultFocusRing,
-    });
+  const { focused, focusRingStyle, onBlur, onFocus } = useFocusRing({
+    disableDefaultFocusRing,
+    disabled,
+    focusableWhenDisabled,
+  });
 
   const toggleState = React.useCallback(() => {
     if (disabled || readOnly) return;
@@ -97,7 +99,6 @@ export function useSwitchRoot(props: SwitchRootProps) {
     checked,
     disabled,
     focused,
-    focusVisible,
     readOnly,
   };
 

@@ -23,7 +23,6 @@ export const CollapsibleTrigger = React.memo(
     const {
       disabled,
       focused,
-      focusVisible,
       handleBlur,
       handleFocus,
       handleKeyDown,
@@ -38,7 +37,7 @@ export const CollapsibleTrigger = React.memo(
     const finalStyle = [
       evaluateStyles(style, state),
       Platform.select({
-        web: open || focused || focusVisible ? { zIndex: 1 } : undefined,
+        web: open || focused ? { zIndex: 1 } : undefined,
       }),
     ];
 

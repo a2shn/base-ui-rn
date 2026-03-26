@@ -1,4 +1,3 @@
-
 /**
  * Data structure for keyboard events.
  */

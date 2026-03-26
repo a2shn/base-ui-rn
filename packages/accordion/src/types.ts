@@ -7,6 +7,7 @@ import {
   type ARIATraitOrientation,
   type KeyPressEventData as CoreKeyPressEventData,
 } from '@base-ui-rn/core';
+import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type {
   NativeSyntheticEvent,
   PressableProps,
@@ -111,42 +112,36 @@ export type Orientation = 'vertical' | 'horizontal';
 
 export type { CoreKeyPressEventData as KeyPressEventData };
 
-export interface AccordionRootState {
+export interface AccordionRootState extends FocusRingState {
   open: boolean;
   value: string | string[];
   orientation: Orientation;
   disabled: boolean;
   multiple: boolean;
-  focusVisible: boolean;
 }
 
-export interface AccordionItemState {
+export interface AccordionItemState extends FocusRingState {
   open: boolean;
   disabled: boolean;
   index: number;
   value: string;
-  focusVisible: boolean;
 }
 
-export interface AccordionHeaderState {
+export interface AccordionHeaderState extends FocusRingState {
   open: boolean;
   disabled: boolean;
   index: number;
-  focusVisible: boolean;
 }
 
-export interface AccordionTriggerState {
+export interface AccordionTriggerState extends FocusRingState {
   open: boolean;
   disabled: boolean;
-  focused: boolean;
-  focusVisible: boolean;
 }
 
-export interface AccordionPanelState {
+export interface AccordionPanelState extends FocusRingState {
   open: boolean;
   disabled: boolean;
   index: number;
-  focusVisible: boolean;
   panel: {
     height?: number;
     width?: number;
@@ -291,6 +286,11 @@ export interface AccordionTriggerProps
    * @default false
    */
   disableDefaultFocusRing?: boolean;
+  /**
+   * Whether the trigger remains focusable when disabled.
+   * @default false
+   */
+  focusableWhenDisabled?: boolean;
   /**
    * Callback fired when a key is pressed down.
    */

@@ -7,6 +7,7 @@ import {
   type KeyPressEventData,
   type PressedChangeDetails,
 } from '@base-ui-rn/core';
+import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type { ShortcutConfig } from '@base-ui-rn/keyboard-shortcuts';
 import type {
   NativeSyntheticEvent,
@@ -30,19 +31,11 @@ export type WebButtonAccessibilityProps = ARIABaseProps &
   ARIATraitDisabled &
   ARIATraitExpanded;
 
-export interface ButtonState {
+export interface ButtonState extends FocusRingState {
   /**
    * Whether the button is currently pressed.
    */
   pressed: boolean;
-  /**
-   * Whether the button is currently focused.
-   */
-  focused: boolean;
-  /**
-   * Whether the button should show a focus ring.
-   */
-  focusVisible: boolean;
 }
 
 export interface ButtonProps

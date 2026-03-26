@@ -3,6 +3,7 @@ import type {
   ARIAFocusProps,
   ARIATraitDisabled,
 } from '@base-ui-rn/core';
+import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type {
   NativeSyntheticEvent,
   StyleProp,
@@ -23,11 +24,7 @@ export interface InputChangeEventDetails {
 /**
  * The current state of the Input component.
  */
-export interface InputState {
-  /**
-   * Whether the input is currently focused.
-   */
-  focused: boolean;
+export interface InputState extends FocusRingState {
   /**
    * Whether the input is disabled.
    */
@@ -52,10 +49,6 @@ export interface InputState {
    * Whether the input has a value (is not empty).
    */
   filled: boolean;
-  /**
-   * Whether the input should display a focus ring.
-   */
-  focusVisible: boolean;
 }
 
 /**
@@ -110,4 +103,9 @@ export interface InputProps
    * @default false
    */
   disableDefaultFocusRing?: boolean;
+  /**
+   * Whether the input remains focusable when disabled.
+   * @default false
+   */
+  focusableWhenDisabled?: boolean;
 }

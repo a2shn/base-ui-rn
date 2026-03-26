@@ -35,9 +35,109 @@ export const Accordion = { Root, Item, ... };
 export { Root as AccordionRoot, ... };
 ```
 
+### Focus Ring Architecture
+
+The focus ring system is centralized in `@base-ui-rn/focus-ring`:
+
+- **MUST** use `useFocusRing` hook from `@base-ui-rn/focus-ring` for all focus
+  management
+- **MUST** pass all 3 required params to `useFocusRing`:
+  - `disabled: boolean` - Whether the component is disabled
+  - `focusableWhenDisabled: boolean` - Whether component remains focusable when
+    disabled
+  - `disableDefaultFocusRing: boolean` - Whether to disable default focus ring
+    styling
+
+```ts
+import { useFocusRing } from '@base-ui-rn/focus-ring';
+
+// In use-{component}.ts hook
+const { focused, focusRingStyle, onFocus, onBlur } = useFocusRing({
+  disabled: isDisabled,
+  focusableWhenDisabled: focusableWhenDisabled ?? false,
+  disableDefaultFocusRing: disableDefaultFocusRing ?? false,
+});
+```
+
+- **MUST** use `FocusRingState` type from `@base-ui-rn/focus-ring` for component
+  state:
+
+```ts
+import type { FocusRingState } from '@base-ui-rn/focus-ring';
+
+interface ButtonState extends FocusRingState {
+  pressed: boolean;
+}
+```
+
 ---
 
-## 2. Engineering Standards
+## 2. Core Utilities
+
+### @base-ui-rn/core Utilities
+
+Always use these utilities from `@base-ui-rn/core` instead of reimplementing:
+
+- **`evaluateStyles(style, state)`** - Evaluates function styles. Use this to
+  handle dynamic styles based on state.
+
+```ts
+import { evaluateStyles } from '@base-ui-rn/core';
+
+const resolvedStyle = evaluateStyles(style, { focused, pressed: false });
+```
+
+- **`mergeRefs(...refs)`** - Merges multiple refs into a single callback ref.
+
+- **`PressableWithKeyPress`** - Enhanced Pressable component that handles
+  keyboard events. Use this instead of plain Pressable for interactive
+  components.
+
+- **`useKeyboardActivation(onActivate, isDisabled)`** - Handles Enter/Space
+  keyboard activation.
+
+- **`useKeyboardNavigation(options)`** - Manages arrow key navigation between
+  siblings.
+
+- **`resolveTabIndex(isFocusable, tabIndex)`** - Resolves tabIndex based on
+  focusability.
+
+- **`DEFAULT_FOCUS_RING_STYLE`** - The default focus ring style (border). Use
+  this when implementing custom focus ring behavior.
+
+### @base-ui-rn/test-utils Utilities
+
+Always use these utilities from `@base-ui-rn/test-utils` for testing:
+
+- **Key Constants**:
+
+  ```ts
+  import {
+    ACTIVATION_KEYS,
+    NON_ACTIVATION_KEYS,
+    DPAD_KEYS,
+  } from '@base-ui-rn/test-utils';
+  ```
+
+- **`fireEvent`**: Use for triggering events:
+
+  ```ts
+  import { fireEvent } from '@testing-library/react-native';
+
+  // Keyboard events
+  fireEvent(element, 'keyDown', { nativeEvent: { key: 'Enter' } });
+
+  // Accessibility actions
+  fireEvent(element, 'accessibilityAction', {
+    nativeEvent: { actionName: 'activate' },
+  });
+  ```
+
+- **`testAccessibility(element, options)`**: Standard accessibility checks.
+
+---
+
+## 3. Engineering Standards
 
 ### TypeScript & React
 
@@ -53,25 +153,13 @@ export { Root as AccordionRoot, ... };
   native element.
 - **MUST** use `useKeyboardActivation` from core to prevent double-activation
   bugs on the web.
-- **MUST** use the `useFocus` hook directly instead of the `<FocusRing>` wrapper
-  component. The wrapper interferes with keyboard event propagation on web.
-  Always use the hook pattern:
-
-```ts
-const { focusVisible, onFocus, onBlur } = useFocus({ focusVisible: false });
-
-return (
-  <PressableWithKeyPress
-    onFocus={onFocus}
-    onBlur={onBlur}
-    style={evaluateStyles(style, { ...state, focusVisible })}
-  />
-);
-```
+- **MUST** use `useFocusRing` from `@base-ui-rn/focus-ring` for focus
+  management. The hook provides focus state, event handlers, and focus ring
+  styling.
 
 ---
 
-## 3. JSDoc Mandates
+## 4. JSDoc Mandates
 
 You **MUST** create, maintain, and update JSDoc for every public component and
 prop. Documentation **MUST** be treated as code; if a behavior changes, the
@@ -126,7 +214,7 @@ export function useName(props: NameProps) { ... }
 
 ---
 
-## 4. Testing & Validation
+## 5. Testing & Validation
 
 ### Mandatory Test Suites
 
@@ -143,34 +231,84 @@ You **MUST** create or update these files in `src/__tests__/`:
 
 - **MUST** import `fireEvent` from `@testing-library/react-native` for all event
   testing.
-- **MUST** use
-  `fireEvent(element, 'keyDown', { nativeEvent: { key: 'Enter' } })` for
-  keyboard events.
-- **MUST** use
-  `fireEvent(element, 'accessibilityAction', { nativeEvent: { actionName: 'activate' } })`
-  for accessibility actions.
+- **MUST** use key constants from `@base-ui-rn/test-utils`:
+  - `ACTIVATION_KEYS` - Keys that activate components (Enter, Space, etc.)
+  - `NON_ACTIVATION_KEYS` - Non-activation keys
+  - `DPAD_KEYS` - Directional pad keys (ArrowUp, ArrowDown, etc.)
+
+```ts
+import { ACTIVATION_KEYS, DPAD_KEYS } from '@base-ui-rn/test-utils';
+import { fireEvent } from '@testing-library/react-native';
+
+// Keyboard activation test
+fireEvent(element, 'keyDown', { nativeEvent: { key: ACTIVATION_KEYS[0] } });
+
+// Navigation test
+fireEvent(element, 'keyDown', { nativeEvent: { key: DPAD_KEYS[0] } });
+```
+
 - **MUST** use `testAccessibility` for standard accessibility checks.
-- **CAN** use key constants from `@base-ui-rn/test-utils`: `ACTIVATION_KEYS`,
-  `NON_ACTIVATION_KEYS`, `DPAD_KEYS`.
+- **MUST** use the pattern below for keyboard events:
+
+```ts
+fireEvent(element, 'keyDown', { nativeEvent: { key: 'Enter' } });
+```
+
+- **MUST** use this pattern for accessibility actions:
+
+```ts
+fireEvent(element, 'accessibilityAction', {
+  nativeEvent: { actionName: 'activate' },
+});
+```
 
 ---
 
-## 5. Playbook Guidelines
+## 6. Playbook Guidelines
 
 - **MUST** decentralize styles. Styles must be local to each `.playbook.tsx`
   file.
 - **MUST** center the main demo container using `alignSelf: 'center'`.
 - **MUST** use a style function at the end of the file for dynamic states (e.g.,
   `getTriggerStyle`).
+- **MUST** use `useFocusRing` in playbook examples to demonstrate focus
+  behavior.
 
 ---
 
-## 6. Definition of Done Checklist
+## 7. Component Props Patterns
+
+### Focus-Related Props
+
+Every interactive component should accept these props:
+
+```ts
+interface FocusableProps {
+  /** Whether the component is disabled */
+  disabled?: boolean;
+  /** Whether the component remains focusable when disabled */
+  focusableWhenDisabled?: boolean;
+  /** Disable the default focus ring styling */
+  disableDefaultFocusRing?: boolean;
+}
+```
+
+- `disabled` defaults to `false`
+- `focusableWhenDisabled` defaults to `false`
+- `disableDefaultFocusRing` defaults to `false`
+
+All three are passed to `useFocusRing` in the component's hook.
+
+---
+
+## 8. Definition of Done Checklist
 
 - [ ] Logic is fully isolated in a `use-*.ts` hook.
 - [ ] Every component has its own file and explicit `displayName`.
 - [ ] Exports use the Namespace (dot-API) pattern.
 - [ ] All `WebAccessibilityProps` are destructured and passed.
+- [ ] Uses `useFocusRing` from `@base-ui-rn/focus-ring` for focus management.
+- [ ] Uses `evaluateStyles` from `@base-ui-rn/core` for style evaluation.
 - [ ] JSDoc follows the strict standard for components and props.
 - [ ] The six mandatory test suites pass with 100% logic coverage.
 - [ ] Playbook example is centered and uses local style functions.

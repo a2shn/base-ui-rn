@@ -48,7 +48,6 @@ export const Toggle = React.memo(
 
     const {
       focused,
-      focusVisible,
       focusRingStyle,
       handleAccessibilityAction,
       handleBlur,
@@ -67,6 +66,8 @@ export const Toggle = React.memo(
       resolvedDataPressed,
       resolvedTabIndex,
     } = useToggle(props, groupContext);
+
+    const focusVisible = focusRingStyle !== null;
 
     if (isInGroup && value === undefined) {
       console.warn(

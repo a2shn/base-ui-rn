@@ -9,9 +9,11 @@ export type {
   ARIATraitRange,
   KeyPressEventData,
   PressedChangeDetails,
+  KeyboardDirection,
+  KeyboardNavigationOptions,
+  KeyboardOptions,
 } from './types';
 
-// Constants
 export {
   ACTIVATION_KEYS,
   type ActivationKey,
@@ -35,14 +37,7 @@ export {
   useKeyboardActivation,
   useKeyboardNavigation,
 } from './keyboard';
-export type {
-  KeyboardDirection,
-  KeyboardNavigationOptions,
-  KeyboardOptions,
-} from './keyboard';
 
-// Utils
 export { clamp, evaluateStyles, mergeRefs } from './utils';
 
-// Components
 export { PressableWithKeyPress } from './pressable';

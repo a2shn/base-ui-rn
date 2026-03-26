@@ -44,6 +44,7 @@ export const Tab = React.memo(
       'data-orientation': dataOrientation,
       disabled,
       disableDefaultFocusRing = false,
+      focusableWhenDisabled = false,
       style,
       tabIndex,
       value,
@@ -62,6 +63,7 @@ export const Tab = React.memo(
     } = useTab({
       disabled,
       disableDefaultFocusRing,
+      focusableWhenDisabled,
       value,
     });
 

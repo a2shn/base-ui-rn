@@ -5,6 +5,7 @@ import {
   type KeyPressEventData,
   type PressedChangeDetails,
 } from '@base-ui-rn/core';
+import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type { ShortcutConfig } from '@base-ui-rn/keyboard-shortcuts';
 import type {
   NativeSyntheticEvent,
@@ -40,19 +41,11 @@ export type WebToggleAccessibilityProps = ARIABaseProps &
     'data-pressed'?: boolean;
   };
 
-export interface ToggleState {
+export interface ToggleState extends FocusRingState {
   /**
    * Whether the toggle is currently pressed.
    */
   pressed: boolean;
-  /**
-   * Whether the toggle is currently focused.
-   */
-  focused: boolean;
-  /**
-   * Whether the toggle should show a focus ring.
-   */
-  focusVisible: boolean;
 }
 
 export interface ToggleProps
