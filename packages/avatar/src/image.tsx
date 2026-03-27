@@ -26,12 +26,17 @@ export const AvatarImage = React.forwardRef<RNImage, AvatarImageProps>(
   (props, ref) => {
     const {
       accessible = false,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-hidden': ariaHidden,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
       onError,
       onLoad,
       onLoadingStatusChange: onLoadingStatusChangeProp,
       onLoadStart,
       source,
-      ...other
+      ...otherProps
     } = props;
     const { onLoadingStatusChange } = useAvatarContext();
 
@@ -89,8 +94,13 @@ export const AvatarImage = React.forwardRef<RNImage, AvatarImageProps>(
 
     return (
       <RNImage
-        {...(other as RNImageProps)}
+        {...(otherProps as RNImageProps)}
         accessible={accessible}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
+        aria-hidden={ariaHidden}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
         onError={handleError}
         onLoad={handleLoad}
         onLoadStart={handleLoadStart}

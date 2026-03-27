@@ -158,7 +158,7 @@ export function useSliderGestures(options: SliderGesturesOptions) {
       });
     };
 
-    const onPointerUp = (e?: PointerEvent) => {
+    const onPointerUp = () => {
       if (activeIndexRef.current === -1) return;
 
       if (frameIdRef.current !== null) {

@@ -1,6 +1,5 @@
 import type {
   ARIABaseProps,
-  ARIAFocusProps,
   ARIALiveProps,
   ARIATraitDisabled,
 } from '@base-ui-rn/core';
@@ -20,7 +19,6 @@ export type ImageLoadingStatus = 'idle' | 'loading' | 'loaded' | 'error';
  * Web-specific accessibility props for Avatar Root.
  */
 export type WebAvatarRootAccessibilityProps = ARIABaseProps &
-  ARIAFocusProps &
   ARIALiveProps &
   ARIATraitDisabled;
 

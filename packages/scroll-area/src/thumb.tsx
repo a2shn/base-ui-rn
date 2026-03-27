@@ -29,14 +29,16 @@ import { useGesture } from './use-gesture';
 export const Thumb = React.memo(
   React.forwardRef<View, ScrollAreaThumbProps>((props, ref) => {
     const {
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-hidden': ariaHidden,
+      'aria-keyshortcuts': ariaKeyshortcuts,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       children,
       style,
-      ...other
+      ...otherProps
     } = props;
     const context = useScrollAreaContext();
     const scrollbarContext = React.useContext(ScrollbarContext);
@@ -209,11 +211,13 @@ export const Thumb = React.memo(
 
     return (
       <Animated.View
-        {...other}
+        {...otherProps}
         {...panHandlers}
+        aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-hidden={ariaHidden}
+        aria-keyshortcuts={ariaKeyshortcuts}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
         data-orientation={orientation}

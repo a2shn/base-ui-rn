@@ -22,7 +22,6 @@ export const Separator = React.forwardRef<View, SeparatorProps>(
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-disabled': ariaDisabled,
-      'aria-expanded': ariaExpanded,
       'aria-hidden': ariaHidden,
       'aria-keyshortcuts': ariaKeyshortcuts,
       'aria-label': ariaLabel,
@@ -31,7 +30,6 @@ export const Separator = React.forwardRef<View, SeparatorProps>(
       'data-orientation': dataOrientation,
       decorative = false,
       orientation = 'horizontal',
-      tabIndex,
       ...otherProps
     } = props;
 
@@ -43,7 +41,6 @@ export const Separator = React.forwardRef<View, SeparatorProps>(
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-disabled={ariaDisabled}
-        aria-expanded={ariaExpanded}
         aria-hidden={ariaHidden ?? (decorative ? true : undefined)}
         aria-keyshortcuts={ariaKeyshortcuts}
         aria-label={ariaLabel}
@@ -57,7 +54,6 @@ export const Separator = React.forwardRef<View, SeparatorProps>(
             ? 'presentation'
             : ((accessibilityRole ?? 'separator') as 'separator')
         }
-        tabIndex={tabIndex}
       />
     );
   },

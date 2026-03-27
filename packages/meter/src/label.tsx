@@ -22,21 +22,23 @@ export const MeterLabel = React.memo(
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
       'aria-hidden': ariaHidden,
+      'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       children,
       nativeID,
-      ...other
+      ...otherProps
     } = props;
     const { labelId } = useMeterContext();
 
     return (
       <Text
-        {...other}
+        {...otherProps}
         aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-expanded={ariaExpanded}
         aria-hidden={ariaHidden}
+        aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
         nativeID={nativeID ?? labelId}
         ref={ref}

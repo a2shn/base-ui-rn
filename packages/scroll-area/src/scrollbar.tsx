@@ -33,9 +33,11 @@ export const ScrollbarContext = React.createContext<{
 export const Scrollbar = React.memo(
   React.forwardRef<View, ScrollAreaScrollbarProps>((props, ref) => {
     const {
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-hidden': ariaHidden,
+      'aria-keyshortcuts': ariaKeyshortcuts,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       'aria-orientation': ariaOrientationProp,
@@ -53,7 +55,7 @@ export const Scrollbar = React.memo(
       onLayout,
       orientation = 'vertical',
       style,
-      ...other
+      ...otherProps
     } = props;
 
     const { setScrollbarHeight, setScrollbarWidth, state } =
@@ -97,30 +99,33 @@ export const Scrollbar = React.memo(
 
     const scrollbarDataAttrs = {
       'data-has-overflow-x':
-        dataHasOverflowX ?? (state.hasOverflowX || undefined),
+        dataHasOverflowX ?? (state.hasOverflowX ? 'true' : undefined),
       'data-has-overflow-y':
-        dataHasOverflowY ?? (state.hasOverflowY || undefined),
-      'data-hovering': dataHovering ?? (state.isHovering || undefined),
+        dataHasOverflowY ?? (state.hasOverflowY ? 'true' : undefined),
+      'data-hovering': dataHovering ?? (state.isHovering ? 'true' : undefined),
       'data-orientation': dataOrientation ?? orientation,
       'data-overflow-x-end':
-        dataOverflowXEnd ?? (state.overflowXEnd || undefined),
+        dataOverflowXEnd ?? (state.overflowXEnd ? 'true' : undefined),
       'data-overflow-x-start':
-        dataOverflowXStart ?? (state.overflowXStart || undefined),
+        dataOverflowXStart ?? (state.overflowXStart ? 'true' : undefined),
       'data-overflow-y-end':
-        dataOverflowYEnd ?? (state.overflowYEnd || undefined),
+        dataOverflowYEnd ?? (state.overflowYEnd ? 'true' : undefined),
       'data-overflow-y-start':
-        dataOverflowYStart ?? (state.overflowYStart || undefined),
-      'data-scrolling': dataScrolling ?? (state.isScrolling || undefined),
+        dataOverflowYStart ?? (state.overflowYStart ? 'true' : undefined),
+      'data-scrolling':
+        dataScrolling ?? (state.isScrolling ? 'true' : undefined),
     };
 
     return (
       <ScrollbarContext.Provider value={{ orientation }}>
         <View
-          {...other}
+          {...otherProps}
           {...scrollbarDataAttrs}
+          aria-busy={ariaBusy}
           aria-describedby={ariaDescribedBy}
           aria-details={ariaDetails}
           aria-hidden={ariaHidden}
+          aria-keyshortcuts={ariaKeyshortcuts}
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
           aria-orientation={ariaOrientationProp ?? orientation}

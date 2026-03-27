@@ -1,6 +1,5 @@
 import {
   type ARIABaseProps,
-  type ARIAFocusProps,
   type ARIALiveProps,
   type ARIATraitDisabled,
   type ARIATraitOrientation,
@@ -21,7 +20,6 @@ import type {
  * Web-specific accessibility props for Slider Root.
  */
 export type WebSliderRootAccessibilityProps = ARIABaseProps &
-  ARIAFocusProps &
   ARIALiveProps &
   ARIATraitDisabled &
   ARIATraitOrientation & {
@@ -53,13 +51,16 @@ export type WebSliderRootAccessibilityProps = ARIABaseProps &
      * @default 0 (no maximum)
      */
     'data-max-steps-between-values'?: number;
+    /**
+     * Defines a keyboard shortcut that activates or focuses the element.
+     */
+    'aria-keyshortcuts'?: string;
   };
 
 /**
  * Web-specific accessibility props for Slider Thumb.
  */
 export type WebSliderThumbAccessibilityProps = ARIABaseProps &
-  ARIAFocusProps &
   ARIALiveProps &
   ARIATraitDisabled &
   ARIATraitRange &
@@ -86,6 +87,10 @@ export type WebSliderThumbAccessibilityProps = ARIABaseProps &
      * Indicates the index of the thumb in range sliders.
      */
     'data-index'?: number;
+    /**
+     * Defines a keyboard shortcut that activates or focuses the element.
+     */
+    'aria-keyshortcuts'?: string;
   };
 
 /**
@@ -161,12 +166,47 @@ export interface SliderState {
 }
 
 /**
+ * Common props for slider sub-components.
+ */
+export interface SliderPartProps
+  extends ViewProps, ARIABaseProps, ARIALiveProps {
+  /**
+   * Present while the user is dragging.
+   */
+  'data-dragging'?: boolean;
+  /**
+   * Present when the slider is disabled.
+   */
+  'data-disabled'?: boolean;
+  /**
+   * Defines a keyboard shortcut that activates or focuses the element.
+   */
+  'aria-keyshortcuts'?: string;
+}
+
+/**
+ * Props for the Slider.Indicator component.
+ */
+export interface SliderIndicatorProps extends Omit<SliderPartProps, 'style'> {
+  /**
+   * Style applied to the indicator view.
+   */
+  style?: ViewStyle | ((state: SliderState) => ViewStyle | undefined);
+}
+
+/**
  * Props for the Slider.Root component.
  */
 export interface SliderRootProps
-  extends
-    Omit<ViewProps, 'children' | 'style'>,
-    WebSliderRootAccessibilityProps {
+  extends Omit<ViewProps, 'style'>, WebSliderRootAccessibilityProps {
+  /**
+   * Style applied to the slider root view.
+   */
+  style?: ViewStyle | ((state: SliderState) => ViewStyle | undefined);
+  /**
+   * The content of the slider root.
+   */
+  children?: React.ReactNode;
   /**
    * Identifies the field when a form is submitted.
    */
@@ -183,6 +223,75 @@ export interface SliderRootProps
    * Callback fired when the value changes.
    */
   onValueChange?: (
+    value: SliderValue,
+    eventDetails: ChangeEventDetails,
+  ) => void;
+  /**
+   * Whether the slider is disabled.
+   * @default false
+   */
+  disabled?: boolean;
+  /**
+   * The minimum value of the slider.
+   * @default 0
+   */
+  min?: number;
+  /**
+   * The maximum value of the slider.
+   * @default 100
+   */
+  max?: number;
+  /**
+   * The step value of the slider.
+   * @default 1
+   */
+  step?: number;
+  /**
+   * The number of steps between thumbs.
+   * @default 0
+   */
+  minStepsBetweenValues?: number;
+  /**
+   * The maximum number of steps between thumbs.
+   * @default 0
+   */
+  maxStepsBetweenValues?: number;
+  /**
+   * The fixed number of steps between thumbs.
+   */
+  stepBetweenValues?: number;
+  /**
+   * The large step value for keyboard navigation.
+   * @default 10
+   */
+  largeStep?: number;
+  /**
+   * The locale to use for formatting values.
+   */
+  locale?: string;
+  /**
+   * The format options for values.
+   */
+  format?: Intl.NumberFormatOptions;
+  /**
+   * The orientation of the slider.
+   * @default 'horizontal'
+   */
+  orientation?: 'horizontal' | 'vertical';
+  /**
+   * The alignment of the thumb.
+   * @default 'center'
+   */
+  thumbAlignment?: 'center' | 'edge' | 'edge-client-only';
+  /**
+   * The collision behavior of the thumb.
+   * @default 'none'
+   */
+  thumbCollisionBehavior?: 'none' | 'push' | 'swap';
+  /**
+   * Callback fired when the value is committed.
+   */
+  onValueCommitted?: (
     value: SliderValue,
     eventDetails: ChangeEventDetails,
   ) => void;
@@ -263,12 +372,21 @@ export interface SliderThumbState extends SliderState, FocusRingState {
 /**
  * Web-specific accessibility props for Slider Label.
  */
-export type WebSliderLabelAccessibilityProps = ARIABaseProps & ARIALiveProps;
+export type WebSliderLabelAccessibilityProps = ARIABaseProps &
+  ARIALiveProps & {
+    /**
+     * Defines a keyboard shortcut that activates or focuses the element.
+     */
+    'aria-keyshortcuts'?: string;
+  };
 
-/**
- * Web-specific accessibility props for Slider Value.
- */
-export type WebSliderValueAccessibilityProps = ARIABaseProps & ARIALiveProps;
+export type WebSliderValueAccessibilityProps = ARIABaseProps &
+  ARIALiveProps & {
+    /**
+     * Defines a keyboard shortcut that activates or focuses the element.
+     */
+    'aria-keyshortcuts'?: string;
+  };
 
 /**
  * Props for the Slider.Label component.
@@ -309,3 +427,5 @@ export interface SliderValueProps
     | React.ReactNode
     | ((formattedValues: string[], values: number[]) => React.ReactNode);
 }
+
+export type { KeyPressEventData };

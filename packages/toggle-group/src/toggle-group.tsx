@@ -81,6 +81,7 @@ export const ToggleGroup = React.memo(
       <ToggleGroupContext.Provider value={contextValue}>
         <View
           {...otherViewProps}
+          accessible
           aria-busy={ariaBusy}
           aria-describedby={ariaDescribedBy}
           aria-details={ariaDetails}

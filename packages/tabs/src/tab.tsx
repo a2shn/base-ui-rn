@@ -57,13 +57,16 @@ export const Tab = React.memo(
       handleFocus,
       handleKeyDown,
       handlePress,
+      isFocusable,
       onLayout,
       ref,
       state,
+      tabIndex: resolvedTabIndex,
     } = useTab({
       disabled,
       disableDefaultFocusRing,
       focusableWhenDisabled,
+      tabIndex,
       value,
     });
 
@@ -80,7 +83,7 @@ export const Tab = React.memo(
     return (
       <PressableWithKeyPress
         {...otherProps}
-        accessible
+        accessible={isFocusable}
         aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
@@ -108,7 +111,7 @@ export const Tab = React.memo(
         ref={ref}
         role='tab'
         style={resolvedStyle}
-        tabIndex={tabIndex}
+        tabIndex={resolvedTabIndex}
       >
         {evaluateStyles(children, state)}
       </PressableWithKeyPress>

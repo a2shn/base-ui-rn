@@ -1,6 +1,5 @@
 import {
   type ARIABaseProps,
-  type ARIAFocusProps,
   type ARIALiveProps,
   ARIATraitRange,
 } from '@base-ui-rn/core';
@@ -11,7 +10,6 @@ import type { TextProps, ViewProps } from 'react-native';
  * Web-specific accessibility props for the Meter component.
  */
 export type WebMeterAccessibilityProps = ARIABaseProps &
-  ARIAFocusProps &
   ARIALiveProps &
   ARIATraitRange;
 
@@ -55,7 +53,7 @@ export interface MeterRootProps extends ViewProps, WebMeterAccessibilityProps {
  * Props for the Meter.Label component.
  */
 export interface MeterLabelProps
-  extends TextProps, ARIABaseProps, ARIAFocusProps, ARIALiveProps {
+  extends TextProps, ARIABaseProps, ARIALiveProps {
   /**
    * The content of the label.
    */
@@ -66,7 +64,7 @@ export interface MeterLabelProps
  * Props for the Meter.Track component.
  */
 export interface MeterTrackProps
-  extends ViewProps, ARIABaseProps, ARIAFocusProps, ARIALiveProps {
+  extends ViewProps, ARIABaseProps, ARIALiveProps {
   /**
    * The content of the track.
    */
@@ -77,17 +75,13 @@ export interface MeterTrackProps
  * Props for the Meter.Indicator component.
  */
 export interface MeterIndicatorProps
-  extends ViewProps, ARIABaseProps, ARIAFocusProps, ARIALiveProps {}
+  extends ViewProps, ARIABaseProps, ARIALiveProps {}
 
 /**
  * Props for the Meter.Value component.
  */
 export interface MeterValueProps
-  extends
-    Omit<TextProps, 'children'>,
-    ARIABaseProps,
-    ARIAFocusProps,
-    ARIALiveProps {
+  extends Omit<TextProps, 'children'>, ARIABaseProps, ARIALiveProps {
   /**
    * The content of the value component.
    */

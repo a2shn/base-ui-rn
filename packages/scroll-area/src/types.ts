@@ -269,6 +269,10 @@ export interface WebScrollAreaScrollbarProps extends ARIABaseProps {
    * Present when the user is currently scrolling.
    */
   'data-scrolling'?: boolean;
+  /**
+   * Defines a keyboard shortcut that activates or focuses the element.
+   */
+  'aria-keyshortcuts'?: string;
 }
 
 /**
@@ -279,6 +283,10 @@ export interface WebScrollAreaThumbProps extends ARIABaseProps {
    * Indicates the orientation of the scrollbar.
    */
   'data-orientation'?: ScrollAreaOrientation;
+  /**
+   * Defines a keyboard shortcut that activates or focuses the element.
+   */
+  'aria-keyshortcuts'?: string;
 }
 
 /**
@@ -461,4 +469,8 @@ export interface ScrollAreaCornerProps
   style?:
     | StyleProp<ViewStyle>
     | ((state: ScrollAreaCornerState) => StyleProp<ViewStyle>);
+  /**
+   * Defines a keyboard shortcut that activates or focuses the element.
+   */
+  'aria-keyshortcuts'?: string;
 }

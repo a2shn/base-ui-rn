@@ -14,6 +14,7 @@ export function useScrollArea(props: UseScrollAreaProps) {
     keyboardStep = 40,
     overflowEdgeThreshold = 0,
     scrollbarVisibility = 'auto',
+    tabIndex,
   } = props;
 
   const [viewportWidth, setViewportWidth] = React.useState(0);
@@ -41,10 +42,18 @@ export function useScrollArea(props: UseScrollAreaProps) {
 
   const [isHovering, setIsHovering] = React.useState(false);
 
-  const { focused, focusRingStyle, onBlur, onFocus } = useFocusRing({
+  const {
+    focused,
+    focusRingStyle,
+    isFocusable,
+    onBlur,
+    onFocus,
+    tabIndex: resolvedTabIndex,
+  } = useFocusRing({
     disabled: false,
     disableDefaultFocusRing,
     focusableWhenDisabled,
+    tabIndex: tabIndex as 0 | -1 | undefined,
   });
 
   const scrollX = React.useRef(new Animated.Value(0)).current;
@@ -196,6 +205,7 @@ export function useScrollArea(props: UseScrollAreaProps) {
       contentHeight,
       contentWidth,
       focusRingStyle,
+      isFocusable,
       keyboardPageStep,
       keyboardStep,
       onBlur,
@@ -215,6 +225,7 @@ export function useScrollArea(props: UseScrollAreaProps) {
       setViewportHeight,
       setViewportWidth,
       state,
+      tabIndex: resolvedTabIndex,
       viewportHeight,
       viewportRef,
       viewportWidth,
@@ -223,6 +234,7 @@ export function useScrollArea(props: UseScrollAreaProps) {
       contentHeight,
       contentWidth,
       focusRingStyle,
+      isFocusable,
       keyboardPageStep,
       keyboardStep,
       onBlur,
@@ -235,6 +247,7 @@ export function useScrollArea(props: UseScrollAreaProps) {
       scrollY,
       setScrolling,
       state,
+      resolvedTabIndex,
       viewportHeight,
       viewportRef,
       viewportWidth,

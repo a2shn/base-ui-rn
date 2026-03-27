@@ -42,7 +42,7 @@ export interface ARIAFocusProps {
    * Indicates if the element can take input focus.
    * @default 0 (on focusable roles)
    */
-  tabIndex?: 0 | -1;
+  tabIndex?: number;
   /**
    * Defines a keyboard shortcut that activates or focuses the element.
    * @see https://www.w3.org/TR/wai-aria-1.2/#aria-keyshortcuts

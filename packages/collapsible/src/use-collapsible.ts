@@ -78,16 +78,25 @@ export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
     focusableWhenDisabled = false,
     onBlur: onBlurProp,
     onFocus: onFocusProp,
+    tabIndex,
   } = props;
 
   const context = useCollapsibleContext();
 
   const disabled = disabledProp || context.disabled;
 
-  const { focused, focusRingStyle, onBlur, onFocus } = useFocusRing({
+  const {
+    focused,
+    focusRingStyle,
+    isFocusable,
+    onBlur,
+    onFocus,
+    tabIndex: resolvedTabIndex,
+  } = useFocusRing({
     disabled,
     disableDefaultFocusRing,
     focusableWhenDisabled,
+    tabIndex,
   });
 
   const handleFocus = React.useCallback(
@@ -142,25 +151,16 @@ export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
     handleFocus,
     handleKeyDown,
     handlePress,
+    isFocusable,
     open: context.open,
     state,
+    tabIndex: resolvedTabIndex,
   };
 }
-
 export function useCollapsiblePanel(props: CollapsiblePanelProps) {
-  const {
-    disableDefaultFocusRing = false,
-    hiddenUntilFound = false,
-    keepMounted = false,
-  } = props;
+  const { hiddenUntilFound = false, keepMounted = false } = props;
 
   const context = useCollapsibleContext();
-
-  const { focused, onBlur, onFocus } = useFocusRing({
-    disabled: context.disabled,
-    disableDefaultFocusRing,
-    focusableWhenDisabled: false,
-  });
 
   const [contentHeight, setContentHeight] = React.useState<number | undefined>(
     undefined,
@@ -179,7 +179,6 @@ export function useCollapsiblePanel(props: CollapsiblePanelProps) {
 
   const state: CollapsiblePanelState = {
     disabled: context.disabled,
-    focused: false,
     open: context.open,
     panel: {
       height: contentHeight,
@@ -189,9 +188,6 @@ export function useCollapsiblePanel(props: CollapsiblePanelProps) {
 
   return {
     disabled: context.disabled,
-    focused,
-    handleBlur: onBlur,
-    handleFocus: onFocus,
     onLayout,
     open: context.open,
     shouldRender,

@@ -111,9 +111,9 @@ export function useSliderControl(options: SliderControlOptions = {}) {
   const resolvedTabIndex = resolveTabIndex(state.disabled, -1);
 
   return {
-    'data-disabled': state.disabled,
-    'data-dragging': state.dragging,
-    'data-focused': focusedThumbIndex !== null,
+    'data-disabled': state.disabled ? 'true' : undefined,
+    'data-dragging': state.dragging ? 'true' : undefined,
+    'data-focused': focusedThumbIndex !== null ? 'true' : undefined,
     'data-orientation': state.orientation,
     handleLayout,
     mergedRef,

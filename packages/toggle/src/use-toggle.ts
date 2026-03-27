@@ -6,7 +6,6 @@ import {
   resolveAriaDisabled,
   resolveAriaPressed,
   resolveDataPressed,
-  resolveTabIndex,
   useKeyboardActivation,
 } from '@base-ui-rn/core';
 import { useFocusRing } from '@base-ui-rn/focus-ring';
@@ -42,8 +41,8 @@ export const useToggle = (
     'aria-pressed': ariaPressedProp,
     'data-pressed': dataPressedProp,
     defaultPressed = false,
-    disableDefaultFocusRing = false,
     disabled,
+    disableDefaultFocusRing = false,
     focusableWhenDisabled = false,
     onAccessibilityAction,
     onBlur: onBlurProp,
@@ -60,19 +59,20 @@ export const useToggle = (
   const isInGroup = groupContext !== null;
 
   const isDisabled = disabled === true || (isInGroup && groupContext.disabled);
-  const isFocusable = !isDisabled || focusableWhenDisabled === true;
 
   const {
     focused: isFocused,
     focusRingStyle,
+    isFocusable,
     onBlur: onFocusOut,
     onFocus: onFocusIn,
+    tabIndex: resolvedTabIndex,
   } = useFocusRing({
     disabled: isDisabled,
-    focusableWhenDisabled,
     disableDefaultFocusRing,
+    focusableWhenDisabled,
+    tabIndex: tabIndexProp as 0 | -1 | undefined,
   });
-
 
   const [uncontrolledState, setUncontrolledState] =
     React.useState(defaultPressed);
@@ -202,7 +202,6 @@ export const useToggle = (
     [accessibilityActions],
   );
 
-  const resolvedTabIndex = resolveTabIndex(isFocusable, tabIndexProp);
   const resolvedAriaDisabled = resolveAriaDisabled(
     isDisabled,
     ariaDisabledProp,

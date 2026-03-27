@@ -52,6 +52,7 @@ export const Viewport = React.memo(
       ...other
     } = props;
     const {
+      isFocusable,
       onBlur: handleBlur,
       onFocus: handleFocus,
       scrollX,
@@ -60,6 +61,7 @@ export const Viewport = React.memo(
       setViewportHeight,
       setViewportWidth,
       state,
+      tabIndex: resolvedTabIndex,
       viewportRef,
     } = useScrollAreaContext();
 
@@ -113,6 +115,7 @@ export const Viewport = React.memo(
     let nativeProps = {};
     if (!isWeb) {
       nativeProps = {
+        accessible: isFocusable,
         collapsable: false,
         focusable: true,
         onBlur: (e: NativeSyntheticEvent<TargetedEvent>) => {
@@ -123,6 +126,7 @@ export const Viewport = React.memo(
           handleFocus();
           other.onFocus?.(e);
         },
+        tabIndex: resolvedTabIndex,
       };
     }
 

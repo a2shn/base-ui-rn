@@ -13,8 +13,8 @@ export function useInput(props: InputProps) {
   const {
     defaultValue,
     dirty: controlledDirty,
-    disableDefaultFocusRing = false,
     disabled = false,
+    disableDefaultFocusRing = false,
     focusableWhenDisabled = false,
     invalid = false,
     onBlur: onBlurProp,
@@ -47,10 +47,18 @@ export function useInput(props: InputProps) {
   const isTouched =
     controlledTouched !== undefined ? controlledTouched : internalTouched;
 
-  const { focused, focusRingStyle, onBlur, onFocus } = useFocusRing({
+  const {
+    focused,
+    focusRingStyle,
+    isFocusable,
+    onBlur,
+    onFocus,
+    tabIndex: resolvedTabIndex,
+  } = useFocusRing({
     disabled,
     disableDefaultFocusRing,
     focusableWhenDisabled,
+    tabIndex: props.tabIndex as 0 | -1 | undefined,
   });
 
   const handleFocus = React.useCallback(
@@ -102,7 +110,9 @@ export function useInput(props: InputProps) {
     handleBlur,
     handleChangeText,
     handleFocus,
+    isFocusable,
     state,
+    tabIndex: resolvedTabIndex,
     value,
   };
 }

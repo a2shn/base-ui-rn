@@ -35,19 +35,11 @@ export function useTabsRoot(props: TabsRootProps) {
   const {
     activateOnFocus = false,
     defaultValue,
-    disableDefaultFocusRing = false,
-    focusableWhenDisabled = false,
     onFocusChange,
     onValueChange,
     orientation = 'horizontal',
     value: controlledValue,
   } = props;
-
-  const { focused } = useFocusRing({
-    disabled: false,
-    disableDefaultFocusRing,
-    focusableWhenDisabled,
-  });
 
   const [internalValue, setInternalValue] = React.useState<TabValue | null>(
     defaultValue ?? null,
@@ -172,7 +164,6 @@ export function useTabsRoot(props: TabsRootProps) {
 
   const state: TabsRootState = {
     activationDirection,
-    focused,
     orientation,
     value: currentValue,
   };
@@ -209,7 +200,6 @@ export function useTabsList() {
 
   const state: TabsListState = {
     activationDirection: context.activationDirection,
-    focused: false,
     orientation: context.orientation,
   };
 
@@ -233,10 +223,18 @@ export function useTab(props: TabProps) {
     return context.registerTab(value, ref);
   }, [value, context]);
 
-  const { focused, focusRingStyle, onBlur, onFocus } = useFocusRing({
+  const {
+    focused,
+    focusRingStyle,
+    isFocusable,
+    onBlur,
+    onFocus,
+    tabIndex: resolvedTabIndex,
+  } = useFocusRing({
     disabled,
     disableDefaultFocusRing,
     focusableWhenDisabled,
+    tabIndex: props.tabIndex as 0 | -1 | undefined,
   });
 
   const isFocusedFromRoot = context.focusedValue === value;
@@ -305,9 +303,11 @@ export function useTab(props: TabProps) {
     handleFocus,
     handleKeyDown,
     handlePress,
+    isFocusable,
     onLayout,
     ref,
     state,
+    tabIndex: resolvedTabIndex,
   };
 }
 
@@ -318,7 +318,6 @@ export function useTabsIndicator() {
 
   const state: TabsIndicatorState = {
     activationDirection: context.activationDirection,
-    focused: false,
     orientation: context.orientation,
     tab: {
       height: activeMeasurement?.height,
@@ -344,7 +343,6 @@ export function useTabPanel(props: TabPanelProps) {
 
   const state: TabPanelState = {
     activationDirection: context.activationDirection,
-    focused: false,
     hidden: !active,
     index,
     orientation: context.orientation,

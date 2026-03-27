@@ -79,14 +79,6 @@ export function InputPlaybook() {
               style={styles.input}
             />
           </Section>
-
-          <Section title='Custom Focus Ring'>
-            <Input
-              focusRingStyle={styles.customFocusRing}
-              placeholder='Custom focus ring'
-              style={styles.input}
-            />
-          </Section>
         </Gallery>
       </ScrollView>
     </KeyboardAvoidingView>

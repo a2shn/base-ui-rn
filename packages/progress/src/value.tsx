@@ -22,13 +22,14 @@ export const ProgressValue = React.memo(
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
       'aria-hidden': ariaHidden,
+      'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       children,
       'data-complete': dataComplete,
       'data-indeterminate': dataIndeterminate,
       'data-progressing': dataProgressing,
       style,
-      ...other
+      ...otherProps
     } = props;
     const {
       formattedValue,
@@ -43,23 +44,24 @@ export const ProgressValue = React.memo(
 
     return (
       <Text
-        {...other}
+        {...otherProps}
         aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-expanded={ariaExpanded}
         aria-hidden={ariaHidden ?? true}
+        aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
+        data-complete={dataComplete ?? (isComplete ? 'true' : undefined)}
+        data-indeterminate={
+          dataIndeterminate ?? (isIndeterminate ? 'true' : undefined)
+        }
+        data-progressing={
+          dataProgressing ?? (isProgressing ? 'true' : undefined)
+        }
         importantForAccessibility='no-hide-descendants'
         ref={ref}
         style={resolvedStyle}
-        {...({
-          'data-complete': dataComplete ?? (isComplete ? '' : undefined),
-          'data-indeterminate':
-            dataIndeterminate ?? (isIndeterminate ? '' : undefined),
-          'data-progressing':
-            dataProgressing ?? (isProgressing ? '' : undefined),
-        } as Record<string, unknown>)}
       >
         {typeof children === 'function'
           ? children(formattedValue, value)

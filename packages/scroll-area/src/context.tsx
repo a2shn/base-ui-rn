@@ -20,6 +20,8 @@ export interface ScrollAreaContextValue {
   keyboardPageStep: number;
   onBlur: () => void;
   onFocus: () => void;
+  isFocusable: boolean;
+  tabIndex: number;
   setViewportWidth: (w: number) => void;
   setViewportHeight: (h: number) => void;
   setContentWidth: (w: number) => void;

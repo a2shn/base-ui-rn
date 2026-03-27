@@ -1,11 +1,9 @@
-import { mergeAccessibilityState } from '@base-ui-rn/core';
 import * as React from 'react';
 
 import type { ProgressRootProps, ProgressState } from './types';
 
 export const useProgress = (props: ProgressRootProps) => {
   const {
-    accessibilityState,
     'aria-valuetext': ariaValueTextProp,
     format,
     getAriaValueText,
@@ -41,15 +39,6 @@ export const useProgress = (props: ProgressRootProps) => {
     return formattedValue ?? undefined;
   }, [ariaValueTextProp, getAriaValueText, value, formattedValue]);
 
-  const mergedAccessibilityState = React.useMemo(
-    () =>
-      mergeAccessibilityState(
-        accessibilityState as Record<string, unknown> | undefined,
-        false,
-      ),
-    [accessibilityState],
-  );
-
   const state: ProgressState = {
     ariaValueText,
     formattedValue,
@@ -64,7 +53,6 @@ export const useProgress = (props: ProgressRootProps) => {
 
   return {
     labelId,
-    mergedAccessibilityState,
     state,
   };
 };

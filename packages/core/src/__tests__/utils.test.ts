@@ -1,12 +1,6 @@
 import { StyleProp, ViewStyle } from 'react-native';
 
-import { DEFAULT_FOCUS_RING_STYLE } from '../constants';
-import {
-  clamp,
-  evaluateStyles,
-  mergeRefs,
-  resolveFocusRingStyle,
-} from '../utils';
+import { clamp, evaluateStyles, mergeRefs } from '../utils';
 
 describe('clamp', () => {
   it('should clamp value within bounds', () => {
@@ -74,77 +68,25 @@ describe('mergeRefs', () => {
   });
 });
 
-describe('resolveFocusRingStyle', () => {
-  it('should return null when focusVisible is false', () => {
-    expect(resolveFocusRingStyle(false)).toBeNull();
-  });
-
-  it('should return customStyle when provided', () => {
-    const custom = { backgroundColor: 'red' };
-    expect(resolveFocusRingStyle(true, false, custom)).toBe(custom);
-  });
-
-  it('should return null when disableDefault is true', () => {
-    expect(resolveFocusRingStyle(true, true)).toBeNull();
-  });
-
-  it('should return defaultStyle when focusVisible is true and no custom/disable', () => {
-    expect(resolveFocusRingStyle(true)).toBe(DEFAULT_FOCUS_RING_STYLE);
-  });
-
-  it('should use provided defaultStyle', () => {
-    const customDefault = { borderWidth: 5 };
-    expect(resolveFocusRingStyle(true, false, undefined, customDefault)).toBe(
-      customDefault,
-    );
-  });
-});
-
 describe('evaluateStyles', () => {
-  it('should evaluate static style and resolve focus ring', () => {
+  it('should evaluate static style', () => {
     const style = { color: 'blue' } as StyleProp<ViewStyle>;
-    const state = { focusVisible: true };
+    const state = { focused: true };
     const result = evaluateStyles(style, state);
-    expect(result).toEqual([style, DEFAULT_FOCUS_RING_STYLE]);
+    expect(result).toEqual(style);
   });
 
-  it('should evaluate function style and resolve focus ring', () => {
-    const styleFn = (state: { focusVisible: boolean }) =>
-      state.focusVisible ? { borderWidth: 1 } : { borderWidth: 0 };
-    const state = { focusVisible: true };
+  it('should evaluate function style', () => {
+    const styleFn = (state: { focused: boolean }) =>
+      state.focused ? { borderWidth: 1 } : { borderWidth: 0 };
+    const state = { focused: true };
     const result = evaluateStyles(styleFn, state);
-    expect(result).toEqual([{ borderWidth: 1 }, DEFAULT_FOCUS_RING_STYLE]);
-  });
-
-  it('should disable default focus ring', () => {
-    const style = { color: 'blue' } as StyleProp<ViewStyle>;
-    const state = { focusVisible: true };
-    const result = evaluateStyles(style, state, {
-      disableDefaultFocusRing: true,
-    });
-    expect(result).toEqual(style);
-  });
-
-  it('should use custom focus ring style', () => {
-    const style = { color: 'blue' } as StyleProp<ViewStyle>;
-    const customFocusRing = { outlineColor: 'green' } as StyleProp<ViewStyle>;
-    const state = { focusVisible: true };
-    const result = evaluateStyles(style, state, {
-      focusRingStyle: customFocusRing,
-    });
-    expect(result).toEqual([style, customFocusRing]);
-  });
-
-  it('should return style without focus ring if not focusVisible', () => {
-    const style = { color: 'blue' } as StyleProp<ViewStyle>;
-    const state = { focusVisible: false };
-    const result = evaluateStyles(style, state);
-    expect(result).toEqual(style);
+    expect(result).toEqual({ borderWidth: 1 });
   });
 
   it('should return non-style values as-is', () => {
     const children = 'hello';
-    const state = { focusVisible: true };
+    const state = { focused: true };
     const result = evaluateStyles(children, state);
     expect(result).toBe('hello');
   });

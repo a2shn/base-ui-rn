@@ -1,4 +1,4 @@
-import { evaluateStyles, resolveTabIndex } from '@base-ui-rn/core';
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -23,15 +23,13 @@ import { useProgress } from './use-progress';
 export const ProgressRoot = React.memo(
   React.forwardRef<View, ProgressRootProps>((props, ref) => {
     const {
-      accessibilityHint = 'Displays a value within a range',
-      accessibilityLabel,
-      accessibilityRole = 'progressbar',
       accessible = true,
       'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
       'aria-hidden': ariaHidden,
+      'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       'aria-valuemax': ariaValueMax,
       'aria-valuemin': ariaValueMin,
@@ -41,16 +39,13 @@ export const ProgressRoot = React.memo(
       'data-complete': dataComplete,
       'data-indeterminate': dataIndeterminate,
       'data-progressing': dataProgressing,
-      focusable = false,
-      importantForAccessibility = 'yes',
       max = 100,
       min = 0,
       style,
-      tabIndex,
       ...otherViewProps
     } = props;
 
-    const { labelId, mergedAccessibilityState, state } = useProgress(props);
+    const { labelId, state } = useProgress(props);
 
     const contextValue = React.useMemo(
       () => ({
@@ -60,58 +55,62 @@ export const ProgressRoot = React.memo(
       [state, labelId],
     );
 
-    const resolvedTabIndex = resolveTabIndex(false, tabIndex);
-    const isLabelledByProp = Boolean(accessibilityLabel);
-
     const resolvedStyle = evaluateStyles(style, state);
     const resolvedChildren = evaluateStyles(children, state);
+
+    const resolvedAriaLabelledBy = ariaLabel
+      ? undefined
+      : (ariaLabelledBy ?? labelId);
+
+    const resolvedAriaValueText = ariaValueTextProp ?? state.ariaValueText;
+
+    const accessibilityValue = resolvedAriaValueText
+      ? { text: resolvedAriaValueText }
+      : state.isIndeterminate
+        ? undefined
+        : {
+            max: ariaValueMax ?? max,
+            min: ariaValueMin ?? min,
+            now: ariaValueNow ?? state.value ?? undefined,
+          };
 
     return (
       <ProgressContext.Provider value={contextValue}>
         <View
           {...otherViewProps}
-          accessibilityHint={accessibilityHint}
-          accessibilityLabel={accessibilityLabel}
-          accessibilityLabelledBy={isLabelledByProp ? undefined : [labelId]}
-          accessibilityState={mergedAccessibilityState}
-          accessibilityValue={
-            state.isIndeterminate
-              ? undefined
-              : state.ariaValueText
-                ? { text: state.ariaValueText }
-                : {
-                    max,
-                    min,
-                    now: state.value!,
-                  }
+          accessibilityLabelledBy={
+            resolvedAriaLabelledBy ? [resolvedAriaLabelledBy] : undefined
           }
+          accessibilityState={{
+            disabled: false,
+          }}
+          accessibilityValue={accessibilityValue}
           accessible={accessible}
           aria-busy={ariaBusy}
           aria-describedby={ariaDescribedBy}
           aria-details={ariaDetails}
           aria-expanded={ariaExpanded}
           aria-hidden={ariaHidden}
-          aria-labelledby={
-            ariaLabelledBy ?? (isLabelledByProp ? undefined : labelId)
-          }
+          aria-label={ariaLabel}
+          aria-labelledby={resolvedAriaLabelledBy}
           aria-valuemax={ariaValueMax ?? max}
           aria-valuemin={ariaValueMin ?? min}
           aria-valuenow={ariaValueNow ?? state.value ?? undefined}
           aria-valuetext={ariaValueTextProp ?? state.ariaValueText}
-          focusable={focusable}
-          importantForAccessibility={importantForAccessibility}
+          data-complete={
+            dataComplete ?? (state.isComplete ? 'true' : undefined)
+          }
+          data-indeterminate={
+            dataIndeterminate ?? (state.isIndeterminate ? 'true' : undefined)
+          }
+          data-progressing={
+            dataProgressing ?? (state.isProgressing ? 'true' : undefined)
+          }
+          focusable={false}
+          importantForAccessibility='yes'
           ref={ref}
-          role={(accessibilityRole ?? 'progressbar') as unknown as 'checkbox'}
+          role='progressbar'
           style={resolvedStyle}
-          tabIndex={resolvedTabIndex}
-          {...({
-            'data-complete':
-              dataComplete ?? (state.isComplete ? '' : undefined),
-            'data-indeterminate':
-              dataIndeterminate ?? (state.isIndeterminate ? '' : undefined),
-            'data-progressing':
-              dataProgressing ?? (state.isProgressing ? '' : undefined),
-          } as Record<string, unknown>)}
         >
           {resolvedChildren}
         </View>

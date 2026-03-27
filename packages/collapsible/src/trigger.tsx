@@ -1,5 +1,6 @@
 import { evaluateStyles, PressableWithKeyPress } from '@base-ui-rn/core';
 import * as React from 'react';
+import type { StyleProp, ViewStyle } from 'react-native';
 import { Platform, View } from 'react-native';
 
 import type { CollapsibleTriggerProps } from './types';
@@ -18,37 +19,68 @@ import { useCollapsibleTrigger } from './use-collapsible';
  */
 export const CollapsibleTrigger = React.memo(
   React.forwardRef<View, CollapsibleTriggerProps>((props, ref) => {
-    const { children, style, ...otherProps } = props;
+    const {
+      'aria-busy': ariaBusy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-disabled': ariaDisabled,
+      'aria-expanded': ariaExpanded,
+      'aria-hidden': ariaHidden,
+      'aria-keyshortcuts': ariaKeyshortcuts,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      children,
+      style,
+      tabIndex,
+      ...otherProps
+    } = props;
 
     const {
       disabled,
       focused,
+      focusRingStyle,
       handleBlur,
       handleFocus,
       handleKeyDown,
       handlePress,
       open,
       state,
-    } = useCollapsibleTrigger(otherProps);
+      tabIndex: resolvedTabIndex,
+    } = useCollapsibleTrigger({ ...otherProps, tabIndex });
 
     const internalRef = React.useRef<View>(null);
     React.useImperativeHandle(ref, () => internalRef.current!, []);
 
-    const finalStyle = [
-      evaluateStyles(style, state),
-      Platform.select({
-        web: open || focused ? { zIndex: 1 } : undefined,
-      }),
-    ];
+    const finalStyle = React.useMemo<StyleProp<ViewStyle>>(() => {
+      const baseStyle = evaluateStyles(style, state);
+      const focusStyles: StyleProp<ViewStyle>[] = [baseStyle];
+      if (focusRingStyle) {
+        focusStyles.push(focusRingStyle);
+      }
+      if (Platform.OS === 'web' && (open || focused)) {
+        focusStyles.push({ zIndex: 1 });
+      }
+      return focusStyles;
+    }, [style, state, focusRingStyle, open, focused]);
 
     return (
       <PressableWithKeyPress
+        {...otherProps}
         accessibilityState={{
           disabled,
           expanded: open,
         }}
         accessible
-        aria-disabled={disabled ? true : undefined}
+        aria-busy={ariaBusy}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
+        aria-disabled={ariaDisabled ?? (disabled ? true : undefined)}
+        aria-expanded={ariaExpanded ?? open}
+        aria-hidden={ariaHidden}
+        aria-keyshortcuts={ariaKeyshortcuts}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
+        data-disabled={disabled ? 'true' : undefined}
         data-panel-open={open ? 'true' : undefined}
         disabled={disabled}
         onBlur={handleBlur}
@@ -58,6 +90,7 @@ export const CollapsibleTrigger = React.memo(
         ref={internalRef}
         role='button'
         style={finalStyle}
+        tabIndex={resolvedTabIndex}
       >
         {evaluateStyles(children, state)}
       </PressableWithKeyPress>

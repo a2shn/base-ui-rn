@@ -1,11 +1,9 @@
-import { mergeAccessibilityState } from '@base-ui-rn/core';
 import * as React from 'react';
 
 import type { MeterRootProps } from './types';
 
 export const useMeterRoot = (props: MeterRootProps) => {
   const {
-    accessibilityState,
     'aria-valuetext': ariaValueTextProp,
     format,
     getAriaValueText,
@@ -34,20 +32,10 @@ export const useMeterRoot = (props: MeterRootProps) => {
     return formattedValue;
   }, [ariaValueTextProp, getAriaValueText, value, min, max, formattedValue]);
 
-  const mergedAccessibilityState = React.useMemo(
-    () =>
-      mergeAccessibilityState(
-        accessibilityState as Record<string, unknown> | undefined,
-        false,
-      ),
-    [accessibilityState],
-  );
-
   return {
     ariaValueText,
     formattedValue,
     labelId,
-    mergedAccessibilityState,
     percentage,
   };
 };

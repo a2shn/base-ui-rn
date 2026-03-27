@@ -23,13 +23,15 @@ import type { ScrollAreaCornerProps } from './types';
 export const Corner = React.memo(
   React.forwardRef<View, ScrollAreaCornerProps>((props, ref) => {
     const {
+      'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-hidden': ariaHidden,
+      'aria-keyshortcuts': ariaKeyshortcuts,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       style,
-      ...other
+      ...otherProps
     } = props;
     const { state } = useScrollAreaContext();
 
@@ -40,22 +42,24 @@ export const Corner = React.memo(
     }
 
     const cornerDataAttrs = {
-      'data-has-overflow-x': state.hasOverflowX || undefined,
-      'data-has-overflow-y': state.hasOverflowY || undefined,
-      'data-overflow-x-end': state.overflowXEnd || undefined,
-      'data-overflow-x-start': state.overflowXStart || undefined,
-      'data-overflow-y-end': state.overflowYEnd || undefined,
-      'data-overflow-y-start': state.overflowYStart || undefined,
-      'data-scrolling': state.isScrolling || undefined,
+      'data-has-overflow-x': state.hasOverflowX ? 'true' : undefined,
+      'data-has-overflow-y': state.hasOverflowY ? 'true' : undefined,
+      'data-overflow-x-end': state.overflowXEnd ? 'true' : undefined,
+      'data-overflow-x-start': state.overflowXStart ? 'true' : undefined,
+      'data-overflow-y-end': state.overflowYEnd ? 'true' : undefined,
+      'data-overflow-y-start': state.overflowYStart ? 'true' : undefined,
+      'data-scrolling': state.isScrolling ? 'true' : undefined,
     };
 
     return (
       <View
-        {...other}
+        {...otherProps}
         {...cornerDataAttrs}
+        aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-hidden={ariaHidden}
+        aria-keyshortcuts={ariaKeyshortcuts}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
         focusable={false}

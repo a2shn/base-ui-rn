@@ -36,7 +36,6 @@ export const TabPanel = React.memo(
       'data-orientation': dataOrientation,
       keepMounted,
       style,
-      tabIndex,
       value,
       ...otherProps
     } = props;
@@ -74,7 +73,6 @@ export const TabPanel = React.memo(
         ref={ref}
         role='tabpanel'
         style={resolvedStyle}
-        tabIndex={tabIndex}
       >
         {resolvedChildren}
       </View>

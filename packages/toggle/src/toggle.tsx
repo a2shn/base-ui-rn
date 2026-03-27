@@ -26,17 +26,16 @@ import { useToggle } from './use-toggle';
 export const Toggle = React.memo(
   React.forwardRef<View, ToggleProps>(function Root(props, forwardedRef) {
     const {
-      accessibilityHint = 'Toggles the value',
-      accessibilityRole,
+      accessibilityHint: accessibilityHintProp,
+      accessibilityRole: accessibilityRoleProp,
       'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
+      'aria-expanded': ariaExpandedProp,
       'aria-hidden': ariaHidden,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       children,
-      disableDefaultFocusRing,
       hitSlop = DEFAULT_HIT_SLOP,
       role = 'checkbox',
       style,
@@ -94,10 +93,10 @@ export const Toggle = React.memo(
 
     const resolvedStyle = React.useMemo<StyleProp<ViewStyle>>(() => {
       const baseStyle = evaluateStyles(style, {
-        pressed: false,
+        disabled: isDisabled,
         focused,
         focusVisible,
-        disabled: isDisabled,
+        pressed: isPressed,
       });
       if (focusRingStyle) {
         return [baseStyle, focusRingStyle];
@@ -109,14 +108,14 @@ export const Toggle = React.memo(
       <PressableWithKeyPress
         {...otherProps}
         accessibilityActions={mergedAccessibilityActions}
-        accessibilityHint={accessibilityHint}
+        accessibilityHint={accessibilityHintProp}
         accessibilityState={mergedAccessibilityState}
         accessible
         aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-disabled={resolvedAriaDisabled}
-        aria-expanded={ariaExpanded}
+        aria-expanded={ariaExpandedProp}
         aria-hidden={ariaHidden}
         aria-keyshortcuts={resolvedAriaKeyshortcuts}
         aria-label={ariaLabel}
@@ -133,7 +132,7 @@ export const Toggle = React.memo(
         onKeyDown={handleKeyDown}
         onPress={handlePress}
         ref={internalRef}
-        role={(accessibilityRole ?? role) as Role}
+        role={(accessibilityRoleProp ?? role) as Role}
         style={resolvedStyle}
         tabIndex={resolvedTabIndex}
       >

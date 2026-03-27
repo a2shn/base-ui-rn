@@ -28,33 +28,34 @@ export const SwitchRoot = React.memo(
       'aria-hidden': ariaHidden,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
+      'aria-readonly': ariaReadOnlyProp,
       children,
-      disableDefaultFocusRing,
-      focusableWhenDisabled,
+      id,
       style,
       ...otherProps
     } = props;
 
     const {
       checked,
-      disabled,
+      disabled: isDisabled,
       focusRingStyle,
       handleBlur,
       handleFocus,
       handleKeyDown,
       handlePress,
-      readOnly,
+      readOnly: resolvedReadOnly,
       state,
+      tabIndex: resolvedTabIndex,
     } = useSwitchRoot(props);
 
     const contextValue = React.useMemo(
       () => ({
         checked,
-        disabled,
+        disabled: isDisabled,
         focused: state.focused,
-        readOnly,
+        readOnly: resolvedReadOnly,
       }),
-      [checked, disabled, readOnly, state.focused],
+      [checked, isDisabled, resolvedReadOnly, state.focused],
     );
 
     const resolvedStyle = React.useMemo<StyleProp<ViewStyle>>(() => {
@@ -71,21 +72,24 @@ export const SwitchRoot = React.memo(
           {...otherProps}
           accessibilityState={{
             checked,
-            disabled,
+            disabled: isDisabled,
           }}
           accessible
           aria-busy={ariaBusy}
           aria-checked={checked}
           aria-describedby={ariaDescribedBy}
           aria-details={ariaDetails}
-          aria-disabled={disabled}
+          aria-disabled={isDisabled}
           aria-hidden={ariaHidden}
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
-          aria-readonly={readOnly}
+          aria-readonly={ariaReadOnlyProp ?? resolvedReadOnly}
           data-checked={checked ? 'true' : undefined}
-          data-disabled={disabled ? 'true' : undefined}
-          disabled={disabled}
+          data-disabled={isDisabled ? 'true' : undefined}
+          data-readonly={resolvedReadOnly ? 'true' : undefined}
+          data-unchecked={!checked ? 'true' : undefined}
+          disabled={isDisabled}
+          nativeID={id}
           onBlur={handleBlur}
           onFocus={handleFocus}
           onKeyDown={handleKeyDown}
@@ -93,6 +97,7 @@ export const SwitchRoot = React.memo(
           ref={ref}
           role='switch'
           style={resolvedStyle}
+          tabIndex={resolvedTabIndex}
         >
           {evaluateStyles(children, state)}
         </PressableWithKeyPress>
@@ -101,4 +106,4 @@ export const SwitchRoot = React.memo(
   }),
 );
 
-SwitchRoot.displayName = 'SwitchRoot';
+SwitchRoot.displayName = 'Switch.Root';

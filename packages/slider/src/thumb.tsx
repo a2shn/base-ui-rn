@@ -3,7 +3,6 @@ import {
   type KeyPressEventData,
   mergeRefs,
   PressableWithKeyPress,
-  resolveTabIndex,
   useKeyboard,
 } from '@base-ui-rn/core';
 import { useFocusRing } from '@base-ui-rn/focus-ring';
@@ -71,7 +70,6 @@ export const SliderThumb = React.memo(
     const isDisabledBoolean = Boolean(isDisabled);
     const valueNow = state.value[index] ?? state.min;
     const isWeb = Platform.OS === 'web';
-    const resolvedTabIndex = resolveTabIndex(isDisabledBoolean, tabIndex);
 
     const innerRef = React.useRef<View>(null);
     const mergedRef = React.useMemo(() => mergeRefs(ref, innerRef), [ref]);
@@ -80,10 +78,13 @@ export const SliderThumb = React.memo(
       focused,
       focusRingStyle,
       onBlur: handleBlur,
+      onFocus: handleFocus,
+      tabIndex: resolvedTabIndex,
     } = useFocusRing({
       disabled: isDisabledBoolean,
       disableDefaultFocusRing,
       focusableWhenDisabled: focusableWhenDisabled ?? false,
+      tabIndex: tabIndex as 0 | -1 | undefined,
     });
 
     // Register thumb ref with control for PanResponder coordination
@@ -229,10 +230,11 @@ export const SliderThumb = React.memo(
 
     const handleFocusCallback = React.useCallback(
       (e: NativeSyntheticEvent<TargetedEvent>) => {
+        handleFocus();
         focusThumb(index);
         onFocus?.(e);
       },
-      [focusThumb, index, onFocus],
+      [handleFocus, focusThumb, index, onFocus],
     );
 
     const handleBlurCallback = React.useCallback(

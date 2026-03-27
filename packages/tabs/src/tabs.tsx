@@ -41,7 +41,6 @@ export const TabsRoot = React.memo(
       onValueChange,
       orientation,
       style,
-      tabIndex,
       value,
       ...otherProps
     } = props;
@@ -77,7 +76,6 @@ export const TabsRoot = React.memo(
           data-orientation={dataOrientation ?? state.orientation}
           ref={ref}
           style={resolvedStyle}
-          tabIndex={tabIndex}
         >
           {resolvedChildren}
         </View>

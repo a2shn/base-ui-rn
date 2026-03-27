@@ -6,22 +6,31 @@ import { Slider } from '../index';
 describe('Slider rendering', () => {
   it('renders root and all basic parts', () => {
     const { getAllByRole, getByTestId, getByText } = render(
-      <Slider.Root defaultValue={25}>
+      <Slider.Root defaultValue={25} testID='root'>
         <Slider.Label>Volume</Slider.Label>
         <Slider.Value />
         <Slider.Control>
           <Slider.Track>
             <Slider.Indicator testID='indicator' />
-            <Slider.Thumb aria-label='Volume thumb' />
+            <Slider.Thumb aria-label='Volume thumb' testID='thumb' />
           </Slider.Track>
         </Slider.Control>
       </Slider.Root>,
     );
 
-    expect(getAllByRole('adjustable')).toHaveLength(2); // One for Root, one for Thumb
+    const root = getByTestId('root');
+    const thumb = getByTestId('thumb', { includeHiddenElements: true });
+
+    expect(root.props.role).toBe('adjustable');
+    expect(thumb.props.role).toBe('adjustable');
+    expect(
+      getAllByRole('adjustable', { includeHiddenElements: true }),
+    ).toHaveLength(2);
     expect(getByText('Volume')).toBeTruthy();
     expect(getByText('25')).toBeTruthy();
-    expect(getByTestId('indicator')).toBeTruthy();
+    expect(
+      getByTestId('indicator', { includeHiddenElements: true }),
+    ).toBeTruthy();
   });
 
   it('renders Slider.Value with multiple thumbs', () => {

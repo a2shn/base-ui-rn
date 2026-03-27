@@ -1,6 +1,5 @@
 import {
   type ARIABaseProps,
-  type ARIAFocusProps,
   type ARIALiveProps,
   type ARIATraitDisabled,
   type ARIATraitExpanded,
@@ -26,7 +25,6 @@ export type ButtonPressedChangeDetails = PressedChangeDetails;
  * Web-specific accessibility props for Button.
  */
 export type WebButtonAccessibilityProps = ARIABaseProps &
-  ARIAFocusProps &
   ARIALiveProps &
   ARIATraitDisabled &
   ARIATraitExpanded;

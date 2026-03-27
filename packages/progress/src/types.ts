@@ -1,6 +1,5 @@
 import {
   type ARIABaseProps,
-  type ARIAFocusProps,
   type ARIALiveProps,
   ARIATraitRange,
 } from '@base-ui-rn/core';
@@ -17,7 +16,6 @@ import type {
  * Web-specific accessibility props for the Progress component.
  */
 export type WebProgressAccessibilityProps = ARIABaseProps &
-  ARIAFocusProps &
   ARIALiveProps &
   ARIATraitRange & {
     /**

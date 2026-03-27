@@ -7,127 +7,87 @@ import {
 } from '@base-ui-rn/playbook';
 import { Switch } from '@base-ui-rn/switch';
 import * as React from 'react';
-import { Animated, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 export function SwitchPlaybook() {
-  const { darkMode } = usePlaybookToggles({
-    darkMode: false,
+  const { checked } = usePlaybookToggles({
+    checked: false,
   });
 
   return (
     <Gallery title='Switch'>
-      <Section title='Uncontrolled'>
-        <View style={styles.row}>
-          <Switch.Root defaultChecked style={styles.rootBase}>
-            <AnimatedThumb />
-          </Switch.Root>
-          <Text style={styles.label}>Notifications</Text>
-        </View>
-      </Section>
-
-      <Section title='Controlled'>
+      <Section title='Standard Demo'>
         <View style={styles.row}>
           <Switch.Root
-            checked={darkMode.value as boolean}
-            onCheckedChange={darkMode.setValue}
-            style={styles.rootBase}
+            checked={checked.value as boolean}
+            onCheckedChange={checked.setValue}
+            style={getSwitchStyle}
           >
-            <AnimatedThumb />
+            <Switch.Thumb style={getThumbStyle} />
           </Switch.Root>
-          <Text style={styles.label}>Dark Mode</Text>
+          <Text style={styles.label}>Toggle Me</Text>
         </View>
-        <LiveConsole state={darkMode} title='darkMode' />
+        <LiveConsole state={checked} title='checked' />
       </Section>
 
       <Section title='Disabled'>
         <View style={styles.row}>
-          <Switch.Root disabled style={[styles.rootBase, styles.rootDisabled]}>
-            <AnimatedThumb />
+          <Switch.Root disabled style={getSwitchStyle}>
+            <Switch.Thumb style={getThumbStyle} />
           </Switch.Root>
           <Text style={styles.label}>Disabled Off</Text>
         </View>
         <View style={styles.row}>
-          <Switch.Root
-            checked
-            disabled
-            style={[styles.rootBase, styles.rootDisabled]}
-          >
-            <AnimatedThumb />
+          <Switch.Root checked disabled style={getSwitchStyle}>
+            <Switch.Thumb style={getThumbStyle} />
           </Switch.Root>
           <Text style={styles.label}>Disabled On</Text>
+        </View>
+      </Section>
+
+      <Section title='Read Only'>
+        <View style={styles.row}>
+          <Switch.Root readOnly style={getSwitchStyle}>
+            <Switch.Thumb style={getThumbStyle} />
+          </Switch.Root>
+          <Text style={styles.label}>Read Only Off</Text>
+        </View>
+        <View style={styles.row}>
+          <Switch.Root checked readOnly style={getSwitchStyle}>
+            <Switch.Thumb style={getThumbStyle} />
+          </Switch.Root>
+          <Text style={styles.label}>Read Only On</Text>
         </View>
       </Section>
     </Gallery>
   );
 }
 
-// A simple wrapper to animate the thumb based on the Switch context
-function AnimatedThumb() {
-  const position = React.useRef(new Animated.Value(0)).current;
+function getSwitchStyle(state: {
+  checked: boolean;
+  disabled: boolean;
+  focused: boolean;
+}) {
+  return [
+    styles.switchBase,
+    state.checked ? styles.switchChecked : styles.switchUnchecked,
 
-  return (
-    <Switch.Thumb style={StyleSheet.absoluteFill}>
-      {(state) => {
-        // Animate whenever the checked state changes
-        React.useEffect(() => {
-          Animated.spring(position, {
-            bounciness: 12,
-            speed: 20,
-            toValue: state.checked ? 20 : 0,
-            useNativeDriver: false,
-          }).start();
-        }, [state.checked]);
+    state.disabled && styles.switchDisabled,
+  ];
+}
 
-        return (
-          <View
-            style={[
-              StyleSheet.absoluteFill,
-              styles.rootBackground,
-              state.checked ? styles.rootChecked : styles.rootUnchecked,
-              state.focusVisible && styles.rootFocused,
-            ]}
-          >
-            <Animated.View
-              style={[
-                styles.thumb,
-                { transform: [{ translateX: position }] },
-                state.disabled && styles.thumbDisabled,
-              ]}
-            />
-          </View>
-        );
-      }}
-    </Switch.Thumb>
-  );
+function getThumbStyle(state: { checked: boolean; disabled: boolean }) {
+  return [
+    styles.thumbBase,
+    state.checked ? styles.thumbChecked : styles.thumbUnchecked,
+    state.disabled && styles.thumbDisabled,
+  ];
 }
 
 const styles = StyleSheet.create({
   label: {
     color: theme.colors.textPrimary,
     fontSize: theme.font.size.md,
-  },
-  rootBackground: {
-    borderColor: 'transparent',
-    borderRadius: 12,
-    borderWidth: 2,
-    justifyContent: 'center',
-    padding: 2,
-  },
-  rootBase: {
-    height: 24,
-    width: 44,
-  },
-  rootChecked: {
-    backgroundColor: '#0A7EA4', // A nice blue
-  },
-  rootDisabled: {
-    opacity: 0.5,
-  },
-  rootFocused: {
-    borderColor: '#0A7EA4',
-  },
-  rootUnchecked: {
-    backgroundColor: theme.colors.border,
   },
   row: {
     alignItems: 'center',
@@ -136,18 +96,38 @@ const styles = StyleSheet.create({
     gap: theme.spacing.md,
     marginBottom: theme.spacing.md,
   },
-  thumb: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    elevation: 2,
-    height: 16,
+  switchBase: {
+    borderRadius: 9999,
+    height: 24,
+    padding: 2,
+    width: 44,
+  },
+  switchChecked: {
+    backgroundColor: theme.colors.textPrimary,
+  },
+  switchDisabled: {
+    opacity: 0.5,
+  },
+  switchUnchecked: {
+    backgroundColor: theme.colors.border,
+  },
+  thumbBase: {
+    aspectRatio: 1,
+    backgroundColor: theme.colors.bgCanvas,
+    borderRadius: 9999,
+    height: '100%',
     shadowColor: '#000',
-    shadowOffset: { height: 2, width: 0 },
+    shadowOffset: { height: 1, width: 0 },
     shadowOpacity: 0.2,
-    shadowRadius: 2,
-    width: 16,
+    shadowRadius: 1.5,
+  },
+  thumbChecked: {
+    alignSelf: 'flex-end',
   },
   thumbDisabled: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: theme.colors.borderLight,
+  },
+  thumbUnchecked: {
+    alignSelf: 'flex-start',
   },
 });

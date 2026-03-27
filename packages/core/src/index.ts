@@ -7,11 +7,11 @@ export type {
   ARIATraitExpanded,
   ARIATraitOrientation,
   ARIATraitRange,
-  KeyPressEventData,
-  PressedChangeDetails,
   KeyboardDirection,
   KeyboardNavigationOptions,
   KeyboardOptions,
+  KeyPressEventData,
+  PressedChangeDetails,
 } from './types';
 
 export {

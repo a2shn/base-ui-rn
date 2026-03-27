@@ -20,17 +20,22 @@ import { useCollapsiblePanel } from './use-collapsible';
  */
 export const CollapsiblePanel = React.memo(
   React.forwardRef<View, CollapsiblePanelProps>((props, ref) => {
-    const { children, style, ...otherProps } = props;
-
     const {
-      disabled,
-      handleBlur,
-      handleFocus,
-      onLayout,
-      open,
-      shouldRender,
-      state,
-    } = useCollapsiblePanel(props);
+      'aria-busy': ariaBusy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-disabled': ariaDisabled,
+      'aria-hidden': ariaHidden,
+      'aria-keyshortcuts': ariaKeyshortcuts,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      children,
+      style,
+      ...otherProps
+    } = props;
+
+    const { disabled, onLayout, open, shouldRender, state } =
+      useCollapsiblePanel(props);
 
     if (!shouldRender) {
       return null;
@@ -39,11 +44,17 @@ export const CollapsiblePanel = React.memo(
     return (
       <View
         {...otherProps}
+        aria-busy={ariaBusy}
+        aria-describedby={ariaDescribedBy}
+        aria-details={ariaDetails}
+        aria-disabled={ariaDisabled ?? (disabled ? true : undefined)}
+        aria-hidden={ariaHidden ?? (!open ? true : undefined)}
+        aria-keyshortcuts={ariaKeyshortcuts}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
         data-closed={!open ? 'true' : undefined}
         data-disabled={disabled ? 'true' : undefined}
         data-open={open ? 'true' : undefined}
-        onBlur={handleBlur}
-        onFocus={handleFocus}
         onLayout={onLayout}
         ref={ref}
         style={evaluateStyles(style, state)}

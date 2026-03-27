@@ -50,7 +50,10 @@ export interface ToggleState extends FocusRingState {
 
 export interface ToggleProps
   extends
-    Omit<PressableProps, 'role' | 'children' | 'style' | 'aria-pressed'>,
+    Omit<
+      PressableProps,
+      'role' | 'children' | 'style' | 'aria-pressed' | 'tabIndex'
+    >,
     WebToggleAccessibilityProps {
   /**
    * The content of the toggle.

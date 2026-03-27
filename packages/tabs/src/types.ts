@@ -1,6 +1,5 @@
 import {
   type ARIABaseProps,
-  type ARIAFocusProps,
   type ARIALiveProps,
   type ARIATraitDisabled,
   type ARIATraitExpanded,
@@ -22,7 +21,6 @@ import type {
  * Web-specific accessibility props for Tabs Root.
  */
 export type WebTabsRootAccessibilityProps = ARIABaseProps &
-  ARIAFocusProps &
   ARIALiveProps &
   ARIATraitDisabled &
   ARIATraitOrientation & {
@@ -34,13 +32,16 @@ export type WebTabsRootAccessibilityProps = ARIABaseProps &
      * Indicates the direction of the activation.
      */
     'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
+    /**
+     * Defines a keyboard shortcut that activates or focuses the element.
+     */
+    'aria-keyshortcuts'?: string;
   };
 
 /**
  * Web-specific accessibility props for Tabs List.
  */
 export type WebTabsListAccessibilityProps = ARIABaseProps &
-  ARIAFocusProps &
   ARIALiveProps &
   ARIATraitDisabled &
   ARIATraitOrientation & {
@@ -52,13 +53,16 @@ export type WebTabsListAccessibilityProps = ARIABaseProps &
      * Indicates the direction of the activation.
      */
     'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
+    /**
+     * Defines a keyboard shortcut that activates or focuses the element.
+     */
+    'aria-keyshortcuts'?: string;
   };
 
 /**
  * Web-specific accessibility props for Tabs Tab.
  */
 export type WebTabsTabAccessibilityProps = ARIABaseProps &
-  ARIAFocusProps &
   ARIALiveProps &
   ARIATraitDisabled &
   ARIATraitExpanded &
@@ -79,6 +83,10 @@ export type WebTabsTabAccessibilityProps = ARIABaseProps &
      * Indicates the direction of the activation.
      */
     'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
+    /**
+     * Defines a keyboard shortcut that activates or focuses the element.
+     */
+    'aria-keyshortcuts'?: string;
   };
 
 /**
@@ -96,10 +104,13 @@ export type WebTabsIndicatorAccessibilityProps = ARIABaseProps &
      * Indicates the direction of the activation.
      */
     'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
+    /**
+     * Defines a keyboard shortcut that activates or focuses the element.
+     */
+    'aria-keyshortcuts'?: string;
   };
 // ...
 export type WebTabsPanelAccessibilityProps = ARIABaseProps &
-  ARIAFocusProps &
   ARIALiveProps &
   ARIATraitDisabled &
   ARIATraitExpanded &
@@ -120,13 +131,17 @@ export type WebTabsPanelAccessibilityProps = ARIABaseProps &
      * The index of the tab panel.
      */
     'data-index'?: number;
+    /**
+     * Defines a keyboard shortcut that activates or focuses the element.
+     */
+    'aria-keyshortcuts'?: string;
   };
 
 export type TabValue = string | number;
 export type Orientation = 'horizontal' | 'vertical';
 export type ActivationDirection = 'left' | 'right' | 'up' | 'down' | 'none';
 
-export interface TabsRootState extends FocusRingState {
+export interface TabsRootState {
   value: TabValue | null;
   orientation: Orientation;
   activationDirection: ActivationDirection;
@@ -183,7 +198,7 @@ export interface TabsRootProps
   onFocusChange?: (value: string) => void;
 }
 
-export interface TabsListState extends FocusRingState {
+export interface TabsListState {
   orientation: Orientation;
   activationDirection: ActivationDirection;
 }
@@ -265,7 +280,7 @@ export interface TabProps
   onBlur?: (e: NativeSyntheticEvent<TargetedEvent>) => void;
 }
 
-export interface TabsIndicatorState extends FocusRingState {
+export interface TabsIndicatorState {
   orientation: Orientation;
   activationDirection: ActivationDirection;
   tab: {
@@ -302,7 +317,7 @@ export interface TabsIndicatorProps
     | ((state: TabsIndicatorState) => StyleProp<ViewStyle>);
 }
 
-export interface TabPanelState extends FocusRingState {
+export interface TabPanelState {
   hidden: boolean;
   orientation: Orientation;
   activationDirection: ActivationDirection;

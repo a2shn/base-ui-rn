@@ -2,17 +2,20 @@ import { fireEvent, render } from '@testing-library/react-native';
 import * as React from 'react';
 import { Pressable, View } from 'react-native';
 
-import { useFocus } from '../use-focus';
+import { useFocusRing } from '../use-focus';
 
-describe('useFocus: Focusing', () => {
+describe('useFocusRing: Focusing', () => {
   it('tracks focused state', () => {
     function TestComponent() {
       const {
         focused,
-        focusVisible,
         onBlur: handleBlur,
         onFocus: handleFocus,
-      } = useFocus({ focusVisible: false });
+      } = useFocusRing({
+        disabled: false,
+        disableDefaultFocusRing: false,
+        focusableWhenDisabled: false,
+      });
 
       return (
         <View>
@@ -24,9 +27,7 @@ describe('useFocus: Focusing', () => {
           >
             Focusable
           </Pressable>
-          <View testID='state'>
-            {JSON.stringify({ focused, focusVisible })}
-          </View>
+          <View testID='state'>{JSON.stringify({ focused })}</View>
         </View>
       );
     }
@@ -34,95 +35,59 @@ describe('useFocus: Focusing', () => {
     const { getByTestId } = render(<TestComponent />);
 
     expect(getByTestId('state').children).toContain(
-      JSON.stringify({ focused: false, focusVisible: false }),
+      JSON.stringify({ focused: false }),
     );
 
     fireEvent(getByTestId('focusable'), 'focus');
 
     expect(getByTestId('state').children).toContain(
-      JSON.stringify({ focused: true, focusVisible: true }),
+      JSON.stringify({ focused: true }),
     );
 
     fireEvent(getByTestId('focusable'), 'blur');
 
     expect(getByTestId('state').children).toContain(
-      JSON.stringify({ focused: false, focusVisible: false }),
+      JSON.stringify({ focused: false }),
     );
   });
 
-  it('respects forceFocusVisible prop', () => {
+  it('respects disableDefaultFocusRing prop', () => {
     function TestComponent() {
-      const { focused, focusVisible } = useFocus({ focusVisible: true });
+      const { focusRingStyle, onFocus } = useFocusRing({
+        disabled: false,
+        disableDefaultFocusRing: true,
+        focusableWhenDisabled: false,
+      });
 
-      return (
-        <View testID='state'>{JSON.stringify({ focused, focusVisible })}</View>
-      );
+      React.useEffect(() => {
+        onFocus();
+      }, [onFocus]);
+
+      return <View testID='ring'>{JSON.stringify({ focusRingStyle })}</View>;
     }
 
     const { getByTestId } = render(<TestComponent />);
 
-    expect(getByTestId('state').children).toContain(
-      JSON.stringify({ focused: false, focusVisible: true }),
-    );
-  });
-
-  it('merges forceFocusVisible with actual focusVisible', () => {
-    function TestComponent() {
-      const {
-        focused,
-        focusVisible,
-        onBlur: handleBlur,
-        onFocus: handleFocus,
-      } = useFocus({ focusVisible: true });
-
-      return (
-        <View>
-          <Pressable
-            accessibilityRole='button'
-            onBlur={handleBlur}
-            onFocus={handleFocus}
-            testID='focusable'
-          >
-            Focusable
-          </Pressable>
-          <View testID='state'>
-            {JSON.stringify({ focused, focusVisible })}
-          </View>
-        </View>
-      );
-    }
-
-    const { getByTestId } = render(<TestComponent />);
-
-    expect(getByTestId('state').children).toContain(
-      JSON.stringify({ focused: false, focusVisible: true }),
-    );
-
-    fireEvent(getByTestId('focusable'), 'focus');
-
-    expect(getByTestId('state').children).toContain(
-      JSON.stringify({ focused: true, focusVisible: true }),
-    );
-
-    fireEvent(getByTestId('focusable'), 'blur');
-
-    expect(getByTestId('state').children).toContain(
-      JSON.stringify({ focused: false, focusVisible: true }),
+    expect(getByTestId('ring').children).toContain(
+      JSON.stringify({ focusRingStyle: null }),
     );
   });
 });
 
-describe('useFocus: Return Value', () => {
+describe('useFocusRing: Return Value', () => {
   it('returns correct types', () => {
     function TestComponent() {
-      const { focused, focusVisible, onBlur, onFocus } = useFocus({
-        focusVisible: false,
+      const { focused, focusRingStyle, onBlur, onFocus } = useFocusRing({
+        disabled: false,
+        disableDefaultFocusRing: false,
+        focusableWhenDisabled: false,
       });
 
       expect(typeof focused).toBe('boolean');
-      expect(typeof focusVisible).toBe('boolean');
       expect(typeof onFocus).toBe('function');
       expect(typeof onBlur).toBe('function');
+      // focusRingStyle is null until focused
+      expect(focusRingStyle).toBeNull();
 
       return null;
     }

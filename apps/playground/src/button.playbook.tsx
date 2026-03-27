@@ -82,14 +82,11 @@ export function ButtonPlaybook() {
           onPress={() => {}}
           style={styles.buttonBase}
         >
-          {({ focusVisible }) => (
+          {({ focused }) => (
             <Text
-              style={[
-                styles.textSecondary,
-                focusVisible && styles.textWhiteBold,
-              ]}
+              style={[styles.textSecondary, focused && styles.textWhiteBold]}
             >
-              {focusVisible ? 'Keyboard Focused' : 'Custom focus logic'}
+              {focused ? 'Keyboard Focused' : 'Custom focus logic'}
             </Text>
           )}
         </Button>

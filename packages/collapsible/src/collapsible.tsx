@@ -22,7 +22,18 @@ import { useCollapsibleRoot } from './use-collapsible';
  */
 export const CollapsibleRoot = React.memo(
   React.forwardRef<View, CollapsibleRootProps>((props, ref) => {
-    const { children, style, ...otherProps } = props;
+    const {
+      'aria-busy': ariaBusy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-disabled': ariaDisabled,
+      'aria-hidden': ariaHidden,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      children,
+      style,
+      ...otherProps
+    } = props;
 
     const { baseId, disabled, open, state, toggle } =
       useCollapsibleRoot(otherProps);
@@ -38,13 +49,24 @@ export const CollapsibleRoot = React.memo(
     );
 
     return (
-      <React.Fragment>
-        <CollapsibleContext.Provider value={contextValue}>
-          <View ref={ref} style={evaluateStyles(style, state)}>
-            {evaluateStyles(children, state)}
-          </View>
-        </CollapsibleContext.Provider>
-      </React.Fragment>
+      <CollapsibleContext.Provider value={contextValue}>
+        <View
+          {...otherProps}
+          aria-busy={ariaBusy}
+          aria-describedby={ariaDescribedBy}
+          aria-details={ariaDetails}
+          aria-disabled={ariaDisabled ?? (disabled ? true : undefined)}
+          aria-hidden={ariaHidden}
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledBy}
+          data-disabled={disabled ? 'true' : undefined}
+          data-open={open ? 'true' : undefined}
+          ref={ref}
+          style={evaluateStyles(style, state)}
+        >
+          {evaluateStyles(children, state)}
+        </View>
+      </CollapsibleContext.Provider>
     );
   }),
 );

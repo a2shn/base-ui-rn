@@ -27,7 +27,6 @@ export const TabsIndicator = React.memo(
       'data-activation-direction': dataActivationDirection,
       'data-orientation': dataOrientation,
       style,
-      tabIndex,
       ...otherProps
     } = props;
 
@@ -53,7 +52,6 @@ export const TabsIndicator = React.memo(
         importantForAccessibility='no-hide-descendants'
         ref={ref}
         style={resolvedStyle}
-        tabIndex={tabIndex}
       >
         {resolvedChildren}
       </View>

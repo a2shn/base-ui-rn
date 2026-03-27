@@ -25,8 +25,8 @@ import { useButton } from './use-button';
 export const Button = React.memo(
   React.forwardRef<View, ButtonProps>(function Root(props, forwardedRef) {
     const {
-      accessibilityHint = 'Activates the button',
-      accessibilityRole,
+      accessibilityHint: accessibilityHintProp,
+      accessibilityRole: accessibilityRoleProp,
       'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
@@ -35,8 +35,6 @@ export const Button = React.memo(
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       children,
-      focusableWhenDisabled = false,
-      disableDefaultFocusRing = false,
       hitSlop = DEFAULT_HIT_SLOP,
       style,
       ...otherProps
@@ -73,7 +71,7 @@ export const Button = React.memo(
       <PressableWithKeyPress
         {...otherProps}
         accessibilityActions={mergedAccessibilityActions}
-        accessibilityHint={accessibilityHint}
+        accessibilityHint={accessibilityHintProp}
         accessibilityState={mergedAccessibilityState}
         accessible
         aria-busy={ariaBusy}
@@ -94,7 +92,7 @@ export const Button = React.memo(
         onKeyDown={handleKeyDown}
         onPress={handlePress}
         ref={internalRef}
-        role={(accessibilityRole ?? 'button') as Role}
+        role={(accessibilityRoleProp ?? 'button') as Role}
         style={resolvedStyle}
         tabIndex={resolvedTabIndex}
       >

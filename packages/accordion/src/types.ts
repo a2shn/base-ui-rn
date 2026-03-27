@@ -1,6 +1,5 @@
 import {
   type ARIABaseProps,
-  type ARIAFocusProps,
   type ARIALiveProps,
   type ARIATraitDisabled,
   type ARIATraitExpanded,
@@ -21,7 +20,6 @@ import type {
  * Web-specific accessibility props for Accordion Root.
  */
 export type WebAccordionRootAccessibilityProps = ARIABaseProps &
-  ARIAFocusProps &
   ARIALiveProps &
   ARIATraitDisabled &
   ARIATraitOrientation & {
@@ -33,13 +31,16 @@ export type WebAccordionRootAccessibilityProps = ARIABaseProps &
      * Present when the accordion is disabled.
      */
     'data-disabled'?: 'true';
+    /**
+     * Defines a keyboard shortcut that activates or focuses the element.
+     */
+    'aria-keyshortcuts'?: string;
   };
 
 /**
  * Web-specific accessibility props for Accordion Item.
  */
 export type WebAccordionItemAccessibilityProps = ARIABaseProps &
-  ARIAFocusProps &
   ARIALiveProps &
   ARIATraitDisabled & {
     /**
@@ -54,13 +55,16 @@ export type WebAccordionItemAccessibilityProps = ARIABaseProps &
      * The index of the accordion item.
      */
     'data-index'?: number;
+    /**
+     * Defines a keyboard shortcut that activates or focuses the element.
+     */
+    'aria-keyshortcuts'?: string;
   };
 
 /**
  * Web-specific accessibility props for Accordion Trigger.
  */
 export type WebAccordionTriggerAccessibilityProps = ARIABaseProps &
-  ARIAFocusProps &
   ARIALiveProps &
   ARIATraitDisabled &
   ARIATraitExpanded & {
@@ -72,13 +76,16 @@ export type WebAccordionTriggerAccessibilityProps = ARIABaseProps &
      * Present when the trigger is disabled.
      */
     'data-disabled'?: 'true';
+    /**
+     * Defines a keyboard shortcut that activates or focuses the element.
+     */
+    'aria-keyshortcuts'?: string;
   };
 
 /**
  * Web-specific accessibility props for Accordion Panel.
  */
 export type WebAccordionPanelAccessibilityProps = ARIABaseProps &
-  ARIAFocusProps &
   ARIALiveProps &
   ARIATraitDisabled &
   ARIATraitOrientation & {
@@ -106,13 +113,17 @@ export type WebAccordionPanelAccessibilityProps = ARIABaseProps &
      * Present when the panel is animating out.
      */
     'data-ending-style'?: '';
+    /**
+     * Defines a keyboard shortcut that activates or focuses the element.
+     */
+    'aria-keyshortcuts'?: string;
   };
 
 export type Orientation = 'vertical' | 'horizontal';
 
 export type { CoreKeyPressEventData as KeyPressEventData };
 
-export interface AccordionRootState extends FocusRingState {
+export interface AccordionRootState {
   open: boolean;
   value: string | string[];
   orientation: Orientation;
@@ -120,14 +131,14 @@ export interface AccordionRootState extends FocusRingState {
   multiple: boolean;
 }
 
-export interface AccordionItemState extends FocusRingState {
+export interface AccordionItemState {
   open: boolean;
   disabled: boolean;
   index: number;
   value: string;
 }
 
-export interface AccordionHeaderState extends FocusRingState {
+export interface AccordionHeaderState {
   open: boolean;
   disabled: boolean;
   index: number;
@@ -138,7 +149,7 @@ export interface AccordionTriggerState extends FocusRingState {
   disabled: boolean;
 }
 
-export interface AccordionPanelState extends FocusRingState {
+export interface AccordionPanelState {
   open: boolean;
   disabled: boolean;
   index: number;

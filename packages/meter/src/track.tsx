@@ -21,18 +21,20 @@ export const MeterTrack = React.memo(
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
       'aria-hidden': ariaHidden,
+      'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       children,
-      ...other
+      ...otherProps
     } = props;
     return (
       <View
-        {...other}
+        {...otherProps}
         aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-expanded={ariaExpanded}
         aria-hidden={ariaHidden ?? true}
+        aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
         importantForAccessibility='no-hide-descendants'
         ref={ref}

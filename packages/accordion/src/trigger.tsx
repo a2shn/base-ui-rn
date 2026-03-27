@@ -26,10 +26,10 @@ export const AccordionTrigger = React.memo(
       'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
-      'aria-disabled': ariaDisabled,
+      'aria-disabled': ariaDisabledProp,
       'aria-expanded': ariaExpanded,
       'aria-hidden': ariaHidden,
-      'aria-keyshortcuts': ariaKeyshortcuts,
+      'aria-keyshortcuts': ariaKeyshortcutsProp,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       children,
@@ -37,7 +37,6 @@ export const AccordionTrigger = React.memo(
       'data-panel-open': dataPanelOpen,
       focusableWhenDisabled,
       style,
-      tabIndex,
       ...otherProps
     } = props;
 
@@ -51,6 +50,7 @@ export const AccordionTrigger = React.memo(
       handlePress,
       open,
       state,
+      tabIndex: resolvedTabIndex,
     } = useAccordionTrigger({
       ...props,
       focusableWhenDisabled,
@@ -70,11 +70,9 @@ export const AccordionTrigger = React.memo(
       if (focusRingStyle) {
         focusStyles.push(focusRingStyle);
       }
-      focusStyles.push(
-        Platform.select({
-          web: open || focused ? { zIndex: 1 } : undefined,
-        }),
-      );
+      if (Platform.OS === 'web' && (open || focused)) {
+        focusStyles.push({ zIndex: 1 });
+      }
       return focusStyles;
     }, [style, state, focusRingStyle, open, focused]);
 
@@ -89,10 +87,10 @@ export const AccordionTrigger = React.memo(
         aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
-        aria-disabled={ariaDisabled ?? (disabled ? true : undefined)}
+        aria-disabled={ariaDisabledProp ?? (disabled ? true : undefined)}
         aria-expanded={ariaExpanded ?? open}
         aria-hidden={ariaHidden}
-        aria-keyshortcuts={ariaKeyshortcuts}
+        aria-keyshortcuts={ariaKeyshortcutsProp}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
         data-disabled={dataDisabled ?? (disabled ? 'true' : undefined)}
@@ -105,7 +103,7 @@ export const AccordionTrigger = React.memo(
         ref={internalRef}
         role='button'
         style={finalStyle}
-        tabIndex={tabIndex}
+        tabIndex={resolvedTabIndex}
       >
         {evaluateStyles(children, state)}
       </PressableWithKeyPress>

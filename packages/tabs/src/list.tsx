@@ -34,7 +34,6 @@ export const TabsList = React.memo(
       'data-activation-direction': dataActivationDirection,
       'data-orientation': dataOrientation,
       style,
-      tabIndex,
       ...otherProps
     } = props;
 
@@ -62,7 +61,6 @@ export const TabsList = React.memo(
         ref={ref}
         role='tablist'
         style={resolvedStyle}
-        tabIndex={tabIndex}
       >
         {resolvedChildren}
       </View>

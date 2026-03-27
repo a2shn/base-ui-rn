@@ -1,4 +1,3 @@
-import { resolveTabIndex } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -23,33 +22,28 @@ import { useMeterRoot } from './use-meter-root';
 export const MeterRoot = React.memo(
   React.forwardRef<View, MeterRootProps>((props, ref) => {
     const {
-      accessibilityHint = 'Displays a value within a range',
-      accessibilityLabel,
-      accessibilityRole = 'progressbar',
+      accessibilityHint,
+      accessibilityLabel: accessibilityLabelProp,
       accessible = true,
       'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
       'aria-hidden': ariaHidden,
+      'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
+      'aria-valuetext': ariaValueTextProp,
       children,
-      focusable = false,
-      importantForAccessibility = 'yes',
       max = 100,
       min = 0,
-      tabIndex,
       value,
       ...otherViewProps
     } = props;
 
-    const {
-      ariaValueText,
-      formattedValue,
-      labelId,
-      mergedAccessibilityState,
-      percentage,
-    } = useMeterRoot(props);
+    const hasCustomLabel = !!(ariaLabel || accessibilityLabelProp);
+
+    const { ariaValueText, formattedValue, labelId, percentage } =
+      useMeterRoot(props);
 
     const contextValue = React.useMemo(
       () => ({
@@ -64,25 +58,28 @@ export const MeterRoot = React.memo(
       [value, min, max, percentage, formattedValue, ariaValueText, labelId],
     );
 
-    const resolvedTabIndex = resolveTabIndex(false, tabIndex);
-    const isLabelledByProp = Boolean(accessibilityLabel);
+    const resolvedAriaLabelledBy = hasCustomLabel
+      ? undefined
+      : (ariaLabelledBy ?? labelId);
 
     return (
       <MeterContext.Provider value={contextValue}>
         <View
           {...otherViewProps}
           accessibilityHint={accessibilityHint}
-          accessibilityLabel={accessibilityLabel}
-          accessibilityLabelledBy={isLabelledByProp ? undefined : [labelId]}
-          accessibilityState={mergedAccessibilityState}
+          accessibilityLabel={accessibilityLabelProp}
+          accessibilityLabelledBy={
+            hasCustomLabel
+              ? undefined
+              : resolvedAriaLabelledBy
+                ? [resolvedAriaLabelledBy]
+                : undefined
+          }
+          accessibilityState={{ disabled: false }}
           accessibilityValue={
-            ariaValueText
-              ? { text: ariaValueText }
-              : {
-                  max,
-                  min,
-                  now: value,
-                }
+            (ariaValueText ?? ariaValueTextProp)
+              ? { text: ariaValueText ?? ariaValueTextProp }
+              : { max, min, now: value }
           }
           accessible={accessible}
           aria-busy={ariaBusy}
@@ -90,18 +87,16 @@ export const MeterRoot = React.memo(
           aria-details={ariaDetails}
           aria-expanded={ariaExpanded}
           aria-hidden={ariaHidden}
-          aria-labelledby={
-            ariaLabelledBy ?? (isLabelledByProp ? undefined : labelId)
-          }
+          aria-label={ariaLabel}
+          aria-labelledby={hasCustomLabel ? undefined : resolvedAriaLabelledBy}
           aria-valuemax={max}
           aria-valuemin={min}
           aria-valuenow={value}
-          aria-valuetext={ariaValueText}
-          focusable={focusable}
-          importantForAccessibility={importantForAccessibility}
+          aria-valuetext={ariaValueText ?? ariaValueTextProp}
+          focusable={false}
+          importantForAccessibility='yes'
           ref={ref}
-          role={(accessibilityRole ?? 'progressbar') as unknown as 'checkbox'}
-          tabIndex={resolvedTabIndex}
+          role='progressbar'
         >
           {children}
         </View>

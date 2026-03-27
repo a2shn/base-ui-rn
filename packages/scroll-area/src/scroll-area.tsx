@@ -69,6 +69,7 @@ export const Root = React.memo(
       contentHeight,
       contentWidth,
       focusRingStyle: hookFocusRingStyle,
+      isFocusable,
       keyboardPageStep: currentPageStep,
       keyboardStep: currentStep,
       onBlur: handleBlur,
@@ -76,6 +77,7 @@ export const Root = React.memo(
       rawScrollX,
       rawScrollY,
       state,
+      tabIndex: resolvedTabIndex,
       viewportHeight,
       viewportRef,
       viewportWidth,
@@ -172,7 +174,7 @@ export const Root = React.memo(
           onFocus?.(e);
         },
         onKeyDown: handleWebKeyDown,
-        tabIndex: 0 as 0 | -1,
+        tabIndex: resolvedTabIndex,
       };
     }
 
@@ -212,7 +214,7 @@ export const Root = React.memo(
           {...other}
           {...webOnlyProps}
           {...rootDataAttrs}
-          accessible={isWeb}
+          accessible={isFocusable}
           aria-describedby={ariaDescribedBy}
           aria-details={ariaDetails}
           aria-hidden={ariaHidden}

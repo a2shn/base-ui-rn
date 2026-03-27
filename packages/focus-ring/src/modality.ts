@@ -12,15 +12,49 @@ function setInteractionModality(modality: typeof lastInputModality) {
 
 export { getInteractionModality, setInteractionModality };
 
+interface GlobalLike {
+  addEventListener: (
+    type: string,
+    listener: (event: unknown) => void,
+    options?: { capture: boolean },
+  ) => void;
+}
+
 if (Platform.OS === 'web') {
   try {
-    const win = globalThis as
-      | { addEventListener?: (type: string, handler: () => void) => void }
-      | undefined;
-    if (win?.addEventListener) {
-      win.addEventListener('keydown', () => setInteractionModality('keyboard'));
-      win.addEventListener('mousedown', () => setInteractionModality('mouse'));
-      win.addEventListener('touchstart', () => setInteractionModality('touch'));
+    const win = globalThis as unknown as GlobalLike;
+    if (typeof win !== 'undefined' && win.addEventListener) {
+      win.addEventListener(
+        'keydown',
+        () => setInteractionModality('keyboard'),
+        {
+          capture: true,
+        },
+      );
+      win.addEventListener('mousedown', () => setInteractionModality('mouse'), {
+        capture: true,
+      });
+      win.addEventListener(
+        'touchstart',
+        () => setInteractionModality('touch'),
+        {
+          capture: true,
+        },
+      );
+      win.addEventListener(
+        'pointerdown',
+        (e: unknown) => {
+          const pointerEvent = e as { pointerType?: string };
+          if (pointerEvent.pointerType === 'mouse')
+            setInteractionModality('mouse');
+          else if (
+            pointerEvent.pointerType === 'touch' ||
+            pointerEvent.pointerType === 'pen'
+          )
+            setInteractionModality('touch');
+        },
+        { capture: true },
+      );
     }
   } catch {}
 }

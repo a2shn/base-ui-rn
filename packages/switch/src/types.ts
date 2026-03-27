@@ -1,11 +1,10 @@
-import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type {
   ARIABaseProps,
-  ARIAFocusProps,
   ARIALiveProps,
   ARIATraitDisabled,
   KeyPressEventData,
 } from '@base-ui-rn/core';
+import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type {
   NativeSyntheticEvent,
   PressableProps,
@@ -18,12 +17,11 @@ import type {
  * Web-specific accessibility props for Switch Root.
  */
 export type WebSwitchRootAccessibilityProps = ARIABaseProps &
-  ARIAFocusProps &
   ARIATraitDisabled & {
     /**
      * Reflects checked state for the ARIA switch pattern on web.
      */
-    'aria-checked': boolean | 'mixed';
+    'aria-checked'?: boolean | 'mixed';
     /**
      * Reflects read-only state for the ARIA switch pattern on web.
      */
@@ -34,9 +32,22 @@ export type WebSwitchRootAccessibilityProps = ARIABaseProps &
      */
     'data-checked'?: 'true';
     /**
+     * Custom data attribute applied on web for CSS selectors and testing.
+     * Reflects the current unchecked state.
+     */
+    'data-unchecked'?: 'true';
+    /**
      * Present when the switch is disabled.
      */
     'data-disabled'?: 'true';
+    /**
+     * Present when the switch is readonly.
+     */
+    'data-readonly'?: 'true';
+    /**
+     * Defines a keyboard shortcut that activates or focuses the element.
+     */
+    'aria-keyshortcuts'?: string;
   };
 
 /**
@@ -51,9 +62,18 @@ export type WebSwitchThumbAccessibilityProps = ARIABaseProps &
      */
     'data-checked'?: 'true';
     /**
+     * Custom data attribute applied on web for CSS selectors and testing.
+     * Reflects the current unchecked state.
+     */
+    'data-unchecked'?: 'true';
+    /**
      * Present when the switch is disabled.
      */
     'data-disabled'?: 'true';
+    /**
+     * Present when the switch is readonly.
+     */
+    'data-readonly'?: 'true';
   };
 
 export interface SwitchState extends FocusRingState {
@@ -73,8 +93,25 @@ export interface SwitchState extends FocusRingState {
 
 export interface SwitchRootProps
   extends
-    Omit<PressableProps, 'children' | 'style' | 'aria-checked'>,
+    Omit<PressableProps, 'role' | 'children' | 'style' | 'aria-checked'>,
     WebSwitchRootAccessibilityProps {
+  /**
+   * Identifies the field when a form is submitted.
+   */
+  name?: string;
+
+  /**
+   * The value submitted with the form when the switch is on.
+   * By default, switch submits the "on" value, matching native checkbox behavior.
+   */
+  value?: string;
+
+  /**
+   * The value submitted with the form when the switch is off.
+   * By default, unchecked switches do not submit any value, matching native checkbox behavior.
+   */
+  uncheckedValue?: string;
+
   /**
    * The content of the switch root.
    */
@@ -132,11 +169,18 @@ export interface SwitchRootProps
 }
 
 export interface SwitchThumbProps
-  extends Omit<ViewProps, 'children'>, WebSwitchThumbAccessibilityProps {
+  extends
+    Omit<ViewProps, 'style' | 'children'>,
+    WebSwitchThumbAccessibilityProps {
   /**
    * The content of the thumb.
    */
   children?: React.ReactNode | ((state: SwitchState) => React.ReactNode);
+
+  /**
+   * Style applied to the thumb view.
+   */
+  style?: StyleProp<ViewStyle> | ((state: SwitchState) => StyleProp<ViewStyle>);
 }
 
 export type { KeyPressEventData };

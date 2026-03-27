@@ -1,6 +1,5 @@
 import {
   type ARIABaseProps,
-  type ARIAFocusProps,
   type ARIALiveProps,
   type ARIATraitDisabled,
   type ARIATraitOrientation,
@@ -12,7 +11,6 @@ import type { StyleProp, ViewProps, ViewStyle } from 'react-native';
  * Web-specific accessibility props for ToggleGroup.
  */
 export type WebToggleGroupAccessibilityProps = ARIABaseProps &
-  ARIAFocusProps &
   ARIALiveProps &
   ARIATraitDisabled &
   ARIATraitOrientation & {
@@ -28,6 +26,10 @@ export type WebToggleGroupAccessibilityProps = ARIABaseProps &
      * Present when the toggle group allows multiple buttons to be in the pressed state at the same time.
      */
     'data-multiple'?: boolean;
+    /**
+     * Defines a keyboard shortcut that activates or focuses the element.
+     */
+    'aria-keyshortcuts'?: string;
   };
 
 export interface ToggleGroupState {

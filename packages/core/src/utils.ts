@@ -34,7 +34,6 @@ export function mergeRefs<T>(
   };
 }
 
-
 /**
  * Evaluates a value that can be a static value or a function that returns a value based on state.
  */

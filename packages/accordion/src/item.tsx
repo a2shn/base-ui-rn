@@ -40,27 +40,18 @@ export const AccordionItem = React.memo(
       ...otherProps
     } = props;
 
-    const {
-      disabled,
-      index,
-      open,
-      registerTriggerRef,
-      setFocused,
-      state,
-      value,
-    } = useAccordionItem(props);
+    const { disabled, index, open, registerTriggerRef, state, value } =
+      useAccordionItem(props);
 
     const itemContextValue = React.useMemo(
       () => ({
         disabled,
-        focused: false,
         index,
         open,
         registerTriggerRef,
-        setFocused,
         value,
       }),
-      [value, open, disabled, index, registerTriggerRef, setFocused],
+      [value, open, disabled, index, registerTriggerRef],
     );
 
     return (

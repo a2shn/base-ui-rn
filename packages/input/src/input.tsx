@@ -28,11 +28,7 @@ export const Input = React.memo(
       'aria-hidden': ariaHidden,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
-      defaultValue,
-      disableDefaultFocusRing,
-      focusableWhenDisabled,
       style,
-      value: valueProp,
       ...otherProps
     } = props;
 
@@ -41,7 +37,9 @@ export const Input = React.memo(
       handleBlur,
       handleChangeText,
       handleFocus,
+      isFocusable,
       state,
+      tabIndex: resolvedTabIndex,
       value,
     } = useInput(props);
 
@@ -56,6 +54,7 @@ export const Input = React.memo(
     return (
       <TextInput
         {...otherProps}
+        accessible={isFocusable}
         aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
@@ -75,6 +74,7 @@ export const Input = React.memo(
         onFocus={handleFocus}
         ref={ref}
         style={resolvedStyle}
+        tabIndex={resolvedTabIndex}
         value={value}
       />
     );

@@ -24,10 +24,11 @@ export const SliderValue = React.memo(
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-hidden': ariaHidden,
+      'aria-keyshortcuts': ariaKeyshortcuts,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       children,
-      ...other
+      ...otherProps
     } = props;
     const { formatter, state } = useSliderContext();
 
@@ -39,16 +40,17 @@ export const SliderValue = React.memo(
 
     return (
       <Text
-        {...other}
+        {...otherProps}
         aria-busy={ariaBusy}
         aria-describedby={ariaDescribedBy}
         aria-details={ariaDetails}
         aria-hidden={ariaHidden}
+        aria-keyshortcuts={ariaKeyshortcuts}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
-        data-disabled={state.disabled}
-        data-dragging={state.dragging}
-        data-focused={state.activeIndex !== null}
+        data-disabled={state.disabled ? 'true' : undefined}
+        data-dragging={state.dragging ? 'true' : undefined}
+        data-focused={state.activeIndex !== null ? 'true' : undefined}
         data-orientation={state.orientation}
         ref={ref}
       >

@@ -1,6 +1,6 @@
 import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 
 import type { AccordionHeaderProps } from './types';
 import { useAccordionHeader } from './use-accordion';
@@ -58,7 +58,10 @@ export const AccordionHeader = React.memo(
         data-index={dataIndex ?? index}
         data-open={dataOpen ?? (open ? 'true' : undefined)}
         ref={ref}
-        style={[evaluateStyles(style, state), { zIndex: 1 }]}
+        style={[
+          evaluateStyles(style, state),
+          Platform.OS === 'web' ? { zIndex: 1 } : undefined,
+        ]}
       >
         {resolvedChildren}
       </View>

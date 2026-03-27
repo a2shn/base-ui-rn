@@ -20,13 +20,16 @@ import type { AvatarFallbackProps } from './types';
 export const AvatarFallback = React.forwardRef<View, AvatarFallbackProps>(
   (props, ref) => {
     const {
-      accessibilityHint,
-      accessibilityLabel,
-      accessibilityRole,
       accessible = true,
+      'aria-busy': ariaBusy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-details': ariaDetails,
+      'aria-hidden': ariaHidden,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
       children,
       delay,
-      ...other
+      ...otherProps
     } = props;
     const { loadingStatus } = useAvatarContext();
     const [canRender, setCanRender] = React.useState(delay === undefined);
@@ -42,12 +45,15 @@ export const AvatarFallback = React.forwardRef<View, AvatarFallbackProps>(
     if (canRender && loadingStatus !== 'loaded') {
       return (
         <View
-          {...other}
-          accessibilityHint={accessibilityHint}
-          accessibilityLabel={accessibilityLabel}
-          accessibilityRole={accessibilityRole}
+          {...otherProps}
           accessible={accessible}
-          importantForAccessibility='yes'
+          aria-busy={ariaBusy}
+          aria-describedby={ariaDescribedBy}
+          aria-details={ariaDetails}
+          aria-hidden={ariaHidden}
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledBy}
+          data-status={loadingStatus}
           ref={ref}
         >
           {children}

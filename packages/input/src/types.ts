@@ -1,8 +1,4 @@
-import type {
-  ARIABaseProps,
-  ARIAFocusProps,
-  ARIATraitDisabled,
-} from '@base-ui-rn/core';
+import type { ARIABaseProps, ARIATraitDisabled } from '@base-ui-rn/core';
 import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type {
   NativeSyntheticEvent,
@@ -55,11 +51,7 @@ export interface InputState extends FocusRingState {
  * Props for the Input component.
  */
 export interface InputProps
-  extends
-    Omit<TextInputProps, 'style'>,
-    ARIABaseProps,
-    ARIAFocusProps,
-    ARIATraitDisabled {
+  extends Omit<TextInputProps, 'style'>, ARIABaseProps, ARIATraitDisabled {
   /**
    * Style applied to the input component.
    */

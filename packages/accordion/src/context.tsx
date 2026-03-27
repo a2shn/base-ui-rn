@@ -50,10 +50,8 @@ interface AccordionItemContextValue {
   value: string;
   open: boolean;
   disabled: boolean;
-  focused: boolean;
   index: number;
   registerTriggerRef: (ref: React.RefObject<View | null>) => void;
-  setFocused: (focused: boolean) => void;
 }
 
 export const AccordionItemContext =

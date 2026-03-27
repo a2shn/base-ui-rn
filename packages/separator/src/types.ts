@@ -1,9 +1,7 @@
 import {
   type ARIABaseProps,
-  type ARIAFocusProps,
   type ARIALiveProps,
   type ARIATraitDisabled,
-  type ARIATraitExpanded,
   type ARIATraitOrientation,
 } from '@base-ui-rn/core';
 import type { ViewProps } from 'react-native';
@@ -12,15 +10,17 @@ import type { ViewProps } from 'react-native';
  * Web-specific accessibility props for Separator.
  */
 export type WebSeparatorAccessibilityProps = ARIABaseProps &
-  ARIAFocusProps &
   ARIALiveProps &
   ARIATraitDisabled &
-  ARIATraitOrientation &
-  ARIATraitExpanded & {
+  ARIATraitOrientation & {
     /**
      * Indicates the orientation of the separator.
      */
     'data-orientation'?: 'horizontal' | 'vertical';
+    /**
+     * Defines a keyboard shortcut that activates or focuses the element.
+     */
+    'aria-keyshortcuts'?: string;
   };
 
 export type Orientation = 'horizontal' | 'vertical';

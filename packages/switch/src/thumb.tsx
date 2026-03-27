@@ -45,6 +45,8 @@ export const SwitchThumb = React.memo(
         aria-labelledby={ariaLabelledBy}
         data-checked={context.checked ? 'true' : undefined}
         data-disabled={context.disabled ? 'true' : undefined}
+        data-readonly={context.readOnly ? 'true' : undefined}
+        data-unchecked={!context.checked ? 'true' : undefined}
         ref={ref}
         style={evaluateStyles(style, context)}
       >
@@ -54,4 +56,4 @@ export const SwitchThumb = React.memo(
   }),
 );
 
-SwitchThumb.displayName = 'SwitchThumb';
+SwitchThumb.displayName = 'Switch.Thumb';

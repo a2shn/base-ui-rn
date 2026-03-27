@@ -21,19 +21,15 @@ import type { AvatarRootProps, ImageLoadingStatus } from './types';
 export const AvatarRoot = React.forwardRef<View, AvatarRootProps>(
   (props, ref) => {
     const {
-      accessibilityHint,
-      accessibilityLabel,
-      accessibilityRole,
-      accessible,
       'aria-busy': ariaBusy,
       'aria-describedby': ariaDescribedBy,
       'aria-details': ariaDetails,
       'aria-expanded': ariaExpanded,
       'aria-hidden': ariaHidden,
+      'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
       children,
-      importantForAccessibility,
-      ...other
+      ...otherProps
     } = props;
     const [loadingStatus, setLoadingStatus] =
       React.useState<ImageLoadingStatus>('idle');
@@ -58,19 +54,17 @@ export const AvatarRoot = React.forwardRef<View, AvatarRootProps>(
     return (
       <AvatarContext.Provider value={contextValue}>
         <View
-          {...other}
-          accessibilityHint={accessibilityHint}
-          accessibilityLabel={accessibilityLabel}
-          accessibilityRole={accessibilityRole ?? 'image'}
-          accessible={accessible !== false}
+          {...otherProps}
           aria-busy={ariaBusy ?? isLoading}
           aria-describedby={ariaDescribedBy}
           aria-details={ariaDetails}
           aria-expanded={ariaExpanded}
           aria-hidden={ariaHidden}
+          aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
-          importantForAccessibility={importantForAccessibility}
+          data-status={loadingStatus}
           ref={ref}
+          role='img'
         >
           {children}
         </View>
