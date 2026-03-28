@@ -10,6 +10,7 @@ import {
   type AccessibilityActionEvent,
   type GestureResponderEvent,
   type NativeSyntheticEvent,
+  Platform,
   type TargetedEvent,
 } from 'react-native';
 
@@ -48,6 +49,7 @@ export function useRadioRoot(
   const isReadOnly = readOnlyProp || (groupContext?.readOnly ?? false);
   const checked = groupContext ? groupContext.value === value : false;
 
+  const isInGroup = groupContext !== null;
   const hasActiveItem = groupContext?.value !== undefined;
 
   const {
@@ -62,10 +64,21 @@ export function useRadioRoot(
     focusableWhenDisabled,
   });
 
-  const tabIndex = resolveTabIndex(isFocusable, tabIndexProp, {
-    hasActiveItem,
-    isActive: checked,
-  });
+  const tabIndex = React.useMemo(() => {
+    if (tabIndexProp !== undefined) {
+      return tabIndexProp;
+    }
+    if (Platform.OS !== 'web') {
+      return undefined;
+    }
+    if (isInGroup) {
+      return resolveTabIndex(isFocusable, undefined, {
+        hasActiveItem,
+        isActive: checked,
+      });
+    }
+    return isFocusable ? 0 : -1;
+  }, [tabIndexProp, isInGroup, isFocusable, hasActiveItem, checked]);
 
   const select = React.useCallback(() => {
     if (isDisabled || isReadOnly) return;

@@ -29,10 +29,11 @@ export const resolveTabIndex = (
     isActive?: boolean;
     /**
      * Whether any item in the group is currently active/checked.
+     * If false/undefined (no selection), all items should be focusable.
      */
     hasActiveItem?: boolean;
   },
-): 0 | -1 => {
+): 0 | -1 | undefined => {
   if (providedTabIndex !== undefined) {
     return providedTabIndex;
   }
@@ -44,6 +45,7 @@ export const resolveTabIndex = (
     if (options.hasActiveItem) {
       return -1;
     }
+    return undefined;
   }
 
   return isFocusable ? 0 : -1;
