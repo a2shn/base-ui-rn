@@ -13,6 +13,7 @@ import { InputPlaybook } from './src/input.playbook';
 import { KeyboardShortcutsPlaybook } from './src/keyboard-shortcuts.playbook';
 import { MeterPlaybook } from './src/meter.playbook';
 import { ProgressPlaybook } from './src/progress.playbook';
+import { RadioPlaybook } from './src/radio.playbook';
 import { ScrollAreaPlaybook } from './src/scroll-area.playbook';
 import { SeparatorPlaybook } from './src/separator.playbook';
 import { SliderPlaybook } from './src/slider.playbook';
@@ -55,6 +56,11 @@ const REGISTRY: PlaybookConfig = {
     component: ProgressPlaybook,
     testID: 'progress',
     title: 'Progress',
+  },
+  Radio: {
+    component: RadioPlaybook,
+    testID: 'radio',
+    title: 'Radio',
   },
   ScrollArea: {
     component: ScrollAreaPlaybook,

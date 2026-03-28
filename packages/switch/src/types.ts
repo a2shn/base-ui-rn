@@ -1,6 +1,7 @@
 import type {
   ARIABaseProps,
   ARIALiveProps,
+  ARIATraitChecked,
   ARIATraitDisabled,
   KeyPressEventData,
 } from '@base-ui-rn/core';
@@ -17,11 +18,8 @@ import type {
  * Web-specific accessibility props for Switch Root.
  */
 export type WebSwitchRootAccessibilityProps = ARIABaseProps &
-  ARIATraitDisabled & {
-    /**
-     * Reflects checked state for the ARIA switch pattern on web.
-     */
-    'aria-checked'?: boolean | 'mixed';
+  ARIATraitDisabled &
+  ARIATraitChecked & {
     /**
      * Reflects read-only state for the ARIA switch pattern on web.
      */

@@ -94,6 +94,17 @@ export interface ARIATraitOrientation {
 }
 
 /**
+ * Attributes for components that can be checked or unchecked.
+ */
+export interface ARIATraitChecked {
+  /**
+   * Indicates whether the element is checked (true) or unchecked (false), or if it has a mixed state ('mixed').
+   * @see https://www.w3.org/TR/wai-aria-1.2/#aria-checked
+   */
+  'aria-checked'?: boolean | 'mixed';
+}
+
+/**
  * Attributes for components that represent a value within a range.
  */
 export interface ARIATraitRange {

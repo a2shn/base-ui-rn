@@ -3,6 +3,7 @@ export type {
   ARIABaseProps,
   ARIAFocusProps,
   ARIALiveProps,
+  ARIATraitChecked,
   ARIATraitDisabled,
   ARIATraitExpanded,
   ARIATraitOrientation,
