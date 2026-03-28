@@ -1,5 +1,5 @@
 import { useKeyboardActivation } from '@base-ui-rn/core';
-import { useFocusRing } from '@base-ui-rn/focus-ring';
+import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import {
   type GestureResponderEvent,
@@ -22,6 +22,7 @@ export function useSwitchRoot(props: SwitchRootProps) {
     onKeyDown,
     onPress,
     readOnly = false,
+    tabIndex: tabIndexProp,
   } = props;
 
   const isControlled = checkedProp !== undefined;
@@ -31,19 +32,17 @@ export function useSwitchRoot(props: SwitchRootProps) {
   const checked = isControlled ? checkedProp : uncontrolledChecked;
   const isKeyboardActivationRef = React.useRef(false);
 
-  const {
-    focused,
-    focusRingStyle,
+  const { focused, focusRingStyle, isFocusable, onBlur, onFocus } =
+    useFocusRing({
+      disabled,
+      disableDefaultFocusRing,
+      focusableWhenDisabled,
+    });
+
+  const tabIndex = resolveTabIndex(
     isFocusable,
-    onBlur,
-    onFocus,
-    tabIndex: resolvedTabIndex,
-  } = useFocusRing({
-    disabled,
-    disableDefaultFocusRing,
-    focusableWhenDisabled,
-    tabIndex: props.tabIndex as 0 | -1 | undefined,
-  });
+    tabIndexProp as 0 | -1 | undefined,
+  );
 
   const toggleState = React.useCallback(() => {
     if (disabled || readOnly) return;
@@ -121,6 +120,6 @@ export function useSwitchRoot(props: SwitchRootProps) {
     isFocusable,
     readOnly,
     state,
-    tabIndex: resolvedTabIndex,
+    tabIndex,
   };
 }

@@ -77,7 +77,7 @@ export const Root = React.memo(
       rawScrollX,
       rawScrollY,
       state,
-      tabIndex: resolvedTabIndex,
+      tabIndex,
       viewportHeight,
       viewportRef,
       viewportWidth,
@@ -174,7 +174,7 @@ export const Root = React.memo(
           onFocus?.(e);
         },
         onKeyDown: handleWebKeyDown,
-        tabIndex: resolvedTabIndex,
+        tabIndex,
       };
     }
 

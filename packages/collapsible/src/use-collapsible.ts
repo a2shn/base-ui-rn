@@ -1,5 +1,5 @@
 import { useKeyboardActivation } from '@base-ui-rn/core';
-import { useFocusRing } from '@base-ui-rn/focus-ring';
+import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import type {
   LayoutChangeEvent,
@@ -78,26 +78,24 @@ export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
     focusableWhenDisabled = false,
     onBlur: onBlurProp,
     onFocus: onFocusProp,
-    tabIndex,
+    tabIndex: tabIndexProp,
   } = props;
 
   const context = useCollapsibleContext();
 
   const disabled = disabledProp || context.disabled;
 
-  const {
-    focused,
-    focusRingStyle,
+  const { focused, focusRingStyle, isFocusable, onBlur, onFocus } =
+    useFocusRing({
+      disabled,
+      disableDefaultFocusRing,
+      focusableWhenDisabled,
+    });
+
+  const tabIndex = resolveTabIndex(
     isFocusable,
-    onBlur,
-    onFocus,
-    tabIndex: resolvedTabIndex,
-  } = useFocusRing({
-    disabled,
-    disableDefaultFocusRing,
-    focusableWhenDisabled,
-    tabIndex,
-  });
+    tabIndexProp as 0 | -1 | undefined,
+  );
 
   const handleFocus = React.useCallback(
     (event: NativeSyntheticEvent<TargetedEvent>) => {
@@ -154,7 +152,7 @@ export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
     isFocusable,
     open: context.open,
     state,
-    tabIndex: resolvedTabIndex,
+    tabIndex,
   };
 }
 export function useCollapsiblePanel(props: CollapsiblePanelProps) {

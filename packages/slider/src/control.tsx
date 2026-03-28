@@ -30,7 +30,7 @@ export const SliderControl = React.memo(
       mergedRef,
       panHandlers,
       resolvedStyle,
-      resolvedTabIndex,
+      tabIndex,
     } = useSliderControl({ onLayout, style });
 
     const mergedRefCallback = React.useCallback(
@@ -64,7 +64,7 @@ export const SliderControl = React.memo(
         onLayout={handleLayout}
         ref={mergedRefCallback}
         style={resolvedStyle}
-        tabIndex={resolvedTabIndex}
+        tabIndex={tabIndex}
       />
     );
   }),

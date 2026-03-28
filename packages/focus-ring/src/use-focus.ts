@@ -1,4 +1,4 @@
-import { DEFAULT_FOCUS_RING_STYLE, resolveTabIndex } from '@base-ui-rn/core';
+import { DEFAULT_FOCUS_RING_STYLE } from '@base-ui-rn/core';
 import * as React from 'react';
 import { Platform } from 'react-native';
 
@@ -12,23 +12,13 @@ import type { UseFocusRingOptions, UseFocusRingReturn } from './types';
  * @returns An object containing the current focus state, event handlers, and focus ring style.
  */
 export function useFocusRing(options: UseFocusRingOptions): UseFocusRingReturn {
-  const {
-    disabled,
-    disableDefaultFocusRing,
-    focusableWhenDisabled,
-    tabIndex: tabIndexProp,
-  } = options;
+  const { disabled, disableDefaultFocusRing, focusableWhenDisabled } = options;
   const [focused, setFocused] = React.useState(false);
   const [isFocusVisible, setFocusVisible] = React.useState(false);
 
   const isFocusable = React.useMemo(
     () => !disabled || focusableWhenDisabled,
     [disabled, focusableWhenDisabled],
-  );
-
-  const tabIndex = React.useMemo(
-    () => resolveTabIndex(isFocusable, tabIndexProp),
-    [isFocusable, tabIndexProp],
   );
 
   const onFocus = React.useCallback(() => {
@@ -59,8 +49,7 @@ export function useFocusRing(options: UseFocusRingOptions): UseFocusRingReturn {
       isFocusable,
       onBlur,
       onFocus,
-      tabIndex,
     }),
-    [focused, onFocus, onBlur, focusRingStyle, isFocusable, tabIndex],
+    [focused, onFocus, onBlur, focusRingStyle, isFocusable],
   );
 }

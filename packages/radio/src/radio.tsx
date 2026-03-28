@@ -54,7 +54,7 @@ export const RadioRoot = React.memo(
       mergedAccessibilityActions,
       readOnly: isReadOnly,
       state,
-      tabIndex: resolvedTabIndex,
+      tabIndex,
     } = useRadioRoot(props, groupContext);
 
     // Register this radio with the group for keyboard navigation
@@ -78,6 +78,7 @@ export const RadioRoot = React.memo(
         <PressableWithKeyPress
           {...otherProps}
           accessibilityActions={mergedAccessibilityActions}
+          accessibilityRole='radio'
           accessibilityState={{
             checked,
             disabled: isDisabled,
@@ -103,12 +104,11 @@ export const RadioRoot = React.memo(
           onBlur={handleBlur}
           onFocus={handleFocus}
           onKeyDown={handleKeyDown}
-          accessibilityRole='radio'
           onPress={handlePress}
           ref={internalRef}
           role='radio'
           style={resolvedStyle}
-          tabIndex={resolvedTabIndex}
+          tabIndex={tabIndex}
         >
           {evaluateStyles(children, state)}
         </PressableWithKeyPress>

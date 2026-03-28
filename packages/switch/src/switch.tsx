@@ -45,7 +45,7 @@ export const SwitchRoot = React.memo(
       handlePress,
       readOnly: resolvedReadOnly,
       state,
-      tabIndex: resolvedTabIndex,
+      tabIndex,
     } = useSwitchRoot(props);
 
     const contextValue = React.useMemo(
@@ -97,7 +97,7 @@ export const SwitchRoot = React.memo(
           ref={ref}
           role='switch'
           style={resolvedStyle}
-          tabIndex={resolvedTabIndex}
+          tabIndex={tabIndex}
         >
           {evaluateStyles(children, state)}
         </PressableWithKeyPress>

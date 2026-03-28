@@ -1,4 +1,5 @@
-import { evaluateStyles, resolveTabIndex } from '@base-ui-rn/core';
+import { evaluateStyles } from '@base-ui-rn/core';
+import { resolveTabIndex } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import {
   type LayoutChangeEvent,
@@ -23,7 +24,7 @@ export interface SliderControlReturn {
   panHandlers: import('react-native').GestureResponderHandlers;
   handleLayout: (event: LayoutChangeEvent) => void;
   resolvedStyle: ViewStyle | ViewStyle[] | undefined;
-  resolvedTabIndex: number | undefined;
+  tabIndex: number | undefined;
   'data-dragging'?: boolean;
   'data-orientation'?: 'horizontal' | 'vertical';
   'data-disabled'?: boolean;
@@ -108,7 +109,7 @@ export function useSliderControl(options: SliderControlOptions = {}) {
     return evaluated;
   }, [style, state, isWeb]);
 
-  const resolvedTabIndex = resolveTabIndex(state.disabled, -1);
+  const tabIndex = resolveTabIndex(state.disabled, -1);
 
   return {
     'data-disabled': state.disabled ? 'true' : undefined,
@@ -119,6 +120,6 @@ export function useSliderControl(options: SliderControlOptions = {}) {
     mergedRef,
     panHandlers,
     resolvedStyle,
-    resolvedTabIndex,
+    tabIndex,
   };
 }

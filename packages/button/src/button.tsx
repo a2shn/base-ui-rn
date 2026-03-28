@@ -56,7 +56,7 @@ export const Button = React.memo(
       mergedAccessibilityState,
       resolvedAriaDisabled,
       resolvedAriaKeyshortcuts,
-      resolvedTabIndex,
+      tabIndex,
     } = useButton(props);
 
     const resolvedStyle = React.useMemo<StyleProp<ViewStyle>>(() => {
@@ -94,7 +94,7 @@ export const Button = React.memo(
         ref={internalRef}
         role={(accessibilityRoleProp ?? 'button') as Role}
         style={resolvedStyle}
-        tabIndex={resolvedTabIndex}
+        tabIndex={tabIndex}
       >
         {(pressableState) =>
           evaluateStyles(children, { ...pressableState, focused })

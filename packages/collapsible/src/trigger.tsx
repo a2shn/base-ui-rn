@@ -31,7 +31,7 @@ export const CollapsibleTrigger = React.memo(
       'aria-labelledby': ariaLabelledBy,
       children,
       style,
-      tabIndex,
+      tabIndex: tabIndexProp,
       ...otherProps
     } = props;
 
@@ -45,8 +45,8 @@ export const CollapsibleTrigger = React.memo(
       handlePress,
       open,
       state,
-      tabIndex: resolvedTabIndex,
-    } = useCollapsibleTrigger({ ...otherProps, tabIndex });
+      tabIndex,
+    } = useCollapsibleTrigger({ ...otherProps, tabIndex: tabIndexProp });
 
     const internalRef = React.useRef<View>(null);
     React.useImperativeHandle(ref, () => internalRef.current!, []);
@@ -90,7 +90,7 @@ export const CollapsibleTrigger = React.memo(
         ref={internalRef}
         role='button'
         style={finalStyle}
-        tabIndex={resolvedTabIndex}
+        tabIndex={tabIndex}
       >
         {evaluateStyles(children, state)}
       </PressableWithKeyPress>

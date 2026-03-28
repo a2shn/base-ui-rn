@@ -6,7 +6,6 @@ import type { StyleProp, ViewStyle } from 'react-native';
  * @property disabled - Whether the component is disabled
  * @property focusableWhenDisabled - Whether the component remains focusable when disabled
  * @property disableDefaultFocusRing - Whether to disable the default focus ring styling
- * @property tabIndex - Optional: override tab index
  */
 export interface UseFocusRingOptions {
   /**
@@ -23,10 +22,6 @@ export interface UseFocusRingOptions {
    * @default false
    */
   disableDefaultFocusRing: boolean;
-  /**
-   * Optional tab index override.
-   */
-  tabIndex?: 0 | -1;
 }
 
 /**
@@ -37,7 +32,6 @@ export interface UseFocusRingOptions {
  * @property onBlur - Callback to handle blur events
  * @property focusRingStyle - The computed focus ring style (null if disabled, default style otherwise)
  * @property isFocusable - Whether the component is focusable
- * @property tabIndex - The resolved tab index
  */
 export interface UseFocusRingReturn {
   /**
@@ -62,10 +56,6 @@ export interface UseFocusRingReturn {
    * Whether the component is focusable.
    */
   isFocusable: boolean;
-  /**
-   * The resolved tab index.
-   */
-  tabIndex: 0 | -1;
 }
 
 /**

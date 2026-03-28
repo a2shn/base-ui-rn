@@ -5,7 +5,7 @@ import {
   PressableWithKeyPress,
   useKeyboard,
 } from '@base-ui-rn/core';
-import { useFocusRing } from '@base-ui-rn/focus-ring';
+import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import {
   findNodeHandle,
@@ -46,7 +46,7 @@ export const SliderThumb = React.memo(
       onLayout,
       onPress,
       style,
-      tabIndex,
+      tabIndex: tabIndexProp,
       ...props
     },
     ref,
@@ -77,15 +77,19 @@ export const SliderThumb = React.memo(
     const {
       focused,
       focusRingStyle,
+      isFocusable,
       onBlur: handleBlur,
       onFocus: handleFocus,
-      tabIndex: resolvedTabIndex,
     } = useFocusRing({
       disabled: isDisabledBoolean,
       disableDefaultFocusRing,
       focusableWhenDisabled: focusableWhenDisabled ?? false,
-      tabIndex: tabIndex as 0 | -1 | undefined,
     });
+
+    const tabIndex = resolveTabIndex(
+      isFocusable,
+      tabIndexProp as 0 | -1 | undefined,
+    );
 
     // Register thumb ref with control for PanResponder coordination
     React.useEffect(() => {
@@ -159,15 +163,16 @@ export const SliderThumb = React.memo(
       [index, largeStep, stepBy],
     );
 
-    const handleKeyboardRange = useKeyboardRange({
+    const handleKeyboardRange = useKeyboard({
       disabled: isDisabled,
-      onDecrement,
+      onArrowDown: onDecrement,
+      onArrowLeft: onDecrement,
+      onArrowRight: onIncrement,
+      onArrowUp: onIncrement,
       onEnd,
       onHome,
-      onIncrement,
       onPageDown,
       onPageUp,
-      orientation: state.orientation,
     });
 
     const handleKeyDown = React.useCallback(
@@ -314,7 +319,7 @@ export const SliderThumb = React.memo(
           focusRingStyle,
           webStyle,
         ]}
-        tabIndex={resolvedTabIndex}
+        tabIndex={tabIndex}
       />
     );
   }),

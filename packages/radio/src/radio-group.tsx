@@ -36,8 +36,13 @@ export const RadioGroup = React.memo(
       ...otherProps
     } = props;
 
-    const { handleKeyDown, onRadioKeyDown, onValueChange, registerItem, state } =
-      useRadioGroup(props);
+    const {
+      handleKeyDown,
+      onRadioKeyDown,
+      onValueChange,
+      registerItem,
+      state,
+    } = useRadioGroup(props);
 
     const contextValue = React.useMemo(
       () => ({

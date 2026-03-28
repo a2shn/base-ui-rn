@@ -39,7 +39,7 @@ export const Input = React.memo(
       handleFocus,
       isFocusable,
       state,
-      tabIndex: resolvedTabIndex,
+      tabIndex,
       value,
     } = useInput(props);
 
@@ -74,7 +74,7 @@ export const Input = React.memo(
         onFocus={handleFocus}
         ref={ref}
         style={resolvedStyle}
-        tabIndex={resolvedTabIndex}
+        tabIndex={tabIndex}
         value={value}
       />
     );

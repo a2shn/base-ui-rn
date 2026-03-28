@@ -50,7 +50,7 @@ export const AccordionTrigger = React.memo(
       handlePress,
       open,
       state,
-      tabIndex: resolvedTabIndex,
+      tabIndex,
     } = useAccordionTrigger({
       ...props,
       focusableWhenDisabled,
@@ -103,7 +103,7 @@ export const AccordionTrigger = React.memo(
         ref={internalRef}
         role='button'
         style={finalStyle}
-        tabIndex={resolvedTabIndex}
+        tabIndex={tabIndex}
       >
         {evaluateStyles(children, state)}
       </PressableWithKeyPress>

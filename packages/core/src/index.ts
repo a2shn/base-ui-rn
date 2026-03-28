@@ -30,7 +30,6 @@ export {
   resolveAriaDisabled,
   resolveAriaPressed,
   resolveDataPressed,
-  resolveTabIndex,
 } from './accessibility';
 
 export {

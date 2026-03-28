@@ -8,7 +8,7 @@ import {
   resolveDataPressed,
   useKeyboardActivation,
 } from '@base-ui-rn/core';
-import { useFocusRing } from '@base-ui-rn/focus-ring';
+import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import {
   getAriaKeyshortcuts,
   useKeyboardShortcut,
@@ -66,13 +66,16 @@ export const useToggle = (
     isFocusable,
     onBlur: onFocusOut,
     onFocus: onFocusIn,
-    tabIndex: resolvedTabIndex,
   } = useFocusRing({
     disabled: isDisabled,
     disableDefaultFocusRing,
     focusableWhenDisabled,
-    tabIndex: tabIndexProp as 0 | -1 | undefined,
   });
+
+  const tabIndex = resolveTabIndex(
+    isFocusable,
+    tabIndexProp as 0 | -1 | undefined,
+  );
 
   const [uncontrolledState, setUncontrolledState] =
     React.useState(defaultPressed);
@@ -231,6 +234,6 @@ export const useToggle = (
     resolvedAriaKeyshortcuts,
     resolvedAriaPressed,
     resolvedDataPressed,
-    resolvedTabIndex,
+    tabIndex,
   };
 };

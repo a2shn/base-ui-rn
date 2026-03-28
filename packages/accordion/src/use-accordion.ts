@@ -1,5 +1,5 @@
 import { useKeyboardActivation, useKeyboardNavigation } from '@base-ui-rn/core';
-import { useFocusRing } from '@base-ui-rn/focus-ring';
+import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import type {
   GestureResponderEvent,
@@ -250,19 +250,17 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
 
   const disabled = disabledProp || itemContext.disabled || context.disabled;
 
-  const {
-    focused,
-    focusRingStyle,
+  const { focused, focusRingStyle, isFocusable, onBlur, onFocus } =
+    useFocusRing({
+      disabled,
+      disableDefaultFocusRing,
+      focusableWhenDisabled,
+    });
+
+  const tabIndex = resolveTabIndex(
     isFocusable,
-    onBlur,
-    onFocus,
-    tabIndex: resolvedTabIndex,
-  } = useFocusRing({
-    disabled,
-    disableDefaultFocusRing,
-    focusableWhenDisabled,
-    tabIndex: props.tabIndex,
-  });
+    props.tabIndex as 0 | -1 | undefined,
+  );
 
   const handleFocus = React.useCallback(
     (event: NativeSyntheticEvent<TargetedEvent>) => {
@@ -336,7 +334,7 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
     isFocusable,
     open: itemContext.open,
     state,
-    tabIndex: resolvedTabIndex,
+    tabIndex,
   };
 }
 /**

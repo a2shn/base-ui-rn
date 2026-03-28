@@ -61,7 +61,7 @@ export const Viewport = React.memo(
       setViewportHeight,
       setViewportWidth,
       state,
-      tabIndex: resolvedTabIndex,
+      tabIndex,
       viewportRef,
     } = useScrollAreaContext();
 
@@ -126,7 +126,7 @@ export const Viewport = React.memo(
           handleFocus();
           other.onFocus?.(e);
         },
-        tabIndex: resolvedTabIndex,
+        tabIndex,
       };
     }
 

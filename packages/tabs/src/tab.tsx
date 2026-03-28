@@ -46,7 +46,7 @@ export const Tab = React.memo(
       disableDefaultFocusRing = false,
       focusableWhenDisabled = false,
       style,
-      tabIndex,
+      tabIndex: tabIndexProp,
       value,
       ...otherProps
     } = props;
@@ -61,12 +61,12 @@ export const Tab = React.memo(
       onLayout,
       ref,
       state,
-      tabIndex: resolvedTabIndex,
+      tabIndex,
     } = useTab({
       disabled,
       disableDefaultFocusRing,
       focusableWhenDisabled,
-      tabIndex,
+      tabIndex: tabIndexProp,
       value,
     });
 
@@ -111,7 +111,7 @@ export const Tab = React.memo(
         ref={ref}
         role='tab'
         style={resolvedStyle}
-        tabIndex={resolvedTabIndex}
+        tabIndex={tabIndex}
       >
         {evaluateStyles(children, state)}
       </PressableWithKeyPress>

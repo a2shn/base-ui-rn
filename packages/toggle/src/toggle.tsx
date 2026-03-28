@@ -63,7 +63,7 @@ export const Toggle = React.memo(
       resolvedAriaKeyshortcuts,
       resolvedAriaPressed,
       resolvedDataPressed,
-      resolvedTabIndex,
+      tabIndex,
     } = useToggle(props, groupContext);
 
     const focusVisible = focusRingStyle !== null;
@@ -134,7 +134,7 @@ export const Toggle = React.memo(
         ref={internalRef}
         role={(accessibilityRoleProp ?? role) as Role}
         style={resolvedStyle}
-        tabIndex={resolvedTabIndex}
+        tabIndex={tabIndex}
       >
         {(pressableState) =>
           evaluateStyles(children, {

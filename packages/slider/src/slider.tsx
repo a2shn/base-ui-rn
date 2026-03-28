@@ -1,4 +1,5 @@
-import { evaluateStyles, resolveTabIndex } from '@base-ui-rn/core';
+import { evaluateStyles } from '@base-ui-rn/core';
+import { resolveTabIndex } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import { View } from 'react-native';
 

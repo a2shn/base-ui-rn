@@ -5,7 +5,7 @@ import {
   resolveAriaDisabled,
   useKeyboardActivation,
 } from '@base-ui-rn/core';
-import { useFocusRing } from '@base-ui-rn/focus-ring';
+import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import {
   getAriaKeyshortcuts,
   useKeyboardShortcut,
@@ -43,6 +43,7 @@ export const useButton = (props: ButtonProps) => {
     onPress,
     onPressedChange,
     shortcut,
+    tabIndex: tabIndexProp,
   } = props;
 
   const isDisabled = disabled === true;
@@ -53,13 +54,13 @@ export const useButton = (props: ButtonProps) => {
     isFocusable,
     onBlur: onFocusOut,
     onFocus: onFocusIn,
-    tabIndex: resolvedTabIndex,
   } = useFocusRing({
     disabled: isDisabled,
     disableDefaultFocusRing: props.disableDefaultFocusRing ?? false,
     focusableWhenDisabled,
-    tabIndex: props.tabIndex as 0 | -1 | undefined,
   });
+
+  const tabIndex = resolveTabIndex(isFocusable, tabIndexProp);
 
   const mergedAccessibilityState = React.useMemo(
     () =>
@@ -167,6 +168,6 @@ export const useButton = (props: ButtonProps) => {
     mergedAccessibilityState,
     resolvedAriaDisabled,
     resolvedAriaKeyshortcuts,
-    resolvedTabIndex,
+    tabIndex,
   };
 };

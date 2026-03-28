@@ -3,7 +3,7 @@ import {
   useKeyboardActivation,
   useKeyboardNavigation,
 } from '@base-ui-rn/core';
-import { useFocusRing } from '@base-ui-rn/focus-ring';
+import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import {
   type LayoutChangeEvent,
@@ -223,19 +223,17 @@ export function useTab(props: TabProps) {
     return context.registerTab(value, ref);
   }, [value, context]);
 
-  const {
-    focused,
-    focusRingStyle,
+  const { focused, focusRingStyle, isFocusable, onBlur, onFocus } =
+    useFocusRing({
+      disabled,
+      disableDefaultFocusRing,
+      focusableWhenDisabled,
+    });
+
+  const tabIndex = resolveTabIndex(
     isFocusable,
-    onBlur,
-    onFocus,
-    tabIndex: resolvedTabIndex,
-  } = useFocusRing({
-    disabled,
-    disableDefaultFocusRing,
-    focusableWhenDisabled,
-    tabIndex: props.tabIndex as 0 | -1 | undefined,
-  });
+    props.tabIndex as 0 | -1 | undefined,
+  );
 
   const isFocusedFromRoot = context.focusedValue === value;
 
@@ -307,7 +305,7 @@ export function useTab(props: TabProps) {
     onLayout,
     ref,
     state,
-    tabIndex: resolvedTabIndex,
+    tabIndex,
   };
 }
 

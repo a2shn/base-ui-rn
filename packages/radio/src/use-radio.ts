@@ -4,10 +4,9 @@ import {
   mergeAccessibilityActions,
   useKeyboardActivation,
 } from '@base-ui-rn/core';
-import { useFocusRing } from '@base-ui-rn/focus-ring';
+import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import {
-  Platform,
   type AccessibilityActionEvent,
   type GestureResponderEvent,
   type NativeSyntheticEvent,
@@ -49,13 +48,7 @@ export function useRadioRoot(
   const isReadOnly = readOnlyProp || (groupContext?.readOnly ?? false);
   const checked = groupContext ? groupContext.value === value : false;
 
-  // Roving tabindex logic:
-  // If we are in a group, only the checked item is a tab stop.
-  // If no item is checked, the first item in the group should be the tab stop.
-  // For simplicity here, we check if it's checked OR if there's no value in the group.
-  const isTabStop = groupContext
-    ? checked || groupContext.value === undefined
-    : true;
+  const hasActiveItem = groupContext?.value !== undefined;
 
   const {
     focused,
@@ -63,16 +56,15 @@ export function useRadioRoot(
     isFocusable,
     onBlur: onFocusOut,
     onFocus: onFocusIn,
-    tabIndex: resolvedTabIndex,
   } = useFocusRing({
     disabled: isDisabled,
     disableDefaultFocusRing,
     focusableWhenDisabled,
-    tabIndex: (tabIndexProp ??
-      (Platform.OS === 'web' ? (isTabStop ? 0 : -1) : undefined)) as
-      | 0
-      | -1
-      | undefined,
+  });
+
+  const tabIndex = resolveTabIndex(isFocusable, tabIndexProp, {
+    hasActiveItem,
+    isActive: checked,
   });
 
   const select = React.useCallback(() => {
@@ -161,6 +153,6 @@ export function useRadioRoot(
     mergedAccessibilityActions,
     readOnly: isReadOnly,
     state,
-    tabIndex: resolvedTabIndex,
+    tabIndex,
   };
 }

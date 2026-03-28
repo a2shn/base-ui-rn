@@ -6,7 +6,11 @@ import { Radio, RadioGroup } from '../index';
 
 const renderRadioGroup = (value?: string) =>
   render(
-    <RadioGroup aria-label='Best apple' defaultValue={value} testID='radiogroup'>
+    <RadioGroup
+      aria-label='Best apple'
+      defaultValue={value}
+      testID='radiogroup'
+    >
       <Radio.Root aria-label='Fuji' value='fuji'>
         <Radio.Indicator testID='fuji-indicator' />
       </Radio.Root>
@@ -77,7 +81,9 @@ describe('Radio - Accessibility', () => {
   });
 
   it('RadioGroup reflects disabled via data-disabled', () => {
-    const { getByTestId } = render(<RadioGroup aria-label='Group' disabled testID='radiogroup' />);
+    const { getByTestId } = render(
+      <RadioGroup aria-label='Group' disabled testID='radiogroup' />,
+    );
     const group = getByTestId('radiogroup');
     expect(group.props['data-disabled']).toBe('true');
   });

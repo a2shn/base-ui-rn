@@ -74,26 +74,6 @@ export const mergeAccessibilityState = (
 };
 
 /**
- * Resolves the tab index for a focusable element.
- * Returns 0 if focusable, -1 if not, or uses the provided override.
- *
- * @param isFocusable - Whether the element should be focusable
- * @param providedTabIndex - Optional: override tab index
- * @returns The resolved tab index (0 for focusable, -1 for not)
- *
- * @example
- * ```tsx
- * const tabIndex = resolveTabIndex(isFocusable, props.tabIndex);
- * ```
- */
-export const resolveTabIndex = (
-  isFocusable: boolean,
-  providedTabIndex?: 0 | -1,
-): 0 | -1 => {
-  return providedTabIndex ?? (isFocusable ? 0 : -1);
-};
-
-/**
  * Resolves the aria-disabled attribute value.
  * Returns the provided override or defaults to the disabled state.
  *
