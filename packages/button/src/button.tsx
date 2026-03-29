@@ -1,49 +1,37 @@
 import {
   DEFAULT_HIT_SLOP,
   evaluateStyles,
-  PressableWithKeyPress,
+  PressableWithKeyDown,
 } from '@base-ui-rn/core';
 import * as React from 'react';
-import { type Role, StyleProp, View, ViewStyle } from 'react-native';
+import {
+  type PressableStateCallbackType,
+  type StyleProp,
+  View,
+  type ViewStyle,
+} from 'react-native';
 
-import { type ButtonProps } from './types';
+import type { ButtonProps, ButtonState } from './types';
 import { useButton } from './use-button';
 
 /**
- * Headless button primitive built on top of React Native Pressable.
- *
- * Supports keyboard interaction, accessibility roles, focus ring management,
- * and ARIA attributes for web.
- *
- * @example
- * ```tsx
- * <Button onPress={...}>
- *   {({ pressed }) => <Text>{pressed ? 'Pressed' : 'Press Me'}</Text>}
- * </Button>
- * ```
+ * A headless, accessible button primitive that manages interaction states and
+ * keyboard-based activation for React Native.
+ * * @remarks
+ * - Implements WAI-ARIA inspired patterns for mobile (TalkBack/VoiceOver).
+ * - Synchronizes internal `Pressable` state with `useButtonA11y`.
+ * - Supports render-prop patterns for both `style` and `children`.
+ * * @param props - Component props defined in {@link ButtonProps}.
  */
 export const Button = React.memo(
-  React.forwardRef<View, ButtonProps>(function Root(props, forwardedRef) {
-    const {
-      accessibilityHint: accessibilityHintProp,
-      accessibilityRole: accessibilityRoleProp,
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
-      'aria-hidden': ariaHidden,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      children,
-      hitSlop = DEFAULT_HIT_SLOP,
-      style,
-      ...otherProps
-    } = props;
+  React.forwardRef<View, ButtonProps>(function Button(props, forwardedRef) {
+    const { children, hitSlop = DEFAULT_HIT_SLOP, style } = props;
 
     const internalRef = React.useRef<View>(null);
     React.useImperativeHandle(forwardedRef, () => internalRef.current!);
 
     const {
+      a11yProps,
       focused,
       focusRingStyle,
       handleAccessibilityAction,
@@ -51,55 +39,50 @@ export const Button = React.memo(
       handleFocus,
       handleKeyDown,
       handlePress,
+      handlePressIn,
+      handlePressOut,
       isFocusable,
-      mergedAccessibilityActions,
-      mergedAccessibilityState,
-      resolvedAriaDisabled,
-      resolvedAriaKeyshortcuts,
+      pressed,
       tabIndex,
     } = useButton(props);
 
+    const buttonState: ButtonState = React.useMemo(
+      () => ({
+        focused,
+        pressed,
+      }),
+      [focused, pressed],
+    );
+
     const resolvedStyle = React.useMemo<StyleProp<ViewStyle>>(() => {
-      const baseStyle = evaluateStyles(style, { focused, pressed: false });
-      if (focusRingStyle) {
-        return [baseStyle, focusRingStyle];
-      }
-      return baseStyle;
-    }, [style, focused, focusRingStyle]);
+      const base = evaluateStyles(style, buttonState);
+      return focusRingStyle ? [base, focusRingStyle] : base;
+    }, [style, buttonState, focusRingStyle]);
 
     return (
-      <PressableWithKeyPress
-        {...otherProps}
-        accessibilityActions={mergedAccessibilityActions}
-        accessibilityHint={accessibilityHintProp}
-        accessibilityState={mergedAccessibilityState}
-        accessible
-        aria-busy={ariaBusy}
-        aria-describedby={ariaDescribedBy}
-        aria-details={ariaDetails}
-        aria-disabled={resolvedAriaDisabled}
-        aria-expanded={ariaExpanded}
-        aria-hidden={ariaHidden}
-        aria-keyshortcuts={resolvedAriaKeyshortcuts}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
+      <PressableWithKeyDown
+        {...props}
+        {...a11yProps}
         focusable={isFocusable}
         hitSlop={hitSlop}
-        importantForAccessibility='yes'
         onAccessibilityAction={handleAccessibilityAction}
         onBlur={handleBlur}
         onFocus={handleFocus}
         onKeyDown={handleKeyDown}
         onPress={handlePress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
         ref={internalRef}
-        role={(accessibilityRoleProp ?? 'button') as Role}
         style={resolvedStyle}
         tabIndex={tabIndex}
       >
-        {(pressableState) =>
-          evaluateStyles(children, { ...pressableState, focused })
+        {(pressableState: PressableStateCallbackType) =>
+          evaluateStyles(children, {
+            ...pressableState,
+            focused,
+          })
         }
-      </PressableWithKeyPress>
+      </PressableWithKeyDown>
     );
   }),
 );

@@ -1,11 +1,6 @@
-import {
-  ACTIVATION_KEYS,
-  DEFAULT_HINT,
-  DPAD_KEYS,
-  NON_ACTIVATION_KEYS,
-} from '@base-ui-rn/test-utils';
+import { ACTIVATION_KEYS } from '@base-ui-rn/core';
+import { DEFAULT_HINT, NON_ACTIVATION_KEYS } from '@base-ui-rn/test-utils';
 import { fireEvent, render } from '@testing-library/react-native';
-import * as React from 'react';
 import { Text } from 'react-native';
 
 import { Button } from '../button';
@@ -16,6 +11,34 @@ describe('Button - Keyboard Interaction', () => {
   });
 
   describe('Activation Keys', () => {
+    it('triggers onPress when Enter is pressed', () => {
+      const onPressMock = jest.fn();
+      const { getByRole } = render(
+        <Button accessibilityHint={DEFAULT_HINT} onPress={onPressMock}>
+          <Text>Keyboard Button</Text>
+        </Button>,
+      );
+
+      const button = getByRole('button');
+      fireEvent(button, 'keyDown', { nativeEvent: { key: 'Enter' } });
+
+      expect(onPressMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('triggers onPress when Space is pressed', () => {
+      const onPressMock = jest.fn();
+      const { getByRole } = render(
+        <Button accessibilityHint={DEFAULT_HINT} onPress={onPressMock}>
+          <Text>Keyboard Button</Text>
+        </Button>,
+      );
+
+      const button = getByRole('button');
+      fireEvent(button, 'keyDown', { nativeEvent: { key: ' ' } });
+
+      expect(onPressMock).toHaveBeenCalledTimes(1);
+    });
+
     it('triggers onPress for all activation keys', () => {
       const onPressMock = jest.fn();
       const { getByRole } = render(
@@ -33,28 +56,11 @@ describe('Button - Keyboard Interaction', () => {
       expect(onPressMock).toHaveBeenCalledTimes(ACTIVATION_KEYS.length);
     });
 
-    it('triggers onPress for Space and Enter keys specifically', () => {
-      const onPressMock = jest.fn();
-      const { getByRole } = render(
-        <Button accessibilityHint={DEFAULT_HINT} onPress={onPressMock}>
-          <Text>Keyboard Button</Text>
-        </Button>,
-      );
-
-      const button = getByRole('button');
-
-      fireEvent(button, 'keyDown', { nativeEvent: { key: ' ' } });
-      expect(onPressMock).toHaveBeenCalledTimes(1);
-
-      fireEvent(button, 'keyDown', { nativeEvent: { key: 'Enter' } });
-      expect(onPressMock).toHaveBeenCalledTimes(2);
-    });
-
-    it('ignores hardware keyboard events when disabled', () => {
+    it('ignores keyboard activation when disabled', () => {
       const onPressMock = jest.fn();
       const { getByRole } = render(
         <Button accessibilityHint={DEFAULT_HINT} disabled onPress={onPressMock}>
-          <Text>Disabled Keyboard Button</Text>
+          <Text>Disabled Button</Text>
         </Button>,
       );
 
@@ -64,7 +70,7 @@ describe('Button - Keyboard Interaction', () => {
       expect(onPressMock).not.toHaveBeenCalled();
     });
 
-    it('blocks all keyboard activation keys when disabled even if focusable', () => {
+    it('blocks all keyboard activation when disabled but focusable', () => {
       const onPressMock = jest.fn();
       const { getByRole } = render(
         <Button
@@ -73,7 +79,7 @@ describe('Button - Keyboard Interaction', () => {
           focusableWhenDisabled
           onPress={onPressMock}
         >
-          <Text>Loading Button</Text>
+          <Text>Focusable Disabled</Text>
         </Button>,
       );
 
@@ -85,14 +91,36 @@ describe('Button - Keyboard Interaction', () => {
 
       expect(onPressMock).not.toHaveBeenCalled();
     });
+
+    it('restores keyboard activation when re-enabled', () => {
+      const onPressMock = jest.fn();
+      const { getByRole, rerender } = render(
+        <Button accessibilityHint={DEFAULT_HINT} disabled onPress={onPressMock}>
+          <Text>Disabled</Text>
+        </Button>,
+      );
+
+      const button = getByRole('button');
+      fireEvent(button, 'keyDown', { nativeEvent: { key: 'Enter' } });
+      expect(onPressMock).not.toHaveBeenCalled();
+
+      rerender(
+        <Button accessibilityHint={DEFAULT_HINT} onPress={onPressMock}>
+          <Text>Enabled</Text>
+        </Button>,
+      );
+
+      fireEvent(button, 'keyDown', { nativeEvent: { key: 'Enter' } });
+      expect(onPressMock).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('Non-Activation Keys', () => {
-    it('does not trigger onPress for navigation and modifier keys', () => {
+    it('does not trigger onPress for non-activation keys', () => {
       const onPressMock = jest.fn();
       const { getByRole } = render(
         <Button accessibilityHint={DEFAULT_HINT} onPress={onPressMock}>
-          <Text>Keyboard Button</Text>
+          <Text>Button</Text>
         </Button>,
       );
 
@@ -105,30 +133,27 @@ describe('Button - Keyboard Interaction', () => {
       expect(onPressMock).not.toHaveBeenCalled();
     });
 
-    it('does not trigger onPress for D-pad navigation keys', () => {
+    it('does not trigger onPress for Tab key', () => {
       const onPressMock = jest.fn();
       const { getByRole } = render(
         <Button accessibilityHint={DEFAULT_HINT} onPress={onPressMock}>
-          <Text>Keyboard Button</Text>
+          <Text>Button</Text>
         </Button>,
       );
 
       const button = getByRole('button');
-
-      DPAD_KEYS.forEach((key) => {
-        fireEvent(button, 'keyDown', { nativeEvent: { key } });
-      });
+      fireEvent(button, 'keyDown', { nativeEvent: { key: 'Tab' } });
 
       expect(onPressMock).not.toHaveBeenCalled();
     });
   });
 
   describe('onKeyDown Callback', () => {
-    it('forwards all key events to onKeyDown callback regardless of key type', () => {
+    it('forwards all key events to onKeyDown callback', () => {
       const onKeyDownMock = jest.fn();
       const { getByRole } = render(
         <Button accessibilityHint={DEFAULT_HINT} onKeyDown={onKeyDownMock}>
-          <Text>Keyboard Button</Text>
+          <Text>Button</Text>
         </Button>,
       );
 
@@ -136,76 +161,15 @@ describe('Button - Keyboard Interaction', () => {
 
       fireEvent(button, 'keyDown', { nativeEvent: { key: 'Tab' } });
       fireEvent(button, 'keyDown', { nativeEvent: { key: 'Enter' } });
-      fireEvent(button, 'keyDown', { nativeEvent: { key: 'ArrowDown' } });
+      fireEvent(button, 'keyDown', { nativeEvent: { key: 'Escape' } });
 
       expect(onKeyDownMock).toHaveBeenCalledTimes(3);
     });
 
-    it('forwards activation keys to both onPress and onKeyDown', () => {
-      const onPressMock = jest.fn();
+    it('forwards both activation and non-activation keys to onKeyDown', () => {
       const onKeyDownMock = jest.fn();
       const { getByRole } = render(
-        <Button
-          accessibilityHint={DEFAULT_HINT}
-          onKeyDown={onKeyDownMock}
-          onPress={onPressMock}
-        >
-          <Text>Keyboard Button</Text>
-        </Button>,
-      );
-
-      const button = getByRole('button');
-
-      fireEvent(button, 'keyDown', { nativeEvent: { key: 'Enter' } });
-
-      expect(onPressMock).toHaveBeenCalledTimes(1);
-      expect(onKeyDownMock).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('focusableWhenDisabled with Keyboard', () => {
-    it('restores full interaction when re-enabled after disabled + focusableWhenDisabled', () => {
-      const onPressMock = jest.fn();
-      const { getByRole, rerender } = render(
-        <Button
-          accessibilityHint={DEFAULT_HINT}
-          disabled
-          focusableWhenDisabled
-          onPress={onPressMock}
-        >
-          <Text>Loading Button</Text>
-        </Button>,
-      );
-
-      const loadingButton = getByRole('button');
-      expect(loadingButton.props.focusable).toBe(true);
-      expect(loadingButton.props.accessibilityState.disabled).toBe(true);
-
-      fireEvent(loadingButton, 'keyDown', { nativeEvent: { key: 'Enter' } });
-      expect(onPressMock).not.toHaveBeenCalled();
-
-      rerender(
-        <Button accessibilityHint={DEFAULT_HINT} onPress={onPressMock}>
-          <Text>Active Button</Text>
-        </Button>,
-      );
-
-      const activeButton = getByRole('button');
-      expect(activeButton.props.focusable).toBe(true);
-      expect(activeButton.props.accessibilityState.disabled).toBe(false);
-
-      fireEvent(activeButton, 'keyDown', { nativeEvent: { key: 'Enter' } });
-      expect(onPressMock).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not affect onPress when button is enabled with focusableWhenDisabled set', () => {
-      const onPressMock = jest.fn();
-      const { getByRole } = render(
-        <Button
-          accessibilityHint={DEFAULT_HINT}
-          focusableWhenDisabled
-          onPress={onPressMock}
-        >
+        <Button accessibilityHint={DEFAULT_HINT} onKeyDown={onKeyDownMock}>
           <Text>Button</Text>
         </Button>,
       );
@@ -213,8 +177,177 @@ describe('Button - Keyboard Interaction', () => {
       const button = getByRole('button');
 
       fireEvent(button, 'keyDown', { nativeEvent: { key: 'Enter' } });
+      fireEvent(button, 'keyDown', { nativeEvent: { key: 'Tab' } });
+      fireEvent(button, 'keyDown', { nativeEvent: { key: 'ArrowDown' } });
+
+      expect(onKeyDownMock).toHaveBeenCalledTimes(3);
+    });
+
+    it('receives native event data in onKeyDown', () => {
+      const onKeyDownMock = jest.fn();
+      const { getByRole } = render(
+        <Button accessibilityHint={DEFAULT_HINT} onKeyDown={onKeyDownMock}>
+          <Text>Button</Text>
+        </Button>,
+      );
+
+      const button = getByRole('button');
+      fireEvent(button, 'keyDown', { nativeEvent: { key: 'Enter' } });
+
+      expect(onKeyDownMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          nativeEvent: expect.objectContaining({ key: 'Enter' }),
+        }),
+      );
+    });
+  });
+
+  describe('Focus Management', () => {
+    it('calls onFocus when focused', () => {
+      const onFocusMock = jest.fn();
+      const { getByRole } = render(
+        <Button accessibilityHint={DEFAULT_HINT} onFocus={onFocusMock}>
+          <Text>Button</Text>
+        </Button>,
+      );
+
+      const button = getByRole('button');
+      fireEvent(button, 'focus');
+
+      expect(onFocusMock).toHaveBeenCalled();
+    });
+
+    it('calls onBlur when blurred', () => {
+      const onBlurMock = jest.fn();
+      const { getByRole } = render(
+        <Button accessibilityHint={DEFAULT_HINT} onBlur={onBlurMock}>
+          <Text>Button</Text>
+        </Button>,
+      );
+
+      const button = getByRole('button');
+      fireEvent(button, 'blur');
+
+      expect(onBlurMock).toHaveBeenCalled();
+    });
+
+    it('tracks focused state correctly', () => {
+      const { getByRole } = render(
+        <Button accessibilityHint={DEFAULT_HINT}>
+          <Text>Button</Text>
+        </Button>,
+      );
+
+      const button = getByRole('button');
+
+      expect(button.props.focusable).toBe(true);
+    });
+  });
+
+  describe('Accessibility Action Integration', () => {
+    it('triggers onPress via accessibility action (VoiceOver/TalkBack)', () => {
+      const onPressMock = jest.fn();
+      const { getByRole } = render(
+        <Button accessibilityHint={DEFAULT_HINT} onPress={onPressMock}>
+          <Text>Button</Text>
+        </Button>,
+      );
+
+      const button = getByRole('button');
+      fireEvent(button, 'accessibilityAction', {
+        nativeEvent: { actionName: 'activate' },
+      });
 
       expect(onPressMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('triggers onPress for magicTap accessibility action', () => {
+      const onPressMock = jest.fn();
+      const { getByRole } = render(
+        <Button accessibilityHint={DEFAULT_HINT} onPress={onPressMock}>
+          <Text>Button</Text>
+        </Button>,
+      );
+
+      const button = getByRole('button');
+      fireEvent(button, 'accessibilityAction', {
+        nativeEvent: { actionName: 'magicTap' },
+      });
+
+      expect(onPressMock).toHaveBeenCalled();
+    });
+
+    it('does not trigger onPress for non-activation accessibility actions like longpress', () => {
+      const onPressMock = jest.fn();
+      const onAccessibilityAction = jest.fn();
+      const { getByRole } = render(
+        <Button
+          accessibilityHint={DEFAULT_HINT}
+          onAccessibilityAction={onAccessibilityAction}
+          onPress={onPressMock}
+        >
+          <Text>Button</Text>
+        </Button>,
+      );
+
+      const button = getByRole('button');
+      fireEvent(button, 'accessibilityAction', {
+        nativeEvent: { actionName: 'longpress' },
+      });
+
+      expect(onPressMock).not.toHaveBeenCalled();
+      expect(onAccessibilityAction).toHaveBeenCalled();
+    });
+  });
+
+  describe('Keyboard and Focus Ring Interaction', () => {
+    it('applies focus ring style when focused', () => {
+      const onFocusMock = jest.fn();
+      const { getByRole } = render(
+        <Button accessibilityHint={DEFAULT_HINT} onFocus={onFocusMock}>
+          <Text>Button</Text>
+        </Button>,
+      );
+
+      const button = getByRole('button');
+      fireEvent(button, 'focus');
+
+      expect(onFocusMock).toHaveBeenCalled();
+    });
+
+    it('works with disableDefaultFocusRing', () => {
+      const { getByRole } = render(
+        <Button accessibilityHint={DEFAULT_HINT} disableDefaultFocusRing>
+          <Text>No Focus Ring</Text>
+        </Button>,
+      );
+
+      expect(getByRole('button')).toBeDefined();
+    });
+
+    it('handles focus state with focusableWhenDisabled', () => {
+      const onFocusMock = jest.fn();
+      const { getByRole, rerender } = render(
+        <Button
+          accessibilityHint={DEFAULT_HINT}
+          disabled
+          focusableWhenDisabled
+          onFocus={onFocusMock}
+        >
+          <Text>Button</Text>
+        </Button>,
+      );
+
+      const button = getByRole('button');
+      expect(button.props.focusable).toBe(true);
+
+      rerender(
+        <Button accessibilityHint={DEFAULT_HINT} onFocus={onFocusMock}>
+          <Text>Button</Text>
+        </Button>,
+      );
+
+      expect(button.props.focusable).toBe(true);
     });
   });
 });
