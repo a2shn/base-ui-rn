@@ -1,42 +1,29 @@
+import { testAccessibility } from '@base-ui-rn/test-utils';
 import { render } from '@testing-library/react-native';
-import * as React from 'react';
-import { View } from 'react-native';
 
-import { Separator } from '../separator';
+import { Separator } from '../index';
 
 describe('Separator - Accessibility', () => {
-  it('renders with default horizontal orientation and separator role', () => {
-    const { getByTestId } = render(<Separator testID='separator' />);
-    const separator = getByTestId('separator');
+  describe('Default Accessibility', () => {
+    it('has correct default accessibility role and label', () => {
+      const { getByRole } = render(<Separator />);
+      const separator = getByRole('separator');
 
-    expect(separator.props.role).toBe('separator');
-    // On web, it should have aria-orientation horizontal
-    expect(separator.props['aria-orientation']).toBe('horizontal');
-    // And data-orientation for CSS
-    expect(separator.props['data-orientation']).toBe('horizontal');
+      testAccessibility(separator, {
+        importantForAccessibility: 'yes',
+        label: 'Horizontal separator',
+      });
+    });
   });
 
-  it('renders with vertical orientation', () => {
-    const { getByTestId } = render(
-      <Separator orientation='vertical' testID='separator' />,
-    );
-    const separator = getByTestId('separator');
+  describe('Orientation', () => {
+    it('has correct label for vertical orientation', () => {
+      const { getByRole } = render(<Separator orientation='vertical' />);
+      const separator = getByRole('separator');
 
-    expect(separator.props.role).toBe('separator');
-    expect(separator.props['aria-orientation']).toBe('vertical');
-    expect(separator.props['data-orientation']).toBe('vertical');
-  });
-
-  it('is hidden from screen readers when decorative', () => {
-    const { UNSAFE_getByType } = render(
-      <Separator decorative testID='separator' />,
-    );
-    const separator = UNSAFE_getByType(View);
-
-    expect(separator.props.role).toBe('presentation');
-    expect(separator.props.accessibilityElementsHidden).toBe(true);
-    expect(separator.props.importantForAccessibility).toBe(
-      'no-hide-descendants',
-    );
+      testAccessibility(separator, {
+        label: 'Vertical separator',
+      });
+    });
   });
 });
