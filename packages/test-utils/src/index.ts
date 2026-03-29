@@ -1,25 +1,8 @@
-import { fireEvent, render, RenderResult } from '@testing-library/react-native';
-import * as React from 'react';
+import { fireEvent, RenderResult } from '@testing-library/react-native';
 
 export { fireEvent };
 
 export const DEFAULT_HINT = 'Triggers an action';
-
-/**
- * Helper to render a component and get the element by role
- */
-export function renderWithRole<T extends string>(
-  component: React.ReactElement,
-  role?: T,
-): RenderResult & {
-  getElement: (r?: T) => ReturnType<RenderResult['getByRole']>;
-} {
-  const result = render(component);
-  return {
-    ...result,
-    getElement: (r?: T) => result.getByRole((r || role || 'button') as T),
-  };
-}
 
 /**
  * Interface for comprehensive accessibility testing
@@ -99,23 +82,6 @@ export function testAccessibility(
   }
 }
 
-/**
- * Common activation keys used across components
- */
-export const ACTIVATION_KEYS = [
-  'Enter',
-  ' ',
-  'Spacebar',
-  'Space',
-  'Select',
-  'Return',
-  'OK',
-  'Accept',
-  'GamepadA',
-  'buttonA',
-  'buttonX',
-  'Cross',
-];
 
 /**
  * Non-activation keys that should not trigger state changes
@@ -133,7 +99,3 @@ export const NON_ACTIVATION_KEYS = [
   'PageDown',
 ];
 
-/**
- * D-pad/gamepad navigation keys that should not trigger activation
- */
-export const DPAD_KEYS = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];

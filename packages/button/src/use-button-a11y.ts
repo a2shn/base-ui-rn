@@ -29,7 +29,6 @@ export const useButtonA11y = ({
     accessibilityState,
     accessibilityValue,
     onAccessibilityEscape,
-    onPress,
   } = props;
 
   if (__DEV__) {
@@ -42,13 +41,6 @@ export const useButtonA11y = ({
         '[Button] accessibilityLabel and accessibilityHint are identical. ' +
           'Screen readers announce both — the hint should describe the outcome, ' +
           'not repeat the label.',
-      );
-    }
-
-    if (!onPress && !isDisabled) {
-      console.warn(
-        '[Button] No onPress handler provided on an enabled button. ' +
-          'If this is intentional, set disabled.',
       );
     }
   }
@@ -76,9 +68,7 @@ export const useButtonA11y = ({
     accessibilityState: mergedState,
     accessibilityValue,
     accessible: true as const,
-    importantForAccessibility: isFocusable
-      ? ('yes' as const)
-      : ('no-hide-descendants' as const),
+    importantForAccessibility: isFocusable ? ('yes' as const) : ('no' as const),
     onAccessibilityEscape,
     role: 'button' as const,
   };

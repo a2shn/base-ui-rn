@@ -10,8 +10,14 @@ import * as React from 'react';
 import { StyleSheet, Text } from 'react-native';
 
 export function ButtonPlaybook() {
-  const { count, loading, loadingPressCount } = usePlaybookToggles({
+  const {
+    count,
+    lastEvent,
+    loading,
+    loadingPressCount,
+  } = usePlaybookToggles({
     count: 0,
+    lastEvent: 'None',
     loading: false,
     loadingPressCount: 0,
   });
@@ -24,22 +30,37 @@ export function ButtonPlaybook() {
   }, [loading, loadingPressCount]);
 
   return (
-    <Gallery title='Button'>
+    <Gallery title='Button API Coverage'>
       <Section title='Counter'>
         <Button
           accessibilityHint='Increments the counter'
-          onPress={() => count.setValue(count.value + 1)}
+          accessibilityLabel='Counter Button'
+          onPress={() => count.setValue((count.value as number) + 1)}
           style={styles.buttonBase}
           testID='button-counter'
         >
-          <Text style={styles.textWhite}>{count.value}</Text>
+          <Text style={styles.textWhite}>{count.value as number}</Text>
         </Button>
         <LiveConsole state={count} title='count' />
       </Section>
 
+      <Section title='Stateful Children'>
+        <Button
+          accessibilityLabel='Stateful Children Button'
+          onPress={() => { }}
+          style={styles.buttonBase}
+        >
+          {({ pressed, focused }) => (
+            <Text style={[styles.textSecondary, (pressed || focused) && styles.textWhiteBold]}>
+              {pressed ? 'Currently Pressed' : focused ? 'Currently Focused' : 'Idle State'}
+            </Text>
+          )}
+        </Button>
+      </Section>
+
+
       <Section title='Disabled'>
         <Button
-          accessibilityHint='Locked button'
           accessibilityLabel='Disabled Button'
           disabled
           disableDefaultFocusRing
@@ -50,7 +71,7 @@ export function ButtonPlaybook() {
         </Button>
       </Section>
 
-      <Section title='Loading'>
+      <Section title='Loading & Focusable'>
         <Button
           accessibilityHint={
             loading.value ? 'Loading, please wait' : 'Press to start loading'
@@ -69,17 +90,14 @@ export function ButtonPlaybook() {
         </Button>
 
         <LiveConsole state={loading} testID='loading-console' title='loading' />
-        <LiveConsole
-          state={loadingPressCount}
-          testID='presses-console'
-          title='presses'
-        />
+        <LiveConsole state={loadingPressCount} testID='presses-console' title='presses' />
       </Section>
 
       <Section title='Custom Focus'>
         <Button
+          accessibilityLabel='Custom Focus Button'
           disableDefaultFocusRing
-          onPress={() => {}}
+          onPress={() => { }}
           style={styles.buttonBase}
         >
           {({ focused }) => (
@@ -90,6 +108,20 @@ export function ButtonPlaybook() {
             </Text>
           )}
         </Button>
+      </Section>
+
+      <Section title='Explicit Event Handlers'>
+        <Button
+          accessibilityLabel='Event Handlers Button'
+          onBlur={() => lastEvent.setValue('Lost focus')}
+          onFocus={() => lastEvent.setValue('Gained focus')}
+          onKeyDown={(e) => lastEvent.setValue(`Key pressed: ${e.nativeEvent.key}`)}
+          onPress={() => lastEvent.setValue('Pressed')}
+          style={styles.buttonBase}
+        >
+          <Text style={styles.textWhite}>Interact to see events</Text>
+        </Button>
+        <LiveConsole state={lastEvent} title='last event' />
       </Section>
     </Gallery>
   );

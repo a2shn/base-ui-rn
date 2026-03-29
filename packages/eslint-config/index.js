@@ -3,7 +3,6 @@ import jsonc from 'eslint-plugin-jsonc';
 import packageJson from 'eslint-plugin-package-json';
 import perfectionist from 'eslint-plugin-perfectionist';
 import prettier from 'eslint-plugin-prettier/recommended';
-import reactNativeA11y from 'eslint-plugin-react-native-a11y';
 import yml from 'eslint-plugin-yml';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import tseslint from 'typescript-eslint';
@@ -72,23 +71,7 @@ export const config = (options = []) =>
       },
     },
 
-    {
-      files: ['**/*.ts', '**/*.tsx'],
-      languageOptions: {
-        parser: tseslint.parser,
-        parserOptions: {
-          ecmaVersion: 'latest',
-          sourceType: 'module',
-        },
-      },
-      plugins: {
-        'react-native-a11y': reactNativeA11y,
-      },
-      rules: {
-        ...reactNativeA11y.configs.all.rules,
-        'no-console': ['warn', { allow: ['warn', 'error'] }],
-      },
-    },
+
 
     {
       plugins: {

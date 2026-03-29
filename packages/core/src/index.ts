@@ -27,9 +27,6 @@ export {
   isActivationAction,
   mergeAccessibilityActions,
   mergeAccessibilityState,
-  resolveAriaDisabled,
-  resolveAriaPressed,
-  resolveDataPressed,
 } from './accessibility';
 
 export {
@@ -40,4 +37,4 @@ export {
 
 export { clamp, evaluateStyles, mergeRefs } from './utils';
 
-export { PressableWithKeyPress } from './pressable';
+export { PressableWithKeyPress, PressableWithKeyDown } from './pressable';

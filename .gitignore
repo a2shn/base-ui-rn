@@ -60,4 +60,4 @@ coverage
 .cache
 .eslintcache
 
-apply.sh
+adb_wifi.sh
