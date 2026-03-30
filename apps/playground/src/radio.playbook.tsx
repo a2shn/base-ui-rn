@@ -1,5 +1,3 @@
-import { Radio, RadioGroup } from '@base-ui-rn/radio';
-import type { RadioRootState } from '@base-ui-rn/radio';
 import {
   Gallery,
   LiveConsole,
@@ -7,13 +5,15 @@ import {
   theme,
   usePlaybookToggles,
 } from '@base-ui-rn/playbook';
+import { Radio, RadioGroup } from '@base-ui-rn/radio';
+import type { RadioRootState } from '@base-ui-rn/radio';
 import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 export function RadioPlaybook() {
-  const { value, horizontalValue } = usePlaybookToggles({
-    value: 'fuji',
+  const { horizontalValue, value } = usePlaybookToggles({
     horizontalValue: 'a',
+    value: 'fuji',
   });
 
   return (
@@ -112,14 +112,14 @@ const styles = StyleSheet.create({
   indicatorDisabled: {
     backgroundColor: theme.colors.border,
   },
-  label: {
-    color: theme.colors.textPrimary,
-    fontSize: theme.font.size.md,
-  },
   item: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: theme.spacing.md,
+  },
+  label: {
+    color: theme.colors.textPrimary,
+    fontSize: theme.font.size.md,
   },
   radioIndicatorBase: {
     backgroundColor: theme.colors.textPrimary,
@@ -146,4 +146,3 @@ const styles = StyleSheet.create({
     gap: theme.spacing.xl,
   },
 });
-

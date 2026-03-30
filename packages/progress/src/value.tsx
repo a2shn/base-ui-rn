@@ -1,3 +1,4 @@
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { Text } from 'react-native';
 
@@ -16,56 +17,24 @@ import type { ProgressValueProps } from './types';
  */
 export const ProgressValue = React.memo(
   React.forwardRef<Text, ProgressValueProps>((props, ref) => {
-    const {
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
-      'aria-hidden': ariaHidden,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      children,
-      'data-complete': dataComplete,
-      'data-indeterminate': dataIndeterminate,
-      'data-progressing': dataProgressing,
-      style,
-      ...otherProps
-    } = props;
-    const {
-      formattedValue,
-      isComplete,
-      isIndeterminate,
-      isProgressing,
-      value,
-    } = useProgressContext();
+    const { children, style } = props;
+    const context = useProgressContext();
+    const { formattedValue } = context;
 
-    const resolvedStyle =
-      typeof style === 'function' ? style(formattedValue, value) : style;
+    const resolvedStyle = evaluateStyles(style, context);
+    const resolvedChildren = evaluateStyles(children, context);
 
     return (
       <Text
-        {...otherProps}
-        aria-busy={ariaBusy}
-        aria-describedby={ariaDescribedBy}
-        aria-details={ariaDetails}
-        aria-expanded={ariaExpanded}
-        aria-hidden={ariaHidden ?? true}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
-        data-complete={dataComplete ?? (isComplete ? 'true' : undefined)}
-        data-indeterminate={
-          dataIndeterminate ?? (isIndeterminate ? 'true' : undefined)
-        }
-        data-progressing={
-          dataProgressing ?? (isProgressing ? 'true' : undefined)
-        }
+        {...props}
+        // Purely visual — the root's accessibilityValue.text already
+        // communicates the value to screen readers
+        accessibilityElementsHidden
         importantForAccessibility='no-hide-descendants'
         ref={ref}
         style={resolvedStyle}
       >
-        {typeof children === 'function'
-          ? children(formattedValue, value)
-          : formattedValue}
+        {resolvedChildren ?? formattedValue}
       </Text>
     );
   }),

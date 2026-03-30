@@ -10,12 +10,7 @@ import * as React from 'react';
 import { StyleSheet, Text } from 'react-native';
 
 export function ButtonPlaybook() {
-  const {
-    count,
-    lastEvent,
-    loading,
-    loadingPressCount,
-  } = usePlaybookToggles({
+  const { count, lastEvent, loading, loadingPressCount } = usePlaybookToggles({
     count: 0,
     lastEvent: 'None',
     loading: false,
@@ -47,17 +42,25 @@ export function ButtonPlaybook() {
       <Section title='Stateful Children'>
         <Button
           accessibilityLabel='Stateful Children Button'
-          onPress={() => { }}
+          onPress={() => {}}
           style={styles.buttonBase}
         >
-          {({ pressed, focused }) => (
-            <Text style={[styles.textSecondary, (pressed || focused) && styles.textWhiteBold]}>
-              {pressed ? 'Currently Pressed' : focused ? 'Currently Focused' : 'Idle State'}
+          {({ focused, pressed }) => (
+            <Text
+              style={[
+                styles.textSecondary,
+                (pressed || focused) && styles.textWhiteBold,
+              ]}
+            >
+              {pressed
+                ? 'Currently Pressed'
+                : focused
+                  ? 'Currently Focused'
+                  : 'Idle State'}
             </Text>
           )}
         </Button>
       </Section>
-
 
       <Section title='Disabled'>
         <Button
@@ -90,14 +93,18 @@ export function ButtonPlaybook() {
         </Button>
 
         <LiveConsole state={loading} testID='loading-console' title='loading' />
-        <LiveConsole state={loadingPressCount} testID='presses-console' title='presses' />
+        <LiveConsole
+          state={loadingPressCount}
+          testID='presses-console'
+          title='presses'
+        />
       </Section>
 
       <Section title='Custom Focus'>
         <Button
           accessibilityLabel='Custom Focus Button'
           disableDefaultFocusRing
-          onPress={() => { }}
+          onPress={() => {}}
           style={styles.buttonBase}
         >
           {({ focused }) => (
@@ -115,7 +122,9 @@ export function ButtonPlaybook() {
           accessibilityLabel='Event Handlers Button'
           onBlur={() => lastEvent.setValue('Lost focus')}
           onFocus={() => lastEvent.setValue('Gained focus')}
-          onKeyDown={(e) => lastEvent.setValue(`Key pressed: ${e.nativeEvent.key}`)}
+          onKeyDown={(e) =>
+            lastEvent.setValue(`Key pressed: ${e.nativeEvent.key}`)
+          }
           onPress={() => lastEvent.setValue('Pressed')}
           style={styles.buttonBase}
         >

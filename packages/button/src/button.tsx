@@ -13,17 +13,21 @@ import {
 
 import type { ButtonProps, ButtonState } from './types';
 import { useButton } from './use-button';
+import { eventNames } from 'process';
 
 /**
- * A headless, accessible button primitive that manages interaction states and
- * keyboard-based activation for React Native.
- * * @remarks
- * - Implements WAI-ARIA inspired patterns for mobile (TalkBack/VoiceOver).
- * - Synchronizes internal `Pressable` state with `useButtonA11y`.
- * - Supports render-prop patterns for both `style` and `children`.
- * * @param props - Component props defined in {@link ButtonProps}.
- */
-export const Button = React.memo(
+ * Headless button primitive built on top of React Native Pressable.
+ *
+ * Supports keyboard interaction, accessibility roles, focus ring management,
+ * and ARIA attributes for web.
+ *
+ * @example
+ * ```tsx
+ * <Button onPress={...}>
+ *   {({ pressed }) => <Text>{pressed ? 'Pressed' : 'Press Me'}</Text>}
+ * </Button>
+ * ```
+ */export const Button = React.memo(
   React.forwardRef<View, ButtonProps>(function Button(props, forwardedRef) {
     const { children, hitSlop = DEFAULT_HIT_SLOP, style } = props;
 

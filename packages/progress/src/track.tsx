@@ -17,44 +17,16 @@ import type { ProgressTrackProps } from './types';
  */
 export const ProgressTrack = React.memo(
   React.forwardRef<View, ProgressTrackProps>((props, ref) => {
-    const {
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
-      'aria-hidden': ariaHidden,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      children,
-      'data-complete': dataComplete,
-      'data-indeterminate': dataIndeterminate,
-      'data-progressing': dataProgressing,
-      style,
-      ...otherProps
-    } = props;
+    const { children, style } = props;
     const context = useProgressContext();
-    const { isComplete, isIndeterminate, isProgressing } = context;
 
     const resolvedChildren = evaluateStyles(children, context);
     const resolvedStyle = evaluateStyles(style, context);
 
     return (
       <View
-        {...otherProps}
-        aria-busy={ariaBusy}
-        aria-describedby={ariaDescribedBy}
-        aria-details={ariaDetails}
-        aria-expanded={ariaExpanded}
-        aria-hidden={ariaHidden ?? true}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
-        data-complete={dataComplete ?? (isComplete ? 'true' : undefined)}
-        data-indeterminate={
-          dataIndeterminate ?? (isIndeterminate ? 'true' : undefined)
-        }
-        data-progressing={
-          dataProgressing ?? (isProgressing ? 'true' : undefined)
-        }
+        {...props}
+        accessibilityElementsHidden
         importantForAccessibility='no-hide-descendants'
         ref={ref}
         style={resolvedStyle}

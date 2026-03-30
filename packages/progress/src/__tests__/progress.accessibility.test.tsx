@@ -1,13 +1,12 @@
 import { testAccessibility } from '@base-ui-rn/test-utils';
 import { render } from '@testing-library/react-native';
-import * as React from 'react';
 
 import { Progress } from '../index';
 
 describe('Progress - Accessibility', () => {
   it('has correct default accessibility traits', () => {
     const { getByRole } = render(
-      <Progress.Root value={50}>
+      <Progress.Root value={50} >
         <Progress.Label>Loading</Progress.Label>
       </Progress.Root>,
     );
@@ -19,6 +18,9 @@ describe('Progress - Accessibility', () => {
     });
 
     expect(progress.props.accessibilityValue).toEqual({
+      max: 100,
+      min: 0,
+      now: 50,
       text: '50',
     });
   });
@@ -34,19 +36,24 @@ describe('Progress - Accessibility', () => {
     const progress = getByRole('progressbar');
 
     expect(label.props.nativeID).toBeDefined();
-    expect(progress.props['aria-labelledby']).toBe(label.props.nativeID);
+    expect(progress.props.accessibilityLabelledBy).toEqual([
+      label.props.nativeID,
+    ]);
   });
 
-  it('supports custom ariaValueText via getAriaValueText', () => {
+  it('supports custom accessibilityValueText via getAccessibilityValueText', () => {
     const { getByRole } = render(
       <Progress.Root
-        getAriaValueText={(formatted) => `${formatted}% done`}
+        getAccessibilityValueText={(formatted) => `${formatted}% done`}
         value={80}
       />,
     );
 
     const progress = getByRole('progressbar');
     expect(progress.props.accessibilityValue).toEqual({
+      max: 100,
+      min: 0,
+      now: 80,
       text: '80% done',
     });
   });

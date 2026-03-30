@@ -71,8 +71,6 @@ export const config = (options = []) =>
       },
     },
 
-
-
     {
       plugins: {
         perfectionist,

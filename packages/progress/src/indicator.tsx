@@ -18,22 +18,9 @@ import type { ProgressIndicatorProps } from './types';
  */
 export const ProgressIndicator = React.memo(
   React.forwardRef<View, ProgressIndicatorProps>((props, ref) => {
-    const {
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
-      'aria-hidden': ariaHidden,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      'data-complete': dataComplete,
-      'data-indeterminate': dataIndeterminate,
-      'data-progressing': dataProgressing,
-      style,
-      ...otherProps
-    } = props;
+    const { style } = props;
     const context = useProgressContext();
-    const { isComplete, isIndeterminate, isProgressing, percentage } = context;
+    const { percentage } = context;
 
     const indicatorStyle = React.useMemo<ViewStyle>(() => {
       if (typeof percentage !== 'number') return {};
@@ -46,22 +33,8 @@ export const ProgressIndicator = React.memo(
 
     return (
       <View
-        {...otherProps}
-        aria-busy={ariaBusy}
-        aria-describedby={ariaDescribedBy}
-        aria-details={ariaDetails}
-        aria-expanded={ariaExpanded}
-        aria-hidden={ariaHidden ?? true}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
-        data-complete={dataComplete ?? (isComplete ? 'true' : undefined)}
-        data-indeterminate={
-          dataIndeterminate ?? (isIndeterminate ? 'true' : undefined)
-        }
-        data-percentage={percentage ?? undefined}
-        data-progressing={
-          dataProgressing ?? (isProgressing ? 'true' : undefined)
-        }
+        {...props}
+        accessibilityElementsHidden
         importantForAccessibility='no-hide-descendants'
         ref={ref}
         style={[indicatorStyle, resolvedStyle]}

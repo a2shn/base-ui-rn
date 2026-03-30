@@ -2,16 +2,9 @@ import * as React from 'react';
 
 import type { ProgressRootProps, ProgressState } from './types';
 
-export const useProgress = (props: ProgressRootProps) => {
-  const {
-    'aria-valuetext': ariaValueTextProp,
-    format,
-    getAriaValueText,
-    locale,
-    max = 100,
-    min = 0,
-    value = null,
-  } = props;
+export function useProgress(props: ProgressRootProps) {
+  const { format, locale, max = 100, min = 0, value = null } = props;
+
   const labelId = React.useId();
 
   const isIndeterminate = value == null;
@@ -32,15 +25,7 @@ export const useProgress = (props: ProgressRootProps) => {
     }
   }, [value, locale, format, isIndeterminate]);
 
-  const ariaValueText = React.useMemo(() => {
-    if (ariaValueTextProp) return ariaValueTextProp;
-    if (getAriaValueText)
-      return getAriaValueText(formattedValue, value ?? null);
-    return formattedValue ?? undefined;
-  }, [ariaValueTextProp, getAriaValueText, value, formattedValue]);
-
   const state: ProgressState = {
-    ariaValueText,
     formattedValue,
     isComplete,
     isIndeterminate,
@@ -55,4 +40,4 @@ export const useProgress = (props: ProgressRootProps) => {
     labelId,
     state,
   };
-};
+}

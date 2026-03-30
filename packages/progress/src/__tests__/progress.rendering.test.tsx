@@ -12,25 +12,25 @@ describe('Progress - Rendering & State', () => {
     );
 
     const progress = getByRole('progressbar');
-    expect(progress.props.accessibilityValue).toBeUndefined();
-    expect(progress.props['data-indeterminate']).toBeDefined();
-    expect(progress.props['data-complete']).toBeUndefined();
-    expect(progress.props['data-progressing']).toBeUndefined();
+    expect(progress.props.accessibilityValue).toEqual({
+      max: undefined,
+      min: undefined,
+      now: undefined,
+      text: undefined,
+    });
   });
 
-  it('applies data attributes correctly based on state', () => {
+  it('applies indicator style based on state', () => {
     const { getByTestId, rerender } = render(
       <Progress.Root testID='root' value={50}>
         <Progress.Indicator testID='indicator' />
       </Progress.Root>,
     );
 
-    let root = getByTestId('root');
     const indicator = getByTestId('indicator', { includeHiddenElements: true });
-
-    expect(root.props['data-progressing']).toBeDefined();
-    expect(root.props['data-complete']).toBeUndefined();
-    expect(indicator.props['data-progressing']).toBeDefined();
+    expect(indicator.props.style).toEqual(
+      expect.arrayContaining([expect.objectContaining({ width: '50%' })]),
+    );
 
     rerender(
       <Progress.Root testID='root' value={100}>
@@ -38,9 +38,9 @@ describe('Progress - Rendering & State', () => {
       </Progress.Root>,
     );
 
-    root = getByTestId('root');
-    expect(root.props['data-complete']).toBeDefined();
-    expect(root.props['data-progressing']).toBeUndefined();
+    expect(indicator.props.style).toEqual(
+      expect.arrayContaining([expect.objectContaining({ width: '100%' })]),
+    );
 
     rerender(
       <Progress.Root testID='root' value={null}>
@@ -48,9 +48,10 @@ describe('Progress - Rendering & State', () => {
       </Progress.Root>,
     );
 
-    root = getByTestId('root');
-    expect(root.props['data-indeterminate']).toBeDefined();
-    expect(root.props['data-progressing']).toBeUndefined();
+    // For indeterminate, width should not be a percentage string from calculation
+    expect(indicator.props.style).not.toEqual(
+      expect.arrayContaining([expect.objectContaining({ width: '0%' })]),
+    );
   });
 
   it('supports style and children as functions', () => {

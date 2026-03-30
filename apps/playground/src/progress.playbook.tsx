@@ -75,7 +75,6 @@ export function ProgressPlaybook() {
       <Section title='Custom Format'>
         <View style={styles.container}>
           <Progress.Root
-            getAriaValueText={(formatted) => `Step ${formatted} of 10`}
             max={10}
             style={styles.meterRoot}
             value={3}
@@ -85,7 +84,7 @@ export function ProgressPlaybook() {
                 Installation
               </Progress.Label>
               <Progress.Value style={styles.meterValue}>
-                {(formatted) => `Step ${formatted} / 10`}
+                {(state) => `Step ${state.formattedValue} / 10`}
               </Progress.Value>
             </View>
             <Progress.Track style={styles.meterTrack}>

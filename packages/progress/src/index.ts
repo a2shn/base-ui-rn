@@ -12,12 +12,6 @@ export const Progress = {
   Value: ProgressValue,
 };
 
-export {
-  ProgressIndicator,
-  ProgressLabel,
-  ProgressRoot,
-  ProgressTrack,
-  ProgressValue,
-};
+
 export * from './types';
 export * from './use-progress';
