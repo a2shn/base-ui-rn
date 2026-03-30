@@ -1,14 +1,14 @@
 import {
-  DEFAULT_HIT_SLOP,
   evaluateStyles,
-  PressableWithKeyPress,
+  PressableWithKeyDown,
 } from '@base-ui-rn/core';
 import * as React from 'react';
-import { type Role, StyleProp, View, ViewStyle } from 'react-native';
+import { type StyleProp, View, ViewStyle } from 'react-native';
 
 import { useToggleGroupContext } from './group-context';
 import { type ToggleProps } from './types';
 import { useToggle } from './use-toggle';
+import { useToggleA11y } from './use-toggle-a11y';
 
 /**
  * Headless toggle primitive built on top of React Native Pressable.
@@ -24,53 +24,34 @@ import { useToggle } from './use-toggle';
  * ```
  */
 export const Toggle = React.memo(
-  React.forwardRef<View, ToggleProps>(function Root(props, forwardedRef) {
+  React.forwardRef<View, ToggleProps>(function Toggle(props, forwardedRef) {
     const {
-      accessibilityHint: accessibilityHintProp,
-      accessibilityRole: accessibilityRoleProp,
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-expanded': ariaExpandedProp,
-      'aria-hidden': ariaHidden,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
       children,
-      hitSlop = DEFAULT_HIT_SLOP,
-      role = 'checkbox',
+      hitSlop,
       style,
       value,
       ...otherProps
     } = props;
 
     const groupContext = useToggleGroupContext();
-
     const {
-      focused,
-      focusRingStyle,
-      handleAccessibilityAction,
-      handleBlur,
-      handleFocus,
-      handleKeyDown,
-      handlePress,
-      isDisabled,
+      state,
       isFocusable,
-      isInGroup,
-      isPressed,
-      mergedAccessibilityActions,
-      mergedAccessibilityState,
-      resolvedAriaDisabled,
-      resolvedAriaKeyshortcuts,
-      resolvedAriaPressed,
-      resolvedDataPressed,
+      focusRingStyle,
+      handlePress,
+      handleKeyDown,
+      handleAccessibilityAction,
+      handleFocus,
+      handleBlur,
       tabIndex,
-    } = useToggle(props, groupContext);
+      isInGroup,
+    } = useToggle(props);
 
-    const focusVisible = focusRingStyle !== null;
+    const a11yProps = useToggleA11y({ isFocusable, props, state });
 
-    if (isInGroup && value === undefined) {
+    if (__DEV__ && isInGroup && value === undefined) {
       console.warn(
-        'Toggle: A Toggle used within a ToggleGroup must have a "value" prop.',
+        '[Toggle] A Toggle used within a ToggleGroup must have a "value" prop.',
       );
     }
 
@@ -92,59 +73,36 @@ export const Toggle = React.memo(
     }, [value, groupContext]);
 
     const resolvedStyle = React.useMemo<StyleProp<ViewStyle>>(() => {
-      const baseStyle = evaluateStyles(style, {
-        disabled: isDisabled,
-        focused,
-        focusVisible,
-        pressed: isPressed,
-      });
+      const baseStyle = evaluateStyles(style, state);
       if (focusRingStyle) {
         return [baseStyle, focusRingStyle];
       }
       return baseStyle;
-    }, [style, focused, focusVisible, isDisabled, focusRingStyle]);
+    }, [style, state, focusRingStyle]);
 
     return (
-      <PressableWithKeyPress
+      <PressableWithKeyDown
         {...otherProps}
-        accessibilityActions={mergedAccessibilityActions}
-        accessibilityHint={accessibilityHintProp}
-        accessibilityState={mergedAccessibilityState}
-        accessible
-        aria-busy={ariaBusy}
-        aria-describedby={ariaDescribedBy}
-        aria-details={ariaDetails}
-        aria-disabled={resolvedAriaDisabled}
-        aria-expanded={ariaExpandedProp}
-        aria-hidden={ariaHidden}
-        aria-keyshortcuts={resolvedAriaKeyshortcuts}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
-        aria-pressed={resolvedAriaPressed}
-        data-pressed={resolvedDataPressed}
-        disabled={isDisabled}
+        {...a11yProps}
+        disabled={state.disabled}
         focusable={isFocusable}
         hitSlop={hitSlop}
-        importantForAccessibility='yes'
         onAccessibilityAction={handleAccessibilityAction}
         onBlur={handleBlur}
         onFocus={handleFocus}
         onKeyDown={handleKeyDown}
         onPress={handlePress}
         ref={internalRef}
-        role={(accessibilityRoleProp ?? role) as Role}
         style={resolvedStyle}
         tabIndex={tabIndex}
       >
         {(pressableState) =>
           evaluateStyles(children, {
             ...pressableState,
-            focused,
-            focusVisible,
-            pressed: isPressed,
+            ...state,
           })
         }
-      </PressableWithKeyPress>
+      </PressableWithKeyDown>
     );
   }),
 );

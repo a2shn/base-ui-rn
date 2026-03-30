@@ -2,11 +2,10 @@ import type { KeyPressEventData } from '@base-ui-rn/core';
 import * as React from 'react';
 import type { NativeSyntheticEvent } from 'react-native';
 
-import { type TogglePressedChangeDetails } from './types';
 
 export type Orientation = 'horizontal' | 'vertical';
 
-export interface ToggleGroupChangeEventDetails extends TogglePressedChangeDetails {
+export interface ToggleGroupChangeEventDetails {
   /**
    * The value of the toggle that was changed.
    */
@@ -64,10 +63,9 @@ export interface ToggleGroupContextValue {
 export const ToggleGroupContext =
   React.createContext<ToggleGroupContextValue | null>(null);
 
-if (process.env.NODE_ENV !== 'production') {
-  ToggleGroupContext.displayName = 'ToggleGroupContext';
-}
 
 export function useToggleGroupContext() {
   return React.useContext(ToggleGroupContext);
 }
+
+

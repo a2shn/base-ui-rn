@@ -1,37 +1,4 @@
-import {
-  type ARIABaseProps,
-  type ARIALiveProps,
-  type ARIATraitDisabled,
-  type ARIATraitOrientation,
-} from '@base-ui-rn/core';
-import { type ToggleGroupChangeEventDetails } from '@base-ui-rn/toggle';
-import type { StyleProp, ViewProps, ViewStyle } from 'react-native';
-
-/**
- * Web-specific accessibility props for ToggleGroup.
- */
-export type WebToggleGroupAccessibilityProps = ARIABaseProps &
-  ARIALiveProps &
-  ARIATraitDisabled &
-  ARIATraitOrientation & {
-    /**
-     * Indicates the orientation of the toggle group.
-     */
-    'data-orientation'?: 'horizontal' | 'vertical';
-    /**
-     * Present when the toggle group is disabled.
-     */
-    'data-disabled'?: boolean;
-    /**
-     * Present when the toggle group allows multiple buttons to be in the pressed state at the same time.
-     */
-    'data-multiple'?: boolean;
-    /**
-     * Defines a keyboard shortcut that activates or focuses the element.
-     */
-    'aria-keyshortcuts'?: string;
-  };
-
+import type { StyleProp, ViewStyle } from 'react-native';
 export interface ToggleGroupState {
   /**
    * The current values of the pressed toggles.
@@ -55,10 +22,7 @@ export interface ToggleGroupState {
   loopFocus: boolean;
 }
 
-export interface ToggleGroupProps
-  extends
-    Omit<ViewProps, 'children' | 'style'>,
-    WebToggleGroupAccessibilityProps {
+export interface ToggleGroupProps {
   /**
    * The controlled value of the toggle group.
    */
@@ -74,7 +38,6 @@ export interface ToggleGroupProps
    */
   onValueChange?: (
     value: string[],
-    details: ToggleGroupChangeEventDetails,
   ) => void;
 
   /**
@@ -102,11 +65,6 @@ export interface ToggleGroupProps
   loopFocus?: boolean;
 
   /**
-   * Callback fired when keyboard focus changes.
-   */
-  onFocusChange?: (value: string | null) => void;
-
-  /**
    * The content of the toggle group.
    */
   children?: React.ReactNode | ((state: ToggleGroupState) => React.ReactNode);
@@ -115,6 +73,6 @@ export interface ToggleGroupProps
    * Style applied to the group view.
    */
   style?:
-    | StyleProp<ViewStyle>
-    | ((state: ToggleGroupState) => StyleProp<ViewStyle>);
+  | StyleProp<ViewStyle>
+  | ((state: ToggleGroupState) => StyleProp<ViewStyle>);
 }

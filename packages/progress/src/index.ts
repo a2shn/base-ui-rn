@@ -14,4 +14,3 @@ export const Progress = {
 
 
 export * from './types';
-export * from './use-progress';

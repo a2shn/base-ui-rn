@@ -31,14 +31,7 @@ export interface ButtonProps extends Omit<
    * The content of the button.
    *
    * Can be a React node or a render function receiving the current button state.
-   *
-   * @example
-   * ```tsx
-   * <Button>
-   *   {({ pressed }) => <Text>{pressed ? 'Pressed' : 'Press me'}</Text>}
-   * </Button>
-   * ```
-   */
+      */
   children?: React.ReactNode | ((state: ButtonState) => React.ReactNode);
 
   /**
@@ -46,13 +39,7 @@ export interface ButtonProps extends Omit<
    *
    * Can be a static style or a function based on the button state.
    *
-   * @example
-   * ```tsx
-   * style={({ pressed }) => ({
-   *   opacity: pressed ? 0.5 : 1
-   * })}
-   * ```
-   */
+      */
   style?: StyleProp<ViewStyle> | ((state: ButtonState) => StyleProp<ViewStyle>);
 
   /**
