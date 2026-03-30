@@ -1,6 +1,8 @@
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
+import { useMeterContext } from './meter-context';
 import type { MeterTrackProps } from './types';
 
 /**
@@ -15,31 +17,21 @@ import type { MeterTrackProps } from './types';
  */
 export const MeterTrack = React.memo(
   React.forwardRef<View, MeterTrackProps>((props, ref) => {
-    const {
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
-      'aria-hidden': ariaHidden,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      children,
-      ...otherProps
-    } = props;
+    const { children, style } = props;
+    const context = useMeterContext();
+
+    const resolvedChildren = evaluateStyles(children, context);
+    const resolvedStyle = evaluateStyles(style, context);
+
     return (
       <View
-        {...otherProps}
-        aria-busy={ariaBusy}
-        aria-describedby={ariaDescribedBy}
-        aria-details={ariaDetails}
-        aria-expanded={ariaExpanded}
-        aria-hidden={ariaHidden ?? true}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
+        {...props}
+        accessibilityElementsHidden
         importantForAccessibility='no-hide-descendants'
         ref={ref}
+        style={resolvedStyle}
       >
-        {children}
+        {resolvedChildren}
       </View>
     );
   }),

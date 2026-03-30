@@ -1,22 +1,32 @@
-import {
-  type ARIABaseProps,
-  type ARIALiveProps,
-  ARIATraitRange,
-} from '@base-ui-rn/core';
 import type * as React from 'react';
-import type { TextProps, ViewProps } from 'react-native';
+import type {
+  StyleProp,
+  TextProps,
+  TextStyle,
+  ViewProps,
+  ViewStyle,
+} from 'react-native';
 
 /**
- * Web-specific accessibility props for the Meter component.
+ * Represents the state of the meter.
  */
-export type WebMeterAccessibilityProps = ARIABaseProps &
-  ARIALiveProps &
-  ARIATraitRange;
+export interface MeterState {
+  /** The current value of the meter. */
+  value: number;
+  /** The minimum value of the meter. */
+  min: number;
+  /** The maximum value of the meter. */
+  max: number;
+  /** The percentage of completion (0-100). */
+  percentage: number;
+  /** The human-readable value string. */
+  formattedValue: string;
+  /** Whether the meter is at its maximum value. */
+  isComplete: boolean;
+}
 
-/**
- * Props for the Meter.Root component.
- */
-export interface MeterRootProps extends ViewProps, WebMeterAccessibilityProps {
+export interface MeterRootProps
+  extends Omit<ViewProps, 'children' | 'style'> {
   /**
    * The current value of the meter.
    */
@@ -32,13 +42,12 @@ export interface MeterRootProps extends ViewProps, WebMeterAccessibilityProps {
    */
   max?: number;
   /**
-   * A string representation of the current value for screen readers.
+   * A function to generate a human-readable representation of the value for screen readers.
    */
-  'aria-valuetext'?: string;
-  /**
-   * A function to generate a string representation of the current value for screen readers.
-   */
-  getAriaValueText?: (value: number, min: number, max: number) => string;
+  getAccessibilityValueText?: (
+    formattedValue: string,
+    value: number,
+  ) => string;
   /**
    * The locale to use for formatting the value.
    */
@@ -47,77 +56,75 @@ export interface MeterRootProps extends ViewProps, WebMeterAccessibilityProps {
    * The options to use for formatting the value.
    */
   format?: Intl.NumberFormatOptions;
+  /**
+   * Style of the root component.
+   */
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: MeterState) => StyleProp<ViewStyle>);
+  /**
+   * Children of the root component.
+   */
+  children?: React.ReactNode | ((state: MeterState) => React.ReactNode);
 }
 
-/**
- * Props for the Meter.Label component.
- */
 export interface MeterLabelProps
-  extends TextProps, ARIABaseProps, ARIALiveProps {
+  extends Omit<TextProps, 'children' | 'style'> {
   /**
-   * The content of the label.
+   * Children of the label component.
    */
-  children?: React.ReactNode;
+  children?: React.ReactNode | ((state: MeterState) => React.ReactNode);
+  /**
+   * Style of the label component.
+   */
+  style?:
+    | StyleProp<TextStyle>
+    | ((state: MeterState) => StyleProp<TextStyle>);
 }
 
-/**
- * Props for the Meter.Track component.
- */
 export interface MeterTrackProps
-  extends ViewProps, ARIABaseProps, ARIALiveProps {
+  extends Omit<ViewProps, 'children' | 'style'> {
   /**
-   * The content of the track.
+   * Children of the track component.
    */
-  children?: React.ReactNode;
+  children?: React.ReactNode | ((state: MeterState) => React.ReactNode);
+  /**
+   * Style of the track component.
+   */
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: MeterState) => StyleProp<ViewStyle>);
 }
 
-/**
- * Props for the Meter.Indicator component.
- */
-export interface MeterIndicatorProps
-  extends ViewProps, ARIABaseProps, ARIALiveProps {}
-
-/**
- * Props for the Meter.Value component.
- */
-export interface MeterValueProps
-  extends Omit<TextProps, 'children'>, ARIABaseProps, ARIALiveProps {
+export interface MeterIndicatorProps extends Omit<ViewProps, 'style'> {
   /**
-   * The content of the value component.
+   * Style of the indicator component.
    */
-  children?: (formattedValue: string, value: number) => React.ReactNode;
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: MeterState) => StyleProp<ViewStyle>);
+}
+
+export interface MeterValueProps
+  extends Omit<TextProps, 'children' | 'style'> {
+  /**
+   * Children of the value component.
+   */
+  children?: React.ReactNode | ((state: MeterState) => React.ReactNode);
+  /**
+   * Style of the value component.
+   */
+  style?:
+    | StyleProp<TextStyle>
+    | ((state: MeterState) => StyleProp<TextStyle>);
 }
 
 /**
  * The context value for the Meter component.
  */
-export interface MeterContextValue {
-  /**
-   * The current value of the meter.
-   */
-  value: number;
-  /**
-   * The minimum value of the meter.
-   */
-  min: number;
-  /**
-   * The maximum value of the meter.
-   */
-  max: number;
-  /**
-   * The percentage of completion.
-   */
-  percentage: number;
-  /**
-   * The formatted value string.
-   */
-  formattedValue: string;
-  /**
-   * The accessible text for the current value.
-   */
-  ariaValueText?: string;
+export interface MeterContextValue extends MeterState {
   /**
    * The ID of the label element.
    */
-  labelId?: string;
+  labelId: string;
 }

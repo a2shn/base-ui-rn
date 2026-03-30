@@ -1,3 +1,4 @@
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { Text } from 'react-native';
 
@@ -16,34 +17,21 @@ import type { MeterLabelProps } from './types';
  */
 export const MeterLabel = React.memo(
   React.forwardRef<Text, MeterLabelProps>((props, ref) => {
-    const {
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
-      'aria-hidden': ariaHidden,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      children,
-      nativeID,
-      ...otherProps
-    } = props;
-    const { labelId } = useMeterContext();
+    const { children, nativeID, style } = props;
+    const context = useMeterContext();
+    const { labelId } = context;
+
+    const resolvedChildren = evaluateStyles(children, context);
+    const resolvedStyle = evaluateStyles(style, context);
 
     return (
       <Text
-        {...otherProps}
-        aria-busy={ariaBusy}
-        aria-describedby={ariaDescribedBy}
-        aria-details={ariaDetails}
-        aria-expanded={ariaExpanded}
-        aria-hidden={ariaHidden}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
+        {...props}
         nativeID={nativeID ?? labelId}
         ref={ref}
+        style={resolvedStyle}
       >
-        {children}
+        {resolvedChildren}
       </Text>
     );
   }),

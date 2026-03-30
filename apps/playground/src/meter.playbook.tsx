@@ -26,7 +26,7 @@ export function MeterPlaybook() {
             <View style={styles.meterHeader}>
               <Meter.Label style={styles.meterLabel}>Points</Meter.Label>
               <Meter.Value style={styles.meterValue}>
-                {(_, value) => `${value} / 500`}
+                {(state) => `${state.formattedValue} / 500`}
               </Meter.Value>
             </View>
             <Meter.Track style={styles.meterTrack}>
@@ -62,7 +62,7 @@ export function MeterPlaybook() {
       <Section title='Custom Accessibility Text'>
         <View style={styles.container}>
           <Meter.Root
-            getAriaValueText={(value) => `${value}% critical`}
+            getAccessibilityValueText={(value) => `${value}% critical`}
             style={styles.meterRoot}
             value={85}
           >

@@ -1,3 +1,4 @@
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View, type ViewStyle } from 'react-native';
 
@@ -17,18 +18,9 @@ import type { MeterIndicatorProps } from './types';
  */
 export const MeterIndicator = React.memo(
   React.forwardRef<View, MeterIndicatorProps>((props, ref) => {
-    const {
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
-      'aria-hidden': ariaHidden,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      style,
-      ...otherProps
-    } = props;
-    const { percentage } = useMeterContext();
+    const { style } = props;
+    const context = useMeterContext();
+    const { percentage } = context;
 
     const indicatorStyle = React.useMemo<ViewStyle>(() => {
       return {
@@ -36,20 +28,15 @@ export const MeterIndicator = React.memo(
       };
     }, [percentage]);
 
+    const resolvedStyle = evaluateStyles(style, context);
+
     return (
       <View
-        {...otherProps}
-        aria-busy={ariaBusy}
-        aria-describedby={ariaDescribedBy}
-        aria-details={ariaDetails}
-        aria-expanded={ariaExpanded}
-        aria-hidden={ariaHidden ?? true}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
-        data-percentage={percentage}
+        {...props}
+        accessibilityElementsHidden
         importantForAccessibility='no-hide-descendants'
         ref={ref}
-        style={[indicatorStyle, style]}
+        style={[indicatorStyle, resolvedStyle]}
       />
     );
   }),

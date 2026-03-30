@@ -8,7 +8,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ButtonPlaybook } from './src/button.playbook';
 // import { CollapsiblePlaybook } from './src/collapsible.playbook';
 // import { InputPlaybook } from './src/input.playbook';
-// import { MeterPlaybook } from './src/meter.playbook';
+import { MeterPlaybook } from './src/meter.playbook';
 import { ProgressPlaybook } from './src/progress.playbook';
 // import { RadioPlaybook } from './src/radio.playbook';
 // import { ScrollAreaPlaybook } from './src/scroll-area.playbook';
@@ -44,11 +44,11 @@ const REGISTRY: PlaybookConfig = {
   //   testID: 'input',
   //   title: 'Input',
   // },
-  // Meter: {
-  //   component: MeterPlaybook,
-  //   testID: 'meter',
-  //   title: 'Meter',
-  // },
+  Meter: {
+    component: MeterPlaybook,
+    testID: 'meter',
+    title: 'Meter',
+  },
   Progress: {
     component: ProgressPlaybook,
     testID: 'progress',

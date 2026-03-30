@@ -1,9 +1,11 @@
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
 import { MeterContext } from './meter-context';
 import type { MeterRootProps } from './types';
-import { useMeterRoot } from './use-meter-root';
+import { useMeter } from './use-meter';
+import { useMeterA11y } from './use-meter-a11y';
 
 /**
  * Headless meter root primitive for React Native.
@@ -22,83 +24,41 @@ import { useMeterRoot } from './use-meter-root';
 export const MeterRoot = React.memo(
   React.forwardRef<View, MeterRootProps>((props, ref) => {
     const {
-      accessibilityHint,
-      accessibilityLabel: accessibilityLabelProp,
-      accessible = true,
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
-      'aria-hidden': ariaHidden,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      'aria-valuetext': ariaValueTextProp,
       children,
-      max = 100,
-      min = 0,
+      format,
+      getAccessibilityValueText,
+      locale,
+      max,
+      min,
+      style,
       value,
-      ...otherViewProps
+      ...viewProps
     } = props;
 
-    const hasCustomLabel = !!(ariaLabel || accessibilityLabelProp);
-
-    const { ariaValueText, formattedValue, labelId, percentage } =
-      useMeterRoot(props);
+    const { labelId, state } = useMeter(props);
+    const a11yProps = useMeterA11y({ labelId, props, state });
 
     const contextValue = React.useMemo(
       () => ({
-        ariaValueText,
-        formattedValue,
+        ...state,
         labelId,
-        max,
-        min,
-        percentage,
-        value,
       }),
-      [value, min, max, percentage, formattedValue, ariaValueText, labelId],
+      [state, labelId],
     );
 
-    const resolvedAriaLabelledBy = hasCustomLabel
-      ? undefined
-      : (ariaLabelledBy ?? labelId);
+    const resolvedStyle = evaluateStyles(style, state);
+    const resolvedChildren = evaluateStyles(children, state);
 
     return (
       <MeterContext.Provider value={contextValue}>
         <View
-          {...otherViewProps}
-          accessibilityHint={accessibilityHint}
-          accessibilityLabel={accessibilityLabelProp}
-          accessibilityLabelledBy={
-            hasCustomLabel
-              ? undefined
-              : resolvedAriaLabelledBy
-                ? [resolvedAriaLabelledBy]
-                : undefined
-          }
-          accessibilityState={{ disabled: false }}
-          accessibilityValue={
-            (ariaValueText ?? ariaValueTextProp)
-              ? { text: ariaValueText ?? ariaValueTextProp }
-              : { max, min, now: value }
-          }
-          accessible={accessible}
-          aria-busy={ariaBusy}
-          aria-describedby={ariaDescribedBy}
-          aria-details={ariaDetails}
-          aria-expanded={ariaExpanded}
-          aria-hidden={ariaHidden}
-          aria-label={ariaLabel}
-          aria-labelledby={hasCustomLabel ? undefined : resolvedAriaLabelledBy}
-          aria-valuemax={max}
-          aria-valuemin={min}
-          aria-valuenow={value}
-          aria-valuetext={ariaValueText ?? ariaValueTextProp}
+          {...viewProps}
+          {...a11yProps}
           focusable={false}
-          importantForAccessibility='yes'
           ref={ref}
-          role='progressbar'
+          style={resolvedStyle}
         >
-          {children}
+          {resolvedChildren}
         </View>
       </MeterContext.Provider>
     );

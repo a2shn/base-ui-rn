@@ -1,3 +1,4 @@
+import { evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { Text } from 'react-native';
 
@@ -16,35 +17,22 @@ import type { MeterValueProps } from './types';
  */
 export const MeterValue = React.memo(
   React.forwardRef<Text, MeterValueProps>((props, ref) => {
-    const {
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
-      'aria-hidden': ariaHidden,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      children,
-      ...otherProps
-    } = props;
-    const { formattedValue, value } = useMeterContext();
+    const { children, style } = props;
+    const context = useMeterContext();
+    const { formattedValue } = context;
+
+    const resolvedChildren = evaluateStyles(children, context);
+    const resolvedStyle = evaluateStyles(style, context);
 
     return (
       <Text
-        {...otherProps}
-        aria-busy={ariaBusy}
-        aria-describedby={ariaDescribedBy}
-        aria-details={ariaDetails}
-        aria-expanded={ariaExpanded}
-        aria-hidden={ariaHidden ?? true}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
+        {...props}
+        accessibilityElementsHidden
         importantForAccessibility='no-hide-descendants'
         ref={ref}
+        style={resolvedStyle}
       >
-        {typeof children === 'function'
-          ? children(formattedValue, value)
-          : formattedValue}
+        {resolvedChildren ?? formattedValue}
       </Text>
     );
   }),

@@ -12,5 +12,4 @@ export const Meter = {
   Value: MeterValue,
 };
 
-export { MeterIndicator, MeterLabel, MeterRoot, MeterTrack, MeterValue };
 export * from './types';

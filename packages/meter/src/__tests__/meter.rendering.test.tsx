@@ -113,8 +113,8 @@ describe('Meter - Rendering', () => {
     const { getByText } = render(
       <Meter.Root max={100} value={24}>
         <Meter.Value>
-          {(formattedValue, value) =>
-            `Value is ${value} (formatted: ${formattedValue})`
+          {(state) =>
+            `Value is ${state.value} (formatted: ${state.formattedValue})`
           }
         </Meter.Value>
       </Meter.Root>,
