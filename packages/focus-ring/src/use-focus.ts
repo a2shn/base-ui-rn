@@ -1,9 +1,10 @@
-import { DEFAULT_FOCUS_RING_STYLE } from '@base-ui-rn/core';
+import { DEFAULT_FOCUS_RING_STYLE } from './styles';
 import * as React from 'react';
 import { Platform } from 'react-native';
 
 import { getInteractionModality } from './modality';
 import type { UseFocusRingOptions, UseFocusRingReturn } from './types';
+
 
 /**
  * A hook that manages focus state and focus-visible logic.
@@ -14,7 +15,7 @@ import type { UseFocusRingOptions, UseFocusRingReturn } from './types';
 export function useFocusRing(options: UseFocusRingOptions): UseFocusRingReturn {
   const { disabled, disableDefaultFocusRing, focusableWhenDisabled } = options;
   const [focused, setFocused] = React.useState(false);
-  const [isFocusVisible, setFocusVisible] = React.useState(false);
+  const [focusVisible, setFocusVisible] = React.useState(false);
 
   const isFocusable = React.useMemo(
     () => !disabled || focusableWhenDisabled,
@@ -39,17 +40,18 @@ export function useFocusRing(options: UseFocusRingOptions): UseFocusRingReturn {
     if (disableDefaultFocusRing) {
       return null;
     }
-    return isFocusVisible ? DEFAULT_FOCUS_RING_STYLE : null;
-  }, [disableDefaultFocusRing, isFocusVisible]);
+    return focusVisible ? DEFAULT_FOCUS_RING_STYLE : null;
+  }, [disableDefaultFocusRing, focusVisible]);
 
   return React.useMemo(
     () => ({
       focused,
+      focusVisible,
       focusRingStyle,
       isFocusable,
       onBlur,
       onFocus,
     }),
-    [focused, onFocus, onBlur, focusRingStyle, isFocusable],
+    [focused, focusVisible, onFocus, onBlur, focusRingStyle, isFocusable],
   );
 }

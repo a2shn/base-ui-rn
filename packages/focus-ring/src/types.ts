@@ -2,10 +2,6 @@ import type { StyleProp, ViewStyle } from 'react-native';
 
 /**
  * Options for the useFocusRing hook.
- *
- * @property disabled - Whether the component is disabled
- * @property focusableWhenDisabled - Whether the component remains focusable when disabled
- * @property disableDefaultFocusRing - Whether to disable the default focus ring styling
  */
 export interface UseFocusRingOptions {
   /**
@@ -26,18 +22,16 @@ export interface UseFocusRingOptions {
 
 /**
  * Return value from the useFocusRing hook.
- *
- * @property focused - Whether the component is currently focused
- * @property onFocus - Callback to handle focus events
- * @property onBlur - Callback to handle blur events
- * @property focusRingStyle - The computed focus ring style (null if disabled, default style otherwise)
- * @property isFocusable - Whether the component is focusable
  */
 export interface UseFocusRingReturn {
   /**
    * Whether the component is currently focused.
    */
   focused: boolean;
+  /**
+   * Whether the focus ring should be visible (e.g., keyboard focus on web).
+   */
+  focusVisible: boolean;
   /**
    * Callback to handle focus events.
    */
@@ -48,8 +42,7 @@ export interface UseFocusRingReturn {
   onBlur: () => void;
   /**
    * The focus ring style.
-   * Null if the focus ring should not be visible (e.g., disabled or mouse focus on web).
-   * Default style from core if focus ring should be visible.
+   * Null if the focus ring should not be visible.
    */
   focusRingStyle: StyleProp<ViewStyle> | null;
   /**
@@ -60,13 +53,14 @@ export interface UseFocusRingReturn {
 
 /**
  * State shape for components that use focus ring.
- * Use this type for render function state instead of defining duplicate types.
- *
- * @property focused - Whether the component is currently focused
  */
 export interface FocusRingState {
   /**
    * Whether the component is currently focused.
    */
   focused: boolean;
+  /**
+   * Whether the focus ring should be visible.
+   */
+  focusVisible: boolean;
 }

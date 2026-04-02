@@ -1,60 +1,41 @@
 import { Platform } from 'react-native';
 
-let lastInputModality: 'keyboard' | 'mouse' | 'touch' = 'keyboard';
+export type InteractionModality = 'keyboard' | 'mouse' | 'touch';
 
-function getInteractionModality(): typeof lastInputModality {
+/**
+ * The input modality used for the last interaction.
+ * Defaults to 'mouse' on web and 'touch' on native.
+ */
+let lastInputModality: InteractionModality = Platform.OS === 'web' ? 'mouse' : 'touch';
+
+/**
+ * Returns the modality of the last interaction.
+ */
+export function getInteractionModality(): InteractionModality {
   return lastInputModality;
 }
 
-function setInteractionModality(modality: typeof lastInputModality) {
+/**
+ * Sets the current interaction modality.
+ */
+export function setInteractionModality(modality: InteractionModality) {
   lastInputModality = modality;
 }
 
-export { getInteractionModality, setInteractionModality };
-
-interface GlobalLike {
-  addEventListener: (
-    type: string,
-    listener: (event: unknown) => void,
-    options?: { capture: boolean },
-  ) => void;
-}
-
-if (Platform.OS === 'web') {
-  try {
-    const win = globalThis as unknown as GlobalLike;
-    if (typeof win !== 'undefined' && win.addEventListener) {
-      win.addEventListener(
-        'keydown',
-        () => setInteractionModality('keyboard'),
-        {
-          capture: true,
-        },
-      );
-      win.addEventListener('mousedown', () => setInteractionModality('mouse'), {
-        capture: true,
-      });
-      win.addEventListener(
-        'touchstart',
-        () => setInteractionModality('touch'),
-        {
-          capture: true,
-        },
-      );
-      win.addEventListener(
-        'pointerdown',
-        (e: unknown) => {
-          const pointerEvent = e as { pointerType?: string };
-          if (pointerEvent.pointerType === 'mouse')
-            setInteractionModality('mouse');
-          else if (
-            pointerEvent.pointerType === 'touch' ||
-            pointerEvent.pointerType === 'pen'
-          )
-            setInteractionModality('touch');
-        },
-        { capture: true },
-      );
+if (Platform.OS === 'web' && typeof window !== 'undefined' && window.addEventListener) {
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.metaKey || e.altKey || e.ctrlKey) {
+      return;
     }
-  } catch {}
+    setInteractionModality('keyboard');
+  };
+
+  const handleMouseDown = () => setInteractionModality('mouse');
+  const handleTouchStart = () => setInteractionModality('touch');
+
+  const options = { capture: true, passive: true };
+
+  window.addEventListener('keydown', handleKeyDown, true);
+  window.addEventListener('mousedown', handleMouseDown, options);
+  window.addEventListener('touchstart', handleTouchStart, options);
 }
