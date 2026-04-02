@@ -1,3 +1,8 @@
 export { Toggle } from './toggle';
 export * from './types';
-export { ToggleGroupContext, useToggleGroupContext } from './group-context';
+export {
+  ToggleGroupActionContext,
+  ToggleGroupValueContext,
+  useToggleGroupActionContext,
+  useToggleGroupValueContext,
+} from './group-context';

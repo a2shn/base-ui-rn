@@ -1,17 +1,21 @@
 import {
   isActivationAction,
+  KeyDownEventData,
+  useActivationDedup,
   useKeyboardActivation,
 } from '@base-ui-rn/core';
 import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
-import type {
-  AccessibilityActionEvent,
-  GestureResponderEvent,
-  NativeSyntheticEvent,
-  TargetedEvent,
+import {
+  type AccessibilityActionEvent,
+  type GestureResponderEvent,
+  type NativeSyntheticEvent,
 } from 'react-native';
 
-import { useToggleGroupContext } from './group-context';
+import {
+  useToggleGroupActionContext,
+  useToggleGroupValueContext,
+} from './group-context';
 import type { ToggleProps, ToggleState } from './types';
 
 export function useToggle(props: ToggleProps) {
@@ -20,136 +24,124 @@ export function useToggle(props: ToggleProps) {
     disabled = false,
     disableDefaultFocusRing = false,
     focusableWhenDisabled = false,
-    onBlur,
-    onFocus,
-    onKeyDown,
-    onPress,
     onPressedChange,
+    onPress,
     pressed: controlledPressed,
+    tabIndex: tabIndexProp,
     value,
   } = props;
 
-  const groupContext = useToggleGroupContext();
-  const isInGroup = groupContext !== null;
+  const actionContext = useToggleGroupActionContext();
+  const valueContext = useToggleGroupValueContext();
 
-  const isDisabled = disabled || (isInGroup && groupContext.disabled);
+  const isInGroup = actionContext !== null;
+  const isDisabled = disabled || (isInGroup && actionContext.disabled);
 
   const {
     focused,
     focusRingStyle,
+    focusVisible,
     isFocusable,
-    onBlur: onFocusOut,
-    onFocus: onFocusIn,
+    onBlur: handleBlur,
+    onFocus: handleFocus,
   } = useFocusRing({
     disabled: isDisabled,
     disableDefaultFocusRing,
     focusableWhenDisabled,
   });
 
-  const [uncontrolledPressed, setUncontrolledPressed] = React.useState(defaultPressed);
+  const [uncontrolledPressed, setUncontrolledPressed] =
+    React.useState(defaultPressed);
 
-  const pressed = isInGroup && value !== undefined
-    ? groupContext.valueSet.has(value)
-    : controlledPressed !== undefined
-      ? controlledPressed
-      : uncontrolledPressed;
+  let pressed = uncontrolledPressed;
+  if (isInGroup && value !== undefined) {
+    pressed = valueContext?.valueSet.has(value) ?? false;
+  } else if (controlledPressed !== undefined) {
+    pressed = controlledPressed;
+  }
 
   const onPressedChangeRef = React.useRef(onPressedChange);
-  const onPressRef = React.useRef(onPress);
-  const onKeyDownRef = React.useRef(onKeyDown);
+  const onPressRef = React.useRef(onPress); // 2. Track the user's onPress
 
   React.useLayoutEffect(() => {
     onPressedChangeRef.current = onPressedChange;
-    onPressRef.current = onPress;
-    onKeyDownRef.current = onKeyDown;
+    onPressRef.current = onPress; // 3. Keep it fresh
   });
 
-  const handleToggle = React.useCallback(
-    (source: 'press' | 'keyboard' | 'accessibilityAction') => {
-      const nextPressed = !pressed;
+  const onCommit = React.useCallback(
+    (nextPressed: boolean) => {
       if (isInGroup && value !== undefined) {
-        groupContext.toggleValue(value, { value });
+        actionContext?.toggleValue(value);
       } else {
         if (controlledPressed === undefined) {
           setUncontrolledPressed(nextPressed);
         }
         onPressedChangeRef.current?.(nextPressed);
       }
+
+      onPressRef.current?.(null as unknown as GestureResponderEvent);
     },
-    [pressed, isInGroup, value, groupContext, controlledPressed],
+    [isInGroup, value, actionContext, controlledPressed],
   );
 
-  const handlePress = React.useCallback(
-    (event: GestureResponderEvent) => {
-      if (isDisabled) return;
-      handleToggle('press');
-      onPressRef.current?.(event);
-    },
-    [isDisabled, handleToggle],
+  const {
+    handleAccessibilityActivation,
+    handleKeyboardActivation: handleKeyboardToggle,
+    handlePress,
+  } = useActivationDedup({
+    disabled: isDisabled,
+    onCommit,
+    pressed,
+  });
+
+  const handleKeyboardActivation = useKeyboardActivation(
+    handleKeyboardToggle,
+    isDisabled,
   );
-
-  const activateToggle = React.useCallback(() => {
-    if (isDisabled) return;
-    handleToggle('keyboard');
-  }, [isDisabled, handleToggle]);
-
-  const handleKeyboardActivation = useKeyboardActivation(activateToggle, isDisabled);
 
   const handleKeyDown = React.useCallback(
-    (e: any) => {
+    (e: NativeSyntheticEvent<KeyDownEventData>) => {
       handleKeyboardActivation(e);
-      onKeyDownRef.current?.(e);
       if (isInGroup && value !== undefined) {
-        groupContext.onToggleKeyDown(value, e);
+        actionContext?.onToggleKeyDown(value, e);
       }
     },
-    [handleKeyboardActivation, isInGroup, value, groupContext],
+    [handleKeyboardActivation, isInGroup, value, actionContext],
   );
 
   const handleAccessibilityAction = React.useCallback(
     (event: AccessibilityActionEvent) => {
-      if (isDisabled) return;
-      if (isActivationAction(event.nativeEvent.actionName)) {
-        handleToggle('accessibilityAction');
+      if (isActivationAction(event.nativeEvent.actionName) && !isDisabled) {
+        handleAccessibilityActivation();
       }
     },
-    [isDisabled, handleToggle],
+    [isDisabled, handleAccessibilityActivation],
   );
 
-  const handleFocus = React.useCallback(
-    (e: NativeSyntheticEvent<TargetedEvent>) => {
-      onFocusIn();
-      onFocus?.(e);
-    },
-    [onFocusIn, onFocus],
+  const state: ToggleState = React.useMemo(
+    () => ({
+      disabled: isDisabled,
+      focused,
+      focusVisible,
+      pressed,
+    }),
+    [isDisabled, focused, focusVisible, pressed],
   );
 
-  const handleBlur = React.useCallback(
-    (e: NativeSyntheticEvent<TargetedEvent>) => {
-      onFocusOut();
-      onBlur?.(e);
-    },
-    [onFocusOut, onBlur],
-  );
-
-  const tabIndex = resolveTabIndex(isFocusable, props.tabIndex as any);
-
-  const state: ToggleState = {
-    pressed,
-    focused,
-    disabled: isDisabled,
-  };
+  const tabIndex = resolveTabIndex(isFocusable, tabIndexProp);
 
   return {
-    state,
-    isFocusable,
     focusRingStyle,
-    handlePress,
-    handleKeyDown,
     handleAccessibilityAction,
-    handleFocus,
     handleBlur,
-    tabIndex,
+    handleFocus,
+    handleKeyDown,
+    handlePress,
+    isFocusable,
     isInGroup,
+    registerItem: actionContext?.registerItem,
+    registerValue: actionContext?.registerValue,
+    state,
+    tabIndex,
   };
 }

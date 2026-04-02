@@ -1,5 +1,5 @@
-import { KeyPressEventData } from '@base-ui-rn/core';
-import { FocusRingState } from '@base-ui-rn/focus-ring';
+import type { KeyDownEventData } from '@base-ui-rn/core';
+import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type * as React from 'react';
 import type {
   GestureResponderEvent,
@@ -16,17 +16,20 @@ export interface ToggleState extends FocusRingState {
   pressed: boolean;
 
   /**
-     * Whether the toggle is disabled.
-     */
+   * Whether the toggle is disabled.
+   */
   disabled: boolean;
-
 }
 
-export interface ToggleProps
-  extends Omit<
-    PressableProps,
-    'children' | 'style' | 'onPress' | 'disabled' | 'role'
-  > {
+export interface ToggleProps extends Omit<
+  PressableProps,
+  'children' | 'style' | 'disabled'
+> {
+  /**
+   * The role of the toggle.
+   * @default 'checkbox'
+   */
+  role?: 'checkbox' | 'switch';
   /**
    * The content of the toggle.
    */
@@ -56,9 +59,7 @@ export interface ToggleProps
   /**
    * Callback fired when the pressed state changes.
    */
-  onPressedChange?: (
-    pressed: boolean,
-  ) => void;
+  onPressedChange?: (pressed: boolean) => void;
 
   /**
    * Whether the toggle remains focusable when disabled.
@@ -78,13 +79,9 @@ export interface ToggleProps
    */
   disableDefaultFocusRing?: boolean;
 
-  /**
-   * Callback fired when the toggle is pressed.
-   */
-  onPress?: (event: GestureResponderEvent) => void;
 
   /**
    * Handler for key down events.
    */
-  onKeyDown?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
+  onKeyDown?: (e: NativeSyntheticEvent<KeyDownEventData>) => void;
 }

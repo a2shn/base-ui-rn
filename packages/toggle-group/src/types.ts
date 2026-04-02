@@ -1,4 +1,5 @@
-import type { StyleProp, ViewStyle } from 'react-native';
+import type { StyleProp, ViewProps, ViewStyle } from 'react-native';
+
 export interface ToggleGroupState {
   /**
    * The current values of the pressed toggles.
@@ -22,7 +23,10 @@ export interface ToggleGroupState {
   loopFocus: boolean;
 }
 
-export interface ToggleGroupProps {
+export interface ToggleGroupProps extends Omit<
+  ViewProps,
+  'children' | 'style'
+> {
   /**
    * The controlled value of the toggle group.
    */
@@ -36,9 +40,12 @@ export interface ToggleGroupProps {
   /**
    * Callback fired when the value changes.
    */
-  onValueChange?: (
-    value: string[],
-  ) => void;
+  onValueChange?: (value: string[]) => void;
+
+  /**
+   * Callback fired when keyboard focus changes to a different item.
+   */
+  onFocusChange?: (value: string) => void;
 
   /**
    * Whether multiple items can be pressed at once.

@@ -1,102 +1,100 @@
 import {
   evaluateStyles,
   PressableWithKeyDown,
+  mergeProps,
+  mergeRefs,
+  useStyle,
 } from '@base-ui-rn/core';
 import * as React from 'react';
-import { type StyleProp, View, ViewStyle } from 'react-native';
+import { type PressableStateCallbackType, View } from 'react-native';
 
-import { useToggleGroupContext } from './group-context';
 import { type ToggleProps } from './types';
 import { useToggle } from './use-toggle';
-import { useToggleA11y } from './use-toggle-a11y';
 
 /**
  * Headless toggle primitive built on top of React Native Pressable.
  *
- * A two-state button that can be pressed or not pressed. Supports keyboard
- * interaction, focus behavior, and ARIA attributes for web.
+ * Can be used as a standalone checkbox/switch or as a member of a `ToggleGroup`.
+ * Supports keyboard interaction, focus management, and accessibility states.
  *
  * @example
  * ```tsx
- * <Toggle>
- *   {({ pressed }) => <Text>{pressed ? 'ON' : 'OFF'}</Text>}
+ * <Toggle onPressedChange={...}>
+ * {({ pressed }) => <Text>{pressed ? 'On' : 'Off'}</Text>}
  * </Toggle>
  * ```
  */
 export const Toggle = React.memo(
   React.forwardRef<View, ToggleProps>(function Toggle(props, forwardedRef) {
-    const {
-      children,
-      hitSlop,
-      style,
-      value,
-      ...otherProps
-    } = props;
+    const { children, style, value, onPress, ...otherProps } = props;
 
-    const groupContext = useToggleGroupContext();
     const {
-      state,
-      isFocusable,
       focusRingStyle,
-      handlePress,
-      handleKeyDown,
       handleAccessibilityAction,
-      handleFocus,
       handleBlur,
-      tabIndex,
+      handleFocus,
+      handleKeyDown,
+      handlePress,
+      isFocusable,
       isInGroup,
+      registerItem,
+      registerValue,
+      state,
+      tabIndex,
     } = useToggle(props);
 
-    const a11yProps = useToggleA11y({ isFocusable, props, state });
-
-    if (__DEV__ && isInGroup && value === undefined) {
-      console.warn(
-        '[Toggle] A Toggle used within a ToggleGroup must have a "value" prop.',
-      );
-    }
-
     const internalRef = React.useRef<View>(null);
-    React.useImperativeHandle(forwardedRef, () => internalRef.current!);
+    const mergedRef = mergeRefs(internalRef, forwardedRef);
 
     React.useEffect(() => {
-      if (groupContext && value !== undefined) {
-        return groupContext.registerItem(value, internalRef);
+      if (isInGroup && value !== undefined) {
+        const unregisterItem = registerItem?.(value, internalRef);
+        const unregisterValue = registerValue?.(value);
+
+        return () => {
+          unregisterItem?.();
+          unregisterValue?.();
+        };
       }
       return undefined;
-    }, [value, groupContext]);
+    }, [value, isInGroup, registerItem, registerValue]);
 
-    React.useEffect(() => {
-      if (groupContext && value !== undefined) {
-        return groupContext.registerValue(value);
-      }
-      return undefined;
-    }, [value, groupContext]);
+    const resolvedStyle = useStyle({
+      additionalStyles: focusRingStyle,
+      state,
+      style,
+    });
 
-    const resolvedStyle = React.useMemo<StyleProp<ViewStyle>>(() => {
-      const baseStyle = evaluateStyles(style, state);
-      if (focusRingStyle) {
-        return [baseStyle, focusRingStyle];
-      }
-      return baseStyle;
-    }, [style, state, focusRingStyle]);
+    const mergedProps = mergeProps(otherProps, {
+      handlers: {
+        onBlur: handleBlur,
+        onFocus: handleFocus,
+        onKeyDown: handleKeyDown,
+        onPress: handlePress,
+        onAccessibilityAction: handleAccessibilityAction,
+      },
+      disabled: state.disabled,
+      focusable: isFocusable,
+      ref: mergedRef,
+      style: resolvedStyle,
+      accessibilityState: {
+        checked: state.pressed,
+        disabled: state.disabled,
+      },
+      accessibilityActions: !state.disabled ? [{ name: 'activate' }] : [],
+    });
 
     return (
       <PressableWithKeyDown
-        {...otherProps}
-        {...a11yProps}
-        disabled={state.disabled}
-        focusable={isFocusable}
-        hitSlop={hitSlop}
-        onAccessibilityAction={handleAccessibilityAction}
-        onBlur={handleBlur}
-        onFocus={handleFocus}
-        onKeyDown={handleKeyDown}
-        onPress={handlePress}
-        ref={internalRef}
-        style={resolvedStyle}
+        accessibilityHint="Toggles the state"
+        accessibilityLiveRegion="polite"
+        accessible={true}
+        importantForAccessibility={isFocusable ? 'yes' : 'no-hide-descendants'}
+        role={props.role ?? 'checkbox'}
         tabIndex={tabIndex}
+        {...mergedProps}
       >
-        {(pressableState) =>
+        {(pressableState: PressableStateCallbackType) =>
           evaluateStyles(children, {
             ...pressableState,
             ...state,
