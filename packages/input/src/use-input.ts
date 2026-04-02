@@ -4,16 +4,13 @@ import type { NativeSyntheticEvent, TextInputProps } from 'react-native';
 
 import type { InputProps, InputState } from './types';
 
-/**
- * Manages the state and logic for the Input primitive.
- * @param props The initialization properties.
- * @returns State and event handlers for the component.
- */
 export function useInput(props: InputProps) {
   const {
     defaultValue,
     dirty: controlledDirty,
     disabled = false,
+    readOnly = false,
+    required = false,
     disableDefaultFocusRing = false,
     focusableWhenDisabled = false,
     invalid = false,
@@ -27,28 +24,15 @@ export function useInput(props: InputProps) {
     value: controlledValue,
   } = props;
 
-  if (__DEV__) {
-    if (controlledValue !== undefined && defaultValue !== undefined) {
-      console.error(
-        'Input: Input components must be either controlled or uncontrolled ' +
-          '(specify either the value prop, or the defaultValue prop, but not both). ' +
-          'Decide between using a controlled or uncontrolled input element and remove one of these props. ' +
-          'More info: https://react.dev/link/controlled-components',
-      );
-    }
-  }
-
   const [internalValue, setInternalValue] = React.useState(defaultValue ?? '');
   const [internalDirty, setInternalDirty] = React.useState(false);
   const [internalTouched, setInternalTouched] = React.useState(false);
 
   const value = controlledValue !== undefined ? controlledValue : internalValue;
-  const isDirty =
-    controlledDirty !== undefined ? controlledDirty : internalDirty;
-  const isTouched =
-    controlledTouched !== undefined ? controlledTouched : internalTouched;
+  const isDirty = controlledDirty !== undefined ? controlledDirty : internalDirty;
+  const isTouched = controlledTouched !== undefined ? controlledTouched : internalTouched;
 
-  const { focused, focusRingStyle, isFocusable, onBlur, onFocus } =
+  const { focused, focusRingStyle, isFocusable, onBlur, onFocus, focusVisible } =
     useFocusRing({
       disabled,
       disableDefaultFocusRing,
@@ -93,15 +77,18 @@ export function useInput(props: InputProps) {
 
   const state: InputState = React.useMemo(
     () => ({
+      focusVisible,
       dirty: isDirty,
       disabled,
+      readOnly,
+      required,
       filled: value.length > 0,
       focused,
       invalid,
       touched: isTouched,
       valid,
     }),
-    [isDirty, disabled, value, focused, invalid, isTouched, valid],
+    [focusVisible, isDirty, disabled, readOnly, required, value, focused, invalid, isTouched, valid],
   );
 
   return {

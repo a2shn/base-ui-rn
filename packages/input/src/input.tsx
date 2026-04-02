@@ -1,6 +1,6 @@
-import { evaluateStyles } from '@base-ui-rn/core';
+import { mergeProps, mergeRefs, useStyle } from '@base-ui-rn/core';
 import * as React from 'react';
-import { StyleProp, TextInput, ViewStyle } from 'react-native';
+import { TextInput } from 'react-native';
 
 import type { InputProps } from './types';
 import { useInput } from './use-input';
@@ -8,28 +8,16 @@ import { useInput } from './use-input';
 /**
  * Headless input primitive built on top of React Native TextInput.
  *
- * Provides a high-quality, unstyled input component that automatically
- * tracks focus, filled, dirty, and touched states.
- *
- * @example
- * ```tsx
- * <Input
- *   placeholder="Enter your name"
- *   onValueChange={(value) => console.log(value)}
- * />
- * ```
+ * Provides a high-quality, unstyled input component with enhanced 
+ * accessibility state mapping.
  */
 export const Input = React.memo(
-  React.forwardRef<TextInput, InputProps>((props, ref) => {
+  React.forwardRef<TextInput, InputProps>((props, forwardedRef) => {
     const {
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-hidden': ariaHidden,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
       style,
-      ...otherProps
+      'aria-busy': ariaBusy,
+      'aria-errormessage': ariaErrorMessage,
+      'aria-describedby': ariaDescribedBy
     } = props;
 
     const {
@@ -43,39 +31,42 @@ export const Input = React.memo(
       value,
     } = useInput(props);
 
-    const resolvedStyle = React.useMemo<StyleProp<ViewStyle>>(() => {
-      const baseStyle = evaluateStyles(style, state);
-      if (focusRingStyle) {
-        return [baseStyle, focusRingStyle];
-      }
-      return baseStyle;
-    }, [style, state, focusRingStyle]);
+    const internalRef = React.useRef<TextInput>(null);
+    const mergedRef = mergeRefs(internalRef, forwardedRef);
+
+    const resolvedStyle = useStyle({
+      additionalStyles: focusRingStyle,
+      state,
+      style,
+    });
+
+    const mergedProps = mergeProps(props, {
+      handlers: {
+        onBlur: handleBlur,
+        onFocus: handleFocus,
+        onChangeText: handleChangeText,
+      },
+      disabled: state.disabled,
+      focusable: isFocusable,
+      ref: mergedRef,
+      style: resolvedStyle,
+      accessibilityState: {
+        disabled: state.disabled,
+        busy: ariaBusy,
+        invalid: state.invalid,
+      },
+    });
 
     return (
       <TextInput
-        {...otherProps}
         accessible={isFocusable}
-        aria-busy={ariaBusy}
+        aria-invalid={state.invalid}
+        aria-errormessage={ariaErrorMessage}
         aria-describedby={ariaDescribedBy}
-        aria-details={ariaDetails}
-        aria-hidden={ariaHidden}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
-        data-dirty={state.dirty}
-        data-disabled={state.disabled}
-        data-filled={state.filled}
-        data-focused={state.focused}
-        data-invalid={state.invalid}
-        data-touched={state.touched}
-        data-valid={state.valid}
-        editable={!state.disabled}
-        onBlur={handleBlur}
-        onChangeText={handleChangeText}
-        onFocus={handleFocus}
-        ref={ref}
-        style={resolvedStyle}
+        editable={!state.disabled && !state.readOnly}
         tabIndex={tabIndex}
         value={value}
+        {...mergedProps}
       />
     );
   }),

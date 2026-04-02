@@ -1,9 +1,10 @@
-import type { ARIABaseProps, ARIATraitDisabled } from '@base-ui-rn/core';
 import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type {
   NativeSyntheticEvent,
   StyleProp,
   TextInputProps,
+  TextProps,
+  TextStyle,
   ViewStyle,
 } from 'react-native';
 
@@ -12,37 +13,41 @@ import type {
  */
 export interface InputChangeEventDetails {
   /**
-   * The native event from the text input.
+   * The native event from the underlying TextInput.
    */
   nativeEvent: NativeSyntheticEvent<unknown>;
 }
 
 /**
- * The current state of the Input component.
+ * The current state of the Input component, used for functional styling.
  */
 export interface InputState extends FocusRingState {
   /**
-   * Whether the input is disabled.
+   * Whether the input is currently disabled.
    */
   disabled: boolean;
   /**
-   * Whether the input has been "touched" or interacted with.
+   * Whether the input is in a read-only state.
+   */
+  readOnly: boolean;
+  /**
+   * Whether the input has been blurred at least once.
    */
   touched: boolean;
   /**
-   * Whether the input's value has been modified.
+   * Whether the input's value has been modified by the user.
    */
   dirty: boolean;
   /**
-   * Whether the input is in a valid state.
+   * Whether the input is currently considered valid.
    */
   valid: boolean;
   /**
-   * Whether the input is in an invalid state.
+   * Whether the input is currently considered invalid.
    */
   invalid: boolean;
   /**
-   * Whether the input has a value (is not empty).
+   * Whether the input contains a non-empty value.
    */
   filled: boolean;
 }
@@ -51,9 +56,21 @@ export interface InputState extends FocusRingState {
  * Props for the Input component.
  */
 export interface InputProps
-  extends Omit<TextInputProps, 'style'>, ARIABaseProps, ARIATraitDisabled {
+  extends Omit<TextInputProps, 'style' | 'readOnly' | 'editable'> {
+
   /**
-   * Style applied to the input component.
+     * Identifies the element(s) that describe the object.
+     * Usually points to a hint or helper text Label.
+     */
+  'aria-describedby'?: string;
+  /**
+   * Identifies the element that provides an error message for the object.
+   * Only relevant when the input is invalid.
+   */
+  'aria-errormessage'?: string;
+  /**
+   * Style applied to the input component. Accepts a standard style object 
+   * or a function that receives the current InputState.
    */
   style?: StyleProp<ViewStyle> | ((state: InputState) => StyleProp<ViewStyle>);
   /**
@@ -61,7 +78,7 @@ export interface InputProps
    */
   value?: string;
   /**
-   * The default value of the input when uncontrolled.
+   * The initial value of the input when uncontrolled.
    */
   defaultValue?: string;
   /**
@@ -73,6 +90,16 @@ export interface InputProps
    * @default false
    */
   disabled?: boolean;
+  /**
+   * Whether the input is read-only.
+   * @default false
+   */
+  readOnly?: boolean;
+  /**
+   * Whether the input is required.
+   * @default false
+   */
+  required?: boolean;
   /**
    * Whether the input is in a valid state.
    */
@@ -86,18 +113,35 @@ export interface InputProps
    */
   dirty?: boolean;
   /**
-   * Whether the input has been "touched" or interacted with.
+   * Whether the input has been interacted with.
    */
   touched?: boolean;
-
   /**
-   * Disable the default focus ring styling.
+   * Disable the default focus ring styling provided by the focus-ring package.
    * @default false
    */
   disableDefaultFocusRing?: boolean;
   /**
-   * Whether the input remains focusable when disabled.
+   * Whether the input remains focusable even when disabled.
    * @default false
    */
   focusableWhenDisabled?: boolean;
+}
+
+/**
+ * Props for the Label component.
+ */
+export interface LabelProps extends Omit<TextProps, 'style' | 'children'> {
+  /**
+   * Style applied to the label.
+   */
+  style?: StyleProp<TextStyle> | ((state: any) => StyleProp<TextStyle>);
+  /**
+   * Content of the label.
+   */
+  children?: React.ReactNode | ((state: any) => React.ReactNode);
+  /**
+   * Unique identifier used to link this label to an input.
+   */
+  nativeID: string;
 }

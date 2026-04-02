@@ -1,3 +1,3 @@
 export { Input } from './input';
-export type { InputProps, InputState } from './types';
-export { useInput } from './use-input';
+export { Label } from './label'
+export * from './types';
