@@ -1,13 +1,11 @@
 import * as React from 'react';
 import { type NativeSyntheticEvent, Platform } from 'react-native';
 
-import { isActivationKey } from './constants';
 import type {
   KeyboardDirection,
   KeyboardNavigationOptions,
-  KeyboardOptions,
-  KeyPressEventData,
-} from './types';
+  KeyDownEventData,
+} from '../types';
 
 const DEFAULT_KEY_MAP: Record<KeyboardDirection, string[]> = {
   first: ['Home'],
@@ -15,119 +13,6 @@ const DEFAULT_KEY_MAP: Record<KeyboardDirection, string[]> = {
   next: ['ArrowRight', 'ArrowDown', 'dpadRight', 'dpadDown'],
   prev: ['ArrowLeft', 'ArrowUp', 'dpadLeft', 'dpadUp'],
 };
-
-/**
- * A hook that handles keyboard activation (Space, Enter, Gamepad A/Select, etc.).
- *
- * Use this hook for components that act like buttons or links, where pressing
- * Space or Enter should trigger an action. It automatically handles
- * preventDefault() on web to avoid double-activation and scrolling.
- *
- * @param onActivate Callback fired on an activation key press.
- * @param isDisabled Whether the component is disabled, which blocks activation.
- * @returns A generic onKeyDown handler to spread onto a component.
- *
- * @example
- * ```tsx
- * function MyButton({ onPress }) {
- *   const onKeyDown = useKeyboardActivation(onPress);
- *   return <View onKeyDown={onKeyDown} accessible role="button" />;
- * }
- * ```
- */
-export function useKeyboardActivation(
-  onActivate: () => void,
-  isDisabled = false,
-) {
-  const onActivateRef = React.useRef(onActivate);
-  onActivateRef.current = onActivate;
-
-  const isDisabledRef = React.useRef(isDisabled);
-  isDisabledRef.current = isDisabled;
-
-  return React.useCallback(
-    (e: NativeSyntheticEvent<KeyPressEventData> | KeyboardEvent) => {
-      const nativeEvent = (e as NativeSyntheticEvent<KeyPressEventData>)
-        .nativeEvent;
-      const key = nativeEvent?.key || (e as unknown as KeyPressEventData).key;
-      if (!key) return;
-
-      if (isActivationKey(key) && !isDisabledRef.current) {
-        if (e.preventDefault) e.preventDefault();
-        onActivateRef.current();
-      }
-    },
-    [],
-  );
-}
-
-/**
- * A hook that handles physical key presses (Arrows, PageUp/Down, Home/End).
- *
- * Use this hook for components that need to respond to specific physical keys
- * regardless of logical orientation or focus navigation. It is ideal for
- * primitives like Sliders, ScrollAreas, or custom pickers.
- *
- * Unlike `useKeyboardNavigation`, this hook does not manage focus between
- * siblings; it only maps key presses to provided callbacks.
- *
- * @param options Keyboard options mapped to specific keys.
- * @returns A generic onKeyDown handler.
- *
- * @example
- * ```tsx
- * const onKeyDown = useKeyboard({
- *   onArrowUp: () => setVolume(v => v + 1),
- *   onArrowDown: () => setVolume(v => v - 1),
- * });
- * return <View onKeyDown={onKeyDown} />;
- * ```
- */
-export function useKeyboard(options: KeyboardOptions) {
-  const optionsRef = React.useRef(options);
-  optionsRef.current = options;
-
-  return React.useCallback(
-    (e: NativeSyntheticEvent<KeyPressEventData> | KeyboardEvent) => {
-      const {
-        disabled = false,
-        onArrowDown,
-        onArrowLeft,
-        onArrowRight,
-        onArrowUp,
-        onEnd,
-        onHome,
-        onPageDown,
-        onPageUp,
-      } = optionsRef.current;
-
-      if (disabled) return;
-
-      const nativeEvent = (e as NativeSyntheticEvent<KeyPressEventData>)
-        .nativeEvent;
-      const key = nativeEvent?.key || (e as unknown as KeyPressEventData).key;
-      if (!key) return;
-
-      const handlers: Record<string, (() => void) | undefined> = {
-        ArrowDown: onArrowDown,
-        ArrowLeft: onArrowLeft,
-        ArrowRight: onArrowRight,
-        ArrowUp: onArrowUp,
-        End: onEnd,
-        Home: onHome,
-        PageDown: onPageDown,
-        PageUp: onPageUp,
-      };
-
-      const handler = handlers[key];
-      if (handler) {
-        handler();
-        if (e.preventDefault) e.preventDefault();
-      }
-    },
-    [],
-  );
-}
 
 /**
  * A modular hook for managing keyboard navigation within a group of elements.
@@ -159,7 +44,14 @@ export function useKeyboard(options: KeyboardOptions) {
  */
 export function useKeyboardNavigation<T = unknown>(
   options: KeyboardNavigationOptions = {},
-) {
+): {
+  registerItem: (id: string, ref: React.RefObject<T>) => () => void;
+  navigate: (currentId: string, direction: KeyboardDirection) => string | null;
+  handleKeyDown: (
+    currentId: string,
+    event: NativeSyntheticEvent<KeyDownEventData> | KeyboardEvent,
+  ) => string | null;
+} {
   const optionsRef = React.useRef(options);
   optionsRef.current = options;
 
@@ -172,6 +64,7 @@ export function useKeyboardNavigation<T = unknown>(
       if (!itemOrder.current.includes(id)) {
         itemOrder.current.push(id);
       }
+
       return () => {
         items.current.delete(id);
         itemOrder.current = itemOrder.current.filter((itemId) => itemId !== id);
@@ -185,9 +78,11 @@ export function useKeyboardNavigation<T = unknown>(
       const { loop = true } = optionsRef.current;
       const order = itemOrder.current;
       const index = order.indexOf(currentId);
+
       if (index === -1) return null;
 
       let nextIndex = index;
+
       switch (direction) {
         case 'next':
           nextIndex = index + 1;
@@ -217,33 +112,43 @@ export function useKeyboardNavigation<T = unknown>(
   const handleKeyDown = React.useCallback(
     (
       currentId: string,
-      event: NativeSyntheticEvent<KeyPressEventData> | KeyboardEvent,
-    ) => {
+      event: NativeSyntheticEvent<KeyDownEventData> | KeyboardEvent,
+    ): string | null => {
       const { keyMap = {}, orientation = 'horizontal' } = optionsRef.current;
-      const nativeEvent = (event as NativeSyntheticEvent<KeyPressEventData>)
+
+      const nativeEvent = (event as NativeSyntheticEvent<KeyDownEventData>)
         .nativeEvent;
       const key =
-        nativeEvent?.key || (event as unknown as KeyPressEventData).key;
+        nativeEvent?.key || (event as unknown as KeyDownEventData).key;
+
       if (!key) return null;
 
-      const mergedKeyMap = { ...DEFAULT_KEY_MAP, ...keyMap };
+      const mergedKeyMap: Record<KeyboardDirection, string[]> = {
+        first: [...DEFAULT_KEY_MAP.first, ...(keyMap.first ?? [])],
+        last: [...DEFAULT_KEY_MAP.last, ...(keyMap.last ?? [])],
+        next: [...(keyMap.next ?? [])],
+        prev: [...(keyMap.prev ?? [])],
+      };
+
       let direction: KeyboardDirection | null = null;
 
-      // Prioritize first/last keys (orientation-agnostic)
       if (mergedKeyMap.first.includes(key)) {
         direction = 'first';
       } else if (mergedKeyMap.last.includes(key)) {
         direction = 'last';
       } else {
-        // Handle next/prev keys based on orientation
         const isHorizontal =
           orientation === 'horizontal' || orientation === 'both';
         const isVertical = orientation === 'vertical' || orientation === 'both';
 
-        if (isHorizontal && (key === 'ArrowRight' || key === 'ArrowLeft')) {
-          direction = key === 'ArrowRight' ? 'next' : 'prev';
-        } else if (isVertical && (key === 'ArrowDown' || key === 'ArrowUp')) {
-          direction = key === 'ArrowDown' ? 'next' : 'prev';
+        if (isHorizontal && ['ArrowRight', 'dpadRight'].includes(key)) {
+          direction = 'next';
+        } else if (isHorizontal && ['ArrowLeft', 'dpadLeft'].includes(key)) {
+          direction = 'prev';
+        } else if (isVertical && ['ArrowDown', 'dpadDown'].includes(key)) {
+          direction = 'next';
+        } else if (isVertical && ['ArrowUp', 'dpadUp'].includes(key)) {
+          direction = 'prev';
         } else if (mergedKeyMap.next.includes(key)) {
           direction = 'next';
         } else if (mergedKeyMap.prev.includes(key)) {
@@ -266,6 +171,7 @@ export function useKeyboardNavigation<T = unknown>(
               } else {
                 setTimeout(() => element.focus?.(), 0);
               }
+
               return nextId;
             }
           }
