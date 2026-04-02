@@ -1,39 +1,35 @@
-import { isActivationAction, useKeyboardActivation } from '@base-ui-rn/core';
+import {
+  isActivationAction,
+  useActivationDedup,
+  useKeyboardActivation,
+} from '@base-ui-rn/core';
 import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import {
   type AccessibilityActionEvent,
   type GestureResponderEvent,
-  type NativeSyntheticEvent,
-  type TargetedEvent,
 } from 'react-native';
 
-import type { ButtonProps, KeyPressEventData } from './types';
-import { useButtonA11y } from './use-button-a11y';
+import type { ButtonProps } from './types';
 
 export const useButton = (props: ButtonProps) => {
   const {
     disabled = false,
     disableDefaultFocusRing = false,
     focusableWhenDisabled = false,
-    onAccessibilityAction,
-    onBlur,
-    onFocus,
-    onKeyDown,
     onPress,
-    onPressIn,
-    onPressOut,
-    tabIndex: tabIndexProp,
+    tabIndex,
   } = props;
 
   const isDisabled = disabled === true;
 
   const {
     focused,
+    focusVisible,
     focusRingStyle,
     isFocusable,
-    onBlur: onFocusOut,
-    onFocus: onFocusIn,
+    onBlur: handleBlur,
+    onFocus: onRingFocus,
   } = useFocusRing({
     disabled: isDisabled,
     disableDefaultFocusRing,
@@ -41,102 +37,85 @@ export const useButton = (props: ButtonProps) => {
   });
 
   const [pressed, setPressed] = React.useState(false);
-
-  const tabIndex = resolveTabIndex(isFocusable, tabIndexProp);
-
-  const a11yProps = useButtonA11y({
-    isDisabled,
-    isFocusable,
-    pressed,
-    props,
-  });
-
   const onPressRef = React.useRef(onPress);
+
   React.useLayoutEffect(() => {
     onPressRef.current = onPress;
   });
 
-  const handlePress = React.useCallback(
-    (event: GestureResponderEvent) => {
-      if (!isDisabled) onPressRef.current?.(event);
-    },
-    [isDisabled],
+
+  const onCommit = React.useCallback(() => {
+    onPressRef.current?.(null as unknown as GestureResponderEvent);
+  }, []);
+
+  const {
+    handlePress,
+    handleKeyboardActivation: handleKeyboardPress,
+    handleAccessibilityActivation,
+  } = useActivationDedup({
+    pressed,
+    disabled: isDisabled,
+    onCommit,
+  });
+
+  const handleKeyboardActivation = useKeyboardActivation(
+    handleKeyboardPress,
+    isDisabled,
   );
 
-  const handlePressIn = React.useCallback(
-    (event: GestureResponderEvent) => {
-      if (!isDisabled) setPressed(true);
-      onPressIn?.(event);
+  const handleKeyDown = React.useCallback(
+    (e: any) => {
+      handleKeyboardActivation(e);
     },
-    [isDisabled, onPressIn],
+    [handleKeyboardActivation],
   );
 
-  const handlePressOut = React.useCallback(
-    (event: GestureResponderEvent) => {
-      if (!isDisabled) setPressed(false);
-      onPressOut?.(event);
+  const handleFocus = React.useCallback(
+    (e: any) => {
+      if (isDisabled && !focusableWhenDisabled) return;
+      onRingFocus();
+      props.onFocus?.(e);
     },
-    [isDisabled, onPressOut],
+    [isDisabled, focusableWhenDisabled, onRingFocus, props.onFocus]
   );
 
   const handleAccessibilityAction = React.useCallback(
     (event: AccessibilityActionEvent) => {
       if (isActivationAction(event.nativeEvent.actionName) && !isDisabled) {
-        onPressRef.current?.(null as unknown as GestureResponderEvent);
+        handleAccessibilityActivation();
       }
-      onAccessibilityAction?.(event);
     },
-    [isDisabled, onAccessibilityAction],
+    [isDisabled, handleAccessibilityActivation],
   );
 
-  const performKeyboardActivation = React.useCallback(() => {
-    if (!isDisabled) {
-      onPressRef.current?.(null as unknown as GestureResponderEvent);
-    }
-  }, [isDisabled]);
+  const handlePressIn = React.useCallback((e: any) => {
+    if (isDisabled) return;
+    setPressed(true);
+    props.onPressIn?.(e);
+  }, [isDisabled, props.onPressIn]);
 
-  const handleKeyboardActivation = useKeyboardActivation(
-    performKeyboardActivation,
-    isDisabled,
-  );
+  const handlePressOut = React.useCallback((e: any) => {
+    if (isDisabled) return;
+    setPressed(false);
+    props.onPressOut?.(e);
+  }, [isDisabled, props.onPressOut]);
 
-  const handleKeyDown = React.useCallback(
-    (e: NativeSyntheticEvent<KeyPressEventData>) => {
-      handleKeyboardActivation(e);
-      onKeyDown?.(e);
-    },
-    [handleKeyboardActivation, onKeyDown],
-  );
-
-  const handleFocus = React.useCallback(
-    (e: NativeSyntheticEvent<TargetedEvent>) => {
-      onFocusIn();
-      onFocus?.(e);
-    },
-    [onFocusIn, onFocus],
-  );
-
-  const handleBlur = React.useCallback(
-    (e: NativeSyntheticEvent<TargetedEvent>) => {
-      onFocusOut();
-      onBlur?.(e);
-    },
-    [onFocusOut, onBlur],
-  );
+  const resolvedTabIndex = resolveTabIndex(isFocusable, tabIndex);
 
   return {
-    a11yProps,
     focused,
+    focusVisible,
     focusRingStyle,
-    handleAccessibilityAction,
     handleBlur,
     handleFocus,
     handleKeyDown,
     handlePress,
     handlePressIn,
     handlePressOut,
+    handleAccessibilityAction,
+    isDisabled,
     isFocusable,
     pressed,
-    tabIndex,
+    tabIndex: resolvedTabIndex,
   };
 };

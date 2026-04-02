@@ -1,4 +1,4 @@
-import { KeyPressEventData } from '@base-ui-rn/core';
+import { KeyDownEventData } from '@base-ui-rn/core';
 import { FocusRingState } from '@base-ui-rn/focus-ring';
 import {
   NativeSyntheticEvent,
@@ -13,9 +13,14 @@ import {
 export interface ButtonState extends FocusRingState {
   /**
    * Whether the button is currently being pressed.
-   * @default false
+
    */
   pressed: boolean;
+
+  /**
+   * Whether the toggle is disabled.
+   */
+  disabled: boolean;
 }
 
 /**
@@ -31,7 +36,7 @@ export interface ButtonProps extends Omit<
    * The content of the button.
    *
    * Can be a React node or a render function receiving the current button state.
-      */
+   */
   children?: React.ReactNode | ((state: ButtonState) => React.ReactNode);
 
   /**
@@ -39,7 +44,7 @@ export interface ButtonProps extends Omit<
    *
    * Can be a static style or a function based on the button state.
    *
-      */
+   */
   style?: StyleProp<ViewStyle> | ((state: ButtonState) => StyleProp<ViewStyle>);
 
   /**
@@ -73,7 +78,5 @@ export interface ButtonProps extends Omit<
   /**
    * Handler for key down events.
    */
-  onKeyDown?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
+  onKeyDown?: (e: NativeSyntheticEvent<KeyDownEventData>) => void;
 }
-
-export type { KeyPressEventData };
