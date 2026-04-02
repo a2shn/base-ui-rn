@@ -1,11 +1,10 @@
-import { evaluateStyles } from '@base-ui-rn/core';
+import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
 import { MeterContext } from './meter-context';
 import type { MeterRootProps } from './types';
 import { useMeter } from './use-meter';
-import { useMeterA11y } from './use-meter-a11y';
 
 /**
  * Headless meter root primitive for React Native.
@@ -16,49 +15,50 @@ import { useMeterA11y } from './use-meter-a11y';
  * @example
  * ```tsx
  * <Meter.Root value={50}>
- *   <Meter.Label>Storage</Meter.Label>
- *   <Meter.Track><Meter.Indicator /></Meter.Track>
+ * <Meter.Label>Storage</Meter.Label>
+ * <Meter.Track><Meter.Indicator /></Meter.Track>
  * </Meter.Root>
  * ```
  */
 export const MeterRoot = React.memo(
   React.forwardRef<View, MeterRootProps>((props, ref) => {
     const {
+      accessibilityLabel,
+      accessibilityLiveRegion,
+      accessible,
       children,
-      format,
-      getAccessibilityValueText,
-      locale,
-      max,
-      min,
       style,
-      value,
-      ...viewProps
     } = props;
 
-    const { labelId, state } = useMeter(props);
-    const a11yProps = useMeterA11y({ labelId, props, state });
+    const { computedAccessibilityValue, labelId, state } = useMeter(props);
 
     const contextValue = React.useMemo(
-      () => ({
-        ...state,
-        labelId,
-      }),
+      () => ({ ...state, labelId }),
       [state, labelId],
     );
 
-    const resolvedStyle = evaluateStyles(style, state);
-    const resolvedChildren = evaluateStyles(children, state);
+    const resolvedStyle = useStyle({ state, style });
+
+    const mergedProps = mergeProps(props, {
+      handlers: {},
+      disabled: false,
+      focusable: false,
+      ref,
+      style: resolvedStyle,
+    });
 
     return (
       <MeterContext.Provider value={contextValue}>
         <View
-          {...viewProps}
-          {...a11yProps}
-          focusable={false}
-          ref={ref}
-          style={resolvedStyle}
+          accessibilityLabelledBy={accessibilityLabel ? undefined : [labelId]}
+          accessibilityLiveRegion={accessibilityLiveRegion ?? 'none'}
+          accessibilityValue={computedAccessibilityValue}
+          accessible={accessible ?? true}
+          importantForAccessibility="yes"
+          role="progressbar"
+          {...mergedProps}
         >
-          {resolvedChildren}
+          {evaluateStyles(children, state)}
         </View>
       </MeterContext.Provider>
     );

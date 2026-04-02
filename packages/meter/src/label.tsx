@@ -1,4 +1,4 @@
-import { evaluateStyles } from '@base-ui-rn/core';
+import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
 import * as React from 'react';
 import { Text } from 'react-native';
 
@@ -21,17 +21,22 @@ export const MeterLabel = React.memo(
     const context = useMeterContext();
     const { labelId } = context;
 
-    const resolvedChildren = evaluateStyles(children, context);
-    const resolvedStyle = evaluateStyles(style, context);
+    const resolvedStyle = useStyle({
+      state: context,
+      style,
+    });
+
+    const mergedProps = mergeProps(props, {
+      handlers: {},
+      disabled: false,
+      focusable: false,
+      ref,
+      style: resolvedStyle,
+    });
 
     return (
-      <Text
-        {...props}
-        nativeID={nativeID ?? labelId}
-        ref={ref}
-        style={resolvedStyle}
-      >
-        {resolvedChildren}
+      <Text nativeID={nativeID ?? labelId} {...mergedProps}>
+        {evaluateStyles(children, context)}
       </Text>
     );
   }),

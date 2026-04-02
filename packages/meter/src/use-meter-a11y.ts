@@ -1,4 +1,4 @@
-import { mergeAccessibilityState } from '@base-ui-rn/core';
+import { useA11y } from '@base-ui-rn/core';
 import * as React from 'react';
 
 import type { MeterRootProps, MeterState } from './types';
@@ -9,27 +9,19 @@ interface UseMeterA11yOptions {
   labelId: string;
 }
 
-export function useMeterA11y({
-  labelId,
-  props,
-  state,
-}: UseMeterA11yOptions) {
-  const {
-    accessibilityLabel,
-    accessibilityState,
-    accessibilityValue,
-    getAccessibilityValueText,
-  } = props;
-
+export function useMeterA11y({ labelId, props, state }: UseMeterA11yOptions) {
+  const { accessibilityValue, getAccessibilityValueText } = props;
   const { formattedValue, max, min, value } = state;
 
   if (__DEV__) {
     if (
-      accessibilityLabel &&
+      props.accessibilityLabel &&
       props.accessibilityHint &&
-      accessibilityLabel === props.accessibilityHint
+      props.accessibilityLabel === props.accessibilityHint
     ) {
-      console.warn('[Meter.Root] accessibilityLabel and accessibilityHint are identical.');
+      console.warn(
+        '[Meter.Root] accessibilityLabel and accessibilityHint are identical.',
+      );
     }
   }
 
@@ -42,30 +34,21 @@ export function useMeterA11y({
 
   const mergedValue = React.useMemo(
     () => ({
-      ...accessibilityValue,
       max,
       min,
       now: value,
       text: accessibilityValueText,
+      ...accessibilityValue,
     }),
     [accessibilityValue, accessibilityValueText, max, min, value],
   );
 
-  const mergedState = React.useMemo(
-    () => mergeAccessibilityState(accessibilityState, false),
-    [accessibilityState],
-  );
-
-  return {
-    accessibilityLabel,
-    accessibilityLabelledBy: accessibilityLabel ? undefined : [labelId],
-    accessibilityLiveRegion:
-      (props.accessibilityLiveRegion as 'none' | 'polite' | 'assertive') ??
-      'none',
-    accessibilityState: mergedState,
+  return useA11y(props, {
+    accessibilityLabelledBy: props.accessibilityLabel ? undefined : [labelId],
+    accessibilityLiveRegion: props.accessibilityLiveRegion ?? 'none',
     accessibilityValue: mergedValue,
     accessible: props.accessible ?? true,
-    importantForAccessibility: 'yes' as const,
-    role: 'progressbar' as const,
-  };
+    importantForAccessibility: 'yes',
+    role: 'progressbar',
+  });
 }

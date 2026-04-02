@@ -1,4 +1,4 @@
-import { evaluateStyles } from '@base-ui-rn/core';
+import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
 import * as React from 'react';
 import { Text } from 'react-native';
 
@@ -21,18 +21,26 @@ export const MeterValue = React.memo(
     const context = useMeterContext();
     const { formattedValue } = context;
 
-    const resolvedChildren = evaluateStyles(children, context);
-    const resolvedStyle = evaluateStyles(style, context);
+    const resolvedStyle = useStyle({
+      state: context,
+      style,
+    });
+
+    const mergedProps = mergeProps(props, {
+      handlers: {},
+      disabled: false,
+      focusable: false,
+      ref,
+      style: resolvedStyle,
+    });
 
     return (
       <Text
-        {...props}
         accessibilityElementsHidden
-        importantForAccessibility='no-hide-descendants'
-        ref={ref}
-        style={resolvedStyle}
+        importantForAccessibility="no-hide-descendants"
+        {...mergedProps}
       >
-        {resolvedChildren ?? formattedValue}
+        {evaluateStyles(children, context) ?? formattedValue}
       </Text>
     );
   }),

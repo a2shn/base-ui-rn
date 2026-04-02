@@ -1,4 +1,4 @@
-import { evaluateStyles } from '@base-ui-rn/core';
+import { mergeProps, useStyle } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View, type ViewStyle } from 'react-native';
 
@@ -28,15 +28,24 @@ export const MeterIndicator = React.memo(
       };
     }, [percentage]);
 
-    const resolvedStyle = evaluateStyles(style, context);
+    const resolvedStyle = useStyle({
+      state: context,
+      style,
+    });
+
+    const mergedProps = mergeProps(props, {
+      handlers: {},
+      disabled: false,
+      focusable: false,
+      ref,
+      style: [indicatorStyle, resolvedStyle],
+    });
 
     return (
       <View
-        {...props}
         accessibilityElementsHidden
-        importantForAccessibility='no-hide-descendants'
-        ref={ref}
-        style={[indicatorStyle, resolvedStyle]}
+        importantForAccessibility="no-hide-descendants"
+        {...mergedProps}
       />
     );
   }),
