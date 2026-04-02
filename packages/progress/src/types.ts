@@ -29,8 +29,10 @@ export interface ProgressState {
   isProgressing: boolean;
 }
 
-export interface ProgressRootProps
-  extends Omit<ViewProps, 'children' | 'style'> {
+export interface ProgressRootProps extends Omit<
+  ViewProps,
+  'children' | 'style'
+> {
   /**
    * The current value of the progress bar.
    * @default null
@@ -73,8 +75,10 @@ export interface ProgressRootProps
   children?: React.ReactNode | ((state: ProgressState) => React.ReactNode);
 }
 
-export interface ProgressLabelProps
-  extends Omit<TextProps, 'children' | 'style'> {
+export interface ProgressLabelProps extends Omit<
+  TextProps,
+  'children' | 'style'
+> {
   /**
    * Children of the label component.
    */
@@ -87,8 +91,10 @@ export interface ProgressLabelProps
     | ((state: ProgressState) => StyleProp<TextStyle>);
 }
 
-export interface ProgressTrackProps
-  extends Omit<ViewProps, 'children' | 'style'> {
+export interface ProgressTrackProps extends Omit<
+  ViewProps,
+  'children' | 'style'
+> {
   /**
    * Children of the track component.
    */
@@ -110,8 +116,10 @@ export interface ProgressIndicatorProps extends Omit<ViewProps, 'style'> {
     | ((state: ProgressState) => StyleProp<ViewStyle>);
 }
 
-export interface ProgressValueProps
-  extends Omit<TextProps, 'children' | 'style'> {
+export interface ProgressValueProps extends Omit<
+  TextProps,
+  'children' | 'style'
+> {
   /**
    * Children of the value component.
    */

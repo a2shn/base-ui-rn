@@ -1,4 +1,4 @@
-import { evaluateStyles } from '@base-ui-rn/core';
+import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -7,8 +7,6 @@ import type { ProgressTrackProps } from './types';
 
 /**
  * Contains the progress indicator and represents the entire range of the progress bar.
- *
- * Hidden from accessibility as it's purely visual.
  *
  * @example
  * ```tsx
@@ -20,18 +18,26 @@ export const ProgressTrack = React.memo(
     const { children, style } = props;
     const context = useProgressContext();
 
-    const resolvedChildren = evaluateStyles(children, context);
-    const resolvedStyle = evaluateStyles(style, context);
+    const resolvedStyle = useStyle({
+      state: context,
+      style,
+    });
+
+    const mergedProps = mergeProps(props, {
+      handlers: {},
+      disabled: false,
+      focusable: false,
+      ref,
+      style: resolvedStyle,
+    });
 
     return (
       <View
-        {...props}
         accessibilityElementsHidden
-        importantForAccessibility='no-hide-descendants'
-        ref={ref}
-        style={resolvedStyle}
+        importantForAccessibility="no-hide-descendants"
+        {...mergedProps}
       >
-        {resolvedChildren}
+        {evaluateStyles(children, context)}
       </View>
     );
   }),

@@ -1,4 +1,4 @@
-import { evaluateStyles } from '@base-ui-rn/core';
+import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
 import * as React from 'react';
 import { Text } from 'react-native';
 
@@ -7,8 +7,6 @@ import type { ProgressValueProps } from './types';
 
 /**
  * A text element displaying the current value of the progress.
- *
- * Hidden from accessibility to avoid redundant announcements.
  *
  * @example
  * ```tsx
@@ -21,20 +19,26 @@ export const ProgressValue = React.memo(
     const context = useProgressContext();
     const { formattedValue } = context;
 
-    const resolvedStyle = evaluateStyles(style, context);
-    const resolvedChildren = evaluateStyles(children, context);
+    const resolvedStyle = useStyle({
+      state: context,
+      style,
+    });
+
+    const mergedProps = mergeProps(props, {
+      handlers: {},
+      disabled: false,
+      focusable: false,
+      ref,
+      style: resolvedStyle,
+    });
 
     return (
       <Text
-        {...props}
-        // Purely visual — the root's accessibilityValue.text already
-        // communicates the value to screen readers
         accessibilityElementsHidden
-        importantForAccessibility='no-hide-descendants'
-        ref={ref}
-        style={resolvedStyle}
+        importantForAccessibility="no-hide-descendants"
+        {...mergedProps}
       >
-        {resolvedChildren ?? formattedValue}
+        {evaluateStyles(children, context) ?? formattedValue}
       </Text>
     );
   }),

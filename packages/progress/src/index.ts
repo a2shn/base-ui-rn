@@ -12,5 +12,4 @@ export const Progress = {
   Value: ProgressValue,
 };
 
-
 export * from './types';

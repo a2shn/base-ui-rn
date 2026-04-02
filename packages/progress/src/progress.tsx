@@ -1,11 +1,10 @@
-import { evaluateStyles } from '@base-ui-rn/core';
+import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
 import { ProgressContext } from './progress-context';
 import type { ProgressRootProps } from './types';
 import { useProgress } from './use-progress';
-import { useProgressA11y } from './use-progress-a11y';
 
 /**
  * Headless progress root primitive for React Native.
@@ -16,27 +15,21 @@ import { useProgressA11y } from './use-progress-a11y';
  * @example
  * ```tsx
  * <Progress.Root value={20}>
- *   <Progress.Label>Export data</Progress.Label>
- *   <Progress.Track><Progress.Indicator /></Progress.Track>
+ * <Progress.Label>Export data</Progress.Label>
+ * <Progress.Track><Progress.Indicator /></Progress.Track>
  * </Progress.Root>
  * ```
  */
 export const ProgressRoot = React.memo(
   React.forwardRef<View, ProgressRootProps>((props, ref) => {
     const {
+      accessibilityLabel,
+      accessibilityLiveRegion,
       children,
-      format,
-      getAccessibilityValueText,
-      locale,
-      max,
-      min,
       style,
-      value,
-      ...viewProps
     } = props;
 
-    const { labelId, state } = useProgress(props);
-    const a11yProps = useProgressA11y({ labelId, props, state });
+    const { computedAccessibilityValue, labelId, state } = useProgress(props);
 
     const contextValue = React.useMemo(
       () => ({
@@ -46,19 +39,28 @@ export const ProgressRoot = React.memo(
       [state, labelId],
     );
 
-    const resolvedStyle = evaluateStyles(style, state);
-    const resolvedChildren = evaluateStyles(children, state);
+    const resolvedStyle = useStyle({ state, style });
+
+    const mergedProps = mergeProps(props, {
+      handlers: {},
+      disabled: false,
+      focusable: false,
+      ref,
+      style: resolvedStyle,
+    });
 
     return (
       <ProgressContext.Provider value={contextValue}>
         <View
-          {...viewProps}
-          {...a11yProps}
-          focusable={false}
-          ref={ref}
-          style={resolvedStyle}
+          accessibilityLiveRegion={accessibilityLiveRegion ?? 'polite'}
+          accessibilityValue={computedAccessibilityValue}
+          accessible={true}
+          aria-labelledby={accessibilityLabel ? undefined : labelId}
+          importantForAccessibility="yes"
+          role="progressbar"
+          {...mergedProps}
         >
-          {resolvedChildren}
+          {evaluateStyles(children, state)}
         </View>
       </ProgressContext.Provider>
     );

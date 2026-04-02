@@ -6,7 +6,6 @@ export const ProgressContext = React.createContext<ProgressContextValue | null>(
   null,
 );
 
-
 export function useProgressContext() {
   const context = React.useContext(ProgressContext);
   if (!context) {
