@@ -1,11 +1,9 @@
-import { evaluateStyles } from '@base-ui-rn/core';
+import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
 import * as React from 'react';
 import { Platform, View } from 'react-native';
 
 import type { AccordionHeaderProps } from './types';
-import { useAccordionHeader } from './use-accordion';
-
-/**
+import { useAccordionHeader } from './use-accordion';/**
  * An optional wrapper for the Accordion.Trigger.
  *
  * Typically used to provide semantic structure (e.g., heading levels)
@@ -20,50 +18,30 @@ import { useAccordionHeader } from './use-accordion';
  */
 export const AccordionHeader = React.memo(
   React.forwardRef<View, AccordionHeaderProps>((props, ref) => {
-    const {
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-disabled': ariaDisabled,
-      'aria-expanded': ariaExpanded,
-      'aria-hidden': ariaHidden,
-      'aria-keyshortcuts': ariaKeyshortcuts,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      children,
-      'data-disabled': dataDisabled,
-      'data-index': dataIndex,
-      'data-open': dataOpen,
+    const { children, style, ...otherProps } = props;
+    const { isDisabled, open, state } = useAccordionHeader();
+
+    const resolvedStyle = useStyle({
+      additionalStyles: [Platform.OS === 'web' && open ? { zIndex: 1 } : undefined],
+      state,
       style,
-      ...otherProps
-    } = props;
+    });
 
-    const { disabled, index, open, state } = useAccordionHeader();
-
-    const resolvedChildren = evaluateStyles(children, state);
+    const mergedProps = mergeProps(otherProps, {
+      handlers: {},
+      disabled: isDisabled,
+      focusable: false,
+      ref,
+      style: resolvedStyle,
+      accessibilityState: {
+        disabled: isDisabled,
+        expanded: open,
+      },
+    });
 
     return (
-      <View
-        {...otherProps}
-        aria-busy={ariaBusy}
-        aria-describedby={ariaDescribedBy}
-        aria-details={ariaDetails}
-        aria-disabled={ariaDisabled ?? (disabled ? true : undefined)}
-        aria-expanded={ariaExpanded ?? open}
-        aria-hidden={ariaHidden}
-        aria-keyshortcuts={ariaKeyshortcuts}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
-        data-disabled={dataDisabled ?? (disabled ? 'true' : undefined)}
-        data-index={dataIndex ?? index}
-        data-open={dataOpen ?? (open ? 'true' : undefined)}
-        ref={ref}
-        style={[
-          evaluateStyles(style, state),
-          Platform.OS === 'web' ? { zIndex: 1 } : undefined,
-        ]}
-      >
-        {resolvedChildren}
+      <View {...mergedProps}>
+        {evaluateStyles(children, state)}
       </View>
     );
   }),

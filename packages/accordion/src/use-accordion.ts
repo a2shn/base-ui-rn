@@ -1,8 +1,13 @@
-import { useKeyboardActivation, useKeyboardNavigation } from '@base-ui-rn/core';
+import {
+  isActivationAction,
+  useActivationDedup,
+  useKeyboardActivation,
+  useKeyboardNavigation,
+  type KeyDownEventData,
+} from '@base-ui-rn/core';
 import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import type {
-  GestureResponderEvent,
   LayoutChangeEvent,
   NativeSyntheticEvent,
   TargetedEvent,
@@ -21,7 +26,6 @@ import type {
   AccordionTriggerProps,
   AccordionTriggerState,
   AccordionValueChangeDetails,
-  KeyPressEventData,
 } from './types';
 
 function useId(prefix = 'accordion') {
@@ -36,11 +40,6 @@ function getValueArray(value: string | string[] | undefined): string[] {
   return Array.isArray(value) ? value : [value];
 }
 
-/**
- * Manages the state and logic for the AccordionRoot primitive.
- * @param props The initialization properties.
- * @returns State and event handlers for the component.
- */
 export function useAccordionRoot(props: AccordionRootProps) {
   const {
     defaultValue,
@@ -54,22 +53,22 @@ export function useAccordionRoot(props: AccordionRootProps) {
   } = props;
 
   const baseId = useId();
+  const isDisabled = disabled;
 
-  const { handleKeyDown, registerItem: registerTrigger } =
-    useKeyboardNavigation<View | null>({
-      loop: loopFocus,
-      orientation,
-    });
+  const { handleKeyDown, registerItem: registerTrigger } = useKeyboardNavigation<View | null>({
+    loop: loopFocus,
+    orientation,
+  });
 
   const onTriggerKeyDown = React.useCallback(
-    (value: string, event: NativeSyntheticEvent<KeyPressEventData>) => {
-      if (disabled) return;
+    (value: string, event: NativeSyntheticEvent<KeyDownEventData>) => {
+      if (isDisabled) return;
       const nextId = handleKeyDown(value, event);
       if (nextId) {
         onFocusChange?.(nextId);
       }
     },
-    [disabled, handleKeyDown, onFocusChange],
+    [isDisabled, handleKeyDown, onFocusChange],
   );
 
   const [internalValue, setInternalValue] = React.useState<string[]>(() =>
@@ -77,14 +76,10 @@ export function useAccordionRoot(props: AccordionRootProps) {
   );
 
   const isControlled = controlledValue !== undefined;
-  const currentValue = isControlled
-    ? getValueArray(controlledValue)
-    : internalValue;
+  const currentValue = isControlled ? getValueArray(controlledValue) : internalValue;
   const openItems = new Set(currentValue);
 
-  const itemRefs = React.useRef<Map<string, React.RefObject<View | null>>>(
-    new Map(),
-  );
+  const itemRefs = React.useRef<Map<string, React.RefObject<View | null>>>(new Map());
   const itemCount = React.useRef(0);
   const itemIndexes = React.useRef<Map<string, number>>(new Map());
 
@@ -151,7 +146,7 @@ export function useAccordionRoot(props: AccordionRootProps) {
 
   return {
     baseId,
-    disabled,
+    isDisabled,
     getItemIndex,
     getItemRef,
     multiple,
@@ -165,75 +160,52 @@ export function useAccordionRoot(props: AccordionRootProps) {
   };
 }
 
-/**
- * Manages the state and logic for the AccordionItem primitive.
- * @param props The initialization properties.
- * @returns State and event handlers for the component.
- */
 export function useAccordionItem(props: AccordionItemProps) {
-  const {
-    disabled = false,
-    onOpenChange: onOpenChangeProp,
-    value: valueProp,
-  } = props;
+  const { disabled = false, onOpenChange: onOpenChangeProp, value: valueProp } = props;
+  const rootContext = useAccordionContext();
 
-  const context = useAccordionContext();
-
-  const triggerRefRef = React.useRef<React.RefObject<View | null>>({
-    current: null,
-  });
+  const triggerRefRef = React.useRef<React.RefObject<View | null>>({ current: null });
   const generatedId = useId('item');
   const value = valueProp ?? generatedId;
 
   React.useLayoutEffect(() => {
-    const unregisterItem = context.registerItem(value, triggerRefRef.current);
-    const unregisterTrigger = context.registerTrigger(
-      value,
-      triggerRefRef.current,
-    );
+    const unregisterItem = rootContext.registerItem(value, triggerRefRef.current);
+    const unregisterTrigger = rootContext.registerTrigger(value, triggerRefRef.current);
     return () => {
       unregisterItem();
       unregisterTrigger();
     };
-  }, [value, context]);
+  }, [value, rootContext]);
 
-  const index = context.getItemIndex(value);
-  const open = context.openItems.has(value);
+  const index = rootContext.getItemIndex(value);
+  const open = rootContext.openItems.has(value);
+  const isDisabled = disabled || rootContext.isDisabled;
 
   React.useEffect(() => {
     if (onOpenChangeProp) {
-      onOpenChangeProp(open, {
-        open,
-        reason: 'toggle',
-        value,
-      });
+      onOpenChangeProp(open, { open, value });
     }
   }, [open, value, onOpenChangeProp]);
 
-  const itemState: AccordionItemState = {
-    disabled: disabled || context.disabled,
+  const state: AccordionItemState = {
+    disabled,
     index,
     open,
     value,
   };
 
   return {
-    disabled: itemState.disabled,
+    isDisabled,
     index,
     open,
     registerTriggerRef: (refItem: React.RefObject<View | null>) => {
       triggerRefRef.current = refItem;
     },
-    state: itemState,
+    state,
     value,
   };
 }
 
-/**
- * Manages the state and logic for the AccordionTrigger primitive.
- * @param props The initialization properties.
- * @returns State and event handlers for the component.
- */
 export function useAccordionTrigger(props: AccordionTriggerProps) {
   const {
     disabled: disabledProp,
@@ -245,22 +217,18 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
     onPress,
   } = props;
 
-  const context = useAccordionContext();
+  const rootContext = useAccordionContext();
   const itemContext = useAccordionItemContext();
 
-  const disabled = disabledProp || itemContext.disabled || context.disabled;
+  const isDisabled = disabledProp || itemContext.isDisabled || rootContext.isDisabled;
 
-  const { focused, focusRingStyle, isFocusable, onBlur, onFocus } =
-    useFocusRing({
-      disabled,
-      disableDefaultFocusRing,
-      focusableWhenDisabled,
-    });
+  const { focused, focusRingStyle, focusVisible, isFocusable, onBlur, onFocus } = useFocusRing({
+    disabled: isDisabled,
+    disableDefaultFocusRing,
+    focusableWhenDisabled,
+  });
 
-  const tabIndex = resolveTabIndex(
-    isFocusable,
-    props.tabIndex as 0 | -1 | undefined,
-  );
+  const tabIndex = resolveTabIndex(isFocusable, props.tabIndex as 0 | -1 | undefined);
 
   const handleFocus = React.useCallback(
     (event: NativeSyntheticEvent<TargetedEvent>) => {
@@ -278,128 +246,116 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
     [onBlur, onBlurProp],
   );
 
-  const handlePress = React.useCallback(
-    (event: GestureResponderEvent) => {
-      if (disabled) return;
+  const onCommit = React.useCallback(() => {
+    rootContext.toggleItem(itemContext.value, { value: itemContext.value });
+  }, [rootContext, itemContext.value]);
 
-      const details: AccordionValueChangeDetails = {
-        reason: 'toggle',
-        value: itemContext.value,
-      };
+  const {
+    handlePress,
+    handleKeyboardActivation: handleKeyboardToggle,
+    handleAccessibilityActivation,
+  } = useActivationDedup({
+    disabled: isDisabled,
+    onCommit,
+    pressed: itemContext.open,
+    onPress,
+  });
 
-      context.toggleItem(itemContext.value, details);
-      onPress?.(event);
-    },
-    [disabled, itemContext.value, context, onPress],
-  );
+  const handleKeyboardActivation = useKeyboardActivation(handleKeyboardToggle, isDisabled);
 
-  const performKeyboardActivation = React.useCallback(() => {
-    const details: AccordionValueChangeDetails = {
-      reason: 'toggle',
-      value: itemContext.value,
-    };
-    context.toggleItem(itemContext.value, details);
-  }, [context, itemContext.value]);
-
-  const handleKeyboardActivation = useKeyboardActivation(
-    performKeyboardActivation,
-    disabled,
-  );
-
-  const handleKeyDown = React.useCallback(
-    (event: NativeSyntheticEvent<KeyPressEventData>) => {
-      if (disabled) return;
-
+  const handleKeyDownInternal = React.useCallback(
+    (event: NativeSyntheticEvent<KeyDownEventData>) => {
+      if (isDisabled) return;
       handleKeyboardActivation(event);
-      context.onTriggerKeyDown(itemContext.value, event);
+      rootContext.onTriggerKeyDown(itemContext.value, event);
       onKeyDown?.(event);
     },
-    [disabled, handleKeyboardActivation, itemContext.value, context, onKeyDown],
+    [isDisabled, handleKeyboardActivation, itemContext.value, rootContext, onKeyDown],
+  );
+
+  const handleAccessibilityAction = React.useCallback(
+    (event: any) => {
+      if (isActivationAction(event.nativeEvent.actionName) && !isDisabled) {
+        handleAccessibilityActivation();
+      }
+    },
+    [isDisabled, handleAccessibilityActivation],
   );
 
   const state: AccordionTriggerState = {
-    disabled,
+    disabled: isDisabled,
     focused,
+    focusVisible,
     open: itemContext.open,
   };
 
   return {
-    disabled,
+    isDisabled,
     focused,
+    focusVisible,
     focusRingStyle,
     handleBlur,
     handleFocus,
-    handleKeyDown,
+    handleKeyDown: handleKeyDownInternal,
     handlePress,
+    handleAccessibilityAction,
     isFocusable,
     open: itemContext.open,
     state,
     tabIndex,
   };
 }
-/**
- * Manages the state and logic for the AccordionHeader primitive.
- * @param props The initialization properties.
- * @returns State and event handlers for the component.
- */
+
 export function useAccordionHeader() {
   const itemContext = useAccordionItemContext();
 
   const state: AccordionHeaderState = {
-    disabled: itemContext.disabled,
+    disabled: itemContext.isDisabled,
     index: itemContext.index,
     open: itemContext.open,
   };
 
   return {
-    disabled: itemContext.disabled,
+    isDisabled: itemContext.isDisabled,
     index: itemContext.index,
     open: itemContext.open,
     state,
   };
 }
 
-/**
- * Manages the state and logic for the AccordionPanel primitive.
- * @param props The initialization properties.
- * @returns State and event handlers for the component.
- */
 export function useAccordionPanel(props: AccordionPanelProps) {
   const { hiddenUntilFound = false, keepMounted = false } = props;
 
-  const context = useAccordionContext();
+  const rootContext = useAccordionContext();
   const itemContext = useAccordionItemContext();
 
-  const [contentHeight, setContentHeight] = React.useState<number | undefined>(
-    undefined,
-  );
-  const [contentWidth, setContentWidth] = React.useState<number | undefined>(
-    undefined,
-  );
+  const [contentHeight, setContentHeight] = React.useState<number | undefined>(undefined);
+  const [contentWidth, setContentWidth] = React.useState<number | undefined>(undefined);
 
-  const onLayout = React.useCallback((event: LayoutChangeEvent) => {
+  const handleOnLayout = React.useCallback((event: LayoutChangeEvent) => {
     const { height, width } = event.nativeEvent.layout;
     setContentHeight(height);
     setContentWidth(width);
   }, []);
 
   const shouldRender = keepMounted || hiddenUntilFound || itemContext.open;
+
   const state: AccordionPanelState = {
-    disabled: itemContext.disabled,
+    disabled: itemContext.isDisabled,
     index: itemContext.index,
     open: itemContext.open,
     panel: {
       height: contentHeight,
-      width: contentWidth,
-    },
+      width: contentWidth
+    }
   };
 
   return {
-    disabled: itemContext.disabled,
+    isDisabled: itemContext.isDisabled,
     index: itemContext.index,
-    onLayout,
+    handleOnLayout,
     open: itemContext.open,
-    orientation: context.orientation,
+    orientation: rootContext.orientation,
     shouldRender,
     state,
   };

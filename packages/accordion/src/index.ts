@@ -12,26 +12,4 @@ export const Accordion = {
   Trigger: AccordionTrigger,
 };
 
-export {
-  AccordionHeader,
-  AccordionItem,
-  AccordionPanel,
-  AccordionRoot,
-  AccordionTrigger,
-};
-
-export type {
-  AccordionHeaderProps,
-  AccordionHeaderState,
-  AccordionItemOpenChangeDetails,
-  AccordionItemProps,
-  AccordionItemState,
-  AccordionPanelProps,
-  AccordionPanelState,
-  AccordionRootProps,
-  AccordionRootState,
-  AccordionTriggerProps,
-  AccordionTriggerState,
-  AccordionValueChangeDetails,
-  Orientation,
-} from './types';
+export * from './types';

@@ -1,13 +1,16 @@
-import { evaluateStyles, PressableWithKeyPress } from '@base-ui-rn/core';
 import * as React from 'react';
-import type { StyleProp, ViewStyle } from 'react-native';
+import {
+  evaluateStyles,
+  mergeProps,
+  mergeRefs,
+  PressableWithKeyDown,
+  useStyle,
+} from '@base-ui-rn/core';
 import { Platform, View } from 'react-native';
 
 import { useAccordionItemContext } from './context';
 import type { AccordionTriggerProps } from './types';
-import { useAccordionTrigger } from './use-accordion';
-
-/**
+import { useAccordionTrigger } from './use-accordion';/**
  * The interactive element that toggles the accordion item's panel.
  *
  * Supports keyboard activation, focus states, and accessibility attributes.
@@ -23,90 +26,77 @@ import { useAccordionTrigger } from './use-accordion';
 export const AccordionTrigger = React.memo(
   React.forwardRef<View, AccordionTriggerProps>((props, ref) => {
     const {
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-disabled': ariaDisabledProp,
-      'aria-expanded': ariaExpanded,
-      'aria-hidden': ariaHidden,
-      'aria-keyshortcuts': ariaKeyshortcutsProp,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
       children,
-      'data-disabled': dataDisabled,
-      'data-panel-open': dataPanelOpen,
-      focusableWhenDisabled,
       style,
+      onPress,
+      onKeyDown,
+      onBlur,
+      onFocus,
+      disableDefaultFocusRing,
+      focusableWhenDisabled,
       ...otherProps
     } = props;
 
     const {
-      disabled,
+      isDisabled,
       focused,
       focusRingStyle,
       handleBlur,
       handleFocus,
       handleKeyDown,
       handlePress,
+      handleAccessibilityAction,
       open,
       state,
+      isFocusable,
       tabIndex,
-    } = useAccordionTrigger({
-      ...props,
-      focusableWhenDisabled,
-    });
+    } = useAccordionTrigger(props);
 
     const itemContext = useAccordionItemContext();
+
     const internalRef = React.useRef<View>(null);
-    React.useImperativeHandle(ref, () => internalRef.current!, []);
+    const mergedRef = mergeRefs(internalRef, ref);
 
     React.useLayoutEffect(() => {
       itemContext.registerTriggerRef(internalRef);
     }, [itemContext]);
 
-    const finalStyle = React.useMemo<StyleProp<ViewStyle>>(() => {
-      const baseStyle = evaluateStyles(style, state);
-      const focusStyles: StyleProp<ViewStyle>[] = [baseStyle];
-      if (focusRingStyle) {
-        focusStyles.push(focusRingStyle);
-      }
-      if (Platform.OS === 'web' && (open || focused)) {
-        focusStyles.push({ zIndex: 1 });
-      }
-      return focusStyles;
-    }, [style, state, focusRingStyle, open, focused]);
+    const resolvedStyle = useStyle({
+      additionalStyles: [
+        focusRingStyle,
+        Platform.OS === 'web' && (open || focused) ? { zIndex: 1 } : undefined,
+      ],
+      state,
+      style,
+    });
+
+    const mergedProps = mergeProps(otherProps, {
+      handlers: {
+        onBlur: handleBlur,
+        onFocus: handleFocus,
+        onKeyDown: handleKeyDown,
+        onPress: handlePress,
+        onAccessibilityAction: handleAccessibilityAction,
+      },
+      disabled: isDisabled,
+      focusable: isFocusable,
+      ref: mergedRef,
+      style: resolvedStyle,
+      accessibilityState: {
+        disabled: isDisabled,
+        expanded: open,
+      },
+    });
 
     return (
-      <PressableWithKeyPress
-        {...otherProps}
-        accessibilityState={{
-          disabled,
-          expanded: open,
-        }}
+      <PressableWithKeyDown
         accessible
-        aria-busy={ariaBusy}
-        aria-describedby={ariaDescribedBy}
-        aria-details={ariaDetails}
-        aria-disabled={ariaDisabledProp ?? (disabled ? true : undefined)}
-        aria-expanded={ariaExpanded ?? open}
-        aria-hidden={ariaHidden}
-        aria-keyshortcuts={ariaKeyshortcutsProp}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
-        data-disabled={dataDisabled ?? (disabled ? 'true' : undefined)}
-        data-panel-open={dataPanelOpen ?? (open ? 'true' : undefined)}
-        disabled={disabled}
-        onBlur={handleBlur}
-        onFocus={handleFocus}
-        onKeyDown={handleKeyDown}
-        onPress={handlePress}
-        ref={internalRef}
-        role='button'
-        style={finalStyle}
+        role="button"
         tabIndex={tabIndex}
+        {...mergedProps}
       >
         {evaluateStyles(children, state)}
-      </PressableWithKeyPress>
+      </PressableWithKeyDown>
     );
   }),
 );
