@@ -1,3 +1,4 @@
+import { mergeProps, useStyle } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -12,25 +13,16 @@ import type { AvatarRootProps, ImageLoadingStatus } from './types';
  *
  * @example
  * ```tsx
- * <Avatar.Root>
- *   <Avatar.Image source={{ uri: '...' }} />
- *   <Avatar.Fallback>JD</Avatar.Fallback>
+ * <Avatar.Root accessibilityLabel="User Profile">
+ * <Avatar.Image source={{ uri: '...' }} />
+ * <Avatar.Fallback>JD</Avatar.Fallback>
  * </Avatar.Root>
  * ```
  */
 export const AvatarRoot = React.forwardRef<View, AvatarRootProps>(
   (props, ref) => {
-    const {
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
-      'aria-hidden': ariaHidden,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      children,
-      ...otherProps
-    } = props;
+    const { children, style } = props;
+
     const [loadingStatus, setLoadingStatus] =
       React.useState<ImageLoadingStatus>('idle');
 
@@ -50,21 +42,29 @@ export const AvatarRoot = React.forwardRef<View, AvatarRootProps>(
     );
 
     const isLoading = loadingStatus === 'loading';
+    const resolvedStyle = useStyle({
+      state: { loadingStatus },
+      style
+    });
+
+    const mergedProps = mergeProps(props, {
+      handlers: {},
+      disabled: false,
+      focusable: false,
+      ref,
+      style: resolvedStyle,
+      accessibilityState: {
+        busy: isLoading,
+      },
+    });
 
     return (
       <AvatarContext.Provider value={contextValue}>
         <View
-          {...otherProps}
-          aria-busy={ariaBusy ?? isLoading}
-          aria-describedby={ariaDescribedBy}
-          aria-details={ariaDetails}
-          aria-expanded={ariaExpanded}
-          aria-hidden={ariaHidden}
-          aria-label={ariaLabel}
-          aria-labelledby={ariaLabelledBy}
-          data-status={loadingStatus}
-          ref={ref}
-          role='img'
+          accessible={true}
+          importantForAccessibility="yes"
+          role="img"
+          {...mergedProps}
         >
           {children}
         </View>

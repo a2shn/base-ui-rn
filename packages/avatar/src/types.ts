@@ -1,10 +1,6 @@
 import type {
-  ARIABaseProps,
-  ARIALiveProps,
-  ARIATraitDisabled,
-} from '@base-ui-rn/core';
-import type {
-  ImageProps as RNImageProps,
+  ImageStyle,
+  ImageProps,
   StyleProp,
   ViewProps,
   ViewStyle,
@@ -14,24 +10,6 @@ import type {
  * The loading status of the avatar image.
  */
 export type ImageLoadingStatus = 'idle' | 'loading' | 'loaded' | 'error';
-
-/**
- * Web-specific accessibility props for Avatar Root.
- */
-export type WebAvatarRootAccessibilityProps = ARIABaseProps &
-  ARIALiveProps &
-  ARIATraitDisabled;
-
-/**
- * Web-specific accessibility props for Avatar Image.
- */
-export type WebAvatarImageAccessibilityProps = ARIABaseProps;
-
-/**
- * Web-specific accessibility props for Avatar Fallback.
- */
-export type WebAvatarFallbackAccessibilityProps = ARIABaseProps;
-
 /**
  * The state of the avatar.
  */
@@ -42,11 +20,8 @@ export interface AvatarState {
   loadingStatus: ImageLoadingStatus;
 }
 
-/**
- * Props for the Avatar root component.
- */
 export interface AvatarRootProps
-  extends Omit<ViewProps, 'children'>, WebAvatarRootAccessibilityProps {
+  extends Omit<ViewProps, 'children'> {
   /**
    * The content of the avatar.
    */
@@ -57,31 +32,25 @@ export interface AvatarRootProps
   style?: StyleProp<ViewStyle>;
 }
 
-/**
- * Props for the Avatar image component.
- */
+
 export interface AvatarImageProps
-  extends Omit<RNImageProps, 'style'>, WebAvatarImageAccessibilityProps {
+  extends Omit<ImageProps, 'style'> {
   /**
    * Callback fired when the image loading status changes.
    */
   onLoadingStatusChange?: (status: ImageLoadingStatus) => void;
-  /**
-   * Whether the image is an accessibility element.
-   * @default false
-   */
-  accessible?: boolean;
+
   /**
    * Style applied to the avatar image.
    */
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<ImageStyle>;
 }
 
 /**
  * Props for the Avatar fallback component.
  */
 export interface AvatarFallbackProps
-  extends Omit<ViewProps, 'children'>, WebAvatarFallbackAccessibilityProps {
+  extends Omit<ViewProps, 'children'> {
   /**
    * The content of the fallback (usually initials or icon).
    */
@@ -91,11 +60,7 @@ export interface AvatarFallbackProps
    * @default 0
    */
   delay?: number;
-  /**
-   * Whether the fallback is an accessibility element.
-   * @default true
-   */
-  accessible?: boolean;
+
   /**
    * Style applied to the fallback view.
    */

@@ -8,5 +8,4 @@ export const Avatar = {
   Root: AvatarRoot,
 };
 
-export { AvatarFallback, AvatarImage, AvatarRoot };
 export * from './types';

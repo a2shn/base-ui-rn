@@ -1,110 +1,44 @@
+import { mergeProps, useStyle } from '@base-ui-rn/core';
 import * as React from 'react';
-import {
-  type ImageErrorEventData,
-  type ImageLoadEventData,
-  type NativeSyntheticEvent,
-  Image as RNImage,
-  type ImageProps as RNImageProps,
-} from 'react-native';
+import { Image } from 'react-native';
 
 import { useAvatarContext } from './avatar-context';
-import { useAvatarImageLoading } from './avatar-image-loading';
 import type { AvatarImageProps } from './types';
+import { useAvatarImage } from './use-avatar-image';
 
 /**
  * The image component for the avatar.
  *
  * Automatically manages loading status within the Avatar.Root context and
  * communicates status changes to the root.
- *
- * @example
- * ```tsx
- * <Avatar.Image source={{ uri: 'https://github.com/shadcn.png' }} />
- * ```
  */
-export const AvatarImage = React.forwardRef<RNImage, AvatarImageProps>(
+export const AvatarImage = React.forwardRef<Image, AvatarImageProps>(
   (props, ref) => {
-    const {
-      accessible = false,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-hidden': ariaHidden,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      onError,
-      onLoad,
-      onLoadingStatusChange: onLoadingStatusChangeProp,
-      onLoadStart,
-      source,
-      ...otherProps
-    } = props;
-    const { onLoadingStatusChange } = useAvatarContext();
+    const { style, source } = props;
+    const { loadingStatus } = useAvatarContext();
+    const { handleError, handleLoad, handleLoadStart } = useAvatarImage(props);
 
-    const {
-      clearLoadTimeout,
-      handleLoadingStatusChange,
-      sourceKey,
-      timeoutRef,
-    } = useAvatarImageLoading({
-      onLoadingStatusChange,
-      onLoadingStatusChangeProp,
-      source,
+    const resolvedStyle = useStyle({
+      state: { loadingStatus },
+      style,
     });
 
-    const handleLoadStart = React.useCallback(() => {
-      const eventSourceKey = sourceKey;
-      const didApplyLoading = handleLoadingStatusChange(
-        'loading',
-        eventSourceKey,
-      );
-      clearLoadTimeout();
-
-      if (didApplyLoading) {
-        timeoutRef.current = setTimeout(() => {
-          handleLoadingStatusChange('error', eventSourceKey);
-        }, 10000);
-      }
-
-      onLoadStart?.();
-    }, [
-      clearLoadTimeout,
-      handleLoadingStatusChange,
-      onLoadStart,
-      sourceKey,
-      timeoutRef,
-    ]);
-
-    const handleLoad = React.useCallback(
-      (e: NativeSyntheticEvent<ImageLoadEventData>) => {
-        clearLoadTimeout();
-        handleLoadingStatusChange('loaded', sourceKey);
-        onLoad?.(e);
+    const mergedProps = mergeProps(props, {
+      handlers: {
+        onError: handleError,
+        onLoad: handleLoad,
+        onLoadStart: handleLoadStart,
       },
-      [clearLoadTimeout, handleLoadingStatusChange, onLoad, sourceKey],
-    );
-
-    const handleError = React.useCallback(
-      (e: NativeSyntheticEvent<ImageErrorEventData>) => {
-        clearLoadTimeout();
-        handleLoadingStatusChange('error', sourceKey);
-        onError?.(e);
-      },
-      [clearLoadTimeout, handleLoadingStatusChange, onError, sourceKey],
-    );
+      disabled: false,
+      focusable: false,
+      ref,
+      style: resolvedStyle,
+    });
 
     return (
-      <RNImage
-        {...(otherProps as RNImageProps)}
-        accessible={accessible}
-        aria-describedby={ariaDescribedBy}
-        aria-details={ariaDetails}
-        aria-hidden={ariaHidden}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
-        onError={handleError}
-        onLoad={handleLoad}
-        onLoadStart={handleLoadStart}
-        ref={ref}
+      <Image
+        accessible={props.accessible ?? false}
+        {...mergedProps}
         source={source}
       />
     );

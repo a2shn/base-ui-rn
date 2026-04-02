@@ -1,3 +1,4 @@
+import { mergeProps, useStyle } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -8,31 +9,14 @@ import type { AvatarFallbackProps } from './types';
  * A fallback component rendered when the avatar image is loading or fails to load.
  *
  * Supports an optional delay to prevent flicker for fast-loading images.
- * Must be used within an `Avatar.Root`.
- *
- * @example
- * ```tsx
- * <Avatar.Fallback delay={600}>
- *   <Text>JD</Text>
- * </Avatar.Fallback>
- * ```
  */
 export const AvatarFallback = React.forwardRef<View, AvatarFallbackProps>(
   (props, ref) => {
-    const {
-      accessible = true,
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-hidden': ariaHidden,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      children,
-      delay,
-      ...otherProps
-    } = props;
+    const { children, delay, style } = props;
     const { loadingStatus } = useAvatarContext();
     const [canRender, setCanRender] = React.useState(delay === undefined);
+
+    const isLoading = loadingStatus === 'loading';
 
     React.useEffect(() => {
       if (delay !== undefined) {
@@ -42,19 +26,26 @@ export const AvatarFallback = React.forwardRef<View, AvatarFallbackProps>(
       return undefined;
     }, [delay]);
 
+    const resolvedStyle = useStyle({
+      state: { loadingStatus },
+      style,
+    });
+
+    const mergedProps = mergeProps(props, {
+      handlers: {},
+      disabled: false,
+      focusable: false,
+      ref,
+      style: resolvedStyle,
+    });
+
     if (canRender && loadingStatus !== 'loaded') {
       return (
         <View
-          {...otherProps}
-          accessible={accessible}
-          aria-busy={ariaBusy}
-          aria-describedby={ariaDescribedBy}
-          aria-details={ariaDetails}
-          aria-hidden={ariaHidden}
-          aria-label={ariaLabel}
-          aria-labelledby={ariaLabelledBy}
-          data-status={loadingStatus}
-          ref={ref}
+          accessibilityElementsHidden={isLoading}
+          accessible={props.accessible ?? true}
+          importantForAccessibility={isLoading ? 'no-hide-descendants' : 'yes'}
+          {...mergedProps}
         >
           {children}
         </View>
