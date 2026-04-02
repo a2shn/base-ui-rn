@@ -30,7 +30,10 @@ export function ButtonPlaybook() {
         <Button
           accessibilityHint='Increments the counter'
           accessibilityLabel='Counter Button'
-          onPress={() => count.setValue((count.value as number) + 1)}
+          onPress={() => {
+            console.log("hello")
+            count.setValue((count.value as number) + 1)
+          }}
           style={styles.buttonBase}
           testID='button-counter'
         >
@@ -42,10 +45,10 @@ export function ButtonPlaybook() {
       <Section title='Stateful Children'>
         <Button
           accessibilityLabel='Stateful Children Button'
-          onPress={() => {}}
+          onPress={() => { }}
           style={styles.buttonBase}
         >
-          {({ focused, pressed }) => (
+          {({ focused, pressed, focusVisible }) => (
             <Text
               style={[
                 styles.textSecondary,
@@ -57,6 +60,7 @@ export function ButtonPlaybook() {
                 : focused
                   ? 'Currently Focused'
                   : 'Idle State'}
+              {focusVisible ? "focus-visible" : ""}
             </Text>
           )}
         </Button>
@@ -99,24 +103,6 @@ export function ButtonPlaybook() {
           title='presses'
         />
       </Section>
-
-      <Section title='Custom Focus'>
-        <Button
-          accessibilityLabel='Custom Focus Button'
-          disableDefaultFocusRing
-          onPress={() => {}}
-          style={styles.buttonBase}
-        >
-          {({ focused }) => (
-            <Text
-              style={[styles.textSecondary, focused && styles.textWhiteBold]}
-            >
-              {focused ? 'Keyboard Focused' : 'Custom focus logic'}
-            </Text>
-          )}
-        </Button>
-      </Section>
-
       <Section title='Explicit Event Handlers'>
         <Button
           accessibilityLabel='Event Handlers Button'

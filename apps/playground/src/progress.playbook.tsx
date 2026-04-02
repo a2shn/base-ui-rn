@@ -74,11 +74,7 @@ export function ProgressPlaybook() {
 
       <Section title='Custom Format'>
         <View style={styles.container}>
-          <Progress.Root
-            max={10}
-            style={styles.meterRoot}
-            value={3}
-          >
+          <Progress.Root max={10} style={styles.meterRoot} value={3}>
             <View style={styles.meterHeader}>
               <Progress.Label style={styles.meterLabel}>
                 Installation

@@ -25,22 +25,11 @@ export function TogglePlaybook() {
 
   return (
     <Gallery title='Toggle'>
-      <Section showAllProps={true} title='Uncontrolled'>
-        <Toggle
-          accessibilityHint='Toggles notifications'
-          defaultPressed={false}
-          style={styles.toggle}
-          testID='toggle-uncontrolled'
-        >
-          <Text style={styles.text}>Notifications</Text>
-        </Toggle>
-      </Section>
-
       <Section title='Controlled'>
         <Toggle
           accessibilityHint='Toggles dark mode'
-          onPressedChange={darkMode.setValue}
-          pressed={darkMode.value as boolean}
+          onPressedChange={(v) => darkMode.setValue(v)}
+          pressed={darkMode.value}
           role='switch'
           style={styles.toggle}
           testID='toggle-dark-mode'

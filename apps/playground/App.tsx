@@ -3,8 +3,8 @@ import * as React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 // import { SwitchPlaybook } from '@/switch.playbook';
-// import { AccordionPlaybook } from './src/accordion.playbook';
-// import { AvatarPlaybook } from './src/avatar.playbook';
+import { AccordionPlaybook } from './src/accordion.playbook';
+import { AvatarPlaybook } from './src/avatar.playbook';
 import { ButtonPlaybook } from './src/button.playbook';
 // import { CollapsiblePlaybook } from './src/collapsible.playbook';
 // import { InputPlaybook } from './src/input.playbook';
@@ -15,20 +15,20 @@ import { ProgressPlaybook } from './src/progress.playbook';
 import { SeparatorPlaybook } from './src/separator.playbook';
 // import { SliderPlaybook } from './src/slider.playbook';
 // import { TabsPlaybook } from './src/tabs.playbook';
-// import { ToggleGroupPlaybook } from './src/toggle-group.playbook';
-// import { TogglePlaybook } from './src/toggle.playbook';
+import { ToggleGroupPlaybook } from './src/toggle-group.playbook';
+import { TogglePlaybook } from './src/toggle.playbook';
 
 const REGISTRY: PlaybookConfig = {
-  // Accordion: {
-  //   component: AccordionPlaybook,
-  //   testID: 'accordion',
-  //   title: 'Accordion',
-  // },
-  // Avatar: {
-  //   component: AvatarPlaybook,
-  //   testID: 'avatar',
-  //   title: 'Avatar',
-  // },
+  Accordion: {
+    component: AccordionPlaybook,
+    testID: 'accordion',
+    title: 'Accordion',
+  },
+  Avatar: {
+    component: AvatarPlaybook,
+    testID: 'avatar',
+    title: 'Avatar',
+  },
   Button: {
     component: ButtonPlaybook,
     testID: 'button',
@@ -85,16 +85,16 @@ const REGISTRY: PlaybookConfig = {
   //   testID: 'tabs',
   //   title: 'Tabs',
   // },
-  // Toggle: {
-  //   component: TogglePlaybook,
-  //   testID: 'toggle',
-  //   title: 'Toggle',
-  // },
-  // ToggleGroup: {
-  //   component: ToggleGroupPlaybook,
-  //   testID: 'toggle-group',
-  //   title: 'Toggle Group',
-  // },
+  Toggle: {
+    component: TogglePlaybook,
+    testID: 'toggle',
+    title: 'Toggle',
+  },
+  ToggleGroup: {
+    component: ToggleGroupPlaybook,
+    testID: 'toggle-group',
+    title: 'Toggle Group',
+  },
 };
 
 export default function App() {
