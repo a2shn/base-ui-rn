@@ -1,3 +1,4 @@
+import { mergeProps } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -16,40 +17,23 @@ import type { SeparatorProps } from './types';
  */
 export const Separator = React.forwardRef<View, SeparatorProps>(
   (props, ref) => {
-    const { decorative = false, orientation = 'horizontal', ...rest } = props;
+    const { decorative = false, style } = props;
 
-    if (decorative) {
-      return (
-        <View
-          {...rest}
-          accessibilityElementsHidden
-          accessibilityLiveRegion='none'
-          accessibilityState={{
-            disabled: false,
-          }}
-          importantForAccessibility='no-hide-descendants'
-          ref={ref}
-          role='presentation'
-        />
-      );
-    }
+    const mergedProps = mergeProps(props, {
+      handlers: {},
+      disabled: false,
+      focusable: false,
+      ref,
+      style,
+    });
 
     return (
       <View
-        {...rest}
-        accessibilityLabel={
-          orientation === 'vertical'
-            ? 'Vertical separator'
-            : 'Horizontal separator'
-        }
-        accessibilityLiveRegion='none'
-        accessibilityState={{
-          disabled: false,
-        }}
-        accessible
-        importantForAccessibility='yes'
-        ref={ref}
-        role='separator'
+        accessibilityElementsHidden={decorative}
+        accessible={true}
+        importantForAccessibility={decorative ? 'no-hide-descendants' : 'yes'}
+        role={props.role ?? (decorative ? 'presentation' : 'separator')}
+        {...mergedProps}
       />
     );
   },

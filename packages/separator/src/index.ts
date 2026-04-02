@@ -1,2 +1,2 @@
-export * from './separator';
+export { Separator } from './separator';
 export * from './types';
