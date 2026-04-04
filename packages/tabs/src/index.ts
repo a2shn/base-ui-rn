@@ -12,13 +12,5 @@ export const Tabs = {
   Tab: Tab,
 };
 
-export {
-  TabsIndicator,
-  TabsList,
-  TabPanel as TabsPanel,
-  TabsRoot,
-  Tab as TabsTab,
-};
-
 export * from './types';
 export * from './use-tabs';

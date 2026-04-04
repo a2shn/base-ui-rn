@@ -1,141 +1,13 @@
-import {
-  type ARIABaseProps,
-  type ARIALiveProps,
-  type ARIATraitDisabled,
-  type ARIATraitExpanded,
-  type ARIATraitOrientation,
-  type KeyPressEventData,
-} from '@base-ui-rn/core';
+import { type KeyDownEventData } from '@base-ui-rn/core';
 import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type * as React from 'react';
 import type {
   NativeSyntheticEvent,
   PressableProps,
   StyleProp,
-  TargetedEvent,
   ViewProps,
   ViewStyle,
 } from 'react-native';
-
-/**
- * Web-specific accessibility props for Tabs Root.
- */
-export type WebTabsRootAccessibilityProps = ARIABaseProps &
-  ARIALiveProps &
-  ARIATraitDisabled &
-  ARIATraitOrientation & {
-    /**
-     * Indicates the orientation of the tabs.
-     */
-    'data-orientation'?: 'horizontal' | 'vertical';
-    /**
-     * Indicates the direction of the activation.
-     */
-    'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
-    /**
-     * Defines a keyboard shortcut that activates or focuses the element.
-     */
-    'aria-keyshortcuts'?: string;
-  };
-
-/**
- * Web-specific accessibility props for Tabs List.
- */
-export type WebTabsListAccessibilityProps = ARIABaseProps &
-  ARIALiveProps &
-  ARIATraitDisabled &
-  ARIATraitOrientation & {
-    /**
-     * Indicates the orientation of the tabs.
-     */
-    'data-orientation'?: 'horizontal' | 'vertical';
-    /**
-     * Indicates the direction of the activation.
-     */
-    'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
-    /**
-     * Defines a keyboard shortcut that activates or focuses the element.
-     */
-    'aria-keyshortcuts'?: string;
-  };
-
-/**
- * Web-specific accessibility props for Tabs Tab.
- */
-export type WebTabsTabAccessibilityProps = ARIABaseProps &
-  ARIALiveProps &
-  ARIATraitDisabled &
-  ARIATraitExpanded &
-  ARIATraitOrientation & {
-    /**
-     * Present when the tab is active.
-     */
-    'data-active'?: 'true';
-    /**
-     * Present when the tab is disabled.
-     */
-    'data-disabled'?: 'true';
-    /**
-     * Indicates the orientation of the tabs.
-     */
-    'data-orientation'?: 'horizontal' | 'vertical';
-    /**
-     * Indicates the direction of the activation.
-     */
-    'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
-    /**
-     * Defines a keyboard shortcut that activates or focuses the element.
-     */
-    'aria-keyshortcuts'?: string;
-  };
-
-/**
- * Web-specific accessibility props for Tabs Indicator.
- */
-export type WebTabsIndicatorAccessibilityProps = ARIABaseProps &
-  ARIALiveProps &
-  ARIATraitDisabled &
-  ARIATraitOrientation & {
-    /**
-     * Indicates the orientation of the tabs.
-     */
-    'data-orientation'?: 'horizontal' | 'vertical';
-    /**
-     * Indicates the direction of the activation.
-     */
-    'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
-    /**
-     * Defines a keyboard shortcut that activates or focuses the element.
-     */
-    'aria-keyshortcuts'?: string;
-  };
-// ...
-export type WebTabsPanelAccessibilityProps = ARIABaseProps &
-  ARIALiveProps &
-  ARIATraitDisabled &
-  ARIATraitExpanded &
-  ARIATraitOrientation & {
-    /**
-     * Present when the panel is hidden.
-     */
-    'data-hidden'?: 'true';
-    /**
-     * Indicates the orientation of the tabs.
-     */
-    'data-orientation'?: 'horizontal' | 'vertical';
-    /**
-     * Indicates the direction of the activation.
-     */
-    'data-activation-direction'?: 'left' | 'right' | 'up' | 'down' | 'none';
-    /**
-     * The index of the tab panel.
-     */
-    'data-index'?: number;
-    /**
-     * Defines a keyboard shortcut that activates or focuses the element.
-     */
-    'aria-keyshortcuts'?: string;
-  };
 
 export type TabValue = string | number;
 export type Orientation = 'horizontal' | 'vertical';
@@ -147,8 +19,7 @@ export interface TabsRootState {
   activationDirection: ActivationDirection;
 }
 
-export interface TabsRootProps
-  extends Omit<ViewProps, 'children' | 'style'>, WebTabsRootAccessibilityProps {
+export interface TabsRootProps extends Omit<ViewProps, 'children' | 'style'> {
   /**
    * Whether to disable the default focus ring style.
    * @default false
@@ -166,9 +37,7 @@ export interface TabsRootProps
   /**
    * Style applied to the root view.
    */
-  style?:
-    | StyleProp<ViewStyle>
-    | ((state: TabsRootState) => StyleProp<ViewStyle>);
+  style?: StyleProp<ViewStyle> | ((state: TabsRootState) => StyleProp<ViewStyle>);
   /**
    * The default value of the active tab when uncontrolled.
    * @default 0
@@ -203,8 +72,7 @@ export interface TabsListState {
   activationDirection: ActivationDirection;
 }
 
-export interface TabsListProps
-  extends Omit<ViewProps, 'children' | 'style'>, WebTabsListAccessibilityProps {
+export interface TabsListProps extends Omit<ViewProps, 'children' | 'style'> {
   /**
    * Whether to disable the default focus ring style.
    * @default false
@@ -222,9 +90,7 @@ export interface TabsListProps
   /**
    * Style applied to the list view.
    */
-  style?:
-    | StyleProp<ViewStyle>
-    | ((state: TabsListState) => StyleProp<ViewStyle>);
+  style?: StyleProp<ViewStyle> | ((state: TabsListState) => StyleProp<ViewStyle>);
   /**
    * Whether to loop keyboard focus within the tabs list.
    * @default true
@@ -234,15 +100,12 @@ export interface TabsListProps
 
 export interface TabState extends FocusRingState {
   active: boolean;
-  disabled: boolean;
+  isDisabled: boolean;
   orientation: Orientation;
   activationDirection: ActivationDirection;
 }
 
-export interface TabProps
-  extends
-    Omit<PressableProps, 'children' | 'style'>,
-    WebTabsTabAccessibilityProps {
+export interface TabProps extends Omit<PressableProps, 'children' | 'style'> {
   /**
    * Whether to disable the default focus ring style.
    * @default false
@@ -271,13 +134,10 @@ export interface TabProps
    */
   disabled?: boolean;
   /**
-   * Callback fired when the tab receives focus.
-   */
-  onFocus?: (e: NativeSyntheticEvent<TargetedEvent>) => void;
-  /**
-   * Callback fired when the tab loses focus.
-   */
-  onBlur?: (e: NativeSyntheticEvent<TargetedEvent>) => void;
+  * Callback fired when a key is pressed down.
+  */
+  onKeyDown?: (e: NativeSyntheticEvent<KeyDownEventData>) => void;
+
 }
 
 export interface TabsIndicatorState {
@@ -291,10 +151,7 @@ export interface TabsIndicatorState {
   };
 }
 
-export interface TabsIndicatorProps
-  extends
-    Omit<ViewProps, 'children' | 'style'>,
-    WebTabsIndicatorAccessibilityProps {
+export interface TabsIndicatorProps extends Omit<ViewProps, 'children' | 'style'> {
   /**
    * Whether to disable the default focus ring style.
    * @default false
@@ -312,9 +169,7 @@ export interface TabsIndicatorProps
   /**
    * Style applied to the indicator view.
    */
-  style?:
-    | StyleProp<ViewStyle>
-    | ((state: TabsIndicatorState) => StyleProp<ViewStyle>);
+  style?: StyleProp<ViewStyle> | ((state: TabsIndicatorState) => StyleProp<ViewStyle>);
 }
 
 export interface TabPanelState {
@@ -324,10 +179,7 @@ export interface TabPanelState {
   index: number;
 }
 
-export interface TabPanelProps
-  extends
-    Omit<ViewProps, 'children' | 'style'>,
-    WebTabsPanelAccessibilityProps {
+export interface TabPanelProps extends Omit<ViewProps, 'children' | 'style'> {
   /**
    * Whether to disable the default focus ring style.
    * @default false
@@ -345,9 +197,7 @@ export interface TabPanelProps
   /**
    * Style applied to the panel view.
    */
-  style?:
-    | StyleProp<ViewStyle>
-    | ((state: TabPanelState) => StyleProp<ViewStyle>);
+  style?: StyleProp<ViewStyle> | ((state: TabPanelState) => StyleProp<ViewStyle>);
   /**
    * The value of the tab this panel corresponds to.
    */
@@ -359,4 +209,3 @@ export interface TabPanelProps
   keepMounted?: boolean;
 }
 
-export type { KeyPressEventData };

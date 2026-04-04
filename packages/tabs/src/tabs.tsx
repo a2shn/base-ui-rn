@@ -1,4 +1,4 @@
-import { evaluateStyles } from '@base-ui-rn/core';
+import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -15,8 +15,8 @@ import { useTabsRoot } from './use-tabs';
  * @example
  * ```tsx
  * <Tabs.Root defaultValue="tab-1">
- *   <Tabs.List>...</Tabs.List>
- *   <Tabs.Panel value="tab-1">...</Tabs.Panel>
+ * <Tabs.List>...</Tabs.List>
+ * <Tabs.Panel value="tab-1">...</Tabs.Panel>
  * </Tabs.Root>
  * ```
  */
@@ -24,24 +24,15 @@ export const TabsRoot = React.memo(
   React.forwardRef<View, TabsRootProps>((props, ref) => {
     const {
       activateOnFocus,
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-disabled': ariaDisabled,
-      'aria-expanded': ariaExpanded,
-      'aria-hidden': ariaHidden,
-      'aria-keyshortcuts': ariaKeyshortcuts,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
       children,
-      'data-activation-direction': dataActivationDirection,
-      'data-orientation': dataOrientation,
       defaultValue,
       onFocusChange,
       onValueChange,
       orientation,
       style,
       value,
+      disableDefaultFocusRing,
+      focusableWhenDisabled,
       ...otherProps
     } = props;
 
@@ -54,30 +45,23 @@ export const TabsRoot = React.memo(
       value,
     });
 
-    const resolvedChildren = evaluateStyles(children, state);
-    const resolvedStyle = evaluateStyles(style, state);
+    const resolvedStyle = useStyle({
+      state,
+      style,
+    });
+
+    const mergedProps = mergeProps(otherProps, {
+      handlers: {},
+      disabled: false,
+      focusable: false,
+      ref,
+      style: resolvedStyle,
+    });
 
     return (
       <TabsContext.Provider value={contextValue}>
-        <View
-          {...otherProps}
-          aria-busy={ariaBusy}
-          aria-describedby={ariaDescribedBy}
-          aria-details={ariaDetails}
-          aria-disabled={ariaDisabled}
-          aria-expanded={ariaExpanded}
-          aria-hidden={ariaHidden}
-          aria-keyshortcuts={ariaKeyshortcuts}
-          aria-label={ariaLabel}
-          aria-labelledby={ariaLabelledBy}
-          data-activation-direction={
-            dataActivationDirection ?? state.activationDirection
-          }
-          data-orientation={dataOrientation ?? state.orientation}
-          ref={ref}
-          style={resolvedStyle}
-        >
-          {resolvedChildren}
+        <View {...mergedProps}>
+          {evaluateStyles(children, state)}
         </View>
       </TabsContext.Provider>
     );

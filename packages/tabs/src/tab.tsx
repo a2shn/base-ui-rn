@@ -1,15 +1,12 @@
 import {
   evaluateStyles,
-  type KeyPressEventData,
-  PressableWithKeyPress,
+  mergeProps,
+  mergeRefs,
+  PressableWithKeyDown,
+  useStyle,
 } from '@base-ui-rn/core';
 import * as React from 'react';
-import type {
-  NativeSyntheticEvent,
-  StyleProp,
-  View,
-  ViewStyle,
-} from 'react-native';
+import { Platform, View } from 'react-native';
 
 import type { TabProps } from './types';
 import { useTab } from './use-tabs';
@@ -22,99 +19,75 @@ import { useTab } from './use-tabs';
  * @example
  * ```tsx
  * <Tabs.Tab value="tab-1">
- *   {({ active }) => <Text style={{ color: active ? 'blue' : 'black' }}>Tab 1</Text>}
+ * {({ active }) => <Text style={{ color: active ? 'blue' : 'black' }}>Tab 1</Text>}
  * </Tabs.Tab>
  * ```
  */
 export const Tab = React.memo(
   React.forwardRef<View, TabProps>((props, forwardedRef) => {
     const {
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
-      'aria-hidden': ariaHidden,
-      'aria-keyshortcuts': ariaKeyshortcuts,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
       children,
-      'data-activation-direction': dataActivationDirection,
-      'data-active': dataActive,
-      'data-disabled': dataDisabled,
-      'data-orientation': dataOrientation,
-      disabled,
-      disableDefaultFocusRing = false,
-      focusableWhenDisabled = false,
+      disableDefaultFocusRing,
+      focusableWhenDisabled,
+      onPress,
       style,
-      tabIndex: tabIndexProp,
-      value,
       ...otherProps
     } = props;
 
     const {
+      isDisabled,
       focusRingStyle,
       handleBlur,
       handleFocus,
       handleKeyDown,
       handlePress,
+      handleAccessibilityAction,
       isFocusable,
       onLayout,
-      ref,
+      ref: internalRef,
       state,
       tabIndex,
-    } = useTab({
-      disabled,
-      disableDefaultFocusRing,
-      focusableWhenDisabled,
-      tabIndex: tabIndexProp,
-      value,
+    } = useTab(props);
+
+    const mergedRef = mergeRefs(internalRef, forwardedRef);
+
+    const resolvedStyle = useStyle({
+      additionalStyles: [
+        focusRingStyle,
+        Platform.OS === 'web' && (state.active || state.focused) ? { zIndex: 1 } : undefined,
+      ],
+      state,
+      style,
     });
 
-    React.useImperativeHandle(forwardedRef, () => ref.current!);
-
-    const resolvedStyle = React.useMemo<StyleProp<ViewStyle>>(() => {
-      const baseStyle = evaluateStyles(style, state);
-      if (focusRingStyle) {
-        return [baseStyle, focusRingStyle];
-      }
-      return baseStyle;
-    }, [style, state, focusRingStyle]);
+    const mergedProps = mergeProps(otherProps, {
+      handlers: {
+        onBlur: handleBlur,
+        onFocus: handleFocus,
+        onKeyDown: handleKeyDown,
+        onPress: handlePress,
+        onAccessibilityAction: handleAccessibilityAction,
+        onLayout,
+      },
+      disabled: isDisabled,
+      focusable: isFocusable,
+      ref: mergedRef,
+      style: resolvedStyle,
+      accessibilityState: {
+        disabled: isDisabled,
+        selected: state.active,
+      },
+    });
 
     return (
-      <PressableWithKeyPress
-        {...otherProps}
-        accessible={isFocusable}
-        aria-busy={ariaBusy}
-        aria-describedby={ariaDescribedBy}
-        aria-details={ariaDetails}
-        aria-disabled={state.disabled}
-        aria-expanded={ariaExpanded}
-        aria-hidden={ariaHidden}
-        aria-keyshortcuts={ariaKeyshortcuts}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
-        aria-selected={state.active}
-        data-activation-direction={
-          dataActivationDirection ?? state.activationDirection
-        }
-        data-active={dataActive ?? (state.active ? 'true' : undefined)}
-        data-disabled={dataDisabled ?? (state.disabled ? 'true' : undefined)}
-        data-orientation={dataOrientation ?? state.orientation}
-        disabled={state.disabled}
-        onBlur={handleBlur}
-        onFocus={handleFocus}
-        onKeyDown={(e: unknown) =>
-          handleKeyDown(e as NativeSyntheticEvent<KeyPressEventData>)
-        }
-        onLayout={onLayout}
-        onPress={handlePress}
-        ref={ref}
-        role='tab'
-        style={resolvedStyle}
+      <PressableWithKeyDown
+        accessible
+        role="tab"
         tabIndex={tabIndex}
+        {...mergedProps}
       >
         {evaluateStyles(children, state)}
-      </PressableWithKeyPress>
+      </PressableWithKeyDown>
     );
   }),
 );

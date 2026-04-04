@@ -3,10 +3,10 @@ import type { NativeSyntheticEvent, View } from 'react-native';
 
 import type {
   ActivationDirection,
-  KeyPressEventData,
   Orientation,
   TabValue,
 } from './types';
+import { KeyDownEventData } from '@base-ui-rn/core';
 
 export interface TabMeasurement {
   x: number;
@@ -22,15 +22,9 @@ export interface TabsContextValue {
   orientation: Orientation;
   activationDirection: ActivationDirection;
   onValueChange: (value: TabValue | null) => void;
-  registerTab: (
-    value: TabValue,
-    ref: React.RefObject<View | null>,
-  ) => () => void;
+  registerTab: (value: TabValue, ref: React.RefObject<View | null>) => () => void;
   registerPanel: (value: TabValue) => () => void;
-  onTabKeyDown: (
-    value: TabValue,
-    event: NativeSyntheticEvent<KeyPressEventData>,
-  ) => void;
+  onTabKeyDown: (value: TabValue, event: NativeSyntheticEvent<KeyDownEventData>) => void;
   onFocusChange?: (value: string) => void;
   getTabIndex: (value: TabValue) => number;
   tabMeasurements: Map<TabValue, TabMeasurement>;

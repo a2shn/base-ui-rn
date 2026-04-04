@@ -1,4 +1,4 @@
-import { evaluateStyles } from '@base-ui-rn/core';
+import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -16,44 +16,31 @@ import { useTabsIndicator } from './use-tabs';
 export const TabsIndicator = React.memo(
   React.forwardRef<View, TabsIndicatorProps>((props, ref) => {
     const {
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-expanded': ariaExpanded,
-      'aria-hidden': ariaHidden,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
       children,
-      'data-activation-direction': dataActivationDirection,
-      'data-orientation': dataOrientation,
       style,
+      disableDefaultFocusRing,
+      focusableWhenDisabled,
       ...otherProps
     } = props;
 
     const { state } = useTabsIndicator();
 
-    const resolvedChildren = evaluateStyles(children, state);
-    const resolvedStyle = evaluateStyles(style, state);
+    const resolvedStyle = useStyle({
+      state,
+      style,
+    });
+
+    const mergedProps = mergeProps(otherProps, {
+      handlers: {},
+      disabled: false,
+      focusable: false,
+      ref,
+      style: resolvedStyle,
+    });
 
     return (
-      <View
-        {...otherProps}
-        aria-busy={ariaBusy}
-        aria-describedby={ariaDescribedBy}
-        aria-details={ariaDetails}
-        aria-expanded={ariaExpanded}
-        aria-hidden={ariaHidden ?? true}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
-        data-activation-direction={
-          dataActivationDirection ?? state.activationDirection
-        }
-        data-orientation={dataOrientation ?? state.orientation}
-        importantForAccessibility='no-hide-descendants'
-        ref={ref}
-        style={resolvedStyle}
-      >
-        {resolvedChildren}
+      <View importantForAccessibility="no-hide-descendants" {...mergedProps}>
+        {evaluateStyles(children, state)}
       </View>
     );
   }),
