@@ -8,6 +8,7 @@ import {
 import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import type {
+  GestureResponderEvent,
   LayoutChangeEvent,
   NativeSyntheticEvent,
   TargetedEvent,
@@ -137,7 +138,7 @@ export function useAccordionRoot(props: AccordionRootProps) {
   );
 
   const state: AccordionRootState = {
-    disabled,
+    disabled: isDisabled,
     multiple,
     open: openItems.size > 0,
     orientation,
@@ -188,7 +189,7 @@ export function useAccordionItem(props: AccordionItemProps) {
   }, [open, value, onOpenChangeProp]);
 
   const state: AccordionItemState = {
-    disabled,
+    disabled: isDisabled,
     index,
     open,
     value,
@@ -214,7 +215,7 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
     onBlur: onBlurProp,
     onFocus: onFocusProp,
     onKeyDown,
-    onPress,
+    onPress, // Extracted so it isn't swallowed
   } = props;
 
   const rootContext = useAccordionContext();
@@ -222,7 +223,7 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
 
   const isDisabled = disabledProp || itemContext.isDisabled || rootContext.isDisabled;
 
-  const { focused, focusRingStyle, focusVisible, isFocusable, onBlur, onFocus } = useFocusRing({
+  const { focused, focusRingStyle, focusVisible, isFocusable, onBlur: focusOnBlur, onFocus: focusOnFocus } = useFocusRing({
     disabled: isDisabled,
     disableDefaultFocusRing,
     focusableWhenDisabled,
@@ -232,18 +233,18 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
 
   const handleFocus = React.useCallback(
     (event: NativeSyntheticEvent<TargetedEvent>) => {
-      onFocus();
+      focusOnFocus();
       onFocusProp?.(event);
     },
-    [onFocus, onFocusProp],
+    [focusOnFocus, onFocusProp],
   );
 
   const handleBlur = React.useCallback(
     (event: NativeSyntheticEvent<TargetedEvent>) => {
-      onBlur();
+      focusOnBlur();
       onBlurProp?.(event);
     },
-    [onBlur, onBlurProp],
+    [focusOnBlur, onBlurProp],
   );
 
   const onCommit = React.useCallback(() => {
@@ -251,19 +252,28 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
   }, [rootContext, itemContext.value]);
 
   const {
-    handlePress,
+    handlePress: dedupHandlePress,
     handleKeyboardActivation: handleKeyboardToggle,
     handleAccessibilityActivation,
   } = useActivationDedup({
     disabled: isDisabled,
     onCommit,
     pressed: itemContext.open,
-    onPress,
+    // NO onPress HERE
   });
+
+  // Manually compose the dedup's press handler with the user's onPress
+  const handlePress = React.useCallback(
+    (event: GestureResponderEvent) => {
+      dedupHandlePress(event);
+      onPress?.(event);
+    },
+    [dedupHandlePress, onPress],
+  );
 
   const handleKeyboardActivation = useKeyboardActivation(handleKeyboardToggle, isDisabled);
 
-  const handleKeyDownInternal = React.useCallback(
+  const handleKeyDown = React.useCallback(
     (event: NativeSyntheticEvent<KeyDownEventData>) => {
       if (isDisabled) return;
       handleKeyboardActivation(event);
@@ -296,7 +306,7 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
     focusRingStyle,
     handleBlur,
     handleFocus,
-    handleKeyDown: handleKeyDownInternal,
+    handleKeyDown,
     handlePress,
     handleAccessibilityAction,
     isFocusable,
@@ -332,7 +342,7 @@ export function useAccordionPanel(props: AccordionPanelProps) {
   const [contentHeight, setContentHeight] = React.useState<number | undefined>(undefined);
   const [contentWidth, setContentWidth] = React.useState<number | undefined>(undefined);
 
-  const handleOnLayout = React.useCallback((event: LayoutChangeEvent) => {
+  const onLayout = React.useCallback((event: LayoutChangeEvent) => {
     const { height, width } = event.nativeEvent.layout;
     setContentHeight(height);
     setContentWidth(width);
@@ -353,7 +363,7 @@ export function useAccordionPanel(props: AccordionPanelProps) {
   return {
     isDisabled: itemContext.isDisabled,
     index: itemContext.index,
-    handleOnLayout,
+    onLayout,
     open: itemContext.open,
     orientation: rootContext.orientation,
     shouldRender,

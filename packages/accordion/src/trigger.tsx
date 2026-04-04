@@ -29,9 +29,6 @@ export const AccordionTrigger = React.memo(
       children,
       style,
       onPress,
-      onKeyDown,
-      onBlur,
-      onFocus,
       disableDefaultFocusRing,
       focusableWhenDisabled,
       ...otherProps

@@ -208,14 +208,7 @@ export interface AccordionTriggerProps extends Omit<PressableProps, 'children' |
    * Callback fired when a key is pressed down.
    */
   onKeyDown?: (e: NativeSyntheticEvent<KeyDownEventData>) => void;
-  /**
-   * Callback fired when the trigger receives focus.
-   */
-  onFocus?: (e: NativeSyntheticEvent<TargetedEvent>) => void;
-  /**
-   * Callback fired when the trigger loses focus.
-   */
-  onBlur?: (e: NativeSyntheticEvent<TargetedEvent>) => void;
+
 }
 
 export interface AccordionPanelProps extends Omit<ViewProps, 'children' | 'style'> {
