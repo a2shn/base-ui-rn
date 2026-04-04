@@ -1,4 +1,4 @@
-import { evaluateStyles } from '@base-ui-rn/core';
+import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -15,55 +15,47 @@ import { useCollapsibleRoot } from './use-collapsible';
  * @example
  * ```tsx
  * <Collapsible.Root>
- *   <Collapsible.Trigger>Toggle</Collapsible.Trigger>
- *   <Collapsible.Panel>Content</Collapsible.Panel>
+ * <Collapsible.Trigger>Toggle</Collapsible.Trigger>
+ * <Collapsible.Panel>Content</Collapsible.Panel>
  * </Collapsible.Root>
  * ```
  */
 export const CollapsibleRoot = React.memo(
   React.forwardRef<View, CollapsibleRootProps>((props, ref) => {
-    const {
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-disabled': ariaDisabled,
-      'aria-hidden': ariaHidden,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      children,
-      style,
-      ...otherProps
-    } = props;
+    const { children, style, ...otherProps } = props;
 
-    const { baseId, disabled, open, state, toggle } =
-      useCollapsibleRoot(otherProps);
+    const { baseId, isDisabled, open, state, toggle } = useCollapsibleRoot(props);
 
     const contextValue = React.useMemo(
       () => ({
         baseId,
-        disabled,
+        disabled: isDisabled,
         open,
         toggle,
       }),
-      [baseId, disabled, open, toggle],
+      [baseId, isDisabled, open, toggle],
     );
+
+    const resolvedStyle = useStyle({
+      state,
+      style,
+    });
+
+    const mergedProps = mergeProps(otherProps, {
+      handlers: {},
+      disabled: isDisabled,
+      focusable: false,
+      ref,
+      style: resolvedStyle,
+      accessibilityState: {
+        disabled: isDisabled,
+        expanded: open,
+      },
+    });
 
     return (
       <CollapsibleContext.Provider value={contextValue}>
-        <View
-          {...otherProps}
-          aria-busy={ariaBusy}
-          aria-describedby={ariaDescribedBy}
-          aria-details={ariaDetails}
-          aria-disabled={ariaDisabled ?? (disabled ? true : undefined)}
-          aria-hidden={ariaHidden}
-          aria-label={ariaLabel}
-          aria-labelledby={ariaLabelledBy}
-          data-disabled={disabled ? 'true' : undefined}
-          data-open={open ? 'true' : undefined}
-          ref={ref}
-          style={evaluateStyles(style, state)}
-        >
+        <View {...mergedProps}>
           {evaluateStyles(children, state)}
         </View>
       </CollapsibleContext.Provider>

@@ -8,14 +8,5 @@ export const Collapsible = {
   Trigger: CollapsibleTrigger,
 };
 
-export { CollapsiblePanel, CollapsibleRoot, CollapsibleTrigger };
 
-export type {
-  CollapsiblePanelProps,
-  CollapsiblePanelState,
-  CollapsibleRootOpenChangeDetails,
-  CollapsibleRootProps,
-  CollapsibleRootState,
-  CollapsibleTriggerProps,
-  CollapsibleTriggerState,
-} from './types';
+export * from './types';
