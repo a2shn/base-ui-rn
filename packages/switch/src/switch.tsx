@@ -1,6 +1,12 @@
-import { evaluateStyles, PressableWithKeyPress } from '@base-ui-rn/core';
+import {
+  evaluateStyles,
+  mergeProps,
+  mergeRefs,
+  PressableWithKeyDown,
+  useStyle,
+} from '@base-ui-rn/core';
 import * as React from 'react';
-import { StyleProp, View, ViewStyle } from 'react-native';
+import { Platform, View } from 'react-native';
 
 import { SwitchContext } from './context';
 import type { SwitchRootProps } from './types';
@@ -15,92 +21,77 @@ import { useSwitchRoot } from './use-switch';
  * @example
  * ```tsx
  * <Switch.Root>
- *   <Switch.Thumb />
+ * <Switch.Thumb />
  * </Switch.Root>
  * ```
  */
 export const SwitchRoot = React.memo(
   React.forwardRef<View, SwitchRootProps>((props, ref) => {
     const {
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-hidden': ariaHidden,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      'aria-readonly': ariaReadOnlyProp,
       children,
       id,
       style,
-      ...otherProps
+      onPress,
+      disableDefaultFocusRing,
+      focusableWhenDisabled,
+      ...restProps
     } = props;
 
     const {
       checked,
-      disabled: isDisabled,
+      isDisabled,
       focusRingStyle,
       handleBlur,
       handleFocus,
       handleKeyDown,
       handlePress,
-      readOnly: resolvedReadOnly,
+      handleAccessibilityAction,
       state,
+      isFocusable,
       tabIndex,
     } = useSwitchRoot(props);
 
-    const contextValue = React.useMemo(
-      () => ({
+    const internalRef = React.useRef<View>(null);
+    const mergedRef = mergeRefs(internalRef, ref);
+
+    const resolvedStyle = useStyle({
+      additionalStyles: [
+        focusRingStyle,
+        Platform.OS === 'web' && state.focused ? { zIndex: 1 } : undefined,
+      ],
+      state,
+      style,
+    });
+
+    const mergedProps = mergeProps(restProps, {
+      handlers: {
+        onBlur: handleBlur,
+        onFocus: handleFocus,
+        onKeyDown: handleKeyDown,
+        onPress: handlePress,
+        onAccessibilityAction: handleAccessibilityAction,
+      },
+      disabled: isDisabled,
+      focusable: isFocusable,
+      ref: mergedRef,
+      style: resolvedStyle,
+      accessibilityState: {
         checked,
         disabled: isDisabled,
-        focused: state.focused,
-        readOnly: resolvedReadOnly,
-      }),
-      [checked, isDisabled, resolvedReadOnly, state.focused],
-    );
-
-    const resolvedStyle = React.useMemo<StyleProp<ViewStyle>>(() => {
-      const baseStyle = evaluateStyles(style, state);
-      if (focusRingStyle) {
-        return [baseStyle, focusRingStyle];
-      }
-      return baseStyle;
-    }, [style, state, focusRingStyle]);
+      },
+    });
 
     return (
-      <SwitchContext.Provider value={contextValue}>
-        <PressableWithKeyPress
-          {...otherProps}
-          accessibilityState={{
-            checked,
-            disabled: isDisabled,
-          }}
+      <SwitchContext.Provider value={state}>
+        <PressableWithKeyDown
           accessible
-          aria-busy={ariaBusy}
-          aria-checked={checked}
-          aria-describedby={ariaDescribedBy}
-          aria-details={ariaDetails}
-          aria-disabled={isDisabled}
-          aria-hidden={ariaHidden}
-          aria-label={ariaLabel}
-          aria-labelledby={ariaLabelledBy}
-          aria-readonly={ariaReadOnlyProp ?? resolvedReadOnly}
-          data-checked={checked ? 'true' : undefined}
-          data-disabled={isDisabled ? 'true' : undefined}
-          data-readonly={resolvedReadOnly ? 'true' : undefined}
-          data-unchecked={!checked ? 'true' : undefined}
-          disabled={isDisabled}
           nativeID={id}
-          onBlur={handleBlur}
-          onFocus={handleFocus}
-          onKeyDown={handleKeyDown}
-          onPress={handlePress}
-          ref={ref}
-          role='switch'
-          style={resolvedStyle}
+          role="switch"
           tabIndex={tabIndex}
+          {...mergedProps}
         >
           {evaluateStyles(children, state)}
-        </PressableWithKeyPress>
+        </PressableWithKeyDown>
       </SwitchContext.Provider>
     );
   }),

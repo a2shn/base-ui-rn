@@ -1,78 +1,13 @@
-import type {
-  ARIABaseProps,
-  ARIALiveProps,
-  ARIATraitChecked,
-  ARIATraitDisabled,
-  KeyPressEventData,
-} from '@base-ui-rn/core';
+import { KeyDownEventData } from '@base-ui-rn/core';
 import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type {
   NativeSyntheticEvent,
   PressableProps,
   StyleProp,
+  TargetedEvent,
   ViewProps,
   ViewStyle,
 } from 'react-native';
-
-/**
- * Web-specific accessibility props for Switch Root.
- */
-export type WebSwitchRootAccessibilityProps = ARIABaseProps &
-  ARIATraitDisabled &
-  ARIATraitChecked & {
-    /**
-     * Reflects read-only state for the ARIA switch pattern on web.
-     */
-    'aria-readonly'?: boolean;
-    /**
-     * Custom data attribute applied on web for CSS selectors and testing.
-     * Reflects the current checked state.
-     */
-    'data-checked'?: 'true';
-    /**
-     * Custom data attribute applied on web for CSS selectors and testing.
-     * Reflects the current unchecked state.
-     */
-    'data-unchecked'?: 'true';
-    /**
-     * Present when the switch is disabled.
-     */
-    'data-disabled'?: 'true';
-    /**
-     * Present when the switch is readonly.
-     */
-    'data-readonly'?: 'true';
-    /**
-     * Defines a keyboard shortcut that activates or focuses the element.
-     */
-    'aria-keyshortcuts'?: string;
-  };
-
-/**
- * Web-specific accessibility props for Switch Thumb.
- */
-export type WebSwitchThumbAccessibilityProps = ARIABaseProps &
-  ARIALiveProps &
-  ARIATraitDisabled & {
-    /**
-     * Custom data attribute applied on web for CSS selectors and testing.
-     * Reflects the current checked state.
-     */
-    'data-checked'?: 'true';
-    /**
-     * Custom data attribute applied on web for CSS selectors and testing.
-     * Reflects the current unchecked state.
-     */
-    'data-unchecked'?: 'true';
-    /**
-     * Present when the switch is disabled.
-     */
-    'data-disabled'?: 'true';
-    /**
-     * Present when the switch is readonly.
-     */
-    'data-readonly'?: 'true';
-  };
 
 export interface SwitchState extends FocusRingState {
   /**
@@ -82,17 +17,14 @@ export interface SwitchState extends FocusRingState {
   /**
    * Whether the switch is disabled.
    */
-  disabled: boolean;
+  isDisabled: boolean;
   /**
    * Whether the switch is read-only.
    */
   readOnly: boolean;
 }
 
-export interface SwitchRootProps
-  extends
-    Omit<PressableProps, 'role' | 'children' | 'style' | 'aria-checked'>,
-    WebSwitchRootAccessibilityProps {
+export interface SwitchRootProps extends Omit<PressableProps, 'role' | 'children' | 'style'> {
   /**
    * Identifies the field when a form is submitted.
    */
@@ -151,7 +83,7 @@ export interface SwitchRootProps
   /**
    * Callback fired when a key is pressed down.
    */
-  onKeyDown?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
+  onKeyDown?: (e: NativeSyntheticEvent<KeyDownEventData>) => void;
 
   /**
    * Disable the default focus ring styling.
@@ -166,10 +98,7 @@ export interface SwitchRootProps
   focusableWhenDisabled?: boolean;
 }
 
-export interface SwitchThumbProps
-  extends
-    Omit<ViewProps, 'style' | 'children'>,
-    WebSwitchThumbAccessibilityProps {
+export interface SwitchThumbProps extends Omit<ViewProps, 'style' | 'children'> {
   /**
    * The content of the thumb.
    */
@@ -181,4 +110,4 @@ export interface SwitchThumbProps
   style?: StyleProp<ViewStyle> | ((state: SwitchState) => StyleProp<ViewStyle>);
 }
 
-export type { KeyPressEventData };
+export type { KeyDownEventData as KeyPressEventData };

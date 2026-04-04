@@ -6,5 +6,4 @@ export const Switch = {
   Thumb: SwitchThumb,
 };
 
-export { SwitchRoot, SwitchThumb };
 export * from './types';
