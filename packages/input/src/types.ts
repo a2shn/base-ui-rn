@@ -57,17 +57,6 @@ export interface InputState extends FocusRingState {
  */
 export interface InputProps
   extends Omit<TextInputProps, 'style' | 'readOnly' | 'editable'> {
-
-  /**
-     * Identifies the element(s) that describe the object.
-     * Usually points to a hint or helper text Label.
-     */
-  'aria-describedby'?: string;
-  /**
-   * Identifies the element that provides an error message for the object.
-   * Only relevant when the input is invalid.
-   */
-  'aria-errormessage'?: string;
   /**
    * Style applied to the input component. Accepts a standard style object 
    * or a function that receives the current InputState.

@@ -1,6 +1,5 @@
 import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
-import type { NativeSyntheticEvent, TextInputProps } from 'react-native';
 
 import type { InputProps, InputState } from './types';
 
@@ -45,7 +44,7 @@ export function useInput(props: InputProps) {
   );
 
   const handleFocus = React.useCallback(
-    (e: Parameters<NonNullable<TextInputProps['onFocus']>>[0]) => {
+    (e: any) => {
       onFocus();
       onFocusProp?.(e);
     },
@@ -53,7 +52,7 @@ export function useInput(props: InputProps) {
   );
 
   const handleBlur = React.useCallback(
-    (e: Parameters<NonNullable<TextInputProps['onBlur']>>[0]) => {
+    (e: any) => {
       onBlur();
       setInternalTouched(true);
       onBlurProp?.(e);
@@ -69,7 +68,7 @@ export function useInput(props: InputProps) {
       setInternalDirty(true);
       onChangeText?.(text);
       onValueChange?.(text, {
-        nativeEvent: null as unknown as NativeSyntheticEvent<unknown>,
+        nativeEvent: { text } as any,
       });
     },
     [controlledValue, onChangeText, onValueChange],
@@ -99,6 +98,6 @@ export function useInput(props: InputProps) {
     isFocusable,
     state,
     tabIndex,
-    value,
+    value
   };
 }
