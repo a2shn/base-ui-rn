@@ -34,6 +34,7 @@ export function ButtonPlaybook() {
             console.log("hello")
             count.setValue((count.value as number) + 1)
           }}
+
           style={styles.buttonBase}
           testID='button-counter'
         >

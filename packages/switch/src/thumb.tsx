@@ -19,7 +19,7 @@ import type { SwitchThumbProps } from './types';
  */
 export const SwitchThumb = React.memo(
   React.forwardRef<View, SwitchThumbProps>((props, ref) => {
-    const { children, style, ...restProps } = props;
+    const { children, style } = props;
     const state = useSwitchContext();
 
     const resolvedStyle = useStyle({
@@ -27,9 +27,7 @@ export const SwitchThumb = React.memo(
       style,
     });
 
-    const mergedProps = mergeProps(restProps, {
-      handlers: {},
-      disabled: state.isDisabled,
+    const mergedProps = mergeProps(props, {
       focusable: false,
       ref,
       style: resolvedStyle,

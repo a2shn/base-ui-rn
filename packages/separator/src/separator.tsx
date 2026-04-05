@@ -20,7 +20,6 @@ export const Separator = React.forwardRef<View, SeparatorProps>(
     const { decorative = false, style } = props;
 
     const mergedProps = mergeProps(props, {
-      handlers: {},
       disabled: false,
       focusable: false,
       ref,

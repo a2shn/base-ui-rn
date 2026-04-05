@@ -22,7 +22,6 @@ export function ToggleGroupPlaybook() {
       <Section title='Loop Focus Horizontal'>
         <ToggleGroup
           defaultValue={['h1']}
-          loopFocus={true}
           orientation='horizontal'
           style={[styles.groupBase, styles.row]}
           testID='toggle-group-loop-h'
@@ -44,7 +43,7 @@ export function ToggleGroupPlaybook() {
 
       <Section title='Loop Focus Vertical'>
         <ToggleGroup
-          defaultValue={['v1']}
+          defaultValue={['v2']}
           loopFocus={true}
           orientation='vertical'
           style={[styles.groupBase, styles.column]}
@@ -215,9 +214,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   toggle: {
-    backgroundColor: theme.colors.borderLight,
-    borderRadius: theme.radius.sm + 2,
-    borderWidth: 0,
     padding: theme.spacing.sm,
   },
   toggleDefault: {
@@ -235,6 +231,10 @@ const styles = StyleSheet.create({
   },
 });
 
-function getToggleStyle({ pressed }: ToggleState) {
-  return [styles.toggle, pressed ? styles.togglePressed : styles.toggleDefault];
+function getToggleStyle({ pressed, focusVisible }: ToggleState) {
+  return [
+    styles.toggle,
+    pressed ? styles.togglePressed : styles.toggleDefault,
+    focusVisible && styles.toggleFocused,
+  ];
 }

@@ -1,7 +1,8 @@
-import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
-import * as React from 'react';
-
-import type { InputProps, InputState } from './types';
+import { useControllableState } from "@base-ui-rn/core";
+import { resolveTabIndex, useFocusRing } from "@base-ui-rn/focus-ring";
+import React from "react";
+import { NativeSyntheticEvent, TextInputChangeEventData } from "react-native";
+import { InputProps, InputState } from "./types";
 
 export function useInput(props: InputProps) {
   const {
@@ -13,91 +14,86 @@ export function useInput(props: InputProps) {
     disableDefaultFocusRing = false,
     focusableWhenDisabled = false,
     invalid = false,
-    onBlur: onBlurProp,
-    onChangeText,
-    onFocus: onFocusProp,
-    onValueChange,
     tabIndex: tabIndexProp,
     touched: controlledTouched,
     valid = false,
     value: controlledValue,
+    onValueChange, onDirtyChange,
+    onTouchedChange,
   } = props;
 
-  const [internalValue, setInternalValue] = React.useState(defaultValue ?? '');
-  const [internalDirty, setInternalDirty] = React.useState(false);
-  const [internalTouched, setInternalTouched] = React.useState(false);
+  const [value = '', setValue] = useControllableState<string>({
+    prop: controlledValue,
+    defaultProp: defaultValue ?? '',
+  });
 
-  const value = controlledValue !== undefined ? controlledValue : internalValue;
-  const isDirty = controlledDirty !== undefined ? controlledDirty : internalDirty;
-  const isTouched = controlledTouched !== undefined ? controlledTouched : internalTouched;
+  const [dirty = false, setDirty] = useControllableState<boolean>({
+    prop: controlledDirty,
+    defaultProp: false,
+    onChange: onDirtyChange,
+  });
+
+  const [touched = false, setTouched] = useControllableState<boolean>({
+    prop: controlledTouched,
+    defaultProp: false,
+    onChange: onTouchedChange,
+  });
+
+  const isDisabled = disabled === true;
 
   const { focused, focusRingStyle, isFocusable, onBlur, onFocus, focusVisible } =
     useFocusRing({
-      disabled,
+      disabled: isDisabled,
       disableDefaultFocusRing,
       focusableWhenDisabled,
     });
 
-  const tabIndex = resolveTabIndex(
-    isFocusable,
-    tabIndexProp as 0 | -1 | undefined,
-  );
+  const tabIndex = resolveTabIndex(isFocusable, tabIndexProp);
 
-  const handleFocus = React.useCallback(
-    (e: any) => {
-      onFocus();
-      onFocusProp?.(e);
-    },
-    [onFocus, onFocusProp],
-  );
+  const handleBlur = React.useCallback(() => {
+    onBlur();
+    setTouched(true);
+  }, [onBlur, setTouched]);
 
-  const handleBlur = React.useCallback(
-    (e: any) => {
-      onBlur();
-      setInternalTouched(true);
-      onBlurProp?.(e);
-    },
-    [onBlur, onBlurProp],
-  );
+  const handleChange = React.useCallback(
+    (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+      if (readOnly || isDisabled) return;
 
-  const handleChangeText = React.useCallback(
-    (text: string) => {
-      if (controlledValue === undefined) {
-        setInternalValue(text);
-      }
-      setInternalDirty(true);
-      onChangeText?.(text);
-      onValueChange?.(text, {
-        nativeEvent: { text } as any,
-      });
+      const nextValue = e.nativeEvent.text;
+
+      setValue(nextValue);
+      setDirty(true);
+
+      onValueChange?.(nextValue, { nativeEvent: e });
     },
-    [controlledValue, onChangeText, onValueChange],
+    [readOnly, isDisabled, setValue, setDirty, onValueChange],
   );
 
   const state: InputState = React.useMemo(
     () => ({
       focusVisible,
-      dirty: isDirty,
-      disabled,
+      dirty,
+      disabled: isDisabled,
       readOnly,
       required,
       filled: value.length > 0,
       focused,
       invalid,
-      touched: isTouched,
+      touched,
       valid,
     }),
-    [focusVisible, isDirty, disabled, readOnly, required, value, focused, invalid, isTouched, valid],
+    [focusVisible, dirty, isDisabled, readOnly, required, value, focused, invalid, touched, valid],
   );
 
   return {
     focusRingStyle,
     handleBlur,
-    handleChangeText,
-    handleFocus,
+    handleChange,
+    handleFocus: onFocus,
     isFocusable,
     state,
     tabIndex,
-    value
+    value,
+    isDisabled,
   };
 }

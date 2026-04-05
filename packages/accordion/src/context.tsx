@@ -35,7 +35,7 @@ interface AccordionItemContextValue {
   open: boolean;
   isDisabled: boolean;
   index: number;
-  registerTriggerRef: (ref: React.RefObject<View | null>) => void;
+  triggerRef: React.RefObject<View | null>;
 }
 
 export const AccordionItemContext = React.createContext<AccordionItemContextValue | null>(null);

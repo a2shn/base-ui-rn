@@ -18,9 +18,6 @@ export const TabsIndicator = React.memo(
     const {
       children,
       style,
-      disableDefaultFocusRing,
-      focusableWhenDisabled,
-      ...otherProps
     } = props;
 
     const { state } = useTabsIndicator();
@@ -30,8 +27,7 @@ export const TabsIndicator = React.memo(
       style,
     });
 
-    const mergedProps = mergeProps(otherProps, {
-      handlers: {},
+    const mergedProps = mergeProps(props, {
       disabled: false,
       focusable: false,
       ref,

@@ -24,7 +24,6 @@ export const ProgressTrack = React.memo(
     });
 
     const mergedProps = mergeProps(props, {
-      handlers: {},
       disabled: false,
       focusable: false,
       ref,

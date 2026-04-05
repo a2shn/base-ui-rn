@@ -18,7 +18,7 @@ import { useAccordionHeader } from './use-accordion';/**
  */
 export const AccordionHeader = React.memo(
   React.forwardRef<View, AccordionHeaderProps>((props, ref) => {
-    const { children, style, ...otherProps } = props;
+    const { children, style } = props;
     const { isDisabled, open, state } = useAccordionHeader();
 
     const resolvedStyle = useStyle({
@@ -27,8 +27,7 @@ export const AccordionHeader = React.memo(
       style,
     });
 
-    const mergedProps = mergeProps(otherProps, {
-      handlers: {},
+    const mergedProps = mergeProps(props, {
       disabled: isDisabled,
       focusable: false,
       ref,
@@ -47,4 +46,4 @@ export const AccordionHeader = React.memo(
   }),
 );
 
-AccordionHeader.displayName = 'AccordionHeader';
+AccordionHeader.displayName = 'Accordion.Header';

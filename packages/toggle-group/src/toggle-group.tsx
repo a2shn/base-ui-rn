@@ -32,8 +32,11 @@ import { useToggleGroup } from './use-toggle-group';
       registerItem,
       registerValue,
       state,
+      loopFocus,
+      multiple,
       toggleValue,
       valueSet,
+      isDisabled
     } = useToggleGroup(props);
 
     const valueContext = React.useMemo(
@@ -46,9 +49,9 @@ import { useToggleGroup } from './use-toggle-group';
 
     const actionContext = React.useMemo(
       () => ({
-        disabled: state.disabled,
-        loopFocus: state.loopFocus,
-        multiple: state.multiple,
+        disabled: isDisabled,
+        loopFocus,
+        multiple,
         onToggleKeyDown,
         orientation: state.orientation,
         registerItem,
@@ -56,9 +59,9 @@ import { useToggleGroup } from './use-toggle-group';
         toggleValue,
       }),
       [
-        state.disabled,
-        state.loopFocus,
-        state.multiple,
+        isDisabled,
+        loopFocus,
+        multiple,
         state.orientation,
         onToggleKeyDown,
         registerItem,
@@ -70,8 +73,6 @@ import { useToggleGroup } from './use-toggle-group';
     const resolvedStyle = useStyle({ style, state });
 
     const mergedProps = mergeProps(props, {
-      handlers: {},
-      disabled: state.disabled,
       focusable: false,
       ref,
       style: resolvedStyle,
@@ -87,7 +88,7 @@ import { useToggleGroup } from './use-toggle-group';
             accessibilityLiveRegion="none"
             accessible={true}
             importantForAccessibility="yes"
-            role={props.role ?? (state.multiple ? 'group' : 'radiogroup')}
+            role={props.role ?? (multiple ? 'group' : 'radiogroup')}
             {...mergedProps}
           >
             {evaluateStyles(children, state)}

@@ -1,125 +1,68 @@
-import * as React from 'react';
-import type {
-  AccessibilityActionInfo,
-  AccessibilityState,
-  StyleProp,
-} from 'react-native';
-
+import { composeEventHandler } from './compose-event-handlers';
 import {
   mergeAccessibilityActions,
   mergeAccessibilityState,
 } from '../accessibility/merge-accessibility-props';
-import { composeEventHandlers } from './compose-event-handlers';
-import { AnyFn, HandlerMap, ProtectedKey } from '@/types';
+import { mergeRefs } from './merge-refs';
+import { StyleProp } from 'react-native';
+import { Ref } from 'react';
 
+type PropsArg = Record<string, any> | null | undefined;
 
-const PROTECTED_KEYS = new Set<string>([
-  'disabled',
-  'focusable',
-  'ref',
-  'style',
-  'children',
-  'accessibilityState',
-  'accessibilityActions',
-] satisfies ProtectedKey[]);
+type TupleTypes<T> = { [P in keyof T]: T[P] } extends { [key: number]: infer V }
+  ? NullToObject<V>
+  : never;
+type NullToObject<T> = T extends null | undefined ? {} : T;
 
-export type MergePropsResult<
-  TProps extends Record<string, unknown>,
-  THandlers extends HandlerMap,
-  TElement = unknown,
-  TStyle = unknown,
-> = Omit<TProps, ProtectedKey | keyof THandlers> &
-  {
-    [K in keyof THandlers]: THandlers[K] extends (event: infer E) => void
-    ? (event: E) => void
-    : (event: unknown) => void;
-  } & {
-    disabled: boolean;
-    focusable: boolean;
-    ref: React.Ref<TElement>;
-    style: StyleProp<TStyle>;
-  };
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
+  k: infer I,
+) => void
+  ? I
+  : never;
 
-export interface MergePropsConfig<
-  THandlers extends HandlerMap,
-  TElement = unknown,
-  TStyle = unknown,
-> {
-  handlers: THandlers;
-  disabled: boolean;
-  focusable: boolean;
-  ref: React.Ref<TElement>;
-  style: StyleProp<TStyle>;
-  accessibilityState?: AccessibilityState;
-  accessibilityActions?: readonly AccessibilityActionInfo[];
-}
+export type MergedResult<T> = UnionToIntersection<TupleTypes<T>> & {
+  ref: Ref<any>;
+  style: StyleProp<any>;
+};
+/**
+ * Merges user props with internal component configuration.
+ * Ref and Style are strictly required in the configuration object.
+ * * @see {@link https://github.com/adobe/react-spectrum/blob/main/packages/%40react-aria/utils/src/mergeProps.ts}
+ * Derived from Adobe's React Aria (Apache-2.0 License).
+ */
+export function mergeProps<T extends PropsArg[]>(...args: T): MergedResult<T> {
+  let result: Record<string, any> = { ...args[0] };
 
-export function mergeProps<
-  TProps extends Record<string, unknown>,
-  THandlers extends HandlerMap,
-  TElement = unknown,
-  TStyle = unknown,
->(
-  userProps: TProps,
-  config: MergePropsConfig<THandlers, TElement, TStyle>,
-): MergePropsResult<TProps, THandlers, TElement, TStyle> {
-  const {
-    handlers,
-    disabled,
-    focusable,
-    ref,
-    style,
-    accessibilityState: internalA11yState,
-    accessibilityActions: internalA11yActions,
-  } = config;
+  for (let i = 1; i < args.length; i++) {
+    let props = args[i];
+    if (!props) continue;
 
-  const { externalHandlers, passthrough } = React.useMemo(() => {
-    const extHandlers: Record<string, AnyFn | undefined> = {};
-    const passProps: Record<string, unknown> = {};
-    const handlerKeys = new Set(Object.keys(handlers));
+    for (let key in props) {
+      let a = result[key];
+      let b = props[key];
 
-    for (const key of handlerKeys) {
-      extHandlers[key] = userProps[key] as AnyFn | undefined;
-    }
-
-    for (const key of Object.keys(userProps)) {
-      if (!handlerKeys.has(key) && !PROTECTED_KEYS.has(key)) {
-        passProps[key] = userProps[key];
+      if (
+        typeof a === 'function' &&
+        typeof b === 'function' &&
+        key[0] === 'o' &&
+        key[1] === 'n' &&
+        key.charCodeAt(2) >= 65 &&
+        key.charCodeAt(2) <= 90
+      ) {
+        result[key] = composeEventHandler(a, b);
+      } else if (key === 'ref' && a && b) {
+        result.ref = mergeRefs(a, b);
+      } else if (key === 'style' && a && b) {
+        result.style = [a, b];
+      } else if (key === 'accessibilityState' && a && b) {
+        result[key] = mergeAccessibilityState(a, b);
+      } else if (key === 'accessibilityActions' && a && b) {
+        result[key] = mergeAccessibilityActions(a, b);
+      } else {
+        result[key] = b !== undefined ? b : a;
       }
     }
+  }
 
-    return { externalHandlers: extHandlers, passthrough: passProps };
-  }, [userProps, Object.keys(handlers).join(',')]);
-
-  const composedHandlers = composeEventHandlers(
-    externalHandlers as THandlers,
-    handlers,
-  );
-
-  const mergedA11yState = React.useMemo(() => {
-    if (!internalA11yState && !userProps.accessibilityState) return undefined;
-    return mergeAccessibilityState(
-      internalA11yState,
-      userProps.accessibilityState as AccessibilityState | undefined,
-    );
-  }, [internalA11yState, userProps.accessibilityState]);
-
-  const mergedA11yActions = React.useMemo(() => {
-    if (!internalA11yActions && !userProps.accessibilityActions) return undefined;
-    return mergeAccessibilityActions(
-      internalA11yActions,
-      userProps.accessibilityActions as readonly AccessibilityActionInfo[] | undefined,
-    );
-  }, [internalA11yActions, userProps.accessibilityActions]);
-
-  return {
-    ...passthrough,
-    ...composedHandlers,
-    ...(mergedA11yState ? { accessibilityState: mergedA11yState } : {}),
-    ...(mergedA11yActions ? { accessibilityActions: mergedA11yActions } : {}),
-    disabled,
-    focusable,
-    ref,
-    style,
-  } as unknown as MergePropsResult<TProps, THandlers, TElement, TStyle>;
+  return result as MergedResult<T>;
 }

@@ -14,10 +14,10 @@ export const ACTIVATION_KEYS = [
   'Return',
   'OK',
   'Accept',
-  'GamepadA', // Common gamepad cross-platform maps
+  'GamepadA',
   'buttonA',
   'buttonX',
-  'Cross', // Playstation
+  'Cross',
 ] as const;
 
 

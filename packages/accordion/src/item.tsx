@@ -22,19 +22,19 @@ import { useAccordionItem } from './use-accordion';
  */
 export const AccordionItem = React.memo(
   React.forwardRef<View, AccordionItemProps>((props, ref) => {
-    const { children, style, ...otherProps } = props;
+    const { children, style } = props;
 
-    const { isDisabled, index, open, registerTriggerRef, state, value } = useAccordionItem(props);
+    const { isDisabled, index, open, triggerRef, state, value } = useAccordionItem(props);
 
     const itemContextValue = React.useMemo(
       () => ({
         isDisabled,
         index,
         open,
-        registerTriggerRef,
+        triggerRef,
         value,
       }),
-      [isDisabled, index, open, registerTriggerRef, value],
+      [isDisabled, index, open, triggerRef, value],
     );
 
     const resolvedStyle = useStyle({
@@ -42,8 +42,7 @@ export const AccordionItem = React.memo(
       style,
     });
 
-    const mergedProps = mergeProps(otherProps, {
-      handlers: {},
+    const mergedProps = mergeProps(props, {
       disabled: isDisabled,
       focusable: false,
       ref,
@@ -64,4 +63,4 @@ export const AccordionItem = React.memo(
   }),
 );
 
-AccordionItem.displayName = 'AccordionItem';
+AccordionItem.displayName = 'Accordion.Item';

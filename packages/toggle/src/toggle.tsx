@@ -25,8 +25,8 @@ import { useToggle } from './use-toggle';
  * ```
  */
 export const Toggle = React.memo(
-  React.forwardRef<View, ToggleProps>(function Toggle(props, forwardedRef) {
-    const { children, style, value, onPress, ...otherProps } = props;
+  React.forwardRef<View, ToggleProps>(function Toggle(props, ref) {
+    const { children, style, value } = props;
 
     const {
       focusRingStyle,
@@ -41,10 +41,11 @@ export const Toggle = React.memo(
       registerValue,
       state,
       tabIndex,
+      isDisabled
     } = useToggle(props);
 
     const internalRef = React.useRef<View>(null);
-    const mergedRef = mergeRefs(internalRef, forwardedRef);
+    const mergedRef = mergeRefs(internalRef, ref);
 
     React.useEffect(() => {
       if (isInGroup && value !== undefined) {
@@ -65,23 +66,19 @@ export const Toggle = React.memo(
       style,
     });
 
-    const mergedProps = mergeProps(otherProps, {
-      handlers: {
-        onBlur: handleBlur,
-        onFocus: handleFocus,
-        onKeyDown: handleKeyDown,
-        onPress: handlePress,
-        onAccessibilityAction: handleAccessibilityAction,
-      },
-      disabled: state.disabled,
-      focusable: isFocusable,
+    const mergedProps = mergeProps(props, {
+      onBlur: handleBlur,
+      onFocus: handleFocus,
+      onKeyDown: handleKeyDown,
+      onPress: handlePress,
+      onAccessibilityAction: handleAccessibilityAction,
       ref: mergedRef,
       style: resolvedStyle,
       accessibilityState: {
         checked: state.pressed,
-        disabled: state.disabled,
+        disabled: isDisabled,
       },
-      accessibilityActions: !state.disabled ? [{ name: 'activate' }] : [],
+      accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
     });
 
     return (
@@ -91,8 +88,10 @@ export const Toggle = React.memo(
         accessible={true}
         importantForAccessibility={isFocusable ? 'yes' : 'no-hide-descendants'}
         role={props.role ?? 'checkbox'}
-        tabIndex={tabIndex}
         {...mergedProps}
+        tabIndex={tabIndex}
+        disabled={isDisabled}
+        focusable={isFocusable}
       >
         {(pressableState: PressableStateCallbackType) =>
           evaluateStyles(children, {

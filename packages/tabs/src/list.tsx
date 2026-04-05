@@ -23,10 +23,7 @@ export const TabsList = React.memo(
     const {
       children,
       style,
-      loopFocus,
-      disableDefaultFocusRing,
-      focusableWhenDisabled,
-      ...otherProps
+
     } = props;
 
     const { state } = useTabsList();
@@ -36,8 +33,7 @@ export const TabsList = React.memo(
       style,
     });
 
-    const mergedProps = mergeProps(otherProps, {
-      handlers: {},
+    const mergedProps = mergeProps(props, {
       disabled: false,
       focusable: false,
       ref,

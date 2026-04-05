@@ -10,7 +10,7 @@ export function TabsPlaybook() {
         <View style={styles.container}>
           <Tabs.Root defaultValue='tab-1'>
             <Tabs.List style={styles.list}>
-              <Tabs.Tab style={styles.tab} value='tab-1'>
+              <Tabs.Tab style={styles.tab} value='tab-1' onKeyDown={() => { console.log("ll") }}>
                 {({ active }) => (
                   <Text
                     style={[styles.tabText, active && styles.activeTabText]}
@@ -19,7 +19,7 @@ export function TabsPlaybook() {
                   </Text>
                 )}
               </Tabs.Tab>
-              <Tabs.Tab style={styles.tab} value='tab-2'>
+              <Tabs.Tab style={styles.tab} value='tab-2' >
                 {({ active }) => (
                   <Text
                     style={[styles.tabText, active && styles.activeTabText]}

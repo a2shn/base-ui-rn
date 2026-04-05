@@ -1,16 +1,13 @@
 import {
   isActivationAction,
   KeyDownEventData,
-  useActivationDedup,
-  useKeyboardActivation,
+  useControllableState,
 } from '@base-ui-rn/core';
 import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import type {
-  GestureResponderEvent,
   LayoutChangeEvent,
   NativeSyntheticEvent,
-  TargetedEvent,
 } from 'react-native';
 
 import { useCollapsibleContext } from './context';
@@ -39,38 +36,28 @@ export function useCollapsibleRoot(props: CollapsibleRootProps) {
   } = props;
 
   const baseId = useId();
-  const isDisabled = disabled;
+  const isDisabled = disabled === true;
 
-  const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
-
-  const isControlled = controlledOpen !== undefined;
-  const open = isControlled ? controlledOpen : internalOpen;
-
-  const handleOpenChange = React.useCallback(
-    (newOpen: boolean) => {
-      if (!isControlled) {
-        setInternalOpen(newOpen);
-      }
-      onOpenChange?.(newOpen, { open: newOpen });
-    },
-    [isControlled, onOpenChange],
-  );
+  const [open, setOpen] = useControllableState<boolean>({
+    prop: controlledOpen,
+    defaultProp: defaultOpen,
+    onChange: (nextOpen: boolean) => onOpenChange?.(nextOpen, { open: nextOpen }),
+  });
 
   const toggle = React.useCallback(() => {
     if (isDisabled) return;
-    handleOpenChange(!open);
-  }, [isDisabled, handleOpenChange, open]);
+    setOpen((prev) => !prev);
+  }, [isDisabled, setOpen]);
 
   const state: CollapsibleRootState = {
     disabled: isDisabled,
-    open,
+    open: open ?? false,
   };
 
   return {
     baseId,
     isDisabled,
-    handleOpenChange,
-    open,
+    open: open ?? false,
     state,
     toggle,
   };
@@ -81,16 +68,11 @@ export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
     disabled: disabledProp,
     disableDefaultFocusRing = false,
     focusableWhenDisabled = false,
-    onBlur: onBlurProp,
-    onFocus: onFocusProp,
-    onKeyDown,
-    onPress,
     tabIndex: tabIndexProp,
   } = props;
 
   const context = useCollapsibleContext();
-
-  const isDisabled = disabledProp || context.disabled;
+  const isDisabled = disabledProp === true || context.disabled;
 
   const { focused, focusVisible, focusRingStyle, isFocusable, onBlur, onFocus } = useFocusRing({
     disabled: isDisabled,
@@ -98,64 +80,22 @@ export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
     focusableWhenDisabled,
   });
 
-  const tabIndex = resolveTabIndex(isFocusable, tabIndexProp as 0 | -1 | undefined);
+  const tabIndex = resolveTabIndex(isFocusable, tabIndexProp);
 
-  const handleFocus = React.useCallback(
-    (event: NativeSyntheticEvent<TargetedEvent>) => {
-      onFocus();
-      onFocusProp?.(event);
-    },
-    [onFocus, onFocusProp],
-  );
-
-  const handleBlur = React.useCallback(
-    (event: NativeSyntheticEvent<TargetedEvent>) => {
-      onBlur();
-      onBlurProp?.(event);
-    },
-    [onBlur, onBlurProp],
-  );
-
-  const onCommit = React.useCallback(() => {
+  const handlePress = React.useCallback(() => {
+    if (isDisabled) return;
     context.toggle();
-  }, [context]);
+  }, [isDisabled, context]);
 
-  const {
-    handlePress: dedupHandlePress,
-    handleKeyboardActivation: handleKeyboardToggle,
-    handleAccessibilityActivation,
-  } = useActivationDedup({
-    disabled: isDisabled,
-    onCommit,
-    pressed: context.open,
-  });
 
-  const handlePress = React.useCallback(
-    (event: GestureResponderEvent) => {
-      dedupHandlePress(event);
-      onPress?.(event);
-    },
-    [dedupHandlePress, onPress],
-  );
-
-  const handleKeyboardActivation = useKeyboardActivation(handleKeyboardToggle, isDisabled);
-
-  const handleKeyDown = React.useCallback(
-    (event: NativeSyntheticEvent<KeyDownEventData>) => {
-      if (isDisabled) return;
-      handleKeyboardActivation(event);
-      onKeyDown?.(event);
-    },
-    [isDisabled, handleKeyboardActivation, onKeyDown],
-  );
 
   const handleAccessibilityAction = React.useCallback(
     (event: any) => {
       if (isActivationAction(event.nativeEvent.actionName) && !isDisabled) {
-        handleAccessibilityActivation();
+        context.toggle();
       }
     },
-    [isDisabled, handleAccessibilityActivation],
+    [isDisabled, context],
   );
 
   const state: CollapsibleTriggerState = {
@@ -170,12 +110,11 @@ export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
     focused,
     focusVisible,
     focusRingStyle,
-    handleBlur,
-    handleFocus,
-    handleKeyDown,
-    handlePress,
-    handleAccessibilityAction,
+    handleBlur: onBlur,
+    handleFocus: onFocus,
     isFocusable,
+    handleAccessibilityAction,
+    handlePress,
     open: context.open,
     state,
     tabIndex,
@@ -184,7 +123,6 @@ export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
 
 export function useCollapsiblePanel(props: CollapsiblePanelProps) {
   const { hiddenUntilFound = false, keepMounted = false } = props;
-
   const context = useCollapsibleContext();
 
   const [contentHeight, setContentHeight] = React.useState<number | undefined>(undefined);

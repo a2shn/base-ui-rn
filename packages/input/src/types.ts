@@ -2,6 +2,7 @@ import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type {
   NativeSyntheticEvent,
   StyleProp,
+  TextInputChangeEventData,
   TextInputProps,
   TextProps,
   TextStyle,
@@ -15,40 +16,19 @@ export interface InputChangeEventDetails {
   /**
    * The native event from the underlying TextInput.
    */
-  nativeEvent: NativeSyntheticEvent<unknown>;
+  nativeEvent: NativeSyntheticEvent<TextInputChangeEventData>;
 }
 
 /**
  * The current state of the Input component, used for functional styling.
  */
 export interface InputState extends FocusRingState {
-  /**
-   * Whether the input is currently disabled.
-   */
   disabled: boolean;
-  /**
-   * Whether the input is in a read-only state.
-   */
   readOnly: boolean;
-  /**
-   * Whether the input has been blurred at least once.
-   */
   touched: boolean;
-  /**
-   * Whether the input's value has been modified by the user.
-   */
   dirty: boolean;
-  /**
-   * Whether the input is currently considered valid.
-   */
   valid: boolean;
-  /**
-   * Whether the input is currently considered invalid.
-   */
   invalid: boolean;
-  /**
-   * Whether the input contains a non-empty value.
-   */
   filled: boolean;
 }
 
@@ -62,54 +42,76 @@ export interface InputProps
    * or a function that receives the current InputState.
    */
   style?: StyleProp<ViewStyle> | ((state: InputState) => StyleProp<ViewStyle>);
+
   /**
    * The controlled value of the input.
    */
   value?: string;
+
   /**
    * The initial value of the input when uncontrolled.
    */
   defaultValue?: string;
+
   /**
    * Callback fired when the value changes.
    */
   onValueChange?: (value: string, details: InputChangeEventDetails) => void;
+
+  /**
+   * Callback fired when the input's dirty state changes.
+   */
+  onDirtyChange?: (dirty: boolean) => void;
+
+  /**
+   * Callback fired when the input's touched state changes.
+   */
+  onTouchedChange?: (touched: boolean) => void;
+
   /**
    * Whether the input is disabled.
    * @default false
    */
   disabled?: boolean;
+
   /**
    * Whether the input is read-only.
    * @default false
    */
   readOnly?: boolean;
+
   /**
    * Whether the input is required.
    * @default false
    */
   required?: boolean;
+
   /**
    * Whether the input is in a valid state.
    */
   valid?: boolean;
+
   /**
    * Whether the input is in an invalid state.
    */
   invalid?: boolean;
+
   /**
    * Whether the input's value has been modified.
    */
   dirty?: boolean;
+
   /**
    * Whether the input has been interacted with.
    */
   touched?: boolean;
+
   /**
    * Disable the default focus ring styling provided by the focus-ring package.
    * @default false
    */
   disableDefaultFocusRing?: boolean;
+
   /**
    * Whether the input remains focusable even when disabled.
    * @default false
@@ -121,16 +123,7 @@ export interface InputProps
  * Props for the Label component.
  */
 export interface LabelProps extends Omit<TextProps, 'style' | 'children'> {
-  /**
-   * Style applied to the label.
-   */
   style?: StyleProp<TextStyle> | ((state: any) => StyleProp<TextStyle>);
-  /**
-   * Content of the label.
-   */
   children?: React.ReactNode | ((state: any) => React.ReactNode);
-  /**
-   * Unique identifier used to link this label to an input.
-   */
   nativeID: string;
 }

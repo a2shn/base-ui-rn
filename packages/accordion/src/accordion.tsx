@@ -21,7 +21,7 @@ import { useAccordionRoot } from './use-accordion';
  */
 export const AccordionRoot = React.memo(
   React.forwardRef<View, AccordionRootProps>((props, ref) => {
-    const { children, style, ...otherProps } = props;
+    const { children, style, } = props;
 
     const {
       baseId,
@@ -72,8 +72,7 @@ export const AccordionRoot = React.memo(
       style,
     });
 
-    const mergedProps = mergeProps(otherProps, {
-      handlers: {},
+    const mergedProps = mergeProps(props, {
       disabled: isDisabled,
       focusable: false,
       ref,
@@ -93,4 +92,4 @@ export const AccordionRoot = React.memo(
   }),
 );
 
-AccordionRoot.displayName = 'AccordionRoot';
+AccordionRoot.displayName = 'Accordion.Root';

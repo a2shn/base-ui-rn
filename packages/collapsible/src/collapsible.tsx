@@ -22,7 +22,7 @@ import { useCollapsibleRoot } from './use-collapsible';
  */
 export const CollapsibleRoot = React.memo(
   React.forwardRef<View, CollapsibleRootProps>((props, ref) => {
-    const { children, style, ...otherProps } = props;
+    const { children, style } = props;
 
     const { baseId, isDisabled, open, state, toggle } = useCollapsibleRoot(props);
 
@@ -41,8 +41,7 @@ export const CollapsibleRoot = React.memo(
       style,
     });
 
-    const mergedProps = mergeProps(otherProps, {
-      handlers: {},
+    const mergedProps = mergeProps(props, {
       disabled: isDisabled,
       focusable: false,
       ref,
@@ -63,4 +62,4 @@ export const CollapsibleRoot = React.memo(
   }),
 );
 
-CollapsibleRoot.displayName = 'CollapsibleRoot';
+CollapsibleRoot.displayName = 'Collapsible.Root';

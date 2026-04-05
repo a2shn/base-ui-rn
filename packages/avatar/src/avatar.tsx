@@ -48,7 +48,6 @@ export const AvatarRoot = React.forwardRef<View, AvatarRootProps>(
     });
 
     const mergedProps = mergeProps(props, {
-      handlers: {},
       disabled: false,
       focusable: false,
       ref,

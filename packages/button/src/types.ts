@@ -1,35 +1,22 @@
-import { KeyDownEventData } from '@base-ui-rn/core';
+import { PressableWithKeyDown } from '@base-ui-rn/core';
 import { FocusRingState } from '@base-ui-rn/focus-ring';
-import {
-  NativeSyntheticEvent,
-  PressableProps,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
+import * as React from 'react';
+import { StyleProp, ViewStyle } from 'react-native';
 
-/**
- * Represents the interactive state of the Button.
- */
 export interface ButtonState extends FocusRingState {
   /**
    * Whether the button is currently being pressed.
-
    */
   pressed: boolean;
 
   /**
-   * Whether the toggle is disabled.
+   * Whether the button is disabled.
    */
   disabled: boolean;
 }
 
-/**
- * Props for a headless Button component.
- *
- * This component provides behavior and accessibility without enforcing styles.
- */
 export interface ButtonProps extends Omit<
-  PressableProps,
+  React.ComponentProps<typeof PressableWithKeyDown>,
   'children' | 'style'
 > {
   /**
@@ -43,7 +30,6 @@ export interface ButtonProps extends Omit<
    * Style applied to the button.
    *
    * Can be a static style or a function based on the button state.
-   *
    */
   style?: StyleProp<ViewStyle> | ((state: ButtonState) => StyleProp<ViewStyle>);
 
@@ -76,7 +62,25 @@ export interface ButtonProps extends Omit<
   disableDefaultFocusRing?: boolean;
 
   /**
-   * Handler for key down events.
+   * The controlled pressed state of the button.
    */
-  onKeyDown?: (e: NativeSyntheticEvent<KeyDownEventData>) => void;
+  pressed?: boolean;
+
+  /**
+   * The initial pressed state of the button when uncontrolled.
+   * * @default false
+   */
+  defaultPressed?: boolean;
+
+  /**
+   * Callback fired when the pressed state changes.
+   */
+  onPressedChange?: (pressed: boolean) => void;
+
+  /**
+   * The tabIndex of the button. 
+   * * Use `0` to make it focusable in the tab order, or `-1` to make it 
+   * focusable only via programatic focus or clicks.
+   */
+  tabIndex?: 0 | -1;
 }

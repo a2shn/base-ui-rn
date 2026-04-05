@@ -1,10 +1,7 @@
-import { KeyDownEventData } from '@base-ui-rn/core';
+import { PressableWithKeyDown } from '@base-ui-rn/core';
 import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type {
-  NativeSyntheticEvent,
-  PressableProps,
   StyleProp,
-  TargetedEvent,
   ViewProps,
   ViewStyle,
 } from 'react-native';
@@ -17,14 +14,16 @@ export interface SwitchState extends FocusRingState {
   /**
    * Whether the switch is disabled.
    */
-  isDisabled: boolean;
+  disabled: boolean;
   /**
    * Whether the switch is read-only.
    */
   readOnly: boolean;
 }
 
-export interface SwitchRootProps extends Omit<PressableProps, 'role' | 'children' | 'style'> {
+export interface SwitchRootProps extends Omit<
+  React.ComponentProps<typeof PressableWithKeyDown>,
+  'children' | 'style'> {
   /**
    * Identifies the field when a form is submitted.
    */
@@ -79,12 +78,6 @@ export interface SwitchRootProps extends Omit<PressableProps, 'role' | 'children
    * @default false
    */
   readOnly?: boolean;
-
-  /**
-   * Callback fired when a key is pressed down.
-   */
-  onKeyDown?: (e: NativeSyntheticEvent<KeyDownEventData>) => void;
-
   /**
    * Disable the default focus ring styling.
    * @default false
@@ -110,4 +103,3 @@ export interface SwitchThumbProps extends Omit<ViewProps, 'style' | 'children'> 
   style?: StyleProp<ViewStyle> | ((state: SwitchState) => StyleProp<ViewStyle>);
 }
 
-export type { KeyDownEventData as KeyPressEventData };

@@ -1,9 +1,7 @@
-import { type KeyDownEventData } from '@base-ui-rn/core';
+import { PressableWithKeyDown, } from '@base-ui-rn/core';
 import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type * as React from 'react';
 import type {
-  NativeSyntheticEvent,
-  PressableProps,
   StyleProp,
   ViewProps,
   ViewStyle,
@@ -105,7 +103,9 @@ export interface TabState extends FocusRingState {
   activationDirection: ActivationDirection;
 }
 
-export interface TabProps extends Omit<PressableProps, 'children' | 'style'> {
+export interface TabProps extends Omit<
+  React.ComponentProps<typeof PressableWithKeyDown>,
+  'children' | 'style'> {
   /**
    * Whether to disable the default focus ring style.
    * @default false
@@ -133,10 +133,6 @@ export interface TabProps extends Omit<PressableProps, 'children' | 'style'> {
    * @default false
    */
   disabled?: boolean;
-  /**
-  * Callback fired when a key is pressed down.
-  */
-  onKeyDown?: (e: NativeSyntheticEvent<KeyDownEventData>) => void;
 
 }
 

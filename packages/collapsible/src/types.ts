@@ -1,10 +1,8 @@
 import {
-  type KeyDownEventData,
+  PressableWithKeyDown,
 } from '@base-ui-rn/core';
 import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type {
-  NativeSyntheticEvent,
-  PressableProps,
   StyleProp,
   ViewProps,
   ViewStyle,
@@ -115,7 +113,8 @@ export type CollapsibleRootProps = Omit<ViewProps, 'children' | 'style'> & {
  * Props for the Collapsible trigger component.
  */
 export type CollapsibleTriggerProps = Omit<
-  PressableProps,
+  React.ComponentProps<typeof PressableWithKeyDown>,
+
   'children' | 'style'
 > & {
   /**
@@ -140,10 +139,6 @@ export type CollapsibleTriggerProps = Omit<
   style?:
   | StyleProp<ViewStyle>
   | ((state: CollapsibleTriggerState) => StyleProp<ViewStyle>);
-  /**
-   * Callback fired when a key is pressed down.
-   */
-  onKeyDown?: (e: NativeSyntheticEvent<KeyDownEventData>) => void;
 };
 
 /**

@@ -6,13 +6,7 @@ import type {
   ViewStyle,
 } from 'react-native';
 
-/**
- * The loading status of the avatar image.
- */
 export type ImageLoadingStatus = 'idle' | 'loading' | 'loaded' | 'error';
-/**
- * The state of the avatar.
- */
 export interface AvatarState {
   /**
    * The current loading status of the image.

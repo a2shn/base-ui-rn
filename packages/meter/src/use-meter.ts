@@ -1,3 +1,4 @@
+import { useControllableState } from '@base-ui-rn/core';
 import * as React from 'react';
 
 import type { MeterRootProps, MeterState } from './types';
@@ -12,8 +13,14 @@ export function useMeter(props: MeterRootProps) {
     min = 0,
     low = min,
     optimum = (min + max) / 2,
-    value = 0,
+    value: controlledValue,
+    defaultValue = 0,
   } = props;
+
+  const [value = 0] = useControllableState<number>({
+    prop: controlledValue,
+    defaultProp: defaultValue,
+  });
 
   const labelId = React.useId();
 
@@ -38,6 +45,13 @@ export function useMeter(props: MeterRootProps) {
     }
   }, [value, locale, format]);
 
+  const accessibilityValueText = React.useMemo(() => {
+    if (getAccessibilityValueText) {
+      return getAccessibilityValueText(formattedValue, value);
+    }
+    return formattedValue;
+  }, [formattedValue, getAccessibilityValueText, value]);
+
   const state: MeterState = React.useMemo(
     () => ({
       formattedValue,
@@ -50,29 +64,17 @@ export function useMeter(props: MeterRootProps) {
       status,
       value,
     }),
-    [formattedValue, max, min, low, high, optimum, percentage, value, status],
+    [formattedValue, high, low, max, min, optimum, percentage, status, value],
   );
 
-  const accessibilityValueText = React.useMemo(() => {
-    if (getAccessibilityValueText) {
-      return getAccessibilityValueText(formattedValue, value);
-    }
-    return formattedValue;
-  }, [formattedValue, getAccessibilityValueText, value]);
-
-  const computedAccessibilityValue = React.useMemo(
-    () => ({
+  return {
+    labelId,
+    state,
+    accessibilityProps: {
       max,
       min,
       now: value,
       text: accessibilityValueText,
-    }),
-    [accessibilityValueText, max, min, value],
-  );
-
-  return {
-    computedAccessibilityValue,
-    labelId,
-    state,
+    },
   };
 }

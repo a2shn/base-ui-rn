@@ -31,9 +31,6 @@ export const TabsRoot = React.memo(
       orientation,
       style,
       value,
-      disableDefaultFocusRing,
-      focusableWhenDisabled,
-      ...otherProps
     } = props;
 
     const { contextValue, state } = useTabsRoot({
@@ -50,8 +47,7 @@ export const TabsRoot = React.memo(
       style,
     });
 
-    const mergedProps = mergeProps(otherProps, {
-      handlers: {},
+    const mergedProps = mergeProps(props, {
       disabled: false,
       focusable: false,
       ref,

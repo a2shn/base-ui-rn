@@ -23,10 +23,7 @@ export const TabPanel = React.memo(
       children,
       keepMounted,
       style,
-      value,
-      disableDefaultFocusRing,
-      focusableWhenDisabled,
-      ...otherProps
+      value
     } = props;
 
     const { shouldRender, state } = useTabPanel({ keepMounted, value });
@@ -36,7 +33,7 @@ export const TabPanel = React.memo(
       style,
     });
 
-    const mergedProps = mergeProps(otherProps, {
+    const mergedProps = mergeProps(props, {
       handlers: {},
       disabled: false,
       focusable: false,

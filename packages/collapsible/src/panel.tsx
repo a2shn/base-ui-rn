@@ -20,7 +20,7 @@ import { useCollapsiblePanel } from './use-collapsible';
  */
 export const CollapsiblePanel = React.memo(
   React.forwardRef<View, CollapsiblePanelProps>((props, ref) => {
-    const { children, style, keepMounted = false, hiddenUntilFound = false, ...otherProps } = props;
+    const { children, style } = props;
 
     const { isDisabled, handleOnLayout, open, shouldRender, state } = useCollapsiblePanel(props);
 
@@ -29,10 +29,8 @@ export const CollapsiblePanel = React.memo(
       style,
     });
 
-    const mergedProps = mergeProps(otherProps, {
-      handlers: {
-        onLayout: handleOnLayout,
-      },
+    const mergedProps = mergeProps(props, {
+      onLayout: handleOnLayout,
       disabled: isDisabled,
       focusable: false,
       ref,
@@ -59,4 +57,4 @@ export const CollapsiblePanel = React.memo(
   }),
 );
 
-CollapsiblePanel.displayName = 'CollapsiblePanel';
+CollapsiblePanel.displayName = 'Collapsible.Panel';

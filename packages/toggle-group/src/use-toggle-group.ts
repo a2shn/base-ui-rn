@@ -1,4 +1,4 @@
-import { useKeyboardNavigation } from '@base-ui-rn/core';
+import { useControllableState, useKeyboardNavigation } from '@base-ui-rn/core';
 import type { KeyDownEventData } from '@base-ui-rn/core';
 import * as React from 'react';
 import type { NativeSyntheticEvent } from 'react-native';
@@ -17,66 +17,61 @@ export const useToggleGroup = (props: ToggleGroupProps) => {
     value: controlledValue,
   } = props;
 
+  const isDisabled = disabled === true;
+
   const { handleKeyDown, registerItem } = useKeyboardNavigation({
     loop: loopFocus,
     orientation,
   });
 
-  const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue ?? []);
-
-  const value = controlledValue ?? uncontrolledValue;
-  const valueSet = React.useMemo(() => new Set(value), [value]);
-
-  const valueRef = React.useRef(value);
-  const valueSetRef = React.useRef(valueSet);
-  const onValueChangeRef = React.useRef(onValueChange);
-  const onFocusChangeRef = React.useRef(onFocusChange);
-
-  React.useLayoutEffect(() => {
-    valueRef.current = value;
-    valueSetRef.current = valueSet;
-    onValueChangeRef.current = onValueChange;
-    onFocusChangeRef.current = onFocusChange;
+  const [rawStateValue = [], setValue] = useControllableState<string[]>({
+    prop: controlledValue,
+    defaultProp: defaultValue ?? [],
+    onChange: onValueChange,
   });
 
+  // SAFEGUARD: If a single string is accidentally passed instead of an array 
+  // (e.g. defaultValue="first"), this prevents the string from being split into characters, 
+  // which causes the "first option unselectable" bug.
+  const value = Array.isArray(rawStateValue) ? rawStateValue : [rawStateValue];
+
+  const valueSet = React.useMemo(() => new Set(value), [value]);
+
+  // 100% REACTIVE, ZERO REFS. 
+  // Reads directly from the live closure, eliminating the first-click race condition.
   const toggleValue = React.useCallback(
     (itemValue: string) => {
-      const currentValues = valueRef.current;
-      const isAlreadyPressed = valueSetRef.current.has(itemValue);
-
+      const isAlreadyPressed = valueSet.has(itemValue);
       let nextValue: string[];
 
       if (multiple) {
         if (isAlreadyPressed) {
-          nextValue = currentValues.filter((v) => v !== itemValue);
+          nextValue = value.filter((v) => v !== itemValue);
         } else {
-          nextValue = [...currentValues, itemValue];
+          nextValue = [...value, itemValue];
         }
       } else {
         nextValue = isAlreadyPressed ? [] : [itemValue];
       }
 
-      if (controlledValue === undefined) {
-        setUncontrolledValue(nextValue);
-      }
-
-      onValueChangeRef.current?.(nextValue);
+      setValue(nextValue);
     },
-    [multiple, controlledValue],
+    [multiple, value, valueSet, setValue],
   );
 
   const onToggleKeyDown = React.useCallback(
     (currentValue: string, event: NativeSyntheticEvent<KeyDownEventData>) => {
-      if (disabled) return;
+      if (isDisabled) return;
       const nextId = handleKeyDown(currentValue, event);
       if (nextId) {
-        onFocusChangeRef.current?.(nextId);
+        onFocusChange?.(nextId);
       }
     },
-    [disabled, handleKeyDown],
+    [isDisabled, handleKeyDown, onFocusChange],
   );
 
   const registeredValues = React.useRef<Set<string>>(new Set());
+
   const registerValue = React.useCallback((itemValue: string) => {
     if (__DEV__) {
       if (registeredValues.current.has(itemValue)) {
@@ -95,13 +90,13 @@ export const useToggleGroup = (props: ToggleGroupProps) => {
 
   const state: ToggleGroupState = React.useMemo(
     () => ({
-      disabled,
+      disabled: isDisabled,
       loopFocus,
       multiple,
       orientation,
       value,
     }),
-    [value, disabled, multiple, orientation, loopFocus],
+    [value, isDisabled, multiple, orientation, loopFocus],
   );
 
   return {
@@ -109,6 +104,9 @@ export const useToggleGroup = (props: ToggleGroupProps) => {
     registerItem,
     registerValue,
     state,
+    loopFocus,
+    multiple,
+    isDisabled,
     toggleValue,
     valueSet,
   };

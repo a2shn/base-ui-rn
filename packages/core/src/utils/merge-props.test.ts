@@ -1,139 +1,95 @@
-import { renderHook } from '@testing-library/react-native';
 import * as React from 'react';
+
 import { mergeProps } from './merge-props';
 
 describe('mergeProps', () => {
-  it('overrides protected keys with internal config', () => {
-    const userRef = React.createRef();
-    const internalRef = React.createRef();
-
-    const { result } = renderHook(() =>
-      mergeProps(
-        {
-          disabled: false,
-          focusable: true,
-          ref: userRef,
-          style: { color: 'red' },
-          testID: 'my-component',
-        },
-        {
-          disabled: true,
-          focusable: false,
-          ref: internalRef,
-          style: { backgroundColor: 'blue' },
-          handlers: {},
-        }
-      )
-    );
-
-    expect(result.current.disabled).toBe(true);
-    expect(result.current.focusable).toBe(false);
-    expect(result.current.ref).toBe(internalRef);
-    expect(result.current.style).toEqual({ backgroundColor: 'blue' });
-    expect(result.current.testID).toBe('my-component');
+  it('merges standard props with last-in priority', () => {
+    const result = mergeProps({ id: '1', name: 'A' }, { id: '2', value: 'B' });
+    expect(result).toEqual({ id: '2', name: 'A', value: 'B' });
   });
 
-  it('passes through arbitrary user props', () => {
-    const { result } = renderHook(() =>
-      mergeProps(
-        { customProp: 'value', numberOfLines: 2 },
-        {
-          disabled: false,
-          focusable: true,
-          ref: null,
-          style: undefined,
-          handlers: {},
-        }
-      )
-    );
+  it('composes event handlers starting with "on[CapitalLetter]"', () => {
+    const onPress1 = jest.fn();
+    const onPress2 = jest.fn();
 
-    expect(result.current.customProp).toBe('value');
-    expect(result.current.numberOfLines).toBe(2);
+    const result = mergeProps({ onPress: onPress1 }, { onPress: onPress2 });
+
+    result.onPress({ type: 'press' });
+
+    expect(onPress1).toHaveBeenCalledTimes(1);
+    expect(onPress2).toHaveBeenCalledTimes(1);
   });
 
-  it('composes event handlers', () => {
-    const userOnPress = jest.fn();
-    const internalOnPress = jest.fn();
+  it('does not compose non-event functions', () => {
+    const renderFoo1 = jest.fn();
+    const renderFoo2 = jest.fn();
 
-    const { result } = renderHook(() =>
-      mergeProps(
-        { onPress: userOnPress },
-        {
-          disabled: false,
-          focusable: true,
-          ref: null,
-          style: undefined,
-          handlers: { onPress: internalOnPress },
-        }
-      )
+    const result = mergeProps(
+      { renderFoo: renderFoo1 },
+      { renderFoo: renderFoo2 },
     );
 
-    expect(typeof result.current.onPress).toBe('function');
+    expect(result.renderFoo).toBe(renderFoo2);
+  });
 
-    result.current.onPress({ type: 'press' });
+  it('merges refs into a functional callback ref', () => {
+    const ref1 = React.createRef<unknown>();
+    const ref2 = jest.fn();
 
-    expect(userOnPress).toHaveBeenCalledWith({ type: 'press' });
-    expect(internalOnPress).toHaveBeenCalledWith({ type: 'press' });
+    const result = mergeProps({ ref: ref1 }, { ref: ref2 });
+    result.ref('node-instance');
+
+    expect(ref1.current).toBe('node-instance');
+    expect(ref2).toHaveBeenCalledWith('node-instance');
+  });
+
+  it('merges styles into an array', () => {
+    const style1 = { color: 'red' };
+    const style2 = { backgroundColor: 'blue' };
+
+    const result = mergeProps({ style: style1 }, { style: style2 });
+
+    expect(result.style).toEqual([style1, style2]);
   });
 
   it('deep merges accessibilityState', () => {
-    const { result } = renderHook(() =>
-      mergeProps(
-        { accessibilityState: { checked: true, expanded: false } },
-        {
-          disabled: false,
-          focusable: true,
-          ref: null,
-          style: undefined,
-          handlers: {},
-          accessibilityState: { disabled: true, expanded: true },
-        }
-      )
+    const state1 = { disabled: true, checked: true };
+    const state2 = { checked: false, expanded: true };
+
+    const result = mergeProps(
+      { accessibilityState: state1 },
+      { accessibilityState: state2 },
     );
 
-    expect(result.current.accessibilityState).toEqual({
-      checked: true,
-      expanded: false,
+    expect(result.accessibilityState).toEqual({
       disabled: true,
+      checked: false,
+      expanded: true,
     });
   });
 
-  it('deep merges accessibilityActions', () => {
-    const { result } = renderHook(() =>
-      mergeProps(
-        { accessibilityActions: [{ name: 'magicTap' }] },
-        {
-          disabled: false,
-          focusable: true,
-          ref: null,
-          style: undefined,
-          handlers: {},
-          accessibilityActions: [{ name: 'activate' }],
-        }
-      )
+  it('combines accessibilityActions', () => {
+    const actions1 = [{ name: 'activate' }];
+    const actions2 = [{ name: 'magicTap' }];
+
+    const result = mergeProps(
+      { accessibilityActions: actions1 as any },
+      { accessibilityActions: actions2 as any },
     );
 
-    expect(result.current.accessibilityActions).toEqual([
+    expect(result.accessibilityActions).toEqual([
       { name: 'activate' },
       { name: 'magicTap' },
     ]);
   });
 
-  it('does not append undefined accessibility properties', () => {
-    const { result } = renderHook(() =>
-      mergeProps(
-        { testID: 'no-a11y' },
-        {
-          disabled: false,
-          focusable: true,
-          ref: null,
-          style: undefined,
-          handlers: {},
-        }
-      )
-    );
+  it('handles null and undefined arguments gracefully', () => {
+    const result = mergeProps({ a: 1 }, null, undefined, { b: 2 });
+    expect(result).toEqual({ a: 1, b: 2 });
+  });
 
-    expect(result.current).not.toHaveProperty('accessibilityState');
-    expect(result.current).not.toHaveProperty('accessibilityActions');
+  it('preserves the initial prop if the subsequent prop is explicitly undefined', () => {
+    const result = mergeProps({ a: 1, b: 2 }, { a: undefined, b: 3 });
+    expect(result).toEqual({ a: 1, b: 3 });
   });
 });

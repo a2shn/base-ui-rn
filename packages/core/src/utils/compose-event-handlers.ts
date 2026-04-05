@@ -1,84 +1,45 @@
-import React from 'react';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type EventHandler<E = any> = (event: E) => void;
-
 /**
- * Extracts event type from a handler function
+ * Composes external and internal event handlers into a single function.
+ *
+ * The external handler is called first. If it calls `event.preventDefault()`,
+ * the internal handler is skipped. This respects standard event delegation behavior
+ * while maintaining compatibility with React Native via graceful degradation.
+ *
+ * @param external - User-provided event handler.
+ * @param internal - Internal event handler (library/component implementation).
+ * @returns A composed function that calls both handlers respecting preventDefault,
+ *   or a single handler if only one is provided, or undefined if neither exists.
  */
+export function composeEventHandler(
+  external: ((...args: unknown[]) => void) | undefined,
+  internal: ((...args: unknown[]) => void) | undefined,
+): ((...args: unknown[]) => void) | undefined {
+  if (typeof external !== 'function' && typeof internal !== 'function') {
+    return undefined;
+  }
+  if (typeof external !== 'function') return internal;
+  if (typeof internal !== 'function') return external;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type HandlerMap = Record<string, EventHandler<any> | null | undefined>;
+  return function composedHandler(...args: unknown[]) {
+    external(...args);
 
-type ComposedHandlers<T extends HandlerMap> = {
-  [K in keyof T]: T[K] extends (event: infer E) => void
-  ? (event: E) => void
-  : (event: unknown) => void;
-};
-
-/**
- * Composes external and internal event handlers into a single handler per event.
- *
- * External handlers are called first. Internal handlers are only called if
- * preventDefault() was not invoked on the event.
- *
- * @param externalHandlers - User-provided event handlers from props.
- * @param internalHandlers - Internal event handlers to compose with external ones.
- * @returns An object of composed event handlers.
- *
- * @example
- * ```tsx
- * const handlers = composeEventHandlers(props, {
- *   onKeyDown: handleKeyDown,
- * });
- *
- * return <View {...handlers} />;
- * ```
- */
-export function composeEventHandlers<
-  External extends HandlerMap,
-  Internal extends Partial<External>,
->(
-  externalHandlers: External,
-  internalHandlers: Internal,
-): ComposedHandlers<External> {
-  const externalRef = React.useRef(externalHandlers);
-  externalRef.current = externalHandlers;
-
-  const internalRef = React.useRef(internalHandlers);
-  internalRef.current = internalHandlers;
-
-  return React.useMemo(() => {
-    const composed = {} as ComposedHandlers<External>;
-
-    const allKeys = Array.from(
-      new Set([
-        ...Object.keys(externalRef.current || {}),
-        ...Object.keys(internalRef.current || {}),
-      ])
-    ) as Array<keyof External>;
-    for (const key of allKeys) {
-      const externalHandler = externalRef.current[key];
-      const internalHandler = internalRef.current[key];
-
-      composed[key] = ((event: unknown) => {
-        if (typeof externalHandler === 'function') {
-          externalHandler(event);
-        }
-
-        if (
-          typeof internalHandler === 'function' &&
-          !isDefaultPrevented(event)
-        ) {
-          internalHandler(event);
-        }
-      }) as ComposedHandlers<External>[typeof key];
+    // Check if default was prevented on the first argument (the event object).
+    // Works for React SyntheticEvents, DOM Events, and React Native (returns false
+    // if preventDefault detection isn't applicable, ensuring internal handler runs).
+    if (!isDefaultPrevented(args[0])) {
+      internal(...args);
     }
-
-    return composed;
-  }, []);
+  };
 }
 
+/**
+ * Detects if `event.preventDefault()` was called.
+ * 
+ * Handles multiple event systems:
+ * - React SyntheticEvent (isDefaultPrevented() method)
+ * - DOM Events (defaultPrevented property)
+ * - React Native (gracefully returns false; most RN events don't use preventDefault)
+ */
 export function isDefaultPrevented(event: unknown): boolean {
   if (!event || typeof event !== 'object') return false;
 

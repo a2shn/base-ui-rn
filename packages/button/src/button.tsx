@@ -1,22 +1,20 @@
 import {
   evaluateStyles,
   PressableWithKeyDown,
-  mergeProps, // Use the "Protected" version we built
-  mergeRefs,
+  mergeProps,
   useStyle,
 } from '@base-ui-rn/core';
 import * as React from 'react';
-import { type PressableStateCallbackType, View } from 'react-native';
-import type { ButtonProps, ButtonState } from './types';
+import { View } from 'react-native';
+
 import { useButton } from './use-button';
+import { ButtonProps } from './types';
 
 export const Button = React.memo(
-  React.forwardRef<View, ButtonProps>(function Button(props, forwardedRef) {
-    // 1. Extract onPress so mergeProps doesn't chain it automatically
-    const { children, style, onPress, ...otherProps } = props;
+  React.forwardRef<View, ButtonProps>(function Button(props, ref) {
+    const { children, style } = props;
 
     const internalRef = React.useRef<View>(null);
-    const mergedRef = mergeRefs(internalRef, forwardedRef);
 
     const {
       focused,
@@ -24,20 +22,17 @@ export const Button = React.memo(
       focusRingStyle,
       handleBlur,
       handleFocus,
-      handleKeyDown,
-      handlePress,
       handlePressIn,
       handlePressOut,
-      handleAccessibilityAction,
       isDisabled,
       isFocusable,
       pressed,
       tabIndex,
     } = useButton(props);
 
-    const buttonState: ButtonState = React.useMemo(
+    const buttonState = React.useMemo(
       () => ({ disabled: isDisabled, focused, focusVisible, pressed }),
-      [focused, focusVisible, isDisabled, pressed],
+      [focused, focusVisible, isDisabled, pressed]
     );
 
     const resolvedStyle = useStyle({
@@ -46,21 +41,12 @@ export const Button = React.memo(
       style,
     });
 
-    // We pass handlePress here. Because we omitted onPress from 'otherProps',
-    // handlePress is now the SOLE authority for firing the action.
-    const mergedProps = mergeProps(otherProps, {
-      handlers: {
-        onBlur: handleBlur,
-        onFocus: handleFocus,
-        onKeyDown: handleKeyDown,
-        onPress: handlePress,
-        onPressIn: handlePressIn,
-        onPressOut: handlePressOut,
-        onAccessibilityAction: handleAccessibilityAction,
-      },
-      disabled: isDisabled,
-      focusable: isFocusable,
-      ref: mergedRef,
+    const mergedProps = mergeProps(props, {
+      onBlur: handleBlur,
+      onFocus: handleFocus,
+      onPressIn: handlePressIn,
+      onPressOut: handlePressOut,
+      ref: [internalRef, ref],
       style: resolvedStyle,
       accessibilityState: { disabled: isDisabled, selected: pressed },
       accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
@@ -72,13 +58,15 @@ export const Button = React.memo(
         accessible={true}
         importantForAccessibility={isFocusable ? 'yes' : 'no'}
         role="button"
-        tabIndex={tabIndex}
         {...mergedProps}
+        tabIndex={tabIndex}
+        disabled={isDisabled}
+        focusable={isFocusable}
       >
-        {(pressableState: PressableStateCallbackType) =>
+        {(pressableState: any) =>
           evaluateStyles(children, { ...pressableState, ...buttonState })
         }
       </PressableWithKeyDown>
     );
-  }),
+  })
 );

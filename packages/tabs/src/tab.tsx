@@ -24,14 +24,10 @@ import { useTab } from './use-tabs';
  * ```
  */
 export const Tab = React.memo(
-  React.forwardRef<View, TabProps>((props, forwardedRef) => {
+  React.forwardRef<View, TabProps>((props, ref) => {
     const {
       children,
-      disableDefaultFocusRing,
-      focusableWhenDisabled,
-      onPress,
       style,
-      ...otherProps
     } = props;
 
     const {
@@ -43,13 +39,13 @@ export const Tab = React.memo(
       handlePress,
       handleAccessibilityAction,
       isFocusable,
-      onLayout,
+      handleOnLayout,
       ref: internalRef,
       state,
       tabIndex,
     } = useTab(props);
 
-    const mergedRef = mergeRefs(internalRef, forwardedRef);
+    const mergedRef = mergeRefs(internalRef, ref);
 
     const resolvedStyle = useStyle({
       additionalStyles: [
@@ -60,17 +56,13 @@ export const Tab = React.memo(
       style,
     });
 
-    const mergedProps = mergeProps(otherProps, {
-      handlers: {
-        onBlur: handleBlur,
-        onFocus: handleFocus,
-        onKeyDown: handleKeyDown,
-        onPress: handlePress,
-        onAccessibilityAction: handleAccessibilityAction,
-        onLayout,
-      },
-      disabled: isDisabled,
-      focusable: isFocusable,
+    const mergedProps = mergeProps(props, {
+      onBlur: handleBlur,
+      onFocus: handleFocus,
+      onKeyDown: handleKeyDown,
+      onPress: handlePress,
+      onAccessibilityAction: handleAccessibilityAction,
+      onLayout: handleOnLayout,
       ref: mergedRef,
       style: resolvedStyle,
       accessibilityState: {
@@ -79,12 +71,16 @@ export const Tab = React.memo(
       },
     });
 
+
     return (
       <PressableWithKeyDown
         accessible
         role="tab"
-        tabIndex={tabIndex}
         {...mergedProps}
+        tabIndex={tabIndex}
+        disabled={isDisabled}
+        focusable={isFocusable}
+
       >
         {evaluateStyles(children, state)}
       </PressableWithKeyDown>

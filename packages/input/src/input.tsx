@@ -1,4 +1,4 @@
-import { mergeProps, mergeRefs, useStyle, evaluateStyles } from '@base-ui-rn/core';
+import { mergeProps, useStyle, evaluateStyles } from '@base-ui-rn/core';
 import * as React from 'react';
 import { TextInput } from 'react-native';
 
@@ -18,7 +18,7 @@ import { useInput } from './use-input';
  * ```
  */
 export const Input = React.memo(
-  React.forwardRef<TextInput, InputProps>((props, forwardedRef) => {
+  React.forwardRef<TextInput, InputProps>((props, ref) => {
     const {
       style,
       children,
@@ -29,16 +29,16 @@ export const Input = React.memo(
     const {
       focusRingStyle,
       handleBlur,
-      handleChangeText,
+      handleChange,
       handleFocus,
       isFocusable,
+      isDisabled,
       state,
       tabIndex,
       value,
     } = useInput(props);
 
     const internalRef = React.useRef<TextInput>(null);
-    const mergedRef = mergeRefs(internalRef, forwardedRef);
 
     const resolvedStyle = useStyle({
       additionalStyles: focusRingStyle,
@@ -47,14 +47,10 @@ export const Input = React.memo(
     });
 
     const mergedProps = mergeProps(otherProps, {
-      handlers: {
-        onBlur: handleBlur,
-        onFocus: handleFocus,
-        onChangeText: handleChangeText,
-      },
-      disabled: state.disabled,
-      focusable: isFocusable,
-      ref: mergedRef,
+      onBlur: handleBlur,
+      onFocus: handleFocus,
+      onChange: handleChange,
+      ref: [internalRef, ref],
       style: resolvedStyle,
       accessibilityState: {
         disabled: state.disabled,
@@ -68,10 +64,10 @@ export const Input = React.memo(
         editable={!state.disabled && !state.readOnly}
         tabIndex={tabIndex}
         value={value}
-        // Native "click outside" behavior usually requires parent dismissal,
-        // but we ensure the component is set up for standard native blur events.
         submitBehavior='blurAndSubmit'
         {...mergedProps}
+        disabled={isDisabled}
+        focusable={isFocusable}
       >
         {evaluateStyles(children, state)}
       </TextInput>

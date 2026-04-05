@@ -77,6 +77,7 @@ export function InputPlaybook() {
               defaultValue='Default Value'
               placeholder='Uncontrolled input'
               style={styles.input}
+              submitBehavior='submit'
             />
           </Section>
         </Gallery>

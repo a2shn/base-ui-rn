@@ -25,14 +25,7 @@ import { useAccordionTrigger } from './use-accordion';/**
  */
 export const AccordionTrigger = React.memo(
   React.forwardRef<View, AccordionTriggerProps>((props, ref) => {
-    const {
-      children,
-      style,
-      onPress,
-      disableDefaultFocusRing,
-      focusableWhenDisabled,
-      ...otherProps
-    } = props;
+    const { children, style } = props;
 
     const {
       isDisabled,
@@ -42,21 +35,14 @@ export const AccordionTrigger = React.memo(
       handleFocus,
       handleKeyDown,
       handlePress,
-      handleAccessibilityAction,
       open,
       state,
       isFocusable,
       tabIndex,
+      handleAccessibilityAction
     } = useAccordionTrigger(props);
 
     const itemContext = useAccordionItemContext();
-
-    const internalRef = React.useRef<View>(null);
-    const mergedRef = mergeRefs(internalRef, ref);
-
-    React.useLayoutEffect(() => {
-      itemContext.registerTriggerRef(internalRef);
-    }, [itemContext]);
 
     const resolvedStyle = useStyle({
       additionalStyles: [
@@ -67,17 +53,13 @@ export const AccordionTrigger = React.memo(
       style,
     });
 
-    const mergedProps = mergeProps(otherProps, {
-      handlers: {
-        onBlur: handleBlur,
-        onFocus: handleFocus,
-        onKeyDown: handleKeyDown,
-        onPress: handlePress,
-        onAccessibilityAction: handleAccessibilityAction,
-      },
-      disabled: isDisabled,
-      focusable: isFocusable,
-      ref: mergedRef,
+    const mergedProps = mergeProps(props, {
+      onBlur: handleBlur,
+      onFocus: handleFocus,
+      onKeyDown: handleKeyDown,
+      onPress: handlePress,
+      onAccessibilityAction: handleAccessibilityAction,
+      ref: mergeRefs(ref, itemContext.triggerRef),
       style: resolvedStyle,
       accessibilityState: {
         disabled: isDisabled,
@@ -89,8 +71,10 @@ export const AccordionTrigger = React.memo(
       <PressableWithKeyDown
         accessible
         role="button"
-        tabIndex={tabIndex}
         {...mergedProps}
+        tabIndex={tabIndex}
+        disabled={isDisabled}
+        focusable={isFocusable}
       >
         {evaluateStyles(children, state)}
       </PressableWithKeyDown>
@@ -98,4 +82,4 @@ export const AccordionTrigger = React.memo(
   }),
 );
 
-AccordionTrigger.displayName = 'AccordionTrigger';
+AccordionTrigger.displayName = 'Accordion.Trigger';

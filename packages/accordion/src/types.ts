@@ -1,30 +1,18 @@
-import { KeyDownEventData } from '@base-ui-rn/core';
+import { PressableWithKeyDown } from '@base-ui-rn/core';
 import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type {
-  NativeSyntheticEvent,
-  PressableProps,
   StyleProp,
-  TargetedEvent,
   ViewProps,
   ViewStyle,
 } from 'react-native';
 
-/**
- * The visual and navigational orientation of the accordion.
- */
 export type Orientation = 'vertical' | 'horizontal';
 
-/**
- * Details provided when the accordion's active value changes.
- */
 export interface AccordionValueChangeDetails {
   /** The new active value or array of values. */
   value: string | string[];
 }
 
-/**
- * Details provided when an individual accordion item's open state changes.
- */
 export interface AccordionItemOpenChangeDetails {
   /** Whether the item is now open. */
   open: boolean;
@@ -32,9 +20,6 @@ export interface AccordionItemOpenChangeDetails {
   value: string;
 }
 
-/**
- * State exposed to the AccordionRoot's render props and style callbacks.
- */
 export interface AccordionRootState {
   /** Whether any item in the accordion is currently open. */
   open: boolean;
@@ -48,9 +33,6 @@ export interface AccordionRootState {
   multiple: boolean;
 }
 
-/**
- * State exposed to the AccordionItem's render props and style callbacks.
- */
 export interface AccordionItemState {
   /** Whether this specific item is open. */
   open: boolean;
@@ -185,7 +167,8 @@ export interface AccordionHeaderProps extends Omit<ViewProps, 'children' | 'styl
   style?: StyleProp<ViewStyle> | ((state: AccordionHeaderState) => StyleProp<ViewStyle>);
 }
 
-export interface AccordionTriggerProps extends Omit<PressableProps, 'children' | 'style'> {
+export interface AccordionTriggerProps extends Omit<React.ComponentProps<typeof PressableWithKeyDown>,
+  'children' | 'style'> {
   /**
    * The content of the accordion trigger.
    */
@@ -204,11 +187,6 @@ export interface AccordionTriggerProps extends Omit<PressableProps, 'children' |
    * @default false
    */
   focusableWhenDisabled?: boolean;
-  /**
-   * Callback fired when a key is pressed down.
-   */
-  onKeyDown?: (e: NativeSyntheticEvent<KeyDownEventData>) => void;
-
 }
 
 export interface AccordionPanelProps extends Omit<ViewProps, 'children' | 'style'> {

@@ -1,17 +1,14 @@
 import {
   isActivationAction,
-  KeyDownEventData,
-  useActivationDedup,
-  useKeyboardActivation,
+  useControllableState,
   useKeyboardNavigation,
+  type KeyDownEventData,
 } from '@base-ui-rn/core';
 import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import type {
-  GestureResponderEvent,
   LayoutChangeEvent,
   NativeSyntheticEvent,
-  TargetedEvent,
   View,
 } from 'react-native';
 
@@ -39,17 +36,16 @@ export function useTabsRoot(props: TabsRootProps) {
     value: controlledValue,
   } = props;
 
-  const [internalValue, setInternalValue] = React.useState<TabValue | null>(
-    defaultValue ?? null,
-  );
-  const [focusedValue, setFocusedValue] = React.useState<TabValue | null>(
-    defaultValue ?? null,
-  );
-  const [activationDirection, setActivationDirection] =
-    React.useState<ActivationDirection>('none');
+  const [currentValue = null, setCurrentValue] = useControllableState<TabValue | null>({
+    prop: controlledValue,
+    defaultProp: defaultValue ?? null,
+    onChange: (v: string) => {
+      if (v !== null) onValueChange?.(v);
+    },
+  });
 
-  const isControlled = controlledValue !== undefined;
-  const currentValue = isControlled ? controlledValue : internalValue;
+  const [focusedValue, setFocusedValue] = React.useState<TabValue | null>(currentValue);
+  const [activationDirection, setActivationDirection] = React.useState<ActivationDirection>('none');
 
   const tabRefs = React.useRef<Map<TabValue, React.RefObject<View | null>>>(new Map());
   const [tabMeasurements, setTabMeasurements] = React.useState<Map<TabValue, TabMeasurement>>(new Map());
@@ -120,12 +116,10 @@ export function useTabsRoot(props: TabsRootProps) {
       setActivationDirection(direction);
       setFocusedValue(newValue);
 
-      if (!isControlled) {
-        setInternalValue(newValue);
-      }
-      onValueChange?.(newValue);
+      // Let useControllableState handle the actual update and onValueChange firing
+      setCurrentValue(newValue);
     },
-    [currentValue, isControlled, onValueChange, orientation],
+    [currentValue, orientation, setCurrentValue],
   );
 
   const { handleKeyDown: navHandleKeyDown, registerItem: registerForNav } = useKeyboardNavigation<View | null>({
@@ -202,15 +196,13 @@ export function useTab(props: TabProps) {
     disabled: disabledProp = false,
     disableDefaultFocusRing = false,
     focusableWhenDisabled = false,
-    onBlur: onBlurProp,
-    onFocus: onFocusProp,
-    onKeyDown,
-    onPress,
     tabIndex: tabIndexProp,
     value,
   } = props;
 
   const context = useTabsContext();
+
+  // Create stable ref for the context and nav registration to avoid the "Mutation Trap"
   const ref = React.useRef<View>(null);
 
   const isDisabled = disabledProp;
@@ -229,68 +221,36 @@ export function useTab(props: TabProps) {
   const isFocusedFromRoot = context.focusedValue === value;
   const active = context.value === value;
 
-  const handleFocusInternal = React.useCallback(
-    (e: NativeSyntheticEvent<TargetedEvent>) => {
-      onFocus();
-      context.setFocusedValue(value);
-      context.onFocusChange?.(String(value));
-      onFocusProp?.(e);
-    },
-    [onFocus, onFocusProp, context, value],
-  );
+  const handleFocus = React.useCallback(() => {
+    onFocus();
+    context.setFocusedValue(value);
+    context.onFocusChange?.(String(value));
+  }, [onFocus, context, value]);
 
-  const handleBlurInternal = React.useCallback(
-    (e: NativeSyntheticEvent<TargetedEvent>) => {
-      onBlur();
-      onBlurProp?.(e);
-    },
-    [onBlur, onBlurProp],
-  );
-
-  const handleActivation = React.useCallback(() => {
+  const handlePress = React.useCallback(() => {
+    if (isDisabled) return;
     context.onValueChange(value);
-  }, [context, value]);
+  }, [isDisabled, context, value]);
 
-  const {
-    handlePress: dedupHandlePress,
-    handleKeyboardActivation: handleKeyboardToggle,
-    handleAccessibilityActivation,
-  } = useActivationDedup({
-    disabled: isDisabled,
-    onCommit: handleActivation,
-    pressed: active,
-  });
-
-  const handlePressInternal = React.useCallback(
-    (event: GestureResponderEvent) => {
-      dedupHandlePress(event);
-      onPress?.(event);
-    },
-    [dedupHandlePress, onPress],
-  );
-
-  const handleKeyboardActivation = useKeyboardActivation(handleKeyboardToggle, isDisabled);
-
-  const handleKeyDownInternal = React.useCallback(
+  const handleKeyDown = React.useCallback(
     (event: NativeSyntheticEvent<KeyDownEventData>) => {
       if (isDisabled) return;
-      handleKeyboardActivation(event);
+      // Passes arrow key presses up to the Root's Keyboard Nav engine
       context.onTabKeyDown(value, event);
-      onKeyDown?.(event);
     },
-    [isDisabled, handleKeyboardActivation, context, value, onKeyDown],
+    [isDisabled, context, value],
   );
 
   const handleAccessibilityAction = React.useCallback(
     (event: any) => {
       if (isActivationAction(event.nativeEvent.actionName) && !isDisabled) {
-        handleAccessibilityActivation();
+        context.onValueChange(value);
       }
     },
-    [isDisabled, handleAccessibilityActivation],
+    [isDisabled, context, value],
   );
 
-  const onLayout = React.useCallback(
+  const handleOnLayout = React.useCallback(
     (e: LayoutChangeEvent) => {
       context.updateTabMeasurement(value, e.nativeEvent.layout);
     },
@@ -309,13 +269,13 @@ export function useTab(props: TabProps) {
   return {
     isDisabled,
     focusRingStyle,
-    handleBlur: handleBlurInternal,
-    handleFocus: handleFocusInternal,
-    handleKeyDown: handleKeyDownInternal,
-    handlePress: handlePressInternal,
+    handleBlur: onBlur,
+    handleFocus,
+    handleKeyDown,
+    handlePress,
     handleAccessibilityAction,
     isFocusable,
-    onLayout,
+    handleOnLayout,
     ref,
     state,
     tabIndex,

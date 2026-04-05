@@ -26,7 +26,6 @@ export const MeterTrack = React.memo(
     });
 
     const mergedProps = mergeProps(props, {
-      handlers: {},
       disabled: false,
       focusable: false,
       ref,

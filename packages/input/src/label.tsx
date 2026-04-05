@@ -25,7 +25,6 @@ export const Label = React.memo(
     });
 
     const mergedProps = mergeProps(props, {
-      handlers: {},
       disabled: false,
       focusable: false,
       ref,

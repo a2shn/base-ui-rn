@@ -1,40 +1,28 @@
-import {
-  isActivationAction,
-  useActivationDedup,
-  useKeyboardActivation,
-  type KeyDownEventData,
-} from '@base-ui-rn/core';
+import { useControllableState, isActivationAction } from '@base-ui-rn/core';
 import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
-import {
-  type GestureResponderEvent,
-  type NativeSyntheticEvent,
-  type TargetedEvent,
-} from 'react-native';
 
 import type { SwitchRootProps, SwitchState } from './types';
 
 export function useSwitchRoot(props: SwitchRootProps) {
   const {
-    checked: checkedProp,
+    checked: controlledChecked,
     defaultChecked = false,
     disabled = false,
+    readOnly = false,
     disableDefaultFocusRing = false,
     focusableWhenDisabled = false,
-    onBlur: onBlurProp,
     onCheckedChange,
-    onFocus: onFocusProp,
-    onKeyDown,
-    onPress,
-    readOnly = false,
     tabIndex: tabIndexProp,
   } = props;
 
-  const isControlled = checkedProp !== undefined;
-  const [uncontrolledChecked, setUncontrolledChecked] = React.useState(defaultChecked);
+  const [checked = false, setChecked] = useControllableState<boolean>({
+    prop: controlledChecked,
+    defaultProp: defaultChecked,
+    onChange: (nextChecked: boolean) => onCheckedChange?.(nextChecked),
+  });
 
-  const checked = isControlled ? checkedProp : uncontrolledChecked;
-  const isDisabled = disabled;
+  const isDisabled = disabled === true;
 
   const { focused, focusVisible, focusRingStyle, isFocusable, onBlur, onFocus } = useFocusRing({
     disabled: isDisabled,
@@ -42,87 +30,40 @@ export function useSwitchRoot(props: SwitchRootProps) {
     focusableWhenDisabled,
   });
 
-  const tabIndex = resolveTabIndex(isFocusable, tabIndexProp as 0 | -1 | undefined);
+  const tabIndex = resolveTabIndex(isFocusable, tabIndexProp);
 
-  const onCommit = React.useCallback(() => {
+  const handlePress = React.useCallback(() => {
     if (isDisabled || readOnly) return;
-    const newState = !checked;
-    if (!isControlled) {
-      setUncontrolledChecked(newState);
-    }
-    onCheckedChange?.(newState);
-  }, [checked, isDisabled, readOnly, isControlled, onCheckedChange]);
-
-  const {
-    handlePress: dedupHandlePress,
-    handleKeyboardActivation: handleKeyboardToggle,
-    handleAccessibilityActivation,
-  } = useActivationDedup({
-    disabled: isDisabled || readOnly,
-    onCommit,
-    pressed: checked,
-  });
-
-  const handlePress = React.useCallback(
-    (event: GestureResponderEvent) => {
-      dedupHandlePress(event);
-      onPress?.(event);
-    },
-    [dedupHandlePress, onPress],
-  );
-
-  const handleKeyboardActivation = useKeyboardActivation(handleKeyboardToggle, isDisabled || readOnly);
-
-  const handleKeyDown = React.useCallback(
-    (event: NativeSyntheticEvent<KeyDownEventData>) => {
-      if (isDisabled || readOnly) return;
-      handleKeyboardActivation(event);
-      onKeyDown?.(event);
-    },
-    [isDisabled, readOnly, handleKeyboardActivation, onKeyDown],
-  );
+    setChecked((prev) => !prev);
+  }, [isDisabled, readOnly, setChecked]);
 
   const handleAccessibilityAction = React.useCallback(
     (event: any) => {
       if (isActivationAction(event.nativeEvent.actionName) && !isDisabled && !readOnly) {
-        handleAccessibilityActivation();
+        setChecked((prev) => !prev);
       }
     },
-    [isDisabled, readOnly, handleAccessibilityActivation],
+    [isDisabled, readOnly, setChecked],
   );
 
-  const handleFocus = React.useCallback(
-    (event: NativeSyntheticEvent<TargetedEvent>) => {
-      onFocus();
-      onFocusProp?.(event);
-    },
-    [onFocus, onFocusProp],
+  const state: SwitchState = React.useMemo(
+    () => ({
+      checked,
+      disabled: isDisabled,
+      focused,
+      focusVisible,
+      readOnly,
+    }),
+    [checked, isDisabled, focused, focusVisible, readOnly],
   );
-
-  const handleBlur = React.useCallback(
-    (event: NativeSyntheticEvent<TargetedEvent>) => {
-      onBlur();
-      onBlurProp?.(event);
-    },
-    [onBlur, onBlurProp],
-  );
-
-  const state: SwitchState = {
-    checked,
-    isDisabled,
-    focused,
-    focusVisible,
-    readOnly,
-  };
 
   return {
     checked,
     isDisabled,
     focusRingStyle,
-    handleBlur: handleBlur,
-    handleFocus: handleFocus,
-    handleKeyDown: handleKeyDown,
-    handlePress: handlePress,
+    handleBlur: onBlur,
+    handleFocus: onFocus,
+    handlePress,
     handleAccessibilityAction,
     isFocusable,
     readOnly,

@@ -29,7 +29,7 @@ export const ProgressRoot = React.memo(
       style,
     } = props;
 
-    const { computedAccessibilityValue, labelId, state } = useProgress(props);
+    const { accessibilityProps, labelId, state } = useProgress(props);
 
     const contextValue = React.useMemo(
       () => ({
@@ -42,7 +42,6 @@ export const ProgressRoot = React.memo(
     const resolvedStyle = useStyle({ state, style });
 
     const mergedProps = mergeProps(props, {
-      handlers: {},
       disabled: false,
       focusable: false,
       ref,
@@ -53,7 +52,7 @@ export const ProgressRoot = React.memo(
       <ProgressContext.Provider value={contextValue}>
         <View
           accessibilityLiveRegion={accessibilityLiveRegion ?? 'polite'}
-          accessibilityValue={computedAccessibilityValue}
+          accessibilityValue={accessibilityProps}
           accessible={true}
           aria-labelledby={accessibilityLabel ? undefined : labelId}
           importantForAccessibility="yes"

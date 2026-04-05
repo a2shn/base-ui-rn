@@ -30,7 +30,7 @@ export const MeterRoot = React.memo(
       style,
     } = props;
 
-    const { computedAccessibilityValue, labelId, state } = useMeter(props);
+    const { accessibilityProps, labelId, state } = useMeter(props);
 
     const contextValue = React.useMemo(
       () => ({ ...state, labelId }),
@@ -40,7 +40,6 @@ export const MeterRoot = React.memo(
     const resolvedStyle = useStyle({ state, style });
 
     const mergedProps = mergeProps(props, {
-      handlers: {},
       disabled: false,
       focusable: false,
       ref,
@@ -52,7 +51,7 @@ export const MeterRoot = React.memo(
         <View
           accessibilityLabelledBy={accessibilityLabel ? undefined : [labelId]}
           accessibilityLiveRegion={accessibilityLiveRegion ?? 'none'}
-          accessibilityValue={computedAccessibilityValue}
+          accessibilityValue={accessibilityProps}
           accessible={accessible ?? true}
           importantForAccessibility="yes"
           role="progressbar"

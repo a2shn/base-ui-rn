@@ -20,10 +20,9 @@ import { useAccordionPanel } from './use-accordion';
  */
 export const AccordionPanel = React.memo(
   React.forwardRef<View, AccordionPanelProps>((props, ref) => {
-    const { children, style, keepMounted = false, hiddenUntilFound = false, ...otherProps } = props;
+    const { children, style } = props;
 
     const {
-      isDisabled,
       handleOnLayout,
       open,
       shouldRender,
@@ -35,16 +34,12 @@ export const AccordionPanel = React.memo(
       style,
     });
 
-    const mergedProps = mergeProps(otherProps, {
-      handlers: {
-        onLayout: handleOnLayout,
-      },
-      disabled: isDisabled,
+    const mergedProps = mergeProps(props, {
+      onLayout: handleOnLayout,
       focusable: false,
       ref,
       style: resolvedStyle,
       accessibilityState: {
-        disabled: isDisabled,
         expanded: open,
       },
     });
@@ -65,4 +60,4 @@ export const AccordionPanel = React.memo(
   }),
 );
 
-AccordionPanel.displayName = 'AccordionPanel';
+AccordionPanel.displayName = 'Accordion.Panel';

@@ -1,27 +1,44 @@
-/**
- * Merges multiple refs into a single ref callback.
- *
- * @param refs - The refs to merge. Can be function refs or object refs.
- * @returns A single ref callback that updates all provided refs.
- *
- * @example
- * ```tsx
- * const combinedRef = mergeRefs(ref1, ref2, internalRef);
- * <View ref={combinedRef} />
- * ```
- */
-export function mergeRefs<T>(
-  ...refs: Array<React.Ref<T> | null | undefined>
-): React.RefCallback<T> {
-  return (node: T | null) => {
-    for (const ref of refs) {
-      if (!ref) continue;
+import { Ref, RefObject } from "react";
 
-      if (typeof ref === 'function') {
-        ref(node);
-      } else {
-        (ref as React.RefObject<T | null>).current = node;
-      }
+/**
+ * Merges multiple refs into a single callback ref. 
+ * Supports both function refs and object refs (MutableRefObject).
+ * * @see {@link https://github.com/adobe/react-spectrum/blob/main/packages/%40react-aria/utils/src/mergeRefs.ts}
+ * Derived from Adobe's React Aria (Apache-2.0 License).
+ * * @param refs - Array of refs to be merged.
+ */
+export function mergeRefs<T>(...refs: Array<Ref<T> | RefObject<T> | null | undefined>): Ref<T> {
+  if (refs.length === 1 && refs[0]) {
+    return refs[0];
+  }
+
+  return (value: T | null) => {
+    let hasCleanup = false;
+
+    const cleanups = refs.map(ref => {
+      const cleanup = setRef(ref, value);
+      hasCleanup ||= typeof cleanup == 'function';
+      return cleanup;
+    });
+
+    if (hasCleanup) {
+      return () => {
+        cleanups.forEach((cleanup, i) => {
+          if (typeof cleanup === 'function') {
+            cleanup();
+          } else {
+            setRef(refs[i], null);
+          }
+        });
+      };
     }
   };
+}
+
+function setRef<T>(ref: Ref<T> | RefObject<T> | null | undefined, value: T) {
+  if (typeof ref === 'function') {
+    return ref(value);
+  } else if (ref != null) {
+    ref.current = value;
+  }
 }

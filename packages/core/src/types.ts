@@ -1,4 +1,3 @@
-import { GestureResponderEvent } from "react-native";
 import { ACTIVATION_ACTIONS } from "./constants";
 
 export type KeyDownEventData = { key: string };
@@ -62,54 +61,22 @@ export interface KeyboardOptions {
   disabled?: boolean;
 }
 
-
-export interface UseActivationDedupOptions<TPressed> {
+export interface UseControllableStateParams<T> {
   /**
-   * The current pressed/active value. Kept in a ref internally so callbacks
-   * always read the last committed value without stale closure issues.
+   * The value to used in controlled mode.
    */
-  pressed: TPressed;
-  /** Whether the component is disabled. Prevents all activation paths. */
-  disabled: boolean;
-  /** Called with the next value whenever an activation is committed. */
-  onCommit: (nextPressed: TPressed) => void;
-  /** Derives the next value from the current one. Defaults to boolean NOT. */
-  getNextPressed?: (current: TPressed) => TPressed;
-}
-
-export interface UseActivationDedupReturn {
+  prop?: T;
   /**
-   * Call this from your pointer/touch onPress handler.
-   * Drops the press silently if the keyboard just fired an activation
-   * (platform synthesized ghost press).
+   * The initial value to be used in uncontrolled mode.
    */
-  handlePress: (event: GestureResponderEvent) => void;
+  defaultProp?: T;
   /**
-   * Call this from your keyboard activation handler (e.g. useKeyboardActivation
-   * callback). Commits the toggle and arms the ghost-press guard so the
-   * immediately following synthesized onPress is swallowed.
+   * A callback fired when the state changes.
    */
-  handleKeyboardActivation: () => void;
-  /**
-   * Call this from accessibility action handlers (screen reader activate).
-   * Commits directly — no ghost press is synthesized by assistive technology.
-   */
-  handleAccessibilityActivation: () => void;
+  onChange?: (state: T) => void;
 }
 
 export type ActivationAction = (typeof ACTIVATION_ACTIONS)[number];
-
 export type AnyFn = (...args: any[]) => void;
 export type HandlerMap = Record<string, AnyFn | null | undefined>;
-
-export type ProtectedKey =
-  | 'disabled'
-  | 'focusable'
-  | 'ref'
-  | 'style'
-  | 'tabIndex'
-  | 'children'
-  | 'accessibilityState'
-  | 'accessibilityActions'
-  | 'importantForAccessibility';
 

@@ -1,3 +1,4 @@
+import { useControllableState } from '@base-ui-rn/core';
 import * as React from 'react';
 
 import type { ProgressRootProps, ProgressState } from './types';
@@ -9,20 +10,25 @@ export function useProgress(props: ProgressRootProps) {
     locale,
     max = 100,
     min = 0,
-    value = null,
+    value: controlledValue,
+    defaultValue = 0,
   } = props;
+
+  const [value = null] = useControllableState<number | null>({
+    prop: controlledValue,
+    defaultProp: defaultValue,
+  });
 
   const labelId = React.useId();
 
-  const isIndeterminate = value == null;
-  const isComplete = value != null && value >= max;
-  const isProgressing = value != null && value < max;
+  const isIndeterminate = value === null;
+  const isComplete = value !== null && value >= max;
+  const isProgressing = value !== null && value < max;
 
   const percentage = React.useMemo(() => {
-    if (value == null) return null;
+    if (value === null) return null;
 
     const range = max - min;
-
     if (range <= 0) {
       return value >= max ? 100 : 0;
     }
@@ -34,7 +40,7 @@ export function useProgress(props: ProgressRootProps) {
   }, [value, min, max]);
 
   const formattedValue = React.useMemo(() => {
-    if (value == null) return null;
+    if (value === null) return null;
 
     try {
       return new Intl.NumberFormat(locale, format).format(value);
@@ -73,7 +79,7 @@ export function useProgress(props: ProgressRootProps) {
     return formattedValue ?? undefined;
   }, [formattedValue, getAccessibilityValueText, value]);
 
-  const computedAccessibilityValue = React.useMemo(
+  const accessibilityProps = React.useMemo(
     () => ({
       max: isIndeterminate ? undefined : max,
       min: isIndeterminate ? undefined : min,
@@ -84,7 +90,7 @@ export function useProgress(props: ProgressRootProps) {
   );
 
   return {
-    computedAccessibilityValue,
+    accessibilityProps,
     labelId,
     state,
   };

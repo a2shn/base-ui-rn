@@ -9,18 +9,11 @@ export interface ToggleGroupState {
    * Whether the group is disabled.
    */
   disabled: boolean;
-  /**
-   * Whether multiple toggles can be pressed.
-   */
-  multiple: boolean;
+
   /**
    * The orientation of the group.
    */
   orientation: 'horizontal' | 'vertical';
-  /**
-   * Whether keyboard focus should loop.
-   */
-  loopFocus: boolean;
 }
 
 export interface ToggleGroupProps extends Omit<

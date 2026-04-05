@@ -94,6 +94,7 @@ export interface MeterRootProps extends Omit<ViewProps, 'children' | 'style'> {
    * that receives the current `MeterState`.
    */
   children?: React.ReactNode | ((state: MeterState) => React.ReactNode);
+  defaultValue?: number;
 }
 export interface MeterLabelProps extends Omit<TextProps, 'children' | 'style'> {
   /**

@@ -27,10 +27,6 @@ export const CollapsibleTrigger = React.memo(
     const {
       children,
       style,
-      onPress,
-      disableDefaultFocusRing,
-      focusableWhenDisabled,
-      ...otherProps
     } = props;
 
     const {
@@ -39,7 +35,6 @@ export const CollapsibleTrigger = React.memo(
       focusRingStyle,
       handleBlur,
       handleFocus,
-      handleKeyDown,
       handlePress,
       handleAccessibilityAction,
       open,
@@ -49,7 +44,6 @@ export const CollapsibleTrigger = React.memo(
     } = useCollapsibleTrigger(props);
 
     const internalRef = React.useRef<View>(null);
-    const mergedRef = mergeRefs(internalRef, ref);
 
     const resolvedStyle = useStyle({
       additionalStyles: [
@@ -60,17 +54,12 @@ export const CollapsibleTrigger = React.memo(
       style,
     });
 
-    const mergedProps = mergeProps(otherProps, {
-      handlers: {
-        onBlur: handleBlur,
-        onFocus: handleFocus,
-        onKeyDown: handleKeyDown,
-        onPress: handlePress,
-        onAccessibilityAction: handleAccessibilityAction,
-      },
-      disabled: isDisabled,
-      focusable: isFocusable,
-      ref: mergedRef,
+    const mergedProps = mergeProps(props, {
+      onBlur: handleBlur,
+      onFocus: handleFocus,
+      onPress: handlePress,
+      onAccessibilityAction: handleAccessibilityAction,
+      ref: [internalRef, ref],
       style: resolvedStyle,
       accessibilityState: {
         disabled: isDisabled,
@@ -82,8 +71,10 @@ export const CollapsibleTrigger = React.memo(
       <PressableWithKeyDown
         accessible
         role="button"
-        tabIndex={tabIndex}
         {...mergedProps}
+        tabIndex={tabIndex}
+        disabled={isDisabled}
+        focusable={isFocusable}
       >
         {evaluateStyles(children, state)}
       </PressableWithKeyDown>

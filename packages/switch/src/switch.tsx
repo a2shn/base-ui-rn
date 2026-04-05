@@ -1,7 +1,6 @@
 import {
   evaluateStyles,
   mergeProps,
-  mergeRefs,
   PressableWithKeyDown,
   useStyle,
 } from '@base-ui-rn/core';
@@ -31,10 +30,6 @@ export const SwitchRoot = React.memo(
       children,
       id,
       style,
-      onPress,
-      disableDefaultFocusRing,
-      focusableWhenDisabled,
-      ...restProps
     } = props;
 
     const {
@@ -43,7 +38,6 @@ export const SwitchRoot = React.memo(
       focusRingStyle,
       handleBlur,
       handleFocus,
-      handleKeyDown,
       handlePress,
       handleAccessibilityAction,
       state,
@@ -52,7 +46,6 @@ export const SwitchRoot = React.memo(
     } = useSwitchRoot(props);
 
     const internalRef = React.useRef<View>(null);
-    const mergedRef = mergeRefs(internalRef, ref);
 
     const resolvedStyle = useStyle({
       additionalStyles: [
@@ -63,17 +56,14 @@ export const SwitchRoot = React.memo(
       style,
     });
 
-    const mergedProps = mergeProps(restProps, {
-      handlers: {
-        onBlur: handleBlur,
-        onFocus: handleFocus,
-        onKeyDown: handleKeyDown,
-        onPress: handlePress,
-        onAccessibilityAction: handleAccessibilityAction,
-      },
+    const mergedProps = mergeProps(props, {
+      onBlur: handleBlur,
+      onFocus: handleFocus,
+      onPress: handlePress,
+      onAccessibilityAction: handleAccessibilityAction,
       disabled: isDisabled,
       focusable: isFocusable,
-      ref: mergedRef,
+      ref: [internalRef, ref],
       style: resolvedStyle,
       accessibilityState: {
         checked,
@@ -87,8 +77,10 @@ export const SwitchRoot = React.memo(
           accessible
           nativeID={id}
           role="switch"
-          tabIndex={tabIndex}
           {...mergedProps}
+          disabled={isDisabled}
+          focusable={isFocusable}
+          tabIndex={tabIndex}
         >
           {evaluateStyles(children, state)}
         </PressableWithKeyDown>

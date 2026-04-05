@@ -32,7 +32,6 @@ export const AvatarFallback = React.forwardRef<View, AvatarFallbackProps>(
     });
 
     const mergedProps = mergeProps(props, {
-      handlers: {},
       disabled: false,
       focusable: false,
       ref,

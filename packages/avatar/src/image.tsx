@@ -24,11 +24,9 @@ export const AvatarImage = React.forwardRef<Image, AvatarImageProps>(
     });
 
     const mergedProps = mergeProps(props, {
-      handlers: {
-        onError: handleError,
-        onLoad: handleLoad,
-        onLoadStart: handleLoadStart,
-      },
+      onError: handleError,
+      onLoad: handleLoad,
+      onLoadStart: handleLoadStart,
       disabled: false,
       focusable: false,
       ref,

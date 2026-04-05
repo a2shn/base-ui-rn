@@ -67,12 +67,13 @@ export interface ProgressRootProps extends Omit<
    * Style of the root component.
    */
   style?:
-    | StyleProp<ViewStyle>
-    | ((state: ProgressState) => StyleProp<ViewStyle>);
+  | StyleProp<ViewStyle>
+  | ((state: ProgressState) => StyleProp<ViewStyle>);
   /**
    * Children of the root component.
    */
   children?: React.ReactNode | ((state: ProgressState) => React.ReactNode);
+  defaultValue?: number
 }
 
 export interface ProgressLabelProps extends Omit<
@@ -87,8 +88,8 @@ export interface ProgressLabelProps extends Omit<
    * Style of the label component.
    */
   style?:
-    | StyleProp<TextStyle>
-    | ((state: ProgressState) => StyleProp<TextStyle>);
+  | StyleProp<TextStyle>
+  | ((state: ProgressState) => StyleProp<TextStyle>);
 }
 
 export interface ProgressTrackProps extends Omit<
@@ -103,8 +104,8 @@ export interface ProgressTrackProps extends Omit<
    * Style of the track component.
    */
   style?:
-    | StyleProp<ViewStyle>
-    | ((state: ProgressState) => StyleProp<ViewStyle>);
+  | StyleProp<ViewStyle>
+  | ((state: ProgressState) => StyleProp<ViewStyle>);
 }
 
 export interface ProgressIndicatorProps extends Omit<ViewProps, 'style'> {
@@ -112,8 +113,8 @@ export interface ProgressIndicatorProps extends Omit<ViewProps, 'style'> {
    * Style of the indicator component.
    */
   style?:
-    | StyleProp<ViewStyle>
-    | ((state: ProgressState) => StyleProp<ViewStyle>);
+  | StyleProp<ViewStyle>
+  | ((state: ProgressState) => StyleProp<ViewStyle>);
 }
 
 export interface ProgressValueProps extends Omit<
@@ -128,8 +129,8 @@ export interface ProgressValueProps extends Omit<
    * Style of the value component.
    */
   style?:
-    | StyleProp<TextStyle>
-    | ((state: ProgressState) => StyleProp<TextStyle>);
+  | StyleProp<TextStyle>
+  | ((state: ProgressState) => StyleProp<TextStyle>);
 }
 
 /**
