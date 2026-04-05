@@ -35,10 +35,12 @@ export interface InputState extends FocusRingState {
 /**
  * Props for the Input component.
  */
-export interface InputProps
-  extends Omit<TextInputProps, 'style' | 'readOnly' | 'editable'> {
+export interface InputProps extends Omit<
+  TextInputProps,
+  'style' | 'readOnly' | 'editable'
+> {
   /**
-   * Style applied to the input component. Accepts a standard style object 
+   * Style applied to the input component. Accepts a standard style object
    * or a function that receives the current InputState.
    */
   style?: StyleProp<ViewStyle> | ((state: InputState) => StyleProp<ViewStyle>);
@@ -123,7 +125,7 @@ export interface InputProps
  * Props for the Label component.
  */
 export interface LabelProps extends Omit<TextProps, 'style' | 'children'> {
-  style?: StyleProp<TextStyle> | ((state: any) => StyleProp<TextStyle>);
-  children?: React.ReactNode | ((state: any) => React.ReactNode);
+  style?: StyleProp<TextStyle>;
+  children?: React.ReactNode;
   nativeID: string;
 }

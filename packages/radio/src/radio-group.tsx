@@ -1,16 +1,16 @@
-import { evaluateStyles } from '@base-ui-rn/core';
+import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
 import * as React from 'react';
-import { StyleProp, View, ViewStyle } from 'react-native';
+import { View } from 'react-native';
 
 import { RadioGroupContext } from './radio-group-context';
 import type { RadioGroupProps } from './types';
 import { useRadioGroup } from './use-radio-group';
 
 /**
- * Provides a shared selection state to a series of Radio.Root buttons.
+ * Headless radio group primitive built on top of React Native View.
  *
- * Manages controlled/uncontrolled value state, disabled/readOnly propagation,
- * and keyboard navigation between child radios via arrow keys.
+ * Groups a collection of Radio.Root buttons and manages their selection state.
+ * Supports keyboard navigation and controlled/uncontrolled value.
  *
  * @example
  * ```tsx
@@ -22,24 +22,13 @@ import { useRadioGroup } from './use-radio-group';
  */
 export const RadioGroup = React.memo(
   React.forwardRef<View, RadioGroupProps>((props, ref) => {
-    const {
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-disabled': ariaDisabledProp,
-      'aria-hidden': ariaHidden,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      children,
-      disabled = false,
-      style,
-      ...otherProps
-    } = props;
+    const { children, style } = props;
 
     const {
-      handleKeyDown,
+      disabled,
       onRadioKeyDown,
       onValueChange,
+      readOnly,
       registerItem,
       state,
     } = useRadioGroup(props);
@@ -49,34 +38,27 @@ export const RadioGroup = React.memo(
         ...state,
         onRadioKeyDown,
         onValueChange,
+        readOnly,
         registerItem,
       }),
-      [state, onRadioKeyDown, onValueChange, registerItem],
+      [state, onRadioKeyDown, onValueChange, readOnly, registerItem],
     );
 
-    const resolvedStyle = React.useMemo<StyleProp<ViewStyle>>(
-      () => evaluateStyles(style, state),
-      [style, state],
-    );
+    const resolvedStyle = useStyle({ state, style });
+
+    const mergedProps = mergeProps(props, {
+      disabled,
+      focusable: false,
+      ref,
+      style: resolvedStyle,
+      accessibilityState: {
+        disabled,
+      },
+    });
 
     return (
       <RadioGroupContext.Provider value={contextValue}>
-        <View
-          {...otherProps}
-          accessible={false}
-          aria-busy={ariaBusy}
-          aria-describedby={ariaDescribedBy}
-          aria-details={ariaDetails}
-          aria-disabled={ariaDisabledProp ?? disabled}
-          aria-hidden={ariaHidden}
-          aria-label={ariaLabel}
-          aria-labelledby={ariaLabelledBy}
-          data-disabled={disabled ? 'true' : undefined}
-          onKeyDown={handleKeyDown as any}
-          ref={ref}
-          role={'radiogroup' as any}
-          style={resolvedStyle}
-        >
+        <View role='group' {...mergedProps}>
           {evaluateStyles(children, state)}
         </View>
       </RadioGroupContext.Provider>

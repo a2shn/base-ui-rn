@@ -1,6 +1,12 @@
-import { evaluateStyles, PressableWithKeyPress } from '@base-ui-rn/core';
+import {
+  evaluateStyles,
+  PressableWithKeyDown,
+  mergeProps,
+  mergeRefs,
+  useStyle,
+} from '@base-ui-rn/core';
 import * as React from 'react';
-import { StyleProp, View, ViewStyle } from 'react-native';
+import { View, type PressableStateCallbackType } from 'react-native';
 
 import { useOptionalRadioGroupContext } from './radio-group-context';
 import { RadioRootContext } from './radio-root-context';
@@ -8,10 +14,10 @@ import type { RadioRootProps } from './types';
 import { useRadioRoot } from './use-radio';
 
 /**
- * Represents a single radio button within a RadioGroup.
+ * Headless radio root primitive built on top of React Native Pressable.
  *
- * Renders a pressable element with role "radio". Its checked state is derived
- * from the parent RadioGroup's selected value. Provides context to Radio.Indicator.
+ * A single radio button that can be used standalone or within a RadioGroup.
+ * Supports keyboard interaction, focus management, and accessibility states.
  *
  * @example
  * ```tsx
@@ -22,24 +28,12 @@ import { useRadioRoot } from './use-radio';
  */
 export const RadioRoot = React.memo(
   React.forwardRef<View, RadioRootProps>((props, ref) => {
-    const {
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-hidden': ariaHidden,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      children,
-      id,
-      style,
-      value,
-      ...otherProps
-    } = props;
+    const { children, style, value, ...otherProps } = props;
 
     const groupContext = useOptionalRadioGroupContext();
 
     const internalRef = React.useRef<View>(null);
-    React.useImperativeHandle(ref, () => internalRef.current!);
+    const mergedRef = mergeRefs(internalRef, ref);
 
     const {
       checked,
@@ -51,67 +45,56 @@ export const RadioRoot = React.memo(
       handleKeyDown,
       handlePress,
       isFocusable,
-      mergedAccessibilityActions,
       readOnly: isReadOnly,
       state,
       tabIndex,
     } = useRadioRoot(props, groupContext);
 
-    // Register this radio with the group for keyboard navigation
     React.useEffect(() => {
-      if (groupContext && value !== undefined) {
-        return groupContext.registerItem(value, internalRef);
+      if (groupContext && value && internalRef.current) {
+        const unregister = groupContext.registerItem(value, internalRef);
+        return unregister;
       }
       return undefined;
     }, [value, groupContext]);
 
-    const resolvedStyle = React.useMemo<StyleProp<ViewStyle>>(() => {
-      const baseStyle = evaluateStyles(style, state);
-      if (focusRingStyle) {
-        return [baseStyle, focusRingStyle];
-      }
-      return baseStyle;
-    }, [style, state, focusRingStyle]);
+    const resolvedStyle = useStyle({
+      additionalStyles: focusRingStyle,
+      state,
+      style,
+    });
+
+    const mergedProps = mergeProps(otherProps, {
+      onAccessibilityAction: handleAccessibilityAction,
+      onBlur: handleBlur,
+      onFocus: handleFocus,
+      onKeyDown: handleKeyDown,
+      onPress: handlePress,
+      ref: mergedRef,
+      style: resolvedStyle,
+      accessibilityState: {
+        checked: state.checked,
+        disabled: state.disabled,
+      },
+      accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
+      accessibilityHint: 'Selects the radio option',
+    });
 
     return (
       <RadioRootContext.Provider value={state}>
-        <PressableWithKeyPress
-          {...otherProps}
-          accessibilityActions={mergedAccessibilityActions}
-          accessibilityRole='radio'
-          accessibilityState={{
-            checked,
-            disabled: isDisabled,
-          }}
+        <PressableWithKeyDown
           accessible={isFocusable}
-          aria-busy={ariaBusy}
-          aria-checked={checked}
-          aria-describedby={ariaDescribedBy}
-          aria-details={ariaDetails}
-          aria-disabled={isDisabled}
-          aria-hidden={ariaHidden}
-          aria-label={ariaLabel}
-          aria-labelledby={ariaLabelledBy}
-          data-checked={checked ? 'true' : undefined}
-          data-disabled={isDisabled ? 'true' : undefined}
-          data-readonly={isReadOnly ? 'true' : undefined}
-          data-unchecked={!checked ? 'true' : undefined}
+          importantForAccessibility={isFocusable ? 'yes' : 'no'}
+          role='radio'
+          {...mergedProps}
           disabled={isDisabled}
           focusable={isFocusable}
-          importantForAccessibility='yes'
-          nativeID={id}
-          onAccessibilityAction={handleAccessibilityAction}
-          onBlur={handleBlur}
-          onFocus={handleFocus}
-          onKeyDown={handleKeyDown}
-          onPress={handlePress}
-          ref={internalRef}
-          role='radio'
-          style={resolvedStyle}
           tabIndex={tabIndex}
         >
-          {evaluateStyles(children, state)}
-        </PressableWithKeyPress>
+          {(pressableState: PressableStateCallbackType) =>
+            evaluateStyles(children, { ...pressableState, ...state })
+          }
+        </PressableWithKeyDown>
       </RadioRootContext.Provider>
     );
   }),

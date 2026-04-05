@@ -1,31 +1,33 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import * as React from 'react';
-import { StyleSheet, TextInput } from 'react-native';
+import { StyleSheet, Text, TextInput } from 'react-native';
 
 import { Input, Label } from './index';
 
 describe('Input & Label Primitive', () => {
   describe('State Tracking', () => {
     it('tracks focus and touched states', () => {
-      render(<Input placeholder="Input" testID="input" />);
+      render(<Input placeholder='Input' testID='input' />);
 
       fireEvent(screen.getByTestId('input'), 'focus');
       // Re-querying to ensure we have the latest props
-      expect(screen.getByTestId('input').props.accessibilityState.disabled).toBe(false);
+      expect(
+        screen.getByTestId('input').props.accessibilityState.disabled,
+      ).toBe(false);
 
       fireEvent(screen.getByTestId('input'), 'blur');
       expect(screen.getByTestId('input')).toBeTruthy();
     });
 
     it('tracks filled and dirty states', () => {
-      render(<Input placeholder="Input" testID="input" />);
+      render(<Input placeholder='Input' testID='input' />);
 
       fireEvent.changeText(screen.getByTestId('input'), 'New Value');
       expect(screen.getByTestId('input').props.value).toBe('New Value');
     });
 
     it('tracks focus and touched states', () => {
-      render(<Input placeholder="Input" testID="input" />);
+      render(<Input placeholder='Input' testID='input' />);
       const input = screen.getByTestId('input');
 
       fireEvent(input, 'focus');
@@ -42,12 +44,16 @@ describe('Input & Label Primitive', () => {
       const labelId = 'name-label';
       render(
         <>
-          <Label nativeID={labelId} testID="label">Full Name</Label>
-          <Input aria-labelledby={labelId} testID="input" />
-        </>
+          <Label nativeID={labelId} testID='label'>
+            Full Name
+          </Label>
+          <Input aria-labelledby={labelId} testID='input' />
+        </>,
       );
 
-      expect(screen.getByTestId('input').props['aria-labelledby']).toBe(labelId);
+      expect(screen.getByTestId('input').props['aria-labelledby']).toBe(
+        labelId,
+      );
       expect(screen.getByTestId('label').props.nativeID).toBe(labelId);
     });
 
@@ -55,26 +61,31 @@ describe('Input & Label Primitive', () => {
       const hintId = 'hint-text';
       render(
         <>
-          <Input aria-describedby={hintId} testID="input" />
-          <Label nativeID={hintId} testID="hint">Enter at least 8 characters</Label>
-        </>
+          <Input aria-describedby={hintId} testID='input' />
+          <Label nativeID={hintId} testID='hint'>
+            Enter at least 8 characters
+          </Label>
+        </>,
       );
 
-      expect(screen.getByTestId('input').props['aria-describedby']).toBe(hintId);
+      expect(screen.getByTestId('input').props['aria-describedby']).toBe(
+        hintId,
+      );
     });
-
   });
 
   describe('Ref Forwarding', () => {
     it('forwards refs for both Input and Label', () => {
       const inputRef = React.createRef<TextInput>();
-      const labelRef = React.createRef<any>();
+      const labelRef = React.createRef<Text>();
 
       render(
         <>
-          <Label nativeID="l" ref={labelRef}>Label</Label>
+          <Label nativeID='l' ref={labelRef}>
+            Label
+          </Label>
           <Input ref={inputRef} />
-        </>
+        </>,
       );
 
       expect(inputRef.current).toBeTruthy();
@@ -86,25 +97,29 @@ describe('Input & Label Primitive', () => {
     it('applies styles based on interaction state', () => {
       render(
         <Input
-          testID="input"
           disableDefaultFocusRing
           style={(state) => ({
             borderColor: state.focused ? 'blue' : 'black',
-            opacity: state.disabled ? 0.5 : 1
+            opacity: state.disabled ? 0.5 : 1,
           })}
-        />
+          testID='input'
+        />,
       );
 
-      expect(StyleSheet.flatten(screen.getByTestId('input').props.style)).toMatchObject({
+      expect(
+        StyleSheet.flatten(screen.getByTestId('input').props.style),
+      ).toMatchObject({
         borderColor: 'black',
-        opacity: 1
+        opacity: 1,
       });
 
       fireEvent(screen.getByTestId('input'), 'focus');
 
       // Re-querying after event to get fresh style props
-      expect(StyleSheet.flatten(screen.getByTestId('input').props.style)).toMatchObject({
-        borderColor: 'blue'
+      expect(
+        StyleSheet.flatten(screen.getByTestId('input').props.style),
+      ).toMatchObject({
+        borderColor: 'blue',
       });
     });
   });

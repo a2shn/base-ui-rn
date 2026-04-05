@@ -1,14 +1,11 @@
 import {
   isActivationAction,
-  type KeyPressEventData,
-  mergeAccessibilityActions,
-  useKeyboardActivation,
+  useControllableState,
+  KeyDownEventData,
 } from '@base-ui-rn/core';
 import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import {
-  type AccessibilityActionEvent,
-  type GestureResponderEvent,
   type NativeSyntheticEvent,
   Platform,
   type TargetedEvent,
@@ -20,26 +17,14 @@ import type {
   RadioRootState,
 } from './types';
 
-/**
- * Manages the state and logic for the Radio.Root primitive.
- * @param props The initialization properties.
- * @param groupContext The context provided by a parent RadioGroup.
- * @returns State and event handlers for the Radio.Root component.
- */
 export function useRadioRoot(
   props: RadioRootProps,
   groupContext: RadioGroupContextValue | null,
 ) {
   const {
-    accessibilityActions,
     disabled: disabledProp = false,
     disableDefaultFocusRing = false,
     focusableWhenDisabled = false,
-    onAccessibilityAction,
-    onBlur: onBlurProp,
-    onFocus: onFocusProp,
-    onKeyDown: onKeyDownProp,
-    onPress: onPressProp,
     readOnly: readOnlyProp = false,
     tabIndex: tabIndexProp,
     value,
@@ -55,9 +40,10 @@ export function useRadioRoot(
   const {
     focused,
     focusRingStyle,
+    focusVisible,
     isFocusable,
-    onBlur: onFocusOut,
-    onFocus: onFocusIn,
+    onBlur: handleFocusOut,
+    onFocus: handleFocusIn,
   } = useFocusRing({
     disabled: isDisabled,
     disableDefaultFocusRing,
@@ -85,71 +71,55 @@ export function useRadioRoot(
     groupContext?.onValueChange(value);
   }, [isDisabled, isReadOnly, groupContext, value]);
 
-  const handlePress = React.useCallback(
-    (event: GestureResponderEvent) => {
-      select();
-      onPressProp?.(event);
-    },
-    [select, onPressProp],
-  );
-
-  const performKeyboardActivation = React.useCallback(() => {
+  const handlePress = React.useCallback(() => {
     select();
-    onPressProp?.(null as unknown as GestureResponderEvent);
-  }, [select, onPressProp]);
-
-  const handleKeyboardActivation = useKeyboardActivation(
-    performKeyboardActivation,
-    isDisabled,
-  );
+  }, [select]);
 
   const handleKeyDown = React.useCallback(
-    (event: NativeSyntheticEvent<KeyPressEventData>) => {
-      handleKeyboardActivation(event);
-      onKeyDownProp?.(event);
-      if (groupContext && value !== undefined) {
+    (event: NativeSyntheticEvent<KeyDownEventData>) => {
+      if (isDisabled) return;
+
+      const { key } = event.nativeEvent;
+      if ((key === 'Enter' || key === ' ') && !isDisabled && !isReadOnly) {
+        select();
+      }
+
+      if (groupContext && value) {
         groupContext.onRadioKeyDown(value, event);
       }
     },
-    [handleKeyboardActivation, onKeyDownProp, groupContext, value],
+    [isDisabled, isReadOnly, select, groupContext, value],
   );
 
   const handleAccessibilityAction = React.useCallback(
-    (event: AccessibilityActionEvent) => {
-      const { actionName } = event.nativeEvent;
-      if (isActivationAction(actionName)) {
+    (event: { nativeEvent?: { actionName?: string } }) => {
+      const actionName = event.nativeEvent?.actionName;
+      if (actionName && isActivationAction(actionName) && !isDisabled) {
         select();
       }
-      onAccessibilityAction?.(event);
     },
-    [select, onAccessibilityAction],
+    [isDisabled, select],
   );
 
   const handleFocus = React.useCallback(
     (event: NativeSyntheticEvent<TargetedEvent>) => {
-      onFocusIn();
-      onFocusProp?.(event);
+      handleFocusIn();
     },
-    [onFocusIn, onFocusProp],
+    [handleFocusIn],
   );
 
   const handleBlur = React.useCallback(
     (event: NativeSyntheticEvent<TargetedEvent>) => {
-      onFocusOut();
-      onBlurProp?.(event);
+      handleFocusOut();
     },
-    [onFocusOut, onBlurProp],
-  );
-
-  const mergedAccessibilityActions = React.useMemo(
-    () => mergeAccessibilityActions(accessibilityActions),
-    [accessibilityActions],
+    [handleFocusOut],
   );
 
   const state: RadioRootState = {
     checked,
     disabled: isDisabled,
     focused,
+    focusVisible,
     readOnly: isReadOnly,
   };
 
@@ -163,7 +133,6 @@ export function useRadioRoot(
     handleKeyDown,
     handlePress,
     isFocusable,
-    mergedAccessibilityActions,
     readOnly: isReadOnly,
     state,
     tabIndex,

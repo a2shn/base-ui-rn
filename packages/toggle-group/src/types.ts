@@ -9,7 +9,6 @@ export interface ToggleGroupState {
    * Whether the group is disabled.
    */
   disabled: boolean;
-
   /**
    * The orientation of the group.
    */
@@ -73,6 +72,6 @@ export interface ToggleGroupProps extends Omit<
    * Style applied to the group view.
    */
   style?:
-  | StyleProp<ViewStyle>
-  | ((state: ToggleGroupState) => StyleProp<ViewStyle>);
+    | StyleProp<ViewStyle>
+    | ((state: ToggleGroupState) => StyleProp<ViewStyle>);
 }

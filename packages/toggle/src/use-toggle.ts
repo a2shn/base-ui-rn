@@ -1,4 +1,8 @@
-import { isActivationAction, useControllableState, type KeyDownEventData } from '@base-ui-rn/core';
+import {
+  isActivationAction,
+  type KeyDownEventData,
+  useControllableState,
+} from '@base-ui-rn/core';
 import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import type { NativeSyntheticEvent } from 'react-native';
@@ -27,15 +31,17 @@ export function useToggle(props: ToggleProps) {
   const isInGroup = actionContext !== null;
   const isDisabled = disabled === true || (isInGroup && actionContext.disabled);
 
-  const [internalPressed = false, setInternalPressed] = useControllableState<boolean>({
-    prop: controlledPressed,
-    defaultProp: defaultPressed,
-    onChange: onPressedChange,
-  });
+  const [internalPressed = false, setInternalPressed] =
+    useControllableState<boolean>({
+      defaultProp: defaultPressed,
+      onChange: onPressedChange,
+      prop: controlledPressed,
+    });
 
-  const pressed = (isInGroup && value !== undefined)
-    ? (valueContext?.valueSet.has(value) ?? false)
-    : internalPressed;
+  const pressed =
+    isInGroup && value !== undefined
+      ? (valueContext?.valueSet.has(value) ?? false)
+      : internalPressed;
 
   const {
     focused,
@@ -50,7 +56,10 @@ export function useToggle(props: ToggleProps) {
     focusableWhenDisabled,
   });
 
-  const tabIndex = resolveTabIndex(isFocusable, tabIndexProp as 0 | -1 | undefined);
+  const tabIndex = resolveTabIndex(
+    isFocusable,
+    tabIndexProp as 0 | -1 | undefined,
+  );
 
   const toggle = React.useCallback(() => {
     if (isDisabled) return;
@@ -60,15 +69,22 @@ export function useToggle(props: ToggleProps) {
     } else {
       setInternalPressed(!pressed);
     }
-  }, [isDisabled, isInGroup, value, actionContext, pressed, setInternalPressed]);
+  }, [
+    isDisabled,
+    isInGroup,
+    value,
+    actionContext,
+    pressed,
+    setInternalPressed,
+  ]);
 
   const handlePress = React.useCallback(() => {
     toggle();
   }, [toggle]);
 
   const handleAccessibilityAction = React.useCallback(
-    (event: any) => {
-      if (isActivationAction(event.nativeEvent.actionName) && !isDisabled) {
+    (event: { nativeEvent?: { actionName?: string } }) => {
+      if (isActivationAction(event.nativeEvent?.actionName) && !isDisabled) {
         toggle();
       }
     },
@@ -103,9 +119,9 @@ export function useToggle(props: ToggleProps) {
     handleFocus: onFocus,
     handleKeyDown,
     handlePress,
+    isDisabled,
     isFocusable,
     isInGroup,
-    isDisabled,
     registerItem: actionContext?.registerItem,
     registerValue: actionContext?.registerValue,
     state,

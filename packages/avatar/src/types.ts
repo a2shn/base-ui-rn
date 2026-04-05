@@ -6,7 +6,14 @@ import type {
   ViewStyle,
 } from 'react-native';
 
+/**
+ * The loading state of the avatar image.
+ */
 export type ImageLoadingStatus = 'idle' | 'loading' | 'loaded' | 'error';
+
+/**
+ * The state of the avatar root.
+ */
 export interface AvatarState {
   /**
    * The current loading status of the image.
@@ -14,8 +21,7 @@ export interface AvatarState {
   loadingStatus: ImageLoadingStatus;
 }
 
-export interface AvatarRootProps
-  extends Omit<ViewProps, 'children'> {
+export interface AvatarRootProps extends Omit<ViewProps, 'children'> {
   /**
    * The content of the avatar.
    */
@@ -26,9 +32,7 @@ export interface AvatarRootProps
   style?: StyleProp<ViewStyle>;
 }
 
-
-export interface AvatarImageProps
-  extends Omit<ImageProps, 'style'> {
+export interface AvatarImageProps extends Omit<ImageProps, 'style'> {
   /**
    * Callback fired when the image loading status changes.
    */
@@ -40,11 +44,7 @@ export interface AvatarImageProps
   style?: StyleProp<ImageStyle>;
 }
 
-/**
- * Props for the Avatar fallback component.
- */
-export interface AvatarFallbackProps
-  extends Omit<ViewProps, 'children'> {
+export interface AvatarFallbackProps extends Omit<ViewProps, 'children'> {
   /**
    * The content of the fallback (usually initials or icon).
    */

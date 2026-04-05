@@ -1,15 +1,28 @@
 import {
   evaluateStyles,
-  PressableWithKeyDown,
   mergeProps,
+  PressableWithKeyDown,
   useStyle,
 } from '@base-ui-rn/core';
 import * as React from 'react';
-import { View } from 'react-native';
+import { type PressableStateCallbackType, View } from 'react-native';
 
-import { useButton } from './use-button';
 import { ButtonProps } from './types';
+import { useButton } from './use-button';
 
+/**
+ * Headless button primitive built on top of React Native Pressable.
+ *
+ * A native button component with support for keyboard interaction, focus
+ * management, and accessibility states.
+ *
+ * @example
+ * ```tsx
+ * <Button onPress={() => console.log('pressed')}>
+ *   <Text>Click me</Text>
+ * </Button>
+ * ```
+ */
 export const Button = React.memo(
   React.forwardRef<View, ButtonProps>(function Button(props, ref) {
     const { children, style } = props;
@@ -18,8 +31,8 @@ export const Button = React.memo(
 
     const {
       focused,
-      focusVisible,
       focusRingStyle,
+      focusVisible,
       handleBlur,
       handleFocus,
       handlePressIn,
@@ -32,7 +45,7 @@ export const Button = React.memo(
 
     const buttonState = React.useMemo(
       () => ({ disabled: isDisabled, focused, focusVisible, pressed }),
-      [focused, focusVisible, isDisabled, pressed]
+      [focused, focusVisible, isDisabled, pressed],
     );
 
     const resolvedStyle = useStyle({
@@ -42,31 +55,31 @@ export const Button = React.memo(
     });
 
     const mergedProps = mergeProps(props, {
+      accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
+      accessibilityState: { disabled: isDisabled, selected: pressed },
       onBlur: handleBlur,
       onFocus: handleFocus,
       onPressIn: handlePressIn,
       onPressOut: handlePressOut,
       ref: [internalRef, ref],
       style: resolvedStyle,
-      accessibilityState: { disabled: isDisabled, selected: pressed },
-      accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
     });
 
     return (
       <PressableWithKeyDown
-        accessibilityHint="Activates the button"
+        accessibilityHint='Activates the button'
         accessible={true}
         importantForAccessibility={isFocusable ? 'yes' : 'no'}
-        role="button"
+        role='button'
         {...mergedProps}
-        tabIndex={tabIndex}
         disabled={isDisabled}
         focusable={isFocusable}
+        tabIndex={tabIndex}
       >
-        {(pressableState: any) =>
+        {(pressableState: PressableStateCallbackType) =>
           evaluateStyles(children, { ...pressableState, ...buttonState })
         }
       </PressableWithKeyDown>
     );
-  })
+  }),
 );

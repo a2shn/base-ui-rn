@@ -1,5 +1,8 @@
 import type { ViewProps } from 'react-native';
 
+/**
+ * The orientation of the separator.
+ */
 export type Orientation = 'horizontal' | 'vertical';
 
 export interface SeparatorProps extends ViewProps {

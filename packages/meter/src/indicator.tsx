@@ -43,7 +43,7 @@ export const MeterIndicator = React.memo(
     return (
       <View
         accessibilityElementsHidden
-        importantForAccessibility="no-hide-descendants"
+        importantForAccessibility='no-hide-descendants'
         {...mergedProps}
       />
     );

@@ -25,19 +25,19 @@ export const useToggleGroup = (props: ToggleGroupProps) => {
   });
 
   const [rawStateValue = [], setValue] = useControllableState<string[]>({
-    prop: controlledValue,
     defaultProp: defaultValue ?? [],
     onChange: onValueChange,
+    prop: controlledValue,
   });
 
-  // SAFEGUARD: If a single string is accidentally passed instead of an array 
-  // (e.g. defaultValue="first"), this prevents the string from being split into characters, 
+  // SAFEGUARD: If a single string is accidentally passed instead of an array
+  // (e.g. defaultValue="first"), this prevents the string from being split into characters,
   // which causes the "first option unselectable" bug.
   const value = Array.isArray(rawStateValue) ? rawStateValue : [rawStateValue];
 
   const valueSet = React.useMemo(() => new Set(value), [value]);
 
-  // 100% REACTIVE, ZERO REFS. 
+  // 100% REACTIVE, ZERO REFS.
   // Reads directly from the live closure, eliminating the first-click race condition.
   const toggleValue = React.useCallback(
     (itemValue: string) => {
@@ -100,13 +100,13 @@ export const useToggleGroup = (props: ToggleGroupProps) => {
   );
 
   return {
+    isDisabled,
+    loopFocus,
+    multiple,
     onToggleKeyDown,
     registerItem,
     registerValue,
     state,
-    loopFocus,
-    multiple,
-    isDisabled,
     toggleValue,
     valueSet,
   };

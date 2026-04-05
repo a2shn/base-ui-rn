@@ -1,5 +1,8 @@
-import { useKeyboardNavigation } from '@base-ui-rn/core';
-import type { KeyPressEventData } from '@base-ui-rn/core';
+import {
+  useControllableState,
+  useKeyboardNavigation,
+  KeyDownEventData,
+} from '@base-ui-rn/core';
 import * as React from 'react';
 import type { NativeSyntheticEvent } from 'react-native';
 
@@ -21,13 +24,11 @@ export function useRadioGroup(props: RadioGroupProps) {
     value: controlledValue,
   } = props;
 
-  const isControlled = controlledValue !== undefined;
-
-  const [uncontrolledValue, setUncontrolledValue] = React.useState<
-    RadioValue | undefined
-  >(defaultValue);
-
-  const value = isControlled ? controlledValue : uncontrolledValue;
+  const [value, setValue] = useControllableState<RadioValue | undefined>({
+    defaultProp: defaultValue,
+    onChange: onValueChangeProp,
+    prop: controlledValue,
+  });
 
   const { handleKeyDown, registerItem } = useKeyboardNavigation({
     loop: loopFocus,
@@ -37,18 +38,15 @@ export function useRadioGroup(props: RadioGroupProps) {
   const onValueChange = React.useCallback(
     (nextValue: RadioValue) => {
       if (disabled || readOnly) return;
-      if (!isControlled) {
-        setUncontrolledValue(nextValue);
-      }
-      onValueChangeProp?.(nextValue);
+      setValue(nextValue);
     },
-    [disabled, readOnly, isControlled, onValueChangeProp],
+    [disabled, readOnly, setValue],
   );
 
   const onRadioKeyDown = React.useCallback(
     (
       currentValue: RadioValue,
-      event: NativeSyntheticEvent<KeyPressEventData>,
+      event: NativeSyntheticEvent<KeyDownEventData>,
     ) => {
       if (disabled) return;
       handleKeyDown(currentValue, event);
@@ -59,15 +57,16 @@ export function useRadioGroup(props: RadioGroupProps) {
   const state: RadioGroupState = React.useMemo(
     () => ({
       disabled,
-      readOnly,
       value,
     }),
-    [disabled, readOnly, value],
+    [disabled, value],
   );
 
   return {
+    disabled,
     onRadioKeyDown,
     onValueChange,
+    readOnly,
     registerItem,
     state,
     value,

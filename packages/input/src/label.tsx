@@ -17,11 +17,11 @@ import type { LabelProps } from './types';
  */
 export const Label = React.memo(
   React.forwardRef<Text, LabelProps>((props, ref) => {
-    const { children, style, nativeID } = props;
+    const { children, nativeID, style } = props;
 
     const resolvedStyle = useStyle({
-      style,
       state: {}, // Can be extended if context is added later
+      style,
     });
 
     const mergedProps = mergeProps(props, {
@@ -32,10 +32,7 @@ export const Label = React.memo(
     });
 
     return (
-      <Text
-        {...mergedProps}
-        nativeID={nativeID}
-      >
+      <Text {...mergedProps} nativeID={nativeID}>
         {evaluateStyles(children, {})}
       </Text>
     );

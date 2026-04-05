@@ -78,8 +78,8 @@ export interface ButtonProps extends Omit<
   onPressedChange?: (pressed: boolean) => void;
 
   /**
-   * The tabIndex of the button. 
-   * * Use `0` to make it focusable in the tab order, or `-1` to make it 
+   * The tabIndex of the button.
+   * * Use `0` to make it focusable in the tab order, or `-1` to make it
    * focusable only via programatic focus or clicks.
    */
   tabIndex?: 0 | -1;

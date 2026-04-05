@@ -1,7 +1,13 @@
-import { ACTIVATION_ACTIONS } from "./constants";
+import { ACTIVATION_ACTIONS } from './constants';
 
+/**
+ * Data payload for keyboard events.
+ */
 export type KeyDownEventData = { key: string };
 
+/**
+ * Direction of keyboard navigation.
+ */
 export type KeyboardDirection = 'next' | 'prev' | 'first' | 'last';
 
 export interface KeyboardNavigationOptions {
@@ -76,7 +82,17 @@ export interface UseControllableStateParams<T> {
   onChange?: (state: T) => void;
 }
 
+/**
+ * The valid activation action types.
+ */
 export type ActivationAction = (typeof ACTIVATION_ACTIONS)[number];
-export type AnyFn = (...args: any[]) => void;
-export type HandlerMap = Record<string, AnyFn | null | undefined>;
 
+/**
+ * A function that can accept any arguments and return any value.
+ */
+export type AnyFn = (...args: any[]) => void;
+
+/**
+ * A map of event handler names to their handler functions.
+ */
+export type HandlerMap = Record<string, AnyFn | null | undefined>;

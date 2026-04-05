@@ -1,4 +1,4 @@
-import { mergeProps, useStyle, evaluateStyles } from '@base-ui-rn/core';
+import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
 import * as React from 'react';
 import { TextInput } from 'react-native';
 
@@ -19,20 +19,15 @@ import { useInput } from './use-input';
  */
 export const Input = React.memo(
   React.forwardRef<TextInput, InputProps>((props, ref) => {
-    const {
-      style,
-      children,
-      'aria-busy': ariaBusy,
-      ...otherProps
-    } = props;
+    const { 'aria-busy': ariaBusy, children, style, ...otherProps } = props;
 
     const {
       focusRingStyle,
       handleBlur,
       handleChange,
       handleFocus,
-      isFocusable,
       isDisabled,
+      isFocusable,
       state,
       tabIndex,
       value,
@@ -47,24 +42,24 @@ export const Input = React.memo(
     });
 
     const mergedProps = mergeProps(otherProps, {
+      accessibilityState: {
+        busy: ariaBusy,
+        disabled: state.disabled,
+      },
       onBlur: handleBlur,
-      onFocus: handleFocus,
       onChange: handleChange,
+      onFocus: handleFocus,
       ref: [internalRef, ref],
       style: resolvedStyle,
-      accessibilityState: {
-        disabled: state.disabled,
-        busy: ariaBusy,
-      }
     });
 
     return (
       <TextInput
         accessible={isFocusable}
         editable={!state.disabled && !state.readOnly}
+        submitBehavior='blurAndSubmit'
         tabIndex={tabIndex}
         value={value}
-        submitBehavior='blurAndSubmit'
         {...mergedProps}
         disabled={isDisabled}
         focusable={isFocusable}

@@ -1,5 +1,10 @@
 import { Toggle } from '@base-ui-rn/toggle';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react-native';
 import * as React from 'react';
 import { Text, View } from 'react-native';
 
@@ -10,11 +15,11 @@ describe('ToggleGroup Primitive (Integration)', () => {
     it('allows selecting and deselecting a single value', () => {
       const onValueChangeMock = jest.fn();
       render(
-        <ToggleGroup onValueChange={onValueChangeMock} testID="group-single">
-          <Toggle testID="toggle-a" value="a">
+        <ToggleGroup onValueChange={onValueChangeMock} testID='group-single'>
+          <Toggle testID='toggle-a' value='a'>
             {({ pressed }) => <Text>{pressed ? 'A-ON' : 'A-OFF'}</Text>}
           </Toggle>
-          <Toggle testID="toggle-b" value="b">
+          <Toggle testID='toggle-b' value='b'>
             {({ pressed }) => <Text>{pressed ? 'B-ON' : 'B-OFF'}</Text>}
           </Toggle>
         </ToggleGroup>,
@@ -45,10 +50,10 @@ describe('ToggleGroup Primitive (Integration)', () => {
     it('respects defaultValue', () => {
       render(
         <ToggleGroup defaultValue={['b']}>
-          <Toggle testID="toggle-a" value="a">
+          <Toggle testID='toggle-a' value='a'>
             {({ pressed }) => <Text>{pressed ? 'A-ON' : 'A-OFF'}</Text>}
           </Toggle>
-          <Toggle testID="toggle-b" value="b">
+          <Toggle testID='toggle-b' value='b'>
             {({ pressed }) => <Text>{pressed ? 'B-ON' : 'B-OFF'}</Text>}
           </Toggle>
         </ToggleGroup>,
@@ -66,12 +71,12 @@ describe('ToggleGroup Primitive (Integration)', () => {
         <ToggleGroup
           multiple
           onValueChange={onValueChangeMock}
-          testID="group-multi"
+          testID='group-multi'
         >
-          <Toggle testID="toggle-a" value="a">
+          <Toggle testID='toggle-a' value='a'>
             {({ pressed }) => <Text>{pressed ? 'A-ON' : 'A-OFF'}</Text>}
           </Toggle>
-          <Toggle testID="toggle-b" value="b">
+          <Toggle testID='toggle-b' value='b'>
             {({ pressed }) => <Text>{pressed ? 'B-ON' : 'B-OFF'}</Text>}
           </Toggle>
         </ToggleGroup>,
@@ -103,10 +108,10 @@ describe('ToggleGroup Primitive (Integration)', () => {
       const onValueChangeMock = jest.fn();
       render(
         <ToggleGroup onValueChange={onValueChangeMock} value={['a']}>
-          <Toggle testID="toggle-a" value="a">
+          <Toggle testID='toggle-a' value='a'>
             {({ pressed }) => <Text>{pressed ? 'A-ON' : 'A-OFF'}</Text>}
           </Toggle>
-          <Toggle testID="toggle-b" value="b">
+          <Toggle testID='toggle-b' value='b'>
             {({ pressed }) => <Text>{pressed ? 'B-ON' : 'B-OFF'}</Text>}
           </Toggle>
         </ToggleGroup>,
@@ -131,21 +136,33 @@ describe('ToggleGroup Primitive (Integration)', () => {
       const onValueChangeMock = jest.fn();
       render(
         <ToggleGroup disabled onValueChange={onValueChangeMock}>
-          <Toggle testID="toggle-a" value="a">
-            {({ disabled }) => <Text>{disabled ? 'A-LOCKED' : 'A-ACTIVE'}</Text>}
+          <Toggle testID='toggle-a' value='a'>
+            {({ disabled }) => (
+              <Text>{disabled ? 'A-LOCKED' : 'A-ACTIVE'}</Text>
+            )}
           </Toggle>
-          <Toggle disabled={false} testID="toggle-b" value="b">
-            {({ disabled }) => <Text>{disabled ? 'B-LOCKED' : 'B-ACTIVE'}</Text>}
+          <Toggle disabled={false} testID='toggle-b' value='b'>
+            {({ disabled }) => (
+              <Text>{disabled ? 'B-LOCKED' : 'B-ACTIVE'}</Text>
+            )}
           </Toggle>
         </ToggleGroup>,
       );
 
       // Tell Testing Library to look inside hidden/disabled accessibility nodes
-      expect(screen.getByText('A-LOCKED', { includeHiddenElements: true })).toBeTruthy();
-      expect(screen.getByText('B-LOCKED', { includeHiddenElements: true })).toBeTruthy();
+      expect(
+        screen.getByText('A-LOCKED', { includeHiddenElements: true }),
+      ).toBeTruthy();
+      expect(
+        screen.getByText('B-LOCKED', { includeHiddenElements: true }),
+      ).toBeTruthy();
 
-      fireEvent.press(screen.getByTestId('toggle-a', { includeHiddenElements: true }));
-      fireEvent.press(screen.getByTestId('toggle-b', { includeHiddenElements: true }));
+      fireEvent.press(
+        screen.getByTestId('toggle-a', { includeHiddenElements: true }),
+      );
+      fireEvent.press(
+        screen.getByTestId('toggle-b', { includeHiddenElements: true }),
+      );
 
       expect(onValueChangeMock).not.toHaveBeenCalled();
     });
@@ -156,9 +173,9 @@ describe('ToggleGroup Primitive (Integration)', () => {
       const onFocusChangeMock = jest.fn();
       render(
         <ToggleGroup onFocusChange={onFocusChangeMock}>
-          <Toggle testID="toggle-a" value="a" />
-          <Toggle testID="toggle-b" value="b" />
-          <Toggle testID="toggle-c" value="c" />
+          <Toggle testID='toggle-a' value='a' />
+          <Toggle testID='toggle-b' value='b' />
+          <Toggle testID='toggle-c' value='c' />
         </ToggleGroup>,
       );
 
@@ -177,8 +194,8 @@ describe('ToggleGroup Primitive (Integration)', () => {
       const ref = React.createRef<View>();
 
       render(
-        <ToggleGroup ref={ref} testID="ref-group">
-          <Toggle value="a" />
+        <ToggleGroup ref={ref} testID='ref-group'>
+          <Toggle value='a' />
         </ToggleGroup>,
       );
 
@@ -202,8 +219,8 @@ describe('ToggleGroup Primitive (Integration)', () => {
     it('warns if multiple toggles share the same value', async () => {
       render(
         <ToggleGroup>
-          <Toggle value="duplicate" />
-          <Toggle value="duplicate" />
+          <Toggle value='duplicate' />
+          <Toggle value='duplicate' />
         </ToggleGroup>,
       );
 

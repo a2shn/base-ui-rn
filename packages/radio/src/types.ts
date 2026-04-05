@@ -1,26 +1,22 @@
-import type {
-  ARIABaseProps,
-  ARIALiveProps,
-  ARIATraitChecked,
-  ARIATraitDisabled,
-  KeyPressEventData,
-} from '@base-ui-rn/core';
+import { PressableWithKeyDown } from '@base-ui-rn/core';
 import type { FocusRingState } from '@base-ui-rn/focus-ring';
+import type * as React from 'react';
 import type {
   NativeSyntheticEvent,
-  PressableProps,
   StyleProp,
   ViewProps,
   ViewStyle,
 } from 'react-native';
 
+import type { KeyDownEventData } from '@base-ui-rn/core';
+
 /**
- * The value type for a radio button / group.
+ * The value type for a radio button.
  */
 export type RadioValue = string;
 
 /**
- * State exposed by the RadioGroup.
+ * State of the RadioGroup root.
  */
 export interface RadioGroupState {
   /**
@@ -28,11 +24,7 @@ export interface RadioGroupState {
    */
   disabled: boolean;
   /**
-   * Whether all radios in the group are read-only.
-   */
-  readOnly: boolean;
-  /**
-   * The currently selected value, or `undefined` when nothing is selected.
+   * The currently selected value.
    */
   value: RadioValue | undefined;
 }
@@ -57,28 +49,20 @@ export interface RadioGroupContextValue extends RadioGroupState {
    */
   onRadioKeyDown: (
     currentValue: RadioValue,
-    event: NativeSyntheticEvent<KeyPressEventData>,
+    event: NativeSyntheticEvent<KeyDownEventData>,
   ) => void;
+  /**
+   * Whether the group is read-only.
+   */
+  readOnly: boolean;
 }
 
 /**
- * Web-specific accessibility props for RadioGroup.
+ * Props for the RadioGroup component.
  */
-export type WebRadioGroupAccessibilityProps = ARIABaseProps &
-  ARIALiveProps &
-  ARIATraitDisabled & {
-    /**
-     * Custom data attribute. Present when the group is disabled.
-     */
-    'data-disabled'?: 'true' | boolean;
-  };
-
-export interface RadioGroupProps
-  extends
-    Omit<ViewProps, 'style' | 'children'>,
-    WebRadioGroupAccessibilityProps {
+export interface RadioGroupProps extends Omit<ViewProps, 'style' | 'children'> {
   /**
-   * The content of the radio group (one or more Radio.Root elements).
+   * The content of the radio group.
    */
   children?: React.ReactNode | ((state: RadioGroupState) => React.ReactNode);
 
@@ -96,13 +80,11 @@ export interface RadioGroupProps
 
   /**
    * The uncontrolled default value of the selected radio.
-   * Use `value` for a controlled radio group.
    */
   defaultValue?: RadioValue;
 
   /**
    * The controlled value of the selected radio.
-   * Use `defaultValue` for an uncontrolled radio group.
    */
   value?: RadioValue;
 
@@ -112,13 +94,13 @@ export interface RadioGroupProps
   onValueChange?: (value: RadioValue) => void;
 
   /**
-   * Whether the group should ignore user interaction.
+   * Whether the group is disabled.
    * @default false
    */
   disabled?: boolean;
 
   /**
-   * Whether the user should be unable to select a different radio in the group.
+   * Whether the group is read-only.
    * @default false
    */
   readOnly?: boolean;
@@ -155,40 +137,19 @@ export interface RadioRootState extends FocusRingState {
 }
 
 /**
- * Web-specific accessibility props for Radio.Root.
+ * Props for the Radio.Root component.
  */
-export type WebRadioRootAccessibilityProps = ARIABaseProps &
-  ARIATraitDisabled &
-  ARIATraitChecked & {
-    /**
-     * Present when the radio is checked.
-     */
-    'data-checked'?: 'true';
-    /**
-     * Present when the radio is not checked.
-     */
-    'data-unchecked'?: 'true';
-    /**
-     * Present when the radio is disabled.
-     */
-    'data-disabled'?: 'true';
-    /**
-     * Present when the radio is read-only.
-     */
-    'data-readonly'?: 'true';
-  };
-
-export interface RadioRootProps
-  extends
-    Omit<PressableProps, 'role' | 'children' | 'style' | 'aria-checked'>,
-    WebRadioRootAccessibilityProps {
+export interface RadioRootProps extends Omit<
+  React.ComponentProps<typeof PressableWithKeyDown>,
+  'children' | 'style'
+> {
   /**
-   * The unique identifying value of this radio within the group.
+   * The unique value of this radio within the group.
    */
   value: RadioValue;
 
   /**
-   * The content of the radio root (typically Radio.Indicator).
+   * The content of the radio root.
    */
   children?: React.ReactNode | ((state: RadioRootState) => React.ReactNode);
 
@@ -200,21 +161,16 @@ export interface RadioRootProps
     | ((state: RadioRootState) => StyleProp<ViewStyle>);
 
   /**
-   * Whether the component should ignore user interaction.
+   * Whether the radio is disabled.
    * @default false
    */
   disabled?: boolean;
 
   /**
-   * Whether the user should be unable to select this radio button.
+   * Whether the radio is read-only.
    * @default false
    */
   readOnly?: boolean;
-
-  /**
-   * Callback fired when a key is pressed down.
-   */
-  onKeyDown?: (e: NativeSyntheticEvent<KeyPressEventData>) => void;
 
   /**
    * Disable the default focus ring styling.
@@ -235,32 +191,12 @@ export interface RadioRootProps
 export type RadioIndicatorState = RadioRootState;
 
 /**
- * Web-specific accessibility props for Radio.Indicator.
+ * Props for the Radio.Indicator component.
  */
-export type WebRadioIndicatorAccessibilityProps = ARIABaseProps &
-  ARIALiveProps & {
-    /**
-     * Present when the radio is checked.
-     */
-    'data-checked'?: 'true';
-    /**
-     * Present when the radio is not checked.
-     */
-    'data-unchecked'?: 'true';
-    /**
-     * Present when the radio is disabled.
-     */
-    'data-disabled'?: 'true';
-    /**
-     * Present when the radio is read-only.
-     */
-    'data-readonly'?: 'true';
-  };
-
-export interface RadioIndicatorProps
-  extends
-    Omit<ViewProps, 'style' | 'children'>,
-    WebRadioIndicatorAccessibilityProps {
+export interface RadioIndicatorProps extends Omit<
+  ViewProps,
+  'style' | 'children'
+> {
   /**
    * The content of the indicator.
    */
@@ -276,10 +212,8 @@ export interface RadioIndicatorProps
     | ((state: RadioIndicatorState) => StyleProp<ViewStyle>);
 
   /**
-   * Whether to keep the indicator in the tree when the radio is unchecked.
+   * Whether to keep the indicator in the tree when unchecked.
    * @default false
    */
   keepMounted?: boolean;
 }
-
-export type { KeyPressEventData };

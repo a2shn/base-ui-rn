@@ -12,8 +12,8 @@ import { useToggleGroup } from './use-toggle-group';
 /**
  * Headless toggle-group primitive built on top of React Native View.
  *
- * Manages the selection state for a group of Toggles. Supports single or 
- * multiple selection, roving focus navigation, and appropriate ARIA roles 
+ * Manages the selection state for a group of Toggles. Supports single or
+ * multiple selection, roving focus navigation, and appropriate ARIA roles
  * (radiogroup or group).
  *
  * @example
@@ -23,20 +23,20 @@ import { useToggleGroup } from './use-toggle-group';
  *  <Toggle value="b"><Text>Option B</Text></Toggle>
  * </ToggleGroup>
  * ```
- */export const ToggleGroup = React.memo(
+ */ export const ToggleGroup = React.memo(
   React.forwardRef<View, ToggleGroupProps>((props, ref) => {
     const { children, style } = props;
 
     const {
+      isDisabled,
+      loopFocus,
+      multiple,
       onToggleKeyDown,
       registerItem,
       registerValue,
       state,
-      loopFocus,
-      multiple,
       toggleValue,
       valueSet,
-      isDisabled
     } = useToggleGroup(props);
 
     const valueContext = React.useMemo(
@@ -70,24 +70,24 @@ import { useToggleGroup } from './use-toggle-group';
       ],
     );
 
-    const resolvedStyle = useStyle({ style, state });
+    const resolvedStyle = useStyle({ state, style });
 
     const mergedProps = mergeProps(props, {
-      focusable: false,
-      ref,
-      style: resolvedStyle,
       accessibilityState: {
         disabled: state.disabled,
       },
+      focusable: false,
+      ref,
+      style: resolvedStyle,
     });
 
     return (
       <ToggleGroupActionContext.Provider value={actionContext}>
         <ToggleGroupValueContext.Provider value={valueContext}>
           <View
-            accessibilityLiveRegion="none"
+            accessibilityLiveRegion='none'
             accessible={true}
-            importantForAccessibility="yes"
+            importantForAccessibility='yes'
             role={props.role ?? (multiple ? 'group' : 'radiogroup')}
             {...mergedProps}
           >

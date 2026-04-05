@@ -36,7 +36,7 @@ export const MeterValue = React.memo(
     return (
       <Text
         accessibilityElementsHidden
-        importantForAccessibility="no-hide-descendants"
+        importantForAccessibility='no-hide-descendants'
         {...mergedProps}
       >
         {evaluateStyles(children, context) ?? formattedValue}

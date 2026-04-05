@@ -23,6 +23,7 @@ export function RadioPlaybook() {
           onValueChange={(v) => value.setValue(v)}
           style={styles.group}
           value={value.value as string}
+          loopFocus
         >
           <View style={styles.item}>
             <Radio.Root style={getRadioRootStyle} value='fuji'>

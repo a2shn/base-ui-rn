@@ -9,6 +9,11 @@ import type { AvatarFallbackProps } from './types';
  * A fallback component rendered when the avatar image is loading or fails to load.
  *
  * Supports an optional delay to prevent flicker for fast-loading images.
+ *
+ * @example
+ * ```tsx
+ * <Avatar.Fallback>JD</Avatar.Fallback>
+ * ```
  */
 export const AvatarFallback = React.forwardRef<View, AvatarFallbackProps>(
   (props, ref) => {

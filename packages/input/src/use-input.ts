@@ -1,52 +1,60 @@
-import { useControllableState } from "@base-ui-rn/core";
-import { resolveTabIndex, useFocusRing } from "@base-ui-rn/focus-ring";
-import React from "react";
-import { NativeSyntheticEvent, TextInputChangeEventData } from "react-native";
-import { InputProps, InputState } from "./types";
+import { useControllableState } from '@base-ui-rn/core';
+import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
+import React from 'react';
+import { NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
+
+import { InputProps, InputState } from './types';
 
 export function useInput(props: InputProps) {
   const {
     defaultValue,
     dirty: controlledDirty,
     disabled = false,
-    readOnly = false,
-    required = false,
     disableDefaultFocusRing = false,
     focusableWhenDisabled = false,
     invalid = false,
+    onDirtyChange,
+    onTouchedChange,
+    onValueChange,
+    readOnly = false,
+    required = false,
     tabIndex: tabIndexProp,
     touched: controlledTouched,
     valid = false,
     value: controlledValue,
-    onValueChange, onDirtyChange,
-    onTouchedChange,
   } = props;
 
   const [value = '', setValue] = useControllableState<string>({
-    prop: controlledValue,
     defaultProp: defaultValue ?? '',
+    prop: controlledValue,
   });
 
   const [dirty = false, setDirty] = useControllableState<boolean>({
-    prop: controlledDirty,
     defaultProp: false,
     onChange: onDirtyChange,
+    prop: controlledDirty,
   });
 
   const [touched = false, setTouched] = useControllableState<boolean>({
-    prop: controlledTouched,
     defaultProp: false,
     onChange: onTouchedChange,
+    prop: controlledTouched,
   });
 
   const isDisabled = disabled === true;
 
-  const { focused, focusRingStyle, isFocusable, onBlur, onFocus, focusVisible } =
-    useFocusRing({
-      disabled: isDisabled,
-      disableDefaultFocusRing,
-      focusableWhenDisabled,
-    });
+  const {
+    focused,
+    focusRingStyle,
+    focusVisible,
+    isFocusable,
+    onBlur,
+    onFocus,
+  } = useFocusRing({
+    disabled: isDisabled,
+    disableDefaultFocusRing,
+    focusableWhenDisabled,
+  });
 
   const tabIndex = resolveTabIndex(isFocusable, tabIndexProp);
 
@@ -71,18 +79,29 @@ export function useInput(props: InputProps) {
 
   const state: InputState = React.useMemo(
     () => ({
-      focusVisible,
       dirty,
       disabled: isDisabled,
+      filled: value.length > 0,
+      focused,
+      focusVisible,
+      invalid,
       readOnly,
       required,
-      filled: value.length > 0,
+      touched,
+      valid,
+    }),
+    [
+      focusVisible,
+      dirty,
+      isDisabled,
+      readOnly,
+      required,
+      value,
       focused,
       invalid,
       touched,
       valid,
-    }),
-    [focusVisible, dirty, isDisabled, readOnly, required, value, focused, invalid, touched, valid],
+    ],
   );
 
   return {
@@ -90,10 +109,10 @@ export function useInput(props: InputProps) {
     handleBlur,
     handleChange,
     handleFocus: onFocus,
+    isDisabled,
     isFocusable,
     state,
     tabIndex,
     value,
-    isDisabled,
   };
 }

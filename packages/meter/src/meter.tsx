@@ -53,8 +53,8 @@ export const MeterRoot = React.memo(
           accessibilityLiveRegion={accessibilityLiveRegion ?? 'none'}
           accessibilityValue={accessibilityProps}
           accessible={accessible ?? true}
-          importantForAccessibility="yes"
-          role="progressbar"
+          importantForAccessibility='yes'
+          role='progressbar'
           {...mergedProps}
         >
           {evaluateStyles(children, state)}

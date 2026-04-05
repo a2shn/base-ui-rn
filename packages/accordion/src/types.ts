@@ -1,18 +1,23 @@
 import { PressableWithKeyDown } from '@base-ui-rn/core';
 import type { FocusRingState } from '@base-ui-rn/focus-ring';
-import type {
-  StyleProp,
-  ViewProps,
-  ViewStyle,
-} from 'react-native';
+import type { StyleProp, ViewProps, ViewStyle } from 'react-native';
 
+/**
+ * The layout orientation of the accordion.
+ */
 export type Orientation = 'vertical' | 'horizontal';
 
+/**
+ * Details passed to the `onValueChange` callback.
+ */
 export interface AccordionValueChangeDetails {
   /** The new active value or array of values. */
   value: string | string[];
 }
 
+/**
+ * Details passed to the `onOpenChange` callback for an accordion item.
+ */
 export interface AccordionItemOpenChangeDetails {
   /** Whether the item is now open. */
   open: boolean;
@@ -44,9 +49,6 @@ export interface AccordionItemState {
   value: string;
 }
 
-/**
- * State exposed to the AccordionHeader's render props and style callbacks.
- */
 export interface AccordionHeaderState {
   /** Whether the associated item is open. */
   open: boolean;
@@ -56,9 +58,6 @@ export interface AccordionHeaderState {
   index: number;
 }
 
-/**
- * State exposed to the AccordionTrigger's render props and style callbacks.
- */
 export interface AccordionTriggerState extends FocusRingState {
   /** Whether the associated item is open. */
   open: boolean;
@@ -66,9 +65,6 @@ export interface AccordionTriggerState extends FocusRingState {
   disabled: boolean;
 }
 
-/**
- * State exposed to the AccordionPanel's render props and style callbacks.
- */
 export interface AccordionPanelState {
   /** Whether the panel is currently open. */
   open: boolean;
@@ -81,10 +77,13 @@ export interface AccordionPanelState {
     height?: number;
     /** The measured width of the panel content, if available. */
     width?: number;
-  }
+  };
 }
 
-export interface AccordionRootProps extends Omit<ViewProps, 'children' | 'style'> {
+export interface AccordionRootProps extends Omit<
+  ViewProps,
+  'children' | 'style'
+> {
   /**
    * The content of the accordion. Can be a React node or a render function.
    */
@@ -92,7 +91,9 @@ export interface AccordionRootProps extends Omit<ViewProps, 'children' | 'style'
   /**
    * Style applied to the root view. Can be a static style or a function resolving based on state.
    */
-  style?: StyleProp<ViewStyle> | ((state: AccordionRootState) => StyleProp<ViewStyle>);
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: AccordionRootState) => StyleProp<ViewStyle>);
   /**
    * The default value of the open item(s) when uncontrolled.
    */
@@ -104,7 +105,10 @@ export interface AccordionRootProps extends Omit<ViewProps, 'children' | 'style'
   /**
    * Callback fired when the open item(s) change.
    */
-  onValueChange?: (value: string | string[], details: AccordionValueChangeDetails) => void;
+  onValueChange?: (
+    value: string | string[],
+    details: AccordionValueChangeDetails,
+  ) => void;
   /**
    * Whether multiple items can be open at the same time.
    * @default false
@@ -131,7 +135,10 @@ export interface AccordionRootProps extends Omit<ViewProps, 'children' | 'style'
   onFocusChange?: (value: string) => void;
 }
 
-export interface AccordionItemProps extends Omit<ViewProps, 'children' | 'style'> {
+export interface AccordionItemProps extends Omit<
+  ViewProps,
+  'children' | 'style'
+> {
   /**
    * The content of the accordion item.
    */
@@ -139,7 +146,9 @@ export interface AccordionItemProps extends Omit<ViewProps, 'children' | 'style'
   /**
    * Style applied to the item view.
    */
-  style?: StyleProp<ViewStyle> | ((state: AccordionItemState) => StyleProp<ViewStyle>);
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: AccordionItemState) => StyleProp<ViewStyle>);
   /**
    * A unique value for the accordion item.
    * If not provided, a random ID will be generated.
@@ -153,30 +162,46 @@ export interface AccordionItemProps extends Omit<ViewProps, 'children' | 'style'
   /**
    * Callback fired when the open state of the item changes.
    */
-  onOpenChange?: (open: boolean, details: AccordionItemOpenChangeDetails) => void;
+  onOpenChange?: (
+    open: boolean,
+    details: AccordionItemOpenChangeDetails,
+  ) => void;
 }
 
-export interface AccordionHeaderProps extends Omit<ViewProps, 'children' | 'style'> {
+export interface AccordionHeaderProps extends Omit<
+  ViewProps,
+  'children' | 'style'
+> {
   /**
    * The content of the accordion header.
    */
-  children?: React.ReactNode | ((state: AccordionHeaderState) => React.ReactNode);
+  children?:
+    | React.ReactNode
+    | ((state: AccordionHeaderState) => React.ReactNode);
   /**
    * Style applied to the header view.
    */
-  style?: StyleProp<ViewStyle> | ((state: AccordionHeaderState) => StyleProp<ViewStyle>);
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: AccordionHeaderState) => StyleProp<ViewStyle>);
 }
 
-export interface AccordionTriggerProps extends Omit<React.ComponentProps<typeof PressableWithKeyDown>,
-  'children' | 'style'> {
+export interface AccordionTriggerProps extends Omit<
+  React.ComponentProps<typeof PressableWithKeyDown>,
+  'children' | 'style'
+> {
   /**
    * The content of the accordion trigger.
    */
-  children?: React.ReactNode | ((state: AccordionTriggerState) => React.ReactNode);
+  children?:
+    | React.ReactNode
+    | ((state: AccordionTriggerState) => React.ReactNode);
   /**
    * Style applied to the trigger view.
    */
-  style?: StyleProp<ViewStyle> | ((state: AccordionTriggerState) => StyleProp<ViewStyle>);
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: AccordionTriggerState) => StyleProp<ViewStyle>);
   /**
    * Disable the default focus ring styling.
    * @default false
@@ -189,15 +214,22 @@ export interface AccordionTriggerProps extends Omit<React.ComponentProps<typeof 
   focusableWhenDisabled?: boolean;
 }
 
-export interface AccordionPanelProps extends Omit<ViewProps, 'children' | 'style'> {
+export interface AccordionPanelProps extends Omit<
+  ViewProps,
+  'children' | 'style'
+> {
   /**
    * The content of the accordion panel.
    */
-  children?: React.ReactNode | ((state: AccordionPanelState) => React.ReactNode);
+  children?:
+    | React.ReactNode
+    | ((state: AccordionPanelState) => React.ReactNode);
   /**
    * Style applied to the panel view.
    */
-  style?: StyleProp<ViewStyle> | ((state: AccordionPanelState) => StyleProp<ViewStyle>);
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: AccordionPanelState) => StyleProp<ViewStyle>);
   /**
    * Whether to keep the panel mounted in the tree when it is closed.
    * @default false

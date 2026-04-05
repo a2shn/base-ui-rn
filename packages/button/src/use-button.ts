@@ -1,25 +1,26 @@
-import { useFocusRing, resolveTabIndex } from '@base-ui-rn/focus-ring';
 import { useControllableState } from '@base-ui-rn/core';
+import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
+
 import { ButtonProps } from './types';
 
 export const useButton = (props: ButtonProps) => {
   const {
+    defaultPressed = false,
     disabled = false,
     disableDefaultFocusRing = false,
     focusableWhenDisabled = false,
-    tabIndex,
-    pressed: controlledPressed,
-    defaultPressed = false,
     onPressedChange,
+    pressed: controlledPressed,
+    tabIndex,
   } = props;
 
   const isDisabled = disabled === true;
 
   const {
     focused,
-    focusVisible,
     focusRingStyle,
+    focusVisible,
     isFocusable,
     onBlur: handleBlur,
     onFocus: onRingFocus,
@@ -30,9 +31,9 @@ export const useButton = (props: ButtonProps) => {
   });
 
   const [pressed = false, setPressed] = useControllableState<boolean>({
-    prop: controlledPressed,
     defaultProp: defaultPressed,
     onChange: onPressedChange,
+    prop: controlledPressed,
   });
 
   const handlePressIn = React.useCallback(() => {
@@ -52,8 +53,8 @@ export const useButton = (props: ButtonProps) => {
 
   return {
     focused,
-    focusVisible,
     focusRingStyle,
+    focusVisible,
     handleBlur,
     handleFocus,
     handlePressIn,

@@ -11,6 +11,11 @@ import { useAvatarImage } from './use-avatar-image';
  *
  * Automatically manages loading status within the Avatar.Root context and
  * communicates status changes to the root.
+ *
+ * @example
+ * ```tsx
+ * <Avatar.Image source={{ uri: 'https://example.com/avatar.jpg' }} />
+ * ```
  */
 export const AvatarImage = React.forwardRef<Image, AvatarImageProps>(
   (props, ref) => {

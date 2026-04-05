@@ -5,6 +5,7 @@ import type { MeterRootProps, MeterState } from './types';
 
 export function useMeter(props: MeterRootProps) {
   const {
+    defaultValue = 0,
     format,
     getAccessibilityValueText,
     max = 100,
@@ -14,12 +15,11 @@ export function useMeter(props: MeterRootProps) {
     low = min,
     optimum = (min + max) / 2,
     value: controlledValue,
-    defaultValue = 0,
   } = props;
 
   const [value = 0] = useControllableState<number>({
-    prop: controlledValue,
     defaultProp: defaultValue,
+    prop: controlledValue,
   });
 
   const labelId = React.useId();
@@ -68,13 +68,13 @@ export function useMeter(props: MeterRootProps) {
   );
 
   return {
-    labelId,
-    state,
     accessibilityProps: {
       max,
       min,
       now: value,
       text: accessibilityValueText,
     },
+    labelId,
+    state,
   };
 }

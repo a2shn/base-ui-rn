@@ -1,10 +1,7 @@
 import type { PressableWithKeyDown } from '@base-ui-rn/core';
 import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type * as React from 'react';
-import type {
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
+import type { StyleProp, ViewStyle } from 'react-native';
 
 export interface ToggleState extends FocusRingState {
   /**
@@ -20,7 +17,8 @@ export interface ToggleState extends FocusRingState {
 
 export interface ToggleProps extends Omit<
   React.ComponentProps<typeof PressableWithKeyDown>,
-  'children' | 'style'> {
+  'children' | 'style'
+> {
   /**
    * The role of the toggle.
    * @default 'checkbox'
@@ -74,5 +72,4 @@ export interface ToggleProps extends Omit<
    * @default false
    */
   disableDefaultFocusRing?: boolean;
-
 }

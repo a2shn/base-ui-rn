@@ -1,8 +1,8 @@
 import {
   evaluateStyles,
-  PressableWithKeyDown,
   mergeProps,
   mergeRefs,
+  PressableWithKeyDown,
   useStyle,
 } from '@base-ui-rn/core';
 import * as React from 'react';
@@ -35,13 +35,13 @@ export const Toggle = React.memo(
       handleFocus,
       handleKeyDown,
       handlePress,
+      isDisabled,
       isFocusable,
       isInGroup,
       registerItem,
       registerValue,
       state,
       tabIndex,
-      isDisabled
     } = useToggle(props);
 
     const internalRef = React.useRef<View>(null);
@@ -67,31 +67,31 @@ export const Toggle = React.memo(
     });
 
     const mergedProps = mergeProps(props, {
-      onBlur: handleBlur,
-      onFocus: handleFocus,
-      onKeyDown: handleKeyDown,
-      onPress: handlePress,
-      onAccessibilityAction: handleAccessibilityAction,
-      ref: mergedRef,
-      style: resolvedStyle,
+      accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
       accessibilityState: {
         checked: state.pressed,
         disabled: isDisabled,
       },
-      accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
+      onAccessibilityAction: handleAccessibilityAction,
+      onBlur: handleBlur,
+      onFocus: handleFocus,
+      onKeyDown: handleKeyDown,
+      onPress: handlePress,
+      ref: mergedRef,
+      style: resolvedStyle,
     });
 
     return (
       <PressableWithKeyDown
-        accessibilityHint="Toggles the state"
-        accessibilityLiveRegion="polite"
+        accessibilityHint='Toggles the state'
+        accessibilityLiveRegion='polite'
         accessible={true}
         importantForAccessibility={isFocusable ? 'yes' : 'no-hide-descendants'}
         role={props.role ?? 'checkbox'}
         {...mergedProps}
-        tabIndex={tabIndex}
         disabled={isDisabled}
         focusable={isFocusable}
+        tabIndex={tabIndex}
       >
         {(pressableState: PressableStateCallbackType) =>
           evaluateStyles(children, {
