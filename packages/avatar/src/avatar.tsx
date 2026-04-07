@@ -47,18 +47,21 @@ export const AvatarRoot = React.forwardRef<View, AvatarRootProps>(
       { loadingStatus }
     );
 
-    const mergedProps = mergeProps(otherProps, {
+    const mergedProps = mergeProps(
+    {
+      accessibilityState: { busy: isLoading },
+      style: resolvedStyle
+    },
+    { ref },
+    otherProps,
+    {
+      accessible: true,
       disabled: false,
       focusable: false,
-      ref,
-      style: resolvedStyle,
-      accessibilityState: {
-        busy: isLoading,
-      },
-      accessible: true,
       importantForAccessibility: "yes",
       role: "img"
-    });
+    }
+  );
 
     return (
       <AvatarContext.Provider value={contextValue}>

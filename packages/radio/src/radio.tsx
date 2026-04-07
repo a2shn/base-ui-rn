@@ -52,28 +52,28 @@ export const RadioRoot = React.memo(
     const resolvedStyle = resolveValue(style, state);
 
     const mergedProps = mergeProps(
-      {
-        accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
-        accessibilityState: {
-          checked: checked,
-          disabled: isDisabled,
-        },
-        onAccessibilityAction: handleAccessibilityAction,
-        onBlur: handleBlur,
-        onFocus: handleFocus,
-        onKeyDown: handleKeyDown,
-        onPress: handlePress,
-        ref: internalRef,
-        style: [resolvedStyle, focusRingStyle],
+    {
+      accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
+      accessibilityState: {
+        checked: checked,
+        disabled: isDisabled,
       },
-      { ref },
-      otherProps,
-      {
-        accessibilityHint: 'Selects the radio option',
-        accessible: true,
-        role: "radio",
-      }
-    );
+      onAccessibilityAction: handleAccessibilityAction,
+      onBlur: handleBlur,
+      onFocus: handleFocus,
+      onKeyDown: handleKeyDown,
+      onPress: handlePress,
+      ref: internalRef,
+      style: [resolvedStyle, focusRingStyle],
+    },
+    { ref },
+    otherProps,
+    {
+      accessibilityHint: "Selects the radio option",
+      accessible: true,
+      role: "radio"
+    }
+  );
 
     return (
       <RadioRootContext.Provider value={state}>

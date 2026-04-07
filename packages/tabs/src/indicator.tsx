@@ -20,12 +20,15 @@ export const TabsIndicator = React.memo(
     const { state } = useTabsIndicator();
 
     const resolvedStyle = resolveValue(style, state);
-    const mergedProps = mergeProps(otherProps, {
+    const mergedProps = mergeProps(
+    { style: resolvedStyle },
+    { ref },
+    otherProps,
+    {
       focusable: false,
-      ref,
-      style: resolvedStyle,
-      importantForAccessibility: 'no-hide-descendants',
-    });
+      importantForAccessibility: "no-hide-descendants"
+    }
+  );
 
     return <View {...mergedProps}>{resolveValue(children, state)}</View>;
   }),

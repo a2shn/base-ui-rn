@@ -26,13 +26,16 @@ export const SliderControl = React.memo(
       useSliderControl({ onLayout });
 
     const resolvedStyle = resolveValue(style, {})
-    const mergedProps = mergeProps(otherProps, { ref }, {
+    const mergedProps = mergeProps(
+    {
       ...panHandlers,
-      focusable: false,
-
       onLayout: handleOnLayout,
       ref: mergedRef,
-    });
+    },
+    { ref },
+    otherProps,
+    { focusable: false }
+  );
 
     return <View {...mergedProps} tabIndex={tabIndex} style={[resolvedStyle, getWebControlStyles()]}
     />;

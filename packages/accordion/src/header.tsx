@@ -24,18 +24,21 @@ export const AccordionHeader = React.memo(
 
     const resolvedStyle = resolveValue(style, state);
 
-    const mergedProps = mergeProps(otherProps, {
-      focusable: false,
-      ref,
-      style: [
-        Platform.OS === 'web' && open ? { zIndex: 1 } : undefined,
-        resolvedStyle,
-      ],
+    const mergedProps = mergeProps(
+    {
       accessibilityState: {
         disabled: isDisabled,
         expanded: open,
       },
-    });
+      style: [
+        Platform.OS === 'web' && open ? { zIndex: 1 } : undefined,
+        resolvedStyle,
+      ]
+    },
+    { ref },
+    otherProps,
+    { focusable: false }
+  );
 
     return <View {...mergedProps}>{resolveValue(children, state)}</View>;
   }),

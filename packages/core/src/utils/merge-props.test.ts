@@ -1,95 +1,154 @@
+// FILE: ./packages/core/src/utils/merge-props.test.ts
 import * as React from 'react';
 
 import { mergeProps } from './merge-props';
 
 describe('mergeProps', () => {
-  it('merges standard props with last-in priority', () => {
-    const result = mergeProps({ id: '1', name: 'A' }, { id: '2', value: 'B' });
-    expect(result).toEqual({ id: '2', name: 'A', value: 'B' });
-  });
+  describe('Standard Props (First-in-Wins)', () => {
+    it('prioritizes the first defined value for standard props', () => {
+      const result = mergeProps(
+        { id: 'internal-id', role: 'button' },
+        { id: 'user-id', tabIndex: 0 },
+        { role: 'default-role', accessible: true }
+      );
 
-  it('composes event handlers starting with "on[CapitalLetter]"', () => {
-    const onPress1 = jest.fn();
-    const onPress2 = jest.fn();
+      expect(result).toEqual({
+        id: 'internal-id', // First arg wins
+        role: 'button',    // First arg wins over default
+        tabIndex: 0,       // Second arg provides this
+        accessible: true,  // Third arg provides this
+      });
+    });
 
-    const result = mergeProps({ onPress: onPress1 }, { onPress: onPress2 });
-
-    result.onPress({ type: 'press' });
-
-    expect(onPress1).toHaveBeenCalledTimes(1);
-    expect(onPress2).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not compose non-event functions', () => {
-    const renderFoo1 = jest.fn();
-    const renderFoo2 = jest.fn();
-
-    const result = mergeProps(
-      { renderFoo: renderFoo1 },
-      { renderFoo: renderFoo2 },
-    );
-
-    expect(result.renderFoo).toBe(renderFoo2);
-  });
-
-  it('merges refs into a functional callback ref', () => {
-    const ref1 = React.createRef<unknown>();
-    const ref2 = jest.fn();
-
-    const result = mergeProps({ ref: ref1 }, { ref: ref2 });
-    result.ref('node-instance');
-
-    expect(ref1.current).toBe('node-instance');
-    expect(ref2).toHaveBeenCalledWith('node-instance');
-  });
-
-  it('merges styles into an array', () => {
-    const style1 = { color: 'red' };
-    const style2 = { backgroundColor: 'blue' };
-
-    const result = mergeProps({ style: style1 }, { style: style2 });
-
-    expect(result.style).toEqual([style1, style2]);
-  });
-
-  it('deep merges accessibilityState', () => {
-    const state1 = { disabled: true, checked: true };
-    const state2 = { checked: false, expanded: true };
-
-    const result = mergeProps(
-      { accessibilityState: state1 },
-      { accessibilityState: state2 },
-    );
-
-    expect(result.accessibilityState).toEqual({
-      disabled: true,
-      checked: false,
-      expanded: true,
+    it('ignores undefined values in subsequent arguments', () => {
+      const result: any = mergeProps(
+        { accessible: true },
+        { accessible: undefined }
+      );
+      expect(result.accessible).toBe(true);
     });
   });
 
-  it('combines accessibilityActions', () => {
-    const actions1 = [{ name: 'activate' }];
-    const actions2 = [{ name: 'magicTap' }];
+  describe('Event Handlers', () => {
+    it('composes multiple event handlers into a single function', () => {
+      const onPress1 = jest.fn();
+      const onPress2 = jest.fn();
 
-    const result = mergeProps(
-      { accessibilityActions: actions1 as any },
-      { accessibilityActions: actions2 as any },
-    );
+      const result = mergeProps({ onPress: onPress1 }, { onPress: onPress2 });
 
-    expect(result.accessibilityActions).toEqual([
-      { name: 'activate' },
-      { name: 'magicTap' },
-    ]);
+      // Trigger the composed function
+      result.onPress({ type: 'press' });
+
+      expect(onPress1).toHaveBeenCalledTimes(1);
+      expect(onPress2).toHaveBeenCalledTimes(1);
+    });
+
+    it('preserves a single event handler if the other is undefined', () => {
+      const onPressMock = jest.fn();
+
+      // Left side exists, right side undefined
+      const result1: any = mergeProps({ onPress: onPressMock }, { onPress: undefined });
+      expect(result1.onPress).toBe(onPressMock);
+
+      // Left side undefined, right side exists
+      const result2: any = mergeProps({ onPress: undefined }, { onPress: onPressMock });
+      expect(result2.onPress).toBe(onPressMock);
+    });
+
+    it('does not attempt to compose non-function props that start with "on"', () => {
+      const result: any = mergeProps(
+        { onlyHasBoolean: true },
+        { onlyHasBoolean: false }
+      );
+
+      // Falls back to First-in-Wins
+      expect(result.onlyHasBoolean).toBe(true);
+    });
   });
 
-  it('handles null and undefined arguments gracefully', () => {
-    const result = mergeProps({ a: 1 }, null, undefined, { b: 2 });
-    expect(result).toEqual({ a: 1, b: 2 });
+  describe('Special Merges (ref, style, a11y)', () => {
+    it('merges styles into an array if multiple exist', () => {
+      const style1 = { color: 'red' };
+      const style2 = { backgroundColor: 'blue' };
+
+      const result = mergeProps({ style: style1 }, { style: style2 });
+      expect(result.style).toEqual([style1, style2]);
+    });
+
+    it('preserves a single style object without wrapping it in an array', () => {
+      const style1: any = { color: 'red' };
+
+      expect(mergeProps({ style: style1 }, { style: undefined }).style).toBe(style1);
+      expect(mergeProps({ style: null }, { style: style1 }).style).toBe(style1);
+    });
+
+    it('merges refs into a composed callback ref', () => {
+      const ref1 = React.createRef<unknown>();
+      const ref2 = jest.fn();
+
+      const result = mergeProps({ ref: ref1 }, { ref: ref2 });
+
+      // Simulate React attaching the node
+      result.ref('node-instance');
+
+      expect(ref1.current).toBe('node-instance');
+      expect(ref2).toHaveBeenCalledWith('node-instance');
+    });
+
+    it('preserves a single ref if the other is undefined or null', () => {
+      const refMock = jest.fn();
+
+      expect((mergeProps({ ref: refMock }, { ref: undefined }) as any).ref).toBe(refMock);
+      expect((mergeProps({ ref: null }, { ref: refMock }) as any).ref).toBe(refMock);
+    });
+
+    it('deep merges accessibilityState', () => {
+      const state1 = { disabled: true, checked: true };
+      const state2 = { checked: false, expanded: true };
+
+      const result = mergeProps(
+        { accessibilityState: state1 },
+        { accessibilityState: state2 }
+      );
+
+      // Assuming mergeAccessibilityState handles standard object spreading {...a, ...b}
+      expect(result.accessibilityState).toEqual({
+        disabled: true,
+        checked: false, // In a11y state merges, the later arg usually overrides the earlier one
+        expanded: true,
+      });
+    });
+
+    it('combines accessibilityActions', () => {
+      const actions1 = [{ name: 'activate' }];
+      const actions2 = [{ name: 'magicTap' }];
+
+      const result = mergeProps(
+        { accessibilityActions: actions1 as any },
+        { accessibilityActions: actions2 as any }
+      );
+
+      expect(result.accessibilityActions).toEqual([
+        { name: 'activate' },
+        { name: 'magicTap' },
+      ]);
+    });
   });
 
-  it('preserves the initial prop if the subsequent prop is explicitly undefined', () => {
-    const result = mergeProps({ a: 1, b: 2 }, { a: undefined, b: 3 });
-    expect(result).toEqual({ a: 1, b: 3 });
+  describe('Edge Cases', () => {
+    it('handles null, undefined, and empty objects gracefully', () => {
+      const result = mergeProps(
+        { id: 'test' },
+        null,
+        undefined,
+        {},
+        { name: 'button' }
+      );
+
+      expect(result).toEqual({
+        id: 'test',
+        name: 'button',
+      });
+    });
   });
 });

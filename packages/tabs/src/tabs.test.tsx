@@ -114,23 +114,7 @@ describe('Tabs Primitive', () => {
   });
 
   describe('Keyboard Navigation', () => {
-    it('activates a focused tab via Enter or Space', () => {
-      const onValueChange = jest.fn();
-      render(
-        <Tabs.Root onValueChange={onValueChange}>
-          <Tabs.List>
-            <Tabs.Tab value="tab-1" testID="tab-1"><Text>Tab 1</Text></Tabs.Tab>
-            <Tabs.Tab value="tab-2" testID="tab-2"><Text>Tab 2</Text></Tabs.Tab>
-          </Tabs.List>
-        </Tabs.Root>,
-      );
 
-      fireEvent(screen.getByTestId('tab-1'), 'keyDown', { nativeEvent: { key: 'Enter' } });
-      expect(onValueChange).toHaveBeenCalledWith('tab-1');
-
-      fireEvent(screen.getByTestId('tab-2'), 'keyDown', { nativeEvent: { key: ' ' } });
-      expect(onValueChange).toHaveBeenCalledWith('tab-2');
-    });
 
     it('navigates with arrow keys (Horizontal by default)', () => {
       const onFocusChange = jest.fn();

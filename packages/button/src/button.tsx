@@ -49,18 +49,25 @@ export const Button = React.memo(
 
     const resolvedStyle = resolveValue(style, buttonState);
 
-    const mergedProps = mergeProps(otherProps, { ref }, {
+    const mergedProps = mergeProps(
+    {
       accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
-      accessibilityHint: 'Activates the button',
       accessibilityState: { disabled: isDisabled, selected: pressed },
-      accessible: true,
       onBlur: handleBlur,
       onFocus: handleFocus,
       onPressIn: handlePressIn,
       onPressOut: handlePressOut,
       ref: internalRef,
-      role: 'button',
-    });
+      style: [resolvedStyle, focusRingStyle]
+    },
+    { ref },
+    otherProps,
+    {
+      accessibilityHint: "Activates the button",
+      accessible: true,
+      role: "button"
+    }
+  );
 
     return (
       <PressableWithKeyDown

@@ -20,7 +20,7 @@ export function SwitchPlaybook() {
         <View style={styles.row}>
           <Switch.Root
             checked={checked.value as boolean}
-            onCheckedChange={checked.setValue}
+            onCheckedChange={() => console.log("j")}
             style={getSwitchStyle}
           >
             <Switch.Thumb style={getThumbStyle} />

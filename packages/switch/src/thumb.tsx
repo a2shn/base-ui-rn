@@ -24,11 +24,12 @@ export const SwitchThumb = React.memo(
 
     const resolvedStyle = resolveValue(style, state)
 
-    const mergedProps = mergeProps(otherProps, {
-      focusable: false,
-      ref,
-      style: resolvedStyle,
-    });
+    const mergedProps = mergeProps(
+    { style: resolvedStyle },
+    { ref },
+    otherProps,
+    { focusable: false }
+  );
 
     return (
       <View {...mergedProps}>

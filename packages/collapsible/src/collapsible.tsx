@@ -39,15 +39,18 @@ export const CollapsibleRoot = React.memo(
 
     const resolvedStyle = resolveValue(style, state);
 
-    const mergedProps = mergeProps(props, {
-      focusable: false,
-      ref,
-      style: resolvedStyle,
+    const mergedProps = mergeProps(
+    {
       accessibilityState: {
         disabled: isDisabled,
         expanded: open,
       },
-    });
+      style: resolvedStyle
+    },
+    { ref },
+    otherProps,
+    { focusable: false }
+  );
 
     return (
       <CollapsibleContext.Provider value={contextValue}>

@@ -17,6 +17,7 @@ export function composeEventHandler(
   if (typeof external !== 'function' && typeof internal !== 'function') {
     return undefined;
   }
+
   if (typeof external !== 'function') return internal;
   if (typeof internal !== 'function') return external;
 

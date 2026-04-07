@@ -51,27 +51,24 @@ export const SliderThumb = React.memo(
     const resolvedStyle = resolveValue(style, state)
 
     const mergedProps = mergeProps(
-      otherProps,
-      { ref },
-      {
-        accessibilityActions: [
-          { label: 'increment', name: 'increment' },
-          { label: 'decrement', name: 'decrement' },
-        ],
-        accessibilityState: {
-          disabled: isDisabled,
-          selected: focusedThumbIndex === index,
-        },
-        onAccessibilityAction: handleAccessibilityAction,
-        onFocus: handleFocus,
-        onKeyDown: handleKeyDown,
-        onLayout: handleLayout,
-        onPress: handlePress,
-        onBlur: handleBlur,
-        ref: internalRef,
-        accessible: true
+    {
+      accessibilityActions: !isDisabled ? [{ name: 'increment' }, { name: 'decrement' }] : [],
+      accessibilityState: {
+        disabled: isDisabled,
+        selected: focusedThumbIndex === index,
       },
-    );
+      onAccessibilityAction: handleAccessibilityAction,
+      onBlur: handleBlur,
+      onFocus: handleFocus,
+      onKeyDown: handleKeyDown,
+      onLayout: handleLayout,
+      onPress: handlePress,
+      ref: internalRef,
+    },
+    { ref },
+    otherProps,
+    { accessible: true }
+  );
 
     return (
       <PressableWithKeyDown

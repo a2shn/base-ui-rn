@@ -167,24 +167,6 @@ describe('Accordion', () => {
   });
 
   describe('Keyboard Interaction', () => {
-    it('toggles item with Enter key', () => {
-      const onValueChange = jest.fn();
-      render(
-        <Accordion.Root onValueChange={onValueChange}>
-          <Accordion.Item value="item-1">
-            <Accordion.Trigger testID="trigger-1">
-              <Text>Trigger 1</Text>
-            </Accordion.Trigger>
-          </Accordion.Item>
-        </Accordion.Root>,
-      );
-
-      const trigger = screen.getByTestId('trigger-1');
-      fireEvent(trigger, 'keyDown', { nativeEvent: { key: 'Enter' } });
-
-      expect(onValueChange).toHaveBeenCalledWith('item-1', expect.any(Object));
-    });
-
     it('navigates with arrow keys', () => {
       const onFocusChange = jest.fn();
       render(

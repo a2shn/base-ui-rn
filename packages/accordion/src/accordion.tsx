@@ -75,14 +75,17 @@ export const AccordionRoot = React.memo(
       state,
     );
 
-    const mergedProps = mergeProps(otherProps, {
-      role: "group",
+    const mergedProps = mergeProps(
+    {
+      accessibilityState: { disabled: isDisabled }
+    },
+    { ref },
+    otherProps,
+    {
       focusable: false,
-      ref,
-      accessibilityState: {
-        disabled: isDisabled,
-      },
-    });
+      role: "group"
+    }
+  );
 
     return (
       <AccordionContext.Provider value={contextValue}>

@@ -36,9 +36,7 @@ export function ProgressPlaybook() {
         <View style={styles.container}>
           <Progress.Root style={styles.meterRoot} value={progressValue.value}>
             <View style={styles.meterHeader}>
-              <Progress.Label style={styles.meterLabel}>
-                Exporting data...
-              </Progress.Label>
+
               <Progress.Value style={styles.meterValue} />
             </View>
             <Progress.Track style={styles.meterTrack}>
@@ -57,11 +55,7 @@ export function ProgressPlaybook() {
       <Section title='Indeterminate'>
         <View style={styles.container}>
           <Progress.Root style={styles.meterRoot} value={null}>
-            <View style={styles.meterHeader}>
-              <Progress.Label style={styles.meterLabel}>
-                Searching...
-              </Progress.Label>
-            </View>
+
             <Progress.Track style={styles.meterTrack}>
               <Progress.Indicator
                 style={[styles.meterIndicator, styles.indicatorIndeterminate]}
@@ -76,9 +70,6 @@ export function ProgressPlaybook() {
         <View style={styles.container}>
           <Progress.Root max={10} style={styles.meterRoot} value={3}>
             <View style={styles.meterHeader}>
-              <Progress.Label style={styles.meterLabel}>
-                Installation
-              </Progress.Label>
               <Progress.Value style={styles.meterValue}>
                 {(state) => `Step ${state.formattedValue} / 10`}
               </Progress.Value>
@@ -99,18 +90,21 @@ export function ProgressPlaybook() {
       <Section title='State Data Attributes'>
         <View style={styles.container}>
           <Progress.Root style={styles.meterRoot} value={progressValue.value}>
-            <Progress.Label style={(state) => getProgressLabelStyle(state)}>
-              {(state) => (state.isComplete ? '✓ Completed' : 'Processing...')}
-            </Progress.Label>
-            <Progress.Track style={styles.meterTrack}>
-              <Progress.Indicator
-                style={(state) => [
-                  styles.meterIndicator,
-                  styles.indicatorComplete,
-                  { width: state.percentage ? `${state.percentage}%` : '0%' },
-                ]}
-              />
-            </Progress.Track>
+            {(state) => (
+              <>
+                <Text style={getProgressLabelStyle(state)}>{(state.isComplete ? '✓ Completed' : 'Processing...')}</Text>
+
+                <Progress.Track style={styles.meterTrack}>
+                  <Progress.Indicator
+                    style={(state) => [
+                      styles.meterIndicator,
+                      styles.indicatorComplete,
+                      { width: state.percentage ? `${state.percentage}%` : '0%' },
+                    ]}
+                  />
+                </Progress.Track>
+              </>
+            )}
           </Progress.Root>
           <Text style={styles.hint}>
             Uses render function to style based on isComplete

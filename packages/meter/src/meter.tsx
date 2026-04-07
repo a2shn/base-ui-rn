@@ -31,15 +31,18 @@ export const MeterRoot = React.memo(
     const { accessibilityProps, state } = useMeter(props);
     const resolvedStyle = resolveValue(style, state)
 
-    const mergedProps = mergeProps(otherProps, {
-      focusable: false,
-      ref,
-      style: resolvedStyle,
+    const mergedProps = mergeProps(
+    { style: resolvedStyle },
+    { ref },
+    otherProps,
+    {
       accessibilityLiveRegion: "none",
       accessible: true,
-      importantForAccessibility: 'yes',
-      role: 'progressbar'
-    });
+      focusable: false,
+      importantForAccessibility: "yes",
+      role: "progressbar"
+    }
+  );
 
     return (
       <MeterContext.Provider value={state}>

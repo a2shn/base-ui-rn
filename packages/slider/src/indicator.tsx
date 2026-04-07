@@ -28,10 +28,11 @@ export const SliderIndicator = React.memo(
 
       const resolvedStyle = resolveValue(style, state)
 
-      const mergedProps = mergeProps(otherProps, {
-        ref,
-
-      });
+      const mergedProps = mergeProps(
+    {},
+    { ref },
+    otherProps
+  );
 
       return <View {...mergedProps} style={[resolvedStyle, getIndicatorDynamicStyles(
         state.value,

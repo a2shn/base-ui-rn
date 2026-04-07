@@ -20,11 +20,15 @@ export const Label = React.memo(
     const reactId = React.useId();
     const resolvedNativeID = nativeID || id || reactId;
 
-    const mergedProps = mergeProps(otherProps, {
+    const mergedProps = mergeProps(
+    {},
+    { ref },
+    otherProps,
+    {
       disabled: false,
-      focusable: false,
-      ref,
-    });
+      focusable: false
+    }
+  );
 
     return (
       <Text {...mergedProps} nativeID={resolvedNativeID}>

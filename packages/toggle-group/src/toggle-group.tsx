@@ -74,22 +74,20 @@ export const ToggleGroup = React.memo(
     const resolvedStyle = resolveValue(style, state);
 
     const mergedProps = mergeProps(
-      {
-        accessibilityState: {
-          disabled: state.disabled,
-        },
-        style: resolvedStyle,
-      },
-      { ref },
-      otherProps,
-      {
-        focusable: false,
-        accessible: true,
-        accessibilityLiveRegion: 'none',
-        importantForAccessibility: 'yes',
-        role: role ?? (multiple ? 'group' : 'radiogroup')
-      }
-    );
+    {
+      accessibilityState: { disabled: state.disabled },
+      style: resolvedStyle
+    },
+    { ref },
+    otherProps,
+    {
+      accessibilityLiveRegion: "none",
+      accessible: true,
+      focusable: false,
+      importantForAccessibility: "yes",
+      role: role ?? (multiple ? 'group' : 'radiogroup')
+    }
+  );
 
     return (
       <ToggleGroupActionContext.Provider value={actionContext}>

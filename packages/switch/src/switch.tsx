@@ -45,23 +45,31 @@ export const SwitchRoot = React.memo(
 
     const resolvedStyle = resolveValue(style, state)
 
-    const mergedProps = mergeProps(otherProps, { ref }, {
-      onBlur: handleBlur,
-      onFocus: handleFocus,
-      onPress: handlePress,
-      onKeyDown: handleKeyDown,
-      onAccessibilityAction: handleAccessibilityAction,
-      ref: internalRef,
-      style: [resolvedStyle, focusRingStyle,
-        Platform.OS === 'web' && state.focused ? { zIndex: 1 } : undefined]
-      ,
+    const mergedProps = mergeProps(
+    {
       accessibilityState: {
         checked,
         disabled: isDisabled,
       },
+      onAccessibilityAction: handleAccessibilityAction,
+      onBlur: handleBlur,
+      onFocus: handleFocus,
+      onKeyDown: handleKeyDown,
+      onPress: handlePress,
+      ref: internalRef,
+      style: [
+        resolvedStyle,
+        focusRingStyle,
+        Platform.OS === 'web' && state.focused ? { zIndex: 1 } : undefined
+      ],
+    },
+    { ref },
+    otherProps,
+    {
       accessible: true,
-      role: 'switch'
-    });
+      role: "switch"
+    }
+  );
 
     return (
       <SwitchContext.Provider value={state}>

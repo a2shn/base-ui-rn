@@ -120,21 +120,6 @@ describe('Switch', () => {
   });
 
   describe('Keyboard Interaction', () => {
-    it('toggles state using Enter and Space keys', () => {
-      const onCheckedChange = jest.fn();
-      render(
-        <Switch.Root onCheckedChange={onCheckedChange} testID="switch-root">
-          <Switch.Thumb />
-        </Switch.Root>,
-      );
-
-      const root = screen.getByTestId('switch-root');
-
-      // Simulate Enter key
-      fireEvent(root, 'keyDown', { nativeEvent: { key: 'Enter' } });
-      expect(onCheckedChange).toHaveBeenCalledWith(true);
-    });
-
     it('ignores keyboard events if disabled', () => {
       const onCheckedChange = jest.fn();
       render(

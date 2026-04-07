@@ -24,12 +24,15 @@ export const TabPanel = React.memo(
     const { shouldRender, state } = useTabPanel({ keepMounted, value });
 
     const resolvedStyle = resolveValue(style, state);
-    const mergedProps = mergeProps(otherProps, {
+    const mergedProps = mergeProps(
+    { style: resolvedStyle },
+    { ref },
+    otherProps,
+    {
       focusable: false,
-      ref,
-      style: resolvedStyle,
-      role: 'tabpanel',
-    });
+      role: "tabpanel"
+    }
+  );
 
     if (!shouldRender) {
       return null;

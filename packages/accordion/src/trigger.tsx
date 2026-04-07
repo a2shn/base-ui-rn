@@ -46,30 +46,30 @@ export const AccordionTrigger = React.memo(
     const resolvedStyle = resolveValue(style, state);
 
     const mergedProps = mergeProps(
-      otherProps,
-      { ref },
-      {
-        onBlur: handleBlur,
-        onFocus: handleFocus,
-        onKeyDown: handleKeyDown,
-        onPress: handlePress,
-        onAccessibilityAction: handleAccessibilityAction,
-        ref: itemContext.triggerRef,
-        role: 'button',
-        style: [
-          focusRingStyle,
-          Platform.OS === 'web' && (open || focused)
-            ? { zIndex: 1 }
-            : undefined,
-          resolvedStyle,
-        ],
-        accessibilityState: {
-          disabled: isDisabled,
-          expanded: open,
-        },
-        accessible: true,
+    {
+      accessibilityState: {
+        disabled: isDisabled,
+        expanded: open,
       },
-    );
+      onAccessibilityAction: handleAccessibilityAction,
+      onBlur: handleBlur,
+      onFocus: handleFocus,
+      onKeyDown: handleKeyDown,
+      onPress: handlePress,
+      ref: itemContext.triggerRef,
+      style: [
+        focusRingStyle,
+        Platform.OS === 'web' && (open || focused) ? { zIndex: 1 } : undefined,
+        resolvedStyle,
+      ],
+    },
+    { ref },
+    otherProps,
+    {
+      accessible: true,
+      role: "button"
+    }
+  );
 
     return (
       <PressableWithKeyDown

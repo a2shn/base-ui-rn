@@ -43,31 +43,31 @@ export const Tab = React.memo(
     const resolvedStyle = resolveValue(style, state);
 
     const mergedProps = mergeProps(
-      otherProps,
-      { ref },
-      {
-        onBlur: handleBlur,
-        onFocus: handleFocus,
-        onKeyDown: handleKeyDown,
-        onPress: handlePress,
-        onAccessibilityAction: handleAccessibilityAction,
-        onLayout: handleOnLayout,
-        ref: internalRef,
-        style: [
-          resolvedStyle,
-          focusRingStyle,
-          Platform.OS === 'web' && (state.active || state.focused)
-            ? { zIndex: 1 }
-            : undefined,
-        ],
-        accessibilityState: {
-          disabled: isDisabled,
-          selected: state.active,
-        },
-        accessible: true,
-        role: 'tab',
+    {
+      accessibilityState: {
+        disabled: isDisabled,
+        selected: state.active,
       },
-    );
+      onAccessibilityAction: handleAccessibilityAction,
+      onBlur: handleBlur,
+      onFocus: handleFocus,
+      onKeyDown: handleKeyDown,
+      onLayout: handleOnLayout,
+      onPress: handlePress,
+      ref: internalRef,
+      style: [
+        resolvedStyle,
+        focusRingStyle,
+        Platform.OS === 'web' && (state.active || state.focused) ? { zIndex: 1 } : undefined,
+      ],
+    },
+    { ref },
+    otherProps,
+    {
+      accessible: true,
+      role: "tab"
+    }
+  );
 
     return (
       <PressableWithKeyDown

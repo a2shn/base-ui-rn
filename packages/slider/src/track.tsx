@@ -26,11 +26,12 @@ export const SliderTrack = React.memo(
     const { state } = useSliderContext();
     const resolvedStyle = resolveValue(style, state)
 
-    const mergedProps = mergeProps(otherProps, {
-      ref,
-      style: resolvedStyle,
-      focusable: false,
-    });
+    const mergedProps = mergeProps(
+    { style: resolvedStyle },
+    { ref },
+    otherProps,
+    { focusable: false }
+  );
 
     return <View {...mergedProps} />;
   }),

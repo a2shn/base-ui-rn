@@ -62,3 +62,4 @@ coverage
 
 adb_wifi.sh
 context.sh
+fix.cjs

@@ -21,13 +21,16 @@ export const MeterTrack = React.memo(
     const context = useMeterContext();
 
     const resolvedStyle = resolveValue(style, context)
-    const mergedProps = mergeProps(otherProps, {
-      focusable: false,
-      ref,
-      style: resolvedStyle,
+    const mergedProps = mergeProps(
+    { style: resolvedStyle },
+    { ref },
+    otherProps,
+    {
       accessibilityElementsHidden: true,
-      importantForAccessibility: 'no-hide-descendants'
-    });
+      focusable: false,
+      importantForAccessibility: "no-hide-descendants"
+    }
+  );
 
     return (
       <View

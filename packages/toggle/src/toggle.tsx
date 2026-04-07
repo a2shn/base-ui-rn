@@ -60,29 +60,29 @@ export const Toggle = React.memo(
     const resolvedStyle = resolveValue(style, state);
 
     const mergedProps = mergeProps(
-      {
-        accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
-        accessibilityState: {
-          checked: state.pressed,
-          disabled: isDisabled,
-        },
-        onAccessibilityAction: handleAccessibilityAction,
-        onBlur: handleBlur,
-        onFocus: handleFocus,
-        onKeyDown: handleKeyDown,
-        onPress: handlePress,
-        ref: internalRef,
-        style: [resolvedStyle, focusRingStyle]
+    {
+      accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
+      accessibilityState: {
+        checked: state.pressed,
+        disabled: isDisabled,
       },
-      { ref },
-      otherProps,
-      {
-        accessibilityHint: 'Toggles the state',
-        accessibilityLiveRegion: 'polite',
-        accessible: true,
-        role: role ?? 'checkbox',
-      }
-    );
+      onAccessibilityAction: handleAccessibilityAction,
+      onBlur: handleBlur,
+      onFocus: handleFocus,
+      onKeyDown: handleKeyDown,
+      onPress: handlePress,
+      ref: internalRef,
+      style: [resolvedStyle, focusRingStyle]
+    },
+    { ref },
+    otherProps,
+    {
+      accessibilityHint: "Toggles the state",
+      accessibilityLiveRegion: "polite",
+      accessible: true,
+      role: role ?? "checkbox"
+    }
+  );
     return (
       <PressableWithKeyDown
         {...mergedProps}

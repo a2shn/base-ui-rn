@@ -20,15 +20,17 @@ export const ProgressValue = React.memo(
     const { formattedValue } = context;
 
     const resolvedStyle = resolveValue(style, context)
-    const mergedProps = mergeProps(otherProps, {
-      handlers: {},
+    const mergedProps = mergeProps(
+    { style: resolvedStyle },
+    { ref },
+    otherProps,
+    {
+      accessibilityElementsHidden: true,
       disabled: false,
       focusable: false,
-      ref,
-      style: resolvedStyle,
-      accessibilityElementsHidden: true,
       importantForAccessibility: "no-hide-descendants"
-    });
+    }
+  );
 
     return (
       <Text

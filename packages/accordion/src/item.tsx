@@ -40,15 +40,18 @@ export const AccordionItem = React.memo(
 
     const resolvedStyle = resolveValue(style, state);
 
-    const mergedProps = mergeProps(otherProps, {
-      focusable: false,
-      ref,
-      style: resolvedStyle,
+    const mergedProps = mergeProps(
+    {
       accessibilityState: {
-        expanded: open,
         disabled: isDisabled,
+        expanded: open,
       },
-    });
+      style: resolvedStyle
+    },
+    { ref },
+    otherProps,
+    { focusable: false }
+  );
 
     return (
       <AccordionItemContext.Provider value={itemContextValue}>

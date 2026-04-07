@@ -37,18 +37,22 @@ export const Input = React.memo(
 
     const resolvedStyle = resolveValue(style, state)
 
-    const mergedProps = mergeProps(otherProps, { ref }, {
-      accessibilityState: {
-        disabled: isDisabled
-      },
+    const mergedProps = mergeProps(
+    {
+      accessibilityState: { disabled: isDisabled },
       onBlur: handleBlur,
       onChangeText: handleChangeText,
       onFocus: handleFocus,
       ref: internalRef,
-      style: [resolvedStyle, focusRingStyle],
-      submitBehavior: 'blurAndSubmit',
-      accessible: true
-    });
+      style: [resolvedStyle, focusRingStyle]
+    },
+    { ref },
+    otherProps,
+    {
+      accessible: true,
+      submitBehavior: "blurAndSubmit"
+    }
+  );
 
     return (
       <TextInput

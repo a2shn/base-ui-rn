@@ -28,13 +28,16 @@ export const ProgressIndicator = React.memo(
 
     const resolvedStyle = resolveValue(style, context)
 
-    const mergedProps = mergeProps(otherProps, {
-      focusable: false,
-      ref,
-      style: [indicatorStyle, resolvedStyle],
+    const mergedProps = mergeProps(
+    { style: [indicatorStyle, resolvedStyle] },
+    { ref },
+    otherProps,
+    {
       accessibilityElementsHidden: true,
+      focusable: false,
       importantForAccessibility: "no-hide-descendants"
-    });
+    }
+  );
 
     return (
       <View

@@ -42,24 +42,30 @@ export const CollapsibleTrigger = React.memo(
 
     const resolvedStyle = resolveValue(style, state);
 
-    const mergedProps = mergeProps(props, {
+    const mergedProps = mergeProps(
+    {
+      accessibilityState: {
+        disabled: isDisabled,
+        expanded: open,
+      },
+      onAccessibilityAction: handleAccessibilityAction,
       onBlur: handleBlur,
       onFocus: handleFocus,
       onPress: handlePress,
-      onAccessibilityAction: handleAccessibilityAction,
       ref: internalRef,
       style: [
         focusRingStyle,
         Platform.OS === 'web' && (open || focused) ? { zIndex: 1 } : undefined,
         resolvedStyle,
       ],
-      accessibilityState: {
-        disabled: isDisabled,
-        expanded: open,
-      },
-      role: 'button',
-      accessibile: true,
-    });
+    },
+    { ref },
+    otherProps,
+    {
+      accessible: true,
+      role: "button"
+    }
+  );
 
     return (
       <PressableWithKeyDown

@@ -41,25 +41,32 @@ export function mergeProps<T extends PropsArg[]>(...args: T): MergedResult<T> {
       let a = result[key];
       let b = props[key];
 
-      if (
-        typeof a === 'function' &&
-        typeof b === 'function' &&
+      const isEventHandler =
         key[0] === 'o' &&
         key[1] === 'n' &&
         key.charCodeAt(2) >= 65 &&
-        key.charCodeAt(2) <= 90
-      ) {
-        result[key] = composeEventHandler(a, b);
-      } else if (key === 'ref' && a && b) {
-        result.ref = mergeRefs(a, b);
-      } else if (key === 'style' && a && b) {
-        result.style = [a, b];
-      } else if (key === 'accessibilityState' && a && b) {
-        result[key] = mergeAccessibilityState(a, b);
-      } else if (key === 'accessibilityActions' && a && b) {
-        result[key] = mergeAccessibilityActions(a, b);
-      } else {
-        result[key] = b !== undefined ? b : a;
+        key.charCodeAt(2) <= 90;
+
+      if (isEventHandler) {
+        if (typeof a === 'function' && typeof b === 'function') {
+          result[key] = composeEventHandler(a, b);
+        } else {
+          result[key] = typeof a === 'function' ? a : b;
+        }
+      }
+      // 2. Special Merges
+      else if (key === 'ref') {
+        result.ref = (a && b) ? mergeRefs(a, b) : (a || b);
+      } else if (key === 'style') {
+        result.style = (a && b) ? [a, b] : (a || b);
+      } else if (key === 'accessibilityState') {
+        result[key] = (a && b) ? mergeAccessibilityState(a, b) : (a || b);
+      } else if (key === 'accessibilityActions') {
+        result[key] = (a && b) ? mergeAccessibilityActions(a, b) : (a || b);
+      }
+      // 3. Standard Props: First-in-Wins
+      else {
+        result[key] = a !== undefined ? a : b;
       }
     }
   }

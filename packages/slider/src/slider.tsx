@@ -97,12 +97,17 @@ export const SliderRoot = React.memo(
 
     const resolvedStyle = resolveValue(style, state)
 
-    const mergedProps = mergeProps(otherProps, {
-      role: "adjustable",
-      accessible: true,
+    const mergedProps = mergeProps(
+    {
       accessibilityState: { disabled: isDisabled },
-      ref,
-    });
+    },
+    { ref },
+    otherProps,
+    {
+      accessible: true,
+      role: "adjustable"
+    }
+  );
 
     return (
       <SliderContext.Provider value={contextValue}>

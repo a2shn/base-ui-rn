@@ -35,15 +35,18 @@ export const ProgressRoot = React.memo(
 
     const resolvedStyle = resolveValue(style, state)
 
-    const mergedProps = mergeProps(props, {
-      focusable: false,
-      ref,
-      style: resolvedStyle,
-      accessibilityLiveRegion: 'polite',
+    const mergedProps = mergeProps(
+    { style: resolvedStyle },
+    { ref },
+    otherProps,
+    {
+      accessibilityLiveRegion: "polite",
       accessible: true,
+      focusable: false,
       importantForAccessibility: "yes",
       role: "progressbar"
-    });
+    }
+  );
 
     return (
       <ProgressContext.Provider value={state}>

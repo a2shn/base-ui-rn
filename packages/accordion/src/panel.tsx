@@ -27,15 +27,16 @@ export const AccordionPanel = React.memo(
 
     const resolvedStyle = resolveValue(style, state);
 
-    const mergedProps = mergeProps(otherProps, {
+    const mergedProps = mergeProps(
+    {
+      accessibilityState: { expanded: open },
       onLayout: handleOnLayout,
-      focusable: false,
-      ref,
-      style: resolvedStyle,
-      accessibilityState: {
-        expanded: open,
-      },
-    });
+      style: resolvedStyle
+    },
+    { ref },
+    otherProps,
+    { focusable: false }
+  );
 
     if (!shouldRender) {
       return null;

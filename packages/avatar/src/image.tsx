@@ -29,16 +29,21 @@ export const AvatarImage = React.forwardRef<Image, AvatarImageProps>(
 
     );
 
-    const mergedProps = mergeProps(otherProps, {
+    const mergedProps = mergeProps(
+    {
       onError: handleError,
       onLoad: handleLoad,
       onLoadStart: handleLoadStart,
+      style: resolvedStyle
+    },
+    { ref },
+    otherProps,
+    {
+      accessible: true,
       disabled: false,
-      focusable: false,
-      ref,
-      style: resolvedStyle,
-      accessible: true
-    });
+      focusable: false
+    }
+  );
 
     return (
       <Image

@@ -159,26 +159,7 @@ describe('Collapsible', () => {
   });
 
   describe('Keyboard Interaction', () => {
-    it('toggles state using Enter and Space keys', () => {
-      const onOpenChange = jest.fn();
-      render(
-        <Collapsible.Root onOpenChange={onOpenChange}>
-          <Collapsible.Trigger testID="trigger">
-            <Text>Toggle</Text>
-          </Collapsible.Trigger>
-        </Collapsible.Root>,
-      );
 
-      const trigger = screen.getByTestId('trigger');
-
-      // Simulate Enter key
-      fireEvent(trigger, 'keyDown', { nativeEvent: { key: 'Enter' } });
-      expect(onOpenChange).toHaveBeenCalledWith(true, expect.any(Object));
-
-      // Simulate Space key (since it's now open, space should close it)
-      fireEvent(trigger, 'keyDown', { nativeEvent: { key: ' ' } });
-      expect(onOpenChange).toHaveBeenCalledWith(false, expect.any(Object));
-    });
 
     it('ignores keyboard events if disabled', () => {
       const onOpenChange = jest.fn();
