@@ -1,9 +1,9 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
 import type { AccordionPanelProps } from './types';
-import { useAccordionPanel } from './use-accordion';
+import { useAccordionPanel } from './use-accordion-panel';
 
 /**
  * The content area that is revealed when an accordion item is expanded.
@@ -20,21 +20,14 @@ import { useAccordionPanel } from './use-accordion';
  */
 export const AccordionPanel = React.memo(
   React.forwardRef<View, AccordionPanelProps>((props, ref) => {
-    const { children, style } = props;
+    const { children, style, ...otherProps } = props;
 
-    const {
-      handleOnLayout,
-      open,
-      shouldRender,
-      state,
-    } = useAccordionPanel(props);
+    const { handleOnLayout, open, shouldRender, state } =
+      useAccordionPanel(props);
 
-    const resolvedStyle = useStyle({
-      state,
-      style,
-    });
+    const resolvedStyle = resolveValue(style, state);
 
-    const mergedProps = mergeProps(props, {
+    const mergedProps = mergeProps(otherProps, {
       onLayout: handleOnLayout,
       focusable: false,
       ref,
@@ -50,11 +43,11 @@ export const AccordionPanel = React.memo(
 
     return (
       <View
+        {...mergedProps}
         accessibilityElementsHidden={!open}
         importantForAccessibility={open ? 'yes' : 'no-hide-descendants'}
-        {...mergedProps}
       >
-        {evaluateStyles(children, state)}
+        {resolveValue(children, state)}
       </View>
     );
   }),

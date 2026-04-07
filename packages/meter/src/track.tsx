@@ -1,4 +1,4 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -17,28 +17,24 @@ import type { MeterTrackProps } from './types';
  */
 export const MeterTrack = React.memo(
   React.forwardRef<View, MeterTrackProps>((props, ref) => {
-    const { children, style } = props;
+    const { children, style, ...otherProps } = props;
     const context = useMeterContext();
 
-    const resolvedStyle = useStyle({
-      state: context,
-      style,
-    });
-
-    const mergedProps = mergeProps(props, {
-      disabled: false,
+    const resolvedStyle = resolveValue(style, context)
+    const mergedProps = mergeProps(otherProps, {
       focusable: false,
       ref,
       style: resolvedStyle,
+      accessibilityElementsHidden: true,
+      importantForAccessibility: 'no-hide-descendants'
     });
 
     return (
       <View
-        accessibilityElementsHidden
-        importantForAccessibility='no-hide-descendants'
+
         {...mergedProps}
       >
-        {evaluateStyles(children, context)}
+        {resolveValue(children, context)}
       </View>
     );
   }),

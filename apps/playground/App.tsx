@@ -3,6 +3,7 @@ import * as React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { SwitchPlaybook } from '@/switch.playbook';
+
 import { AccordionPlaybook } from './src/accordion.playbook';
 import { AvatarPlaybook } from './src/avatar.playbook';
 import { ButtonPlaybook } from './src/button.playbook';
@@ -13,7 +14,7 @@ import { ProgressPlaybook } from './src/progress.playbook';
 import { RadioPlaybook } from './src/radio.playbook';
 // import { ScrollAreaPlaybook } from './src/scroll-area.playbook';
 import { SeparatorPlaybook } from './src/separator.playbook';
-// import { SliderPlaybook } from './src/slider.playbook';
+import { SliderPlaybook } from './src/slider.playbook';
 import { TabsPlaybook } from './src/tabs.playbook';
 import { ToggleGroupPlaybook } from './src/toggle-group.playbook';
 import { TogglePlaybook } from './src/toggle.playbook';
@@ -70,11 +71,11 @@ const REGISTRY: PlaybookConfig = {
     testID: 'separator',
     title: 'Separator',
   },
-  // Slider: {
-  //   component: SliderPlaybook,
-  //   testID: 'slider',
-  //   title: 'Slider',
-  // },
+  Slider: {
+    component: SliderPlaybook,
+    testID: 'slider',
+    title: 'Slider',
+  },
   Switch: {
     component: SwitchPlaybook,
     testID: 'switch',

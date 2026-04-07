@@ -11,7 +11,7 @@ export interface SliderGesturesOptions {
   setDragging: (dragging: boolean) => void;
   isHorizontal: boolean;
   isWeb: boolean;
-  layoutRef: React.MutableRefObject<{
+  layoutRef: React.RefObject<{
     x: number;
     y: number;
     width: number;
@@ -28,15 +28,13 @@ function pagePositionToValue(
   min: number,
   max: number,
 ): number {
-  if (isHorizontal) {
-    const ratio = rect.width > 0 ? (pageX - rect.x) / rect.width : 0;
-    const clamped = Math.min(Math.max(ratio, 0), 1);
-    return min + clamped * (max - min);
-  } else {
-    const ratio = rect.height > 0 ? 1 - (pageY - rect.y) / rect.height : 0;
-    const clamped = Math.min(Math.max(ratio, 0), 1);
-    return min + clamped * (max - min);
-  }
+  const size = isHorizontal ? rect.width : rect.height;
+  if (size === 0) return min;
+
+  const offset = isHorizontal ? pageX - rect.x : rect.height - (pageY - rect.y);
+  const ratio = Math.max(0, Math.min(offset / size, 1));
+
+  return min + ratio * (max - min);
 }
 
 function closestThumbIndex(rawValue: number, values: number[]): number {

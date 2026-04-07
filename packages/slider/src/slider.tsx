@@ -1,5 +1,7 @@
-import { evaluateStyles } from '@base-ui-rn/core';
-import { resolveTabIndex } from '@base-ui-rn/focus-ring';
+import {
+  mergeProps,
+  resolveValue,
+} from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -28,24 +30,8 @@ import { useSlider } from './use-slider';
 export const SliderRoot = React.memo(
   React.forwardRef<View, SliderRootProps>(function SliderRoot(props, ref) {
     const {
-      accessibilityRole = 'adjustable',
-      accessibilityState,
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-disabled': ariaDisabled,
-      'aria-expanded': ariaExpanded,
-      'aria-hidden': ariaHidden,
-      'aria-keyshortcuts': ariaKeyshortcuts,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
       children,
-      disabled = false,
-      maxStepsBetweenValues,
-      minStepsBetweenValues,
-      stepBetweenValues,
       style,
-      tabIndex,
       ...otherProps
     } = props;
 
@@ -54,7 +40,6 @@ export const SliderRoot = React.memo(
       focusedThumbIndex,
       focusThumb,
       format,
-      formatter,
       largeStep,
       locale,
       setDragging,
@@ -67,6 +52,8 @@ export const SliderRoot = React.memo(
       thumbAlignment,
       thumbNodeHandles,
       thumbRefs,
+      tabIndex,
+      isDisabled,
     } = useSlider(props);
 
     const contextValue = React.useMemo(
@@ -75,7 +62,6 @@ export const SliderRoot = React.memo(
         focusedThumbIndex,
         focusThumb,
         format,
-        formatter,
         largeStep,
         locale,
         setDragging,
@@ -96,7 +82,6 @@ export const SliderRoot = React.memo(
         commitValue,
         locale,
         format,
-        formatter,
         largeStep,
         thumbAlignment,
         setTrackSize,
@@ -110,35 +95,23 @@ export const SliderRoot = React.memo(
       ],
     );
 
+    const resolvedStyle = resolveValue(style, state)
+
+    const mergedProps = mergeProps(otherProps, {
+      role: "adjustable",
+      accessible: true,
+      accessibilityState: { disabled: isDisabled },
+      ref,
+    });
+
     return (
       <SliderContext.Provider value={contextValue}>
         <View
-          {...otherProps}
-          accessibilityRole={accessibilityRole}
-          accessibilityState={{ disabled, ...accessibilityState }}
-          accessible
-          aria-busy={ariaBusy}
-          aria-describedby={ariaDescribedBy}
-          aria-details={ariaDetails}
-          aria-disabled={ariaDisabled ?? disabled}
-          aria-expanded={ariaExpanded}
-          aria-hidden={ariaHidden}
-          aria-keyshortcuts={ariaKeyshortcuts}
-          aria-label={ariaLabel}
-          aria-labelledby={ariaLabelledBy}
-          data-disabled={disabled}
-          data-dragging={state.dragging}
-          data-focused={focusedThumbIndex !== null}
-          data-max-steps-between-values={maxStepsBetweenValues}
-          data-min-steps-between-values={minStepsBetweenValues}
-          data-orientation={state.orientation}
-          data-step-between-values={stepBetweenValues}
-          ref={ref}
-          role={accessibilityRole as never}
-          style={evaluateStyles(style, state)}
-          tabIndex={resolveTabIndex(disabled, tabIndex)}
+          {...mergedProps}
+          style={resolvedStyle}
+          tabIndex={tabIndex}
         >
-          {evaluateStyles(children, state)}
+          {resolveValue(children, state)}
         </View>
       </SliderContext.Provider>
     );

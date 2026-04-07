@@ -19,7 +19,7 @@ import { useInput } from './use-input';
  */
 export const Input = React.memo(
   React.forwardRef<TextInput, InputProps>((props, ref) => {
-    const { 'aria-busy': ariaBusy, children, style, ...otherProps } = props;
+    const { children, style, ...otherProps } = props;
 
     const {
       focusRingStyle,
@@ -41,28 +41,26 @@ export const Input = React.memo(
       style,
     });
 
-    const mergedProps = mergeProps(otherProps, {
+    const mergedProps = mergeProps(otherProps, { ref }, {
       accessibilityState: {
-        busy: ariaBusy,
-        disabled: state.disabled,
+        disabled: isDisabled
       },
       onBlur: handleBlur,
       onChange: handleChange,
       onFocus: handleFocus,
-      ref: [internalRef, ref],
+      ref: internalRef,
       style: resolvedStyle,
+      submitBehavior: 'blurAndSubmit',
+      accessible: true
     });
 
     return (
       <TextInput
-        accessible={isFocusable}
-        editable={!state.disabled && !state.readOnly}
-        submitBehavior='blurAndSubmit'
+        {...mergedProps}
+        focusable={isFocusable}
+        editable={!isDisabled && !state.readOnly}
         tabIndex={tabIndex}
         value={value}
-        {...mergedProps}
-        disabled={isDisabled}
-        focusable={isFocusable}
       >
         {evaluateStyles(children, state)}
       </TextInput>

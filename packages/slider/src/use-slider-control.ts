@@ -1,47 +1,23 @@
-import { evaluateStyles } from '@base-ui-rn/core';
 import { resolveTabIndex } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import {
   type LayoutChangeEvent,
   Platform,
   type View,
-  type ViewStyle,
 } from 'react-native';
 
 import { useSliderContext } from './context';
-import type { SliderPartProps } from './types';
 import { useSliderGestures } from './use-slider-gestures';
 
-export interface SliderControlOptions extends Pick<SliderPartProps, 'style'> {
-  /**
-   * Callback for layout changes.
-   */
+export interface SliderControlOptions {
   onLayout?: (event: LayoutChangeEvent) => void;
 }
 
-export interface SliderControlReturn {
-  mergedRef: React.RefCallback<View>;
-  panHandlers: import('react-native').GestureResponderHandlers;
-  handleLayout: (event: LayoutChangeEvent) => void;
-  resolvedStyle: ViewStyle | ViewStyle[] | undefined;
-  tabIndex: number | undefined;
-  'data-dragging'?: boolean;
-  'data-orientation'?: 'horizontal' | 'vertical';
-  'data-disabled'?: boolean;
-  'data-focused'?: boolean;
-}
-
-/**
- * Manages the state and logic for the SliderControl component.
- * @param options Configuration options for the slider control.
- * @returns State and event handlers for the control component.
- */
 export function useSliderControl(options: SliderControlOptions = {}) {
-  const { onLayout, style } = options;
+  const { onLayout } = options;
 
   const {
     commitValue,
-    focusedThumbIndex,
     focusThumb,
     setDragging,
     setTrackSize,
@@ -55,12 +31,12 @@ export function useSliderControl(options: SliderControlOptions = {}) {
   const layoutRef = React.useRef({ height: 0, width: 0, x: 0, y: 0 });
   const innerRef = React.useRef<View>(null);
 
-  const handleLayout = React.useCallback(
+  const handleOnLayout = React.useCallback(
     (event: LayoutChangeEvent) => {
       const { height, width } = event.nativeEvent.layout;
       setTrackSize(isHorizontal ? width : height);
 
-      if (!isWeb) {
+      if (!isWeb && event.target) {
         (
           event.target as unknown as {
             measureInWindow: (
@@ -94,32 +70,12 @@ export function useSliderControl(options: SliderControlOptions = {}) {
     innerRef.current = node;
   }, []);
 
-  const resolvedStyle = React.useMemo(() => {
-    const evaluated = evaluateStyles(style, state);
-    if (isWeb) {
-      const webSpecific = {
-        touchAction: 'none',
-        userSelect: 'none',
-      } as ViewStyle;
-      if (Array.isArray(evaluated)) {
-        return [webSpecific, ...evaluated];
-      }
-      return [webSpecific, evaluated];
-    }
-    return evaluated;
-  }, [style, state, isWeb]);
-
   const tabIndex = resolveTabIndex(state.disabled, -1);
 
   return {
-    'data-disabled': state.disabled ? 'true' : undefined,
-    'data-dragging': state.dragging ? 'true' : undefined,
-    'data-focused': focusedThumbIndex !== null ? 'true' : undefined,
-    'data-orientation': state.orientation,
-    handleLayout,
+    handleOnLayout,
     mergedRef,
     panHandlers,
-    resolvedStyle,
     tabIndex,
   };
 }

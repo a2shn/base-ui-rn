@@ -1,126 +1,17 @@
-import {
-  type ARIABaseProps,
-  type ARIALiveProps,
-  type ARIATraitDisabled,
-  type ARIATraitOrientation,
-  type ARIATraitRange,
-  type KeyPressEventData,
-} from '@base-ui-rn/core';
+import { PressableWithKeyDown } from '@base-ui-rn/core';
 import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type * as React from 'react';
 import type {
-  GestureResponderEvent,
-  NativeSyntheticEvent,
   TextProps,
   ViewProps,
   ViewStyle,
 } from 'react-native';
 
 /**
- * Web-specific accessibility props for Slider Root.
- */
-export type WebSliderRootAccessibilityProps = ARIABaseProps &
-  ARIALiveProps &
-  ARIATraitDisabled &
-  ARIATraitOrientation & {
-    /**
-     * Indicates the orientation of the slider.
-     * @default 'horizontal'
-     */
-    'data-orientation'?: 'horizontal' | 'vertical';
-    /**
-     * Present when the slider is disabled.
-     * @default false
-     */
-    'data-disabled'?: boolean;
-    /**
-     * Present while the user is dragging.
-     */
-    'data-dragging'?: boolean;
-    /**
-     * The minimum number of steps between thumbs.
-     * @default 0
-     */
-    'data-min-steps-between-values'?: number;
-    /**
-     * The fixed number of steps between thumbs.
-     */
-    'data-step-between-values'?: number;
-    /**
-     * The maximum number of steps between thumbs.
-     * @default 0 (no maximum)
-     */
-    'data-max-steps-between-values'?: number;
-    /**
-     * Defines a keyboard shortcut that activates or focuses the element.
-     */
-    'aria-keyshortcuts'?: string;
-  };
-
-/**
- * Web-specific accessibility props for Slider Thumb.
- */
-export type WebSliderThumbAccessibilityProps = ARIABaseProps &
-  ARIALiveProps &
-  ARIATraitDisabled &
-  ARIATraitRange &
-  ARIATraitOrientation & {
-    /**
-     * Indicates the orientation of the slider.
-     * @default 'horizontal'
-     */
-    'data-orientation'?: 'horizontal' | 'vertical';
-    /**
-     * Present when the slider is disabled.
-     * @default false
-     */
-    'data-disabled'?: boolean;
-    /**
-     * Present while the user is dragging.
-     */
-    'data-dragging'?: boolean;
-    /**
-     * Present when the thumb is focused.
-     */
-    'data-focused'?: boolean;
-    /**
-     * Indicates the index of the thumb in range sliders.
-     */
-    'data-index'?: number;
-    /**
-     * Defines a keyboard shortcut that activates or focuses the element.
-     */
-    'aria-keyshortcuts'?: string;
-  };
-
-/**
  * The value of the slider.
  */
 export type SliderValue = number | number[];
 
-/**
- * Details of the value change event.
- */
-export interface ChangeEventDetails {
-  /**
-   * The reason the value changed.
-   */
-  reason: 'input-change' | 'track-press' | 'drag' | 'keyboard' | 'none';
-}
-
-/**
- * Details of the value commit event.
- */
-export interface CommitEventDetails {
-  /**
-   * The reason the value was committed.
-   */
-  reason: 'input-change' | 'track-press' | 'drag' | 'keyboard' | 'none';
-}
-
-/**
- * The state of the slider.
- */
 export interface SliderState {
   /**
    * The current values of the slider thumbs.
@@ -165,29 +56,7 @@ export interface SliderState {
   maxStepsBetweenValues: number;
 }
 
-/**
- * Common props for slider sub-components.
- */
-export interface SliderPartProps
-  extends ViewProps, ARIABaseProps, ARIALiveProps {
-  /**
-   * Present while the user is dragging.
-   */
-  'data-dragging'?: boolean;
-  /**
-   * Present when the slider is disabled.
-   */
-  'data-disabled'?: boolean;
-  /**
-   * Defines a keyboard shortcut that activates or focuses the element.
-   */
-  'aria-keyshortcuts'?: string;
-}
-
-/**
- * Props for the Slider.Indicator component.
- */
-export interface SliderIndicatorProps extends Omit<SliderPartProps, 'style'> {
+export interface SliderIndicatorProps extends Omit<ViewProps, 'style'> {
   /**
    * Style applied to the indicator view.
    */
@@ -198,7 +67,7 @@ export interface SliderIndicatorProps extends Omit<SliderPartProps, 'style'> {
  * Props for the Slider.Root component.
  */
 export interface SliderRootProps
-  extends Omit<ViewProps, 'style'>, WebSliderRootAccessibilityProps {
+  extends Omit<ViewProps, 'style' | 'children'> {
   /**
    * Style applied to the slider root view.
    */
@@ -206,7 +75,7 @@ export interface SliderRootProps
   /**
    * The content of the slider root.
    */
-  children?: React.ReactNode;
+  children?: React.ReactNode | ((state: SliderState) => React.ReactNode);
   /**
    * Identifies the field when a form is submitted.
    */
@@ -224,7 +93,6 @@ export interface SliderRootProps
    */
   onValueChange?: (
     value: SliderValue,
-    eventDetails: ChangeEventDetails,
   ) => void;
   /**
    * Whether the slider is disabled.
@@ -293,7 +161,6 @@ export interface SliderRootProps
    */
   onValueCommitted?: (
     value: SliderValue,
-    eventDetails: ChangeEventDetails,
   ) => void;
 }
 
@@ -302,8 +169,8 @@ export interface SliderRootProps
  */
 export interface SliderThumbProps
   extends
-    Omit<ViewProps, 'style' | 'disabled'>,
-    WebSliderThumbAccessibilityProps {
+  Omit<React.ComponentProps<typeof PressableWithKeyDown>,
+    'style' | "children"> {
   /**
    * Whether the thumb remains focusable when disabled.
    * @default false
@@ -319,43 +186,24 @@ export interface SliderThumbProps
    * @default 0
    */
   index?: number;
-  /**
-   * An accessible label for the thumb.
-   */
-  'aria-label'?: string;
-  /**
-   * An accessible hint for the thumb.
-   */
-  accessibilityHint?: string;
-  /**
-   * A function to generate an accessible label based on the thumb index.
-   */
-  getAriaLabel?: (index: number) => string;
+
   /**
    * A function to generate a human-readable text alternative for the current value.
    */
-  getAriaValueText?: (
+  getAccessibilityValueText?: (
     formattedValue: string,
     value: number,
     index: number,
   ) => string;
   /**
-   * Whether the thumb is disabled.
-   * @default false
-   */
-  disabled?: boolean;
-  /**
-   * Callback fired on press.
-   */
-  onPress?: (event: GestureResponderEvent) => void;
-  /**
-   * Callback fired on key down.
-   */
-  onKeyDown?: (event: NativeSyntheticEvent<KeyPressEventData>) => void;
-  /**
    * Style applied to the thumb view.
    */
   style?: ViewStyle | ((state: SliderThumbState) => ViewStyle | undefined);
+  /**
+     * The content of the slider thumb.
+     */
+  children?: React.ReactNode | ((state: SliderState) => React.ReactNode);
+
 }
 
 export interface SliderThumbState extends SliderState, FocusRingState {
@@ -368,64 +216,16 @@ export interface SliderThumbState extends SliderState, FocusRingState {
    */
   valueNow: number;
 }
-
-/**
- * Web-specific accessibility props for Slider Label.
- */
-export type WebSliderLabelAccessibilityProps = ARIABaseProps &
-  ARIALiveProps & {
-    /**
-     * Defines a keyboard shortcut that activates or focuses the element.
-     */
-    'aria-keyshortcuts'?: string;
-  };
-
-export type WebSliderValueAccessibilityProps = ARIABaseProps &
-  ARIALiveProps & {
-    /**
-     * Defines a keyboard shortcut that activates or focuses the element.
-     */
-    'aria-keyshortcuts'?: string;
-  };
-
-/**
- * Props for the Slider.Label component.
- */
-export interface SliderLabelProps
-  extends TextProps, WebSliderLabelAccessibilityProps {
-  /**
-   * Present while the user is dragging.
-   */
-  'data-dragging'?: boolean;
-  /**
-   * Present when the slider is disabled.
-   */
-  'data-disabled'?: boolean;
-  /**
-   * The content of the label.
-   */
-  children?: React.ReactNode;
-}
-
 /**
  * Props for the Slider.Value component.
  */
 export interface SliderValueProps
-  extends Omit<TextProps, 'children'>, WebSliderValueAccessibilityProps {
-  /**
-   * Present while the user is dragging.
-   */
-  'data-dragging'?: boolean;
-  /**
-   * Present when the slider is disabled.
-   */
-  'data-disabled'?: boolean;
+  extends Omit<TextProps, 'children'> {
   /**
    * A function that returns content based on the formatted values.
    */
   children?:
-    | React.ReactNode
-    | ((formattedValues: string[], values: number[]) => React.ReactNode);
+  | React.ReactNode
+  | ((formattedValues: string[], values: number[]) => React.ReactNode);
 }
 
-export type { KeyPressEventData };

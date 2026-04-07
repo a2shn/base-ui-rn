@@ -3,6 +3,7 @@ import { Text } from 'react-native';
 
 import { useSliderContext } from './context';
 import type { SliderValueProps } from './types';
+import { useFormatter } from '@base-ui-rn/core';
 
 /**
  * Text output for the current slider value.
@@ -19,44 +20,19 @@ import type { SliderValueProps } from './types';
  */
 export const SliderValue = React.memo(
   React.forwardRef<Text, SliderValueProps>(function SliderValue(props, ref) {
-    const {
-      'aria-busy': ariaBusy,
-      'aria-describedby': ariaDescribedBy,
-      'aria-details': ariaDetails,
-      'aria-hidden': ariaHidden,
-      'aria-keyshortcuts': ariaKeyshortcuts,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      children,
-      ...otherProps
-    } = props;
-    const { formatter, state } = useSliderContext();
+    const { children, ...otherProps } = props;
+    const { format, locale, state } = useSliderContext();
 
-    const formatted = React.useMemo(() => {
-      return state.value.map((item) =>
-        formatter ? formatter.format(item) : item.toString(),
-      );
-    }, [state.value, formatter]);
+    const { formattedValues } = useFormatter(state.value, {
+      formatOptions: format,
+      locale: locale,
+    });
 
     return (
-      <Text
-        {...otherProps}
-        aria-busy={ariaBusy}
-        aria-describedby={ariaDescribedBy}
-        aria-details={ariaDetails}
-        aria-hidden={ariaHidden}
-        aria-keyshortcuts={ariaKeyshortcuts}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
-        data-disabled={state.disabled ? 'true' : undefined}
-        data-dragging={state.dragging ? 'true' : undefined}
-        data-focused={state.activeIndex !== null ? 'true' : undefined}
-        data-orientation={state.orientation}
-        ref={ref}
-      >
+      <Text {...otherProps} ref={ref}>
         {typeof children === 'function'
-          ? children(formatted, state.value)
-          : (children ?? formatted.join(', '))}
+          ? children(formattedValues, state.value)
+          : (children ?? formattedValues.join(', '))}
       </Text>
     );
   }),

@@ -31,10 +31,9 @@ export function ButtonPlaybook() {
           accessibilityHint='Increments the counter'
           accessibilityLabel='Counter Button'
           onPress={() => {
-            console.log("hello")
-            count.setValue((count.value as number) + 1)
+            console.log('hello');
+            count.setValue((count.value as number) + 1);
           }}
-
           style={styles.buttonBase}
           testID='button-counter'
         >
@@ -46,10 +45,10 @@ export function ButtonPlaybook() {
       <Section title='Stateful Children'>
         <Button
           accessibilityLabel='Stateful Children Button'
-          onPress={() => { }}
+          onPress={() => {}}
           style={styles.buttonBase}
         >
-          {({ focused, pressed, focusVisible }) => (
+          {({ focused, focusVisible, pressed }) => (
             <Text
               style={[
                 styles.textSecondary,
@@ -61,7 +60,7 @@ export function ButtonPlaybook() {
                 : focused
                   ? 'Currently Focused'
                   : 'Idle State'}
-              {focusVisible ? "focus-visible" : ""}
+              {focusVisible ? 'focus-visible' : ''}
             </Text>
           )}
         </Button>

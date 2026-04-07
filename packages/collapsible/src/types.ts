@@ -1,6 +1,4 @@
-import {
-  PressableWithKeyDown,
-} from '@base-ui-rn/core';
+import { PressableWithKeyDown } from '@base-ui-rn/core';
 import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type {
   StyleProp,

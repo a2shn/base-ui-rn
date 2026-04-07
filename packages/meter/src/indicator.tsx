@@ -1,4 +1,4 @@
-import { mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View, type ViewStyle } from 'react-native';
 
@@ -18,7 +18,7 @@ import type { MeterIndicatorProps } from './types';
  */
 export const MeterIndicator = React.memo(
   React.forwardRef<View, MeterIndicatorProps>((props, ref) => {
-    const { style } = props;
+    const { style, ...otherProps } = props;
     const context = useMeterContext();
     const { percentage } = context;
 
@@ -28,22 +28,18 @@ export const MeterIndicator = React.memo(
       };
     }, [percentage]);
 
-    const resolvedStyle = useStyle({
-      state: context,
-      style,
-    });
-
-    const mergedProps = mergeProps(props, {
-      disabled: false,
+    const resolvedStyle = resolveValue(style, context)
+    const mergedProps = mergeProps(otherProps, {
       focusable: false,
       ref,
       style: [indicatorStyle, resolvedStyle],
+      accessibilityElementsHidden: true,
+      importantForAccessibility: 'no-hide-descendants'
     });
 
     return (
       <View
-        accessibilityElementsHidden
-        importantForAccessibility='no-hide-descendants'
+
         {...mergedProps}
       />
     );

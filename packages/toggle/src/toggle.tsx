@@ -1,9 +1,8 @@
 import {
-  evaluateStyles,
-  mergeProps,
-  mergeRefs,
   PressableWithKeyDown,
-  useStyle,
+  mergeProps,
+  resolveStatefulValue,
+  resolveValue,
 } from '@base-ui-rn/core';
 import * as React from 'react';
 import { type PressableStateCallbackType, View } from 'react-native';
@@ -26,7 +25,7 @@ import { useToggle } from './use-toggle';
  */
 export const Toggle = React.memo(
   React.forwardRef<View, ToggleProps>(function Toggle(props, ref) {
-    const { children, style, value } = props;
+    const { children, style, role, value, ...otherProps } = props;
 
     const {
       focusRingStyle,
@@ -45,7 +44,6 @@ export const Toggle = React.memo(
     } = useToggle(props);
 
     const internalRef = React.useRef<View>(null);
-    const mergedRef = mergeRefs(internalRef, ref);
 
     React.useEffect(() => {
       if (isInGroup && value !== undefined) {
@@ -60,41 +58,37 @@ export const Toggle = React.memo(
       return undefined;
     }, [value, isInGroup, registerItem, registerValue]);
 
-    const resolvedStyle = useStyle({
-      additionalStyles: focusRingStyle,
-      state,
-      style,
-    });
+    const resolvedStyle = resolveStatefulValue(style, state);
 
-    const mergedProps = mergeProps(props, {
+    const mergedProps = mergeProps(otherProps, { ref }, {
       accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
+      accessibilityHint: 'Toggles the state',
+      accessibilityLiveRegion: 'polite',
       accessibilityState: {
         checked: state.pressed,
         disabled: isDisabled,
       },
+      accessible: true,
       onAccessibilityAction: handleAccessibilityAction,
       onBlur: handleBlur,
       onFocus: handleFocus,
       onKeyDown: handleKeyDown,
       onPress: handlePress,
-      ref: mergedRef,
-      style: resolvedStyle,
+      ref: internalRef,
+      role: role ?? 'checkbox',
+      style: { resolvedStyle, focusRingStyle }
     });
 
     return (
       <PressableWithKeyDown
-        accessibilityHint='Toggles the state'
-        accessibilityLiveRegion='polite'
-        accessible={true}
-        importantForAccessibility={isFocusable ? 'yes' : 'no-hide-descendants'}
-        role={props.role ?? 'checkbox'}
         {...mergedProps}
         disabled={isDisabled}
         focusable={isFocusable}
         tabIndex={tabIndex}
+        importantForAccessibility={isFocusable ? 'yes' : 'no-hide-descendants'}
       >
         {(pressableState: PressableStateCallbackType) =>
-          evaluateStyles(children, {
+          resolveValue(children, {
             ...pressableState,
             ...state,
           })

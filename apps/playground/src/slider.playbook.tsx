@@ -39,7 +39,6 @@ export function SliderPlaybook() {
             style={styles.root}
             value={basicValue.value as number}
           >
-            <Slider.Label style={styles.label}>Volume</Slider.Label>
             <Slider.Control style={styles.control}>
               <Slider.Track style={styles.track}>
                 <Slider.Indicator style={styles.indicator} />
@@ -63,9 +62,6 @@ export function SliderPlaybook() {
             thumbCollisionBehavior='none'
             value={independentValue.value as number[]}
           >
-            <Slider.Label style={styles.label}>
-              Multi-thumb Overlap
-            </Slider.Label>
             <Slider.Control style={styles.control}>
               <Slider.Track style={styles.track}>
                 <Slider.Indicator style={styles.indicator} />
@@ -103,7 +99,6 @@ export function SliderPlaybook() {
             thumbCollisionBehavior='swap'
             value={swapValue.value as number[]}
           >
-            <Slider.Label style={styles.label}>Price range</Slider.Label>
             <Slider.Control style={styles.control}>
               <Slider.Track style={styles.track}>
                 <Slider.Indicator style={styles.indicator} />
@@ -144,7 +139,6 @@ export function SliderPlaybook() {
             thumbCollisionBehavior='push'
             value={pushValue.value as number[]}
           >
-            <Slider.Label style={styles.label}>Multi-thumb push</Slider.Label>
             <Slider.Control style={styles.control}>
               <Slider.Track style={styles.track}>
                 <Slider.Indicator style={styles.indicator} />
@@ -181,9 +175,6 @@ export function SliderPlaybook() {
             style={styles.root}
             value={fixedValue.value as number[]}
           >
-            <Slider.Label style={styles.label}>
-              Fixed-distance chain
-            </Slider.Label>
             <Slider.Control style={styles.control}>
               <Slider.Track style={styles.track}>
                 <Slider.Indicator style={styles.indicator} />
@@ -222,9 +213,6 @@ export function SliderPlaybook() {
             thumbCollisionBehavior='push'
             value={maxStepsValue.value as number[]}
           >
-            <Slider.Label style={styles.label}>
-              Max distance constraint
-            </Slider.Label>
             <Slider.Control style={styles.control}>
               <Slider.Track style={styles.track}>
                 <Slider.Indicator style={styles.indicator} />
@@ -255,7 +243,6 @@ export function SliderPlaybook() {
       <Section title='Disabled'>
         <View style={styles.container}>
           <Slider.Root defaultValue={40} disabled style={styles.root}>
-            <Slider.Label style={styles.label}>Disabled slider</Slider.Label>
             <Slider.Control style={styles.control}>
               <Slider.Track style={styles.track}>
                 <Slider.Indicator style={styles.indicator} />
@@ -297,11 +284,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     height: '100%',
   },
-  label: {
-    color: theme.colors.textPrimary,
-    fontSize: theme.font.size.md,
-    fontWeight: theme.font.weight.medium,
-  },
+
   root: {
     gap: theme.spacing.sm,
   },

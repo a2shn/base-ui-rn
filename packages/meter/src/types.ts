@@ -140,8 +140,5 @@ export interface MeterValueProps extends Omit<TextProps, 'children' | 'style'> {
  * The context value for the Meter component.
  */
 export interface MeterContextValue extends MeterState {
-  /**
-   * The ID of the label element.
-   */
-  labelId: string;
+
 }

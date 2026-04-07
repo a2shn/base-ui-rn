@@ -1,9 +1,10 @@
-import { clamp } from '@base-ui-rn/core';
+import { clamp, useControllableState } from '@base-ui-rn/core';
 import * as React from 'react';
 import { Platform, type View } from 'react-native';
 
 import { calculateNextValues } from './collision';
 import type { SliderRootProps, SliderState, SliderValue } from './types';
+import { resolveTabIndex } from '@base-ui-rn/focus-ring';
 
 const normalizeValue = (value: SliderValue | undefined, min: number) => {
   if (Array.isArray(value)) {
@@ -15,11 +16,6 @@ const normalizeValue = (value: SliderValue | undefined, min: number) => {
   return [min];
 };
 
-/**
- * Manages the state and logic for the Slider primitive.
- * @param props The initialization properties.
- * @returns State and event handlers for the component.
- */
 export function useSlider(props: SliderRootProps) {
   const {
     defaultValue,
@@ -39,7 +35,10 @@ export function useSlider(props: SliderRootProps) {
     thumbAlignment = 'center',
     thumbCollisionBehavior = 'push',
     value,
+    tabIndex: tabIndexProp,
   } = props;
+  const isDisabled = disabled === true;
+  const tabIndex = resolveTabIndex(isDisabled, tabIndexProp);
 
   // Use refs for physical sizes to avoid stale closure issues in rapid updates
   const trackSizeRef = React.useRef(0);
@@ -61,13 +60,7 @@ export function useSlider(props: SliderRootProps) {
 
   const [dragging, setDragging] = React.useState(false);
 
-  const formatter = React.useMemo(() => {
-    try {
-      return new Intl.NumberFormat(locale, format);
-    } catch {
-      return null;
-    }
-  }, [locale, format]);
+
 
   const focusThumb = React.useCallback((index: number) => {
     setFocusedThumbIndex(index);
@@ -79,70 +72,45 @@ export function useSlider(props: SliderRootProps) {
     }
   }, []);
 
-  const isControlled = value !== undefined;
-  const [uncontrolled, setUncontrolled] = React.useState<number[]>(() =>
-    normalizeValue(defaultValue, min).map((item) => clamp(item, min, max)),
-  );
-
-  const current = React.useMemo(
-    () =>
-      normalizeValue(isControlled ? value : uncontrolled, min).map((item) =>
-        clamp(item, min, max),
-      ),
-    [isControlled, value, uncontrolled, min, max],
-  );
+  const [current = [min], setCurrent] = useControllableState<number[]>({
+    defaultProp: normalizeValue(defaultValue, min).map((item) =>
+      clamp(item, min, max),
+    ),
+    onChange: (next: number[]) => {
+      onValueChange?.(next.length === 1 ? next[0] : next);
+    },
+    prop:
+      value !== undefined
+        ? normalizeValue(value, min).map((item) => clamp(item, min, max))
+        : undefined,
+  });
 
   // Critical: Synchronous ref to track current values during rapid dragging
   const currentRef = React.useRef(current);
   currentRef.current = current;
 
   // Stable refs for callback props to avoid re-creating handlers
-  const onValueChangeRef = React.useRef(onValueChange);
-  onValueChangeRef.current = onValueChange;
   const onValueCommittedRef = React.useRef(onValueCommitted);
   onValueCommittedRef.current = onValueCommitted;
 
   const emit = React.useCallback(
-    (
-      next: number[],
-      reason: 'drag' | 'track-press' | 'keyboard' | 'none' | 'input-change',
-    ) => {
+    (next: number[]) => {
       currentRef.current = next; // Update immediately
-      if (!isControlled) {
-        setUncontrolled(next);
-      }
-      onValueChangeRef.current?.(next.length === 1 ? next[0] : next, {
-        reason,
-      });
+      setCurrent(next);
     },
-    [isControlled],
+    [setCurrent],
   );
 
-  const commitValue = React.useCallback(
-    (reason: 'drag' | 'track-press' | 'keyboard' | 'none' | 'input-change') => {
-      onValueCommittedRef.current?.(
-        currentRef.current.length === 1
-          ? currentRef.current[0]
-          : currentRef.current,
-        {
-          reason,
-        },
-      );
-    },
-    [],
-  );
+  const commitValue = React.useCallback(() => {
+    onValueCommittedRef.current?.(
+      currentRef.current.length === 1
+        ? currentRef.current[0]
+        : currentRef.current,
+    );
+  }, []);
 
   const setValueAtIndex = React.useCallback(
-    (
-      index: number,
-      rawValue: number,
-      reason:
-        | 'drag'
-        | 'track-press'
-        | 'keyboard'
-        | 'none'
-        | 'input-change' = 'none',
-    ) => {
+    (index: number, rawValue: number) => {
       const snapped = Math.round((rawValue - min) / step) * step + min;
       const precision = step.toString().split('.')[1]?.length || 0;
       const rounded = Number(snapped.toFixed(precision));
@@ -188,7 +156,7 @@ export function useSlider(props: SliderRootProps) {
 
       if (next.some((v, i) => v !== currentRef.current[i])) {
         const finalNext = next.map((v) => Number(v.toFixed(precision)));
-        emit(finalNext, reason);
+        emit(finalNext);
       }
     },
     [
@@ -205,11 +173,7 @@ export function useSlider(props: SliderRootProps) {
 
   const stepBy = React.useCallback(
     (index: number, delta: number) => {
-      setValueAtIndex(
-        index,
-        currentRef.current[index] + delta * step,
-        'keyboard',
-      );
+      setValueAtIndex(index, currentRef.current[index] + delta * step);
     },
     [step, setValueAtIndex],
   );
@@ -241,41 +205,24 @@ export function useSlider(props: SliderRootProps) {
     ],
   );
 
-  return React.useMemo(
-    () => ({
-      commitValue,
-      focusedThumbIndex,
-      focusThumb,
-      format,
-      formatter,
-      largeStep,
-      locale,
-      setDragging,
-      setFocusedThumbIndex,
-      setThumbSize: handleSetThumbSize,
-      setTrackSize: handleSetTrackSize,
-      setValueAtIndex,
-      state,
-      stepBy,
-      thumbAlignment,
-      thumbNodeHandles,
-      thumbRefs,
-    }),
-    [
-      commitValue,
-      focusedThumbIndex,
-      focusThumb,
-      formatter,
-      format,
-      largeStep,
-      locale,
-      setDragging,
-      handleSetThumbSize,
-      handleSetTrackSize,
-      setValueAtIndex,
-      state,
-      stepBy,
-      thumbAlignment,
-    ],
-  );
+  return {
+    commitValue,
+    focusedThumbIndex,
+    focusThumb,
+    format,
+    largeStep,
+    locale,
+    setDragging,
+    setFocusedThumbIndex,
+    setThumbSize: handleSetThumbSize,
+    setTrackSize: handleSetTrackSize,
+    setValueAtIndex,
+    state,
+    stepBy,
+    thumbAlignment,
+    thumbNodeHandles,
+    thumbRefs,
+    tabIndex,
+    isDisabled,
+  };
 }

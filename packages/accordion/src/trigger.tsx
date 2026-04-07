@@ -1,17 +1,16 @@
 import * as React from 'react';
 import {
-  evaluateStyles,
-  mergeProps,
-  mergeRefs,
   PressableWithKeyDown,
-  useStyle,
+  mergeProps,
+  resolveValue,
 } from '@base-ui-rn/core';
 import { Platform, View } from 'react-native';
 
 import { useAccordionItemContext } from './context';
 import type { AccordionTriggerProps } from './types';
-import { useAccordionTrigger } from './use-accordion';/**
- * The interactive element that toggles the accordion item's panel.
+import { useAccordionTrigger } from './use-accordion-trigger';
+
+/**
  *
  * Supports keyboard activation, focus states, and accessibility attributes.
  * Must be used within an `Accordion.Item`.
@@ -25,7 +24,7 @@ import { useAccordionTrigger } from './use-accordion';/**
  */
 export const AccordionTrigger = React.memo(
   React.forwardRef<View, AccordionTriggerProps>((props, ref) => {
-    const { children, style } = props;
+    const { children, style, ...otherProps } = props;
 
     const {
       isDisabled,
@@ -39,44 +38,47 @@ export const AccordionTrigger = React.memo(
       state,
       isFocusable,
       tabIndex,
-      handleAccessibilityAction
+      handleAccessibilityAction,
     } = useAccordionTrigger(props);
 
     const itemContext = useAccordionItemContext();
 
-    const resolvedStyle = useStyle({
-      additionalStyles: [
-        focusRingStyle,
-        Platform.OS === 'web' && (open || focused) ? { zIndex: 1 } : undefined,
-      ],
-      state,
-      style,
-    });
+    const resolvedStyle = resolveValue(style, state);
 
-    const mergedProps = mergeProps(props, {
-      onBlur: handleBlur,
-      onFocus: handleFocus,
-      onKeyDown: handleKeyDown,
-      onPress: handlePress,
-      onAccessibilityAction: handleAccessibilityAction,
-      ref: mergeRefs(ref, itemContext.triggerRef),
-      style: resolvedStyle,
-      accessibilityState: {
-        disabled: isDisabled,
-        expanded: open,
+    const mergedProps = mergeProps(
+      otherProps,
+      { ref },
+      {
+        onBlur: handleBlur,
+        onFocus: handleFocus,
+        onKeyDown: handleKeyDown,
+        onPress: handlePress,
+        onAccessibilityAction: handleAccessibilityAction,
+        ref: itemContext.triggerRef,
+        role: 'button',
+        style: [
+          focusRingStyle,
+          Platform.OS === 'web' && (open || focused)
+            ? { zIndex: 1 }
+            : undefined,
+          resolvedStyle,
+        ],
+        accessibilityState: {
+          disabled: isDisabled,
+          expanded: open,
+        },
+        accessible: true,
       },
-    });
+    );
 
     return (
       <PressableWithKeyDown
-        accessible
-        role="button"
         {...mergedProps}
         tabIndex={tabIndex}
         disabled={isDisabled}
         focusable={isFocusable}
       >
-        {evaluateStyles(children, state)}
+        {resolveValue(children, state)}
       </PressableWithKeyDown>
     );
   }),

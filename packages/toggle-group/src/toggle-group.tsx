@@ -1,4 +1,4 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import {
   ToggleGroupActionContext,
   ToggleGroupValueContext,
@@ -25,7 +25,7 @@ import { useToggleGroup } from './use-toggle-group';
  * ```
  */ export const ToggleGroup = React.memo(
   React.forwardRef<View, ToggleGroupProps>((props, ref) => {
-    const { children, style } = props;
+    const { children, style, role, ...otherProps } = props;
 
     const {
       isDisabled,
@@ -70,28 +70,29 @@ import { useToggleGroup } from './use-toggle-group';
       ],
     );
 
-    const resolvedStyle = useStyle({ state, style });
+    const resolvedStyle = resolveValue(style, state)
 
-    const mergedProps = mergeProps(props, {
+    const mergedProps = mergeProps(otherProps, {
       accessibilityState: {
         disabled: state.disabled,
       },
       focusable: false,
       ref,
       style: resolvedStyle,
+      accessible: true,
+      accessibilityLiveRegion: 'none',
+      importantForAccessibility: 'yes',
+      role: role ?? (multiple ? 'group' : 'radiogroup')
     });
 
     return (
       <ToggleGroupActionContext.Provider value={actionContext}>
         <ToggleGroupValueContext.Provider value={valueContext}>
           <View
-            accessibilityLiveRegion='none'
-            accessible={true}
-            importantForAccessibility='yes'
-            role={props.role ?? (multiple ? 'group' : 'radiogroup')}
+
             {...mergedProps}
           >
-            {evaluateStyles(children, state)}
+            {resolveValue(children, state)}
           </View>
         </ToggleGroupValueContext.Provider>
       </ToggleGroupActionContext.Provider>

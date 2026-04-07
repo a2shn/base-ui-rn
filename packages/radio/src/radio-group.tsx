@@ -1,4 +1,4 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -22,7 +22,7 @@ import { useRadioGroup } from './use-radio-group';
  */
 export const RadioGroup = React.memo(
   React.forwardRef<View, RadioGroupProps>((props, ref) => {
-    const { children, style } = props;
+    const { children, style, ...otherProps } = props;
 
     const {
       disabled,
@@ -44,22 +44,21 @@ export const RadioGroup = React.memo(
       [state, onRadioKeyDown, onValueChange, readOnly, registerItem],
     );
 
-    const resolvedStyle = useStyle({ state, style });
-
-    const mergedProps = mergeProps(props, {
-      disabled,
+    const resolvedStyle = resolveValue(style, state)
+    const mergedProps = mergeProps(otherProps, {
       focusable: false,
       ref,
       style: resolvedStyle,
       accessibilityState: {
         disabled,
       },
+      role: "group"
     });
 
     return (
       <RadioGroupContext.Provider value={contextValue}>
-        <View role='group' {...mergedProps}>
-          {evaluateStyles(children, state)}
+        <View {...mergedProps}>
+          {resolveValue(children, state)}
         </View>
       </RadioGroupContext.Provider>
     );

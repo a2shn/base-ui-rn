@@ -1,4 +1,4 @@
-import { useControllableState } from '@base-ui-rn/core';
+import { useControllableState, useFormatter } from '@base-ui-rn/core';
 import * as React from 'react';
 
 import type { MeterRootProps, MeterState } from './types';
@@ -22,7 +22,6 @@ export function useMeter(props: MeterRootProps) {
     prop: controlledValue,
   });
 
-  const labelId = React.useId();
 
   const percentage = React.useMemo(() => {
     const range = max - min;
@@ -37,13 +36,15 @@ export function useMeter(props: MeterRootProps) {
     return 'optimum';
   }, [value, low, high]);
 
-  const formattedValue = React.useMemo(() => {
-    try {
-      return new Intl.NumberFormat(locale, format).format(value);
-    } catch {
-      return String(value);
-    }
-  }, [value, locale, format]);
+  const { formattedValues } = useFormatter(
+    React.useMemo(() => [value], [value]),
+    {
+      formatOptions: format,
+      locale,
+    },
+  );
+
+  const formattedValue = formattedValues[0] ?? String(value);
 
   const accessibilityValueText = React.useMemo(() => {
     if (getAccessibilityValueText) {
@@ -74,7 +75,6 @@ export function useMeter(props: MeterRootProps) {
       now: value,
       text: accessibilityValueText,
     },
-    labelId,
     state,
   };
 }

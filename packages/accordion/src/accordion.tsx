@@ -1,10 +1,13 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import {
+  mergeProps,
+  resolveValue,
+} from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
 import { AccordionContext } from './context';
 import type { AccordionRootProps } from './types';
-import { useAccordionRoot } from './use-accordion';
+import { useAccordion } from './use-accordion';
 
 /**
  * Headless accordion root primitive built on top of React Native View.
@@ -21,7 +24,7 @@ import { useAccordionRoot } from './use-accordion';
  */
 export const AccordionRoot = React.memo(
   React.forwardRef<View, AccordionRootProps>((props, ref) => {
-    const { children, style, } = props;
+    const { children, style, ...otherProps } = props;
 
     const {
       baseId,
@@ -36,7 +39,7 @@ export const AccordionRoot = React.memo(
       registerTrigger,
       state,
       toggleItem,
-    } = useAccordionRoot(props);
+    } = useAccordion(props);
 
     const contextValue = React.useMemo(
       () => ({
@@ -64,19 +67,18 @@ export const AccordionRoot = React.memo(
         registerItem,
         registerTrigger,
         toggleItem,
-      ],
+      ]
     );
 
-    const resolvedStyle = useStyle({
-      state,
+    const resolvedStyle = resolveValue(
       style,
-    });
+      state,
+    );
 
-    const mergedProps = mergeProps(props, {
-      disabled: isDisabled,
+    const mergedProps = mergeProps(otherProps, {
+      role: "group",
       focusable: false,
       ref,
-      style: resolvedStyle,
       accessibilityState: {
         disabled: isDisabled,
       },
@@ -84,8 +86,8 @@ export const AccordionRoot = React.memo(
 
     return (
       <AccordionContext.Provider value={contextValue}>
-        <View role="group" {...mergedProps}>
-          {evaluateStyles(children, state)}
+        <View {...mergedProps} style={resolvedStyle}>
+          {resolveValue(children, state)}
         </View>
       </AccordionContext.Provider>
     );

@@ -1,10 +1,10 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
 import { CollapsibleContext } from './context';
 import type { CollapsibleRootProps } from './types';
-import { useCollapsibleRoot } from './use-collapsible';
+import { useCollapsible } from './use-collapsible';
 
 /**
  * A collapsible panel controlled by a button.
@@ -22,9 +22,10 @@ import { useCollapsibleRoot } from './use-collapsible';
  */
 export const CollapsibleRoot = React.memo(
   React.forwardRef<View, CollapsibleRootProps>((props, ref) => {
-    const { children, style } = props;
+    const { children, style, ...otherProps } = props;
 
-    const { baseId, isDisabled, open, state, toggle } = useCollapsibleRoot(props);
+    const { baseId, isDisabled, open, state, toggle } =
+      useCollapsible(props);
 
     const contextValue = React.useMemo(
       () => ({
@@ -36,13 +37,9 @@ export const CollapsibleRoot = React.memo(
       [baseId, isDisabled, open, toggle],
     );
 
-    const resolvedStyle = useStyle({
-      state,
-      style,
-    });
+    const resolvedStyle = resolveValue(style, state);
 
     const mergedProps = mergeProps(props, {
-      disabled: isDisabled,
       focusable: false,
       ref,
       style: resolvedStyle,
@@ -54,9 +51,7 @@ export const CollapsibleRoot = React.memo(
 
     return (
       <CollapsibleContext.Provider value={contextValue}>
-        <View {...mergedProps}>
-          {evaluateStyles(children, state)}
-        </View>
+        <View {...mergedProps}>{resolveValue(children, state)}</View>
       </CollapsibleContext.Provider>
     );
   }),

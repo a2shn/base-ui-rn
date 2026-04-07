@@ -1,9 +1,9 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
 import type { CollapsiblePanelProps } from './types';
-import { useCollapsiblePanel } from './use-collapsible';
+import { useCollapsiblePanel } from './use-collapsible-panel';
 
 /**
  * A panel with the collapsible contents.
@@ -20,18 +20,14 @@ import { useCollapsiblePanel } from './use-collapsible';
  */
 export const CollapsiblePanel = React.memo(
   React.forwardRef<View, CollapsiblePanelProps>((props, ref) => {
-    const { children, style } = props;
+    const { children, style, ...otherProps } = props;
 
-    const { isDisabled, handleOnLayout, open, shouldRender, state } = useCollapsiblePanel(props);
+    const { isDisabled, handleOnLayout, open, shouldRender, state } =
+      useCollapsiblePanel(props);
 
-    const resolvedStyle = useStyle({
-      state,
-      style,
-    });
-
-    const mergedProps = mergeProps(props, {
+    const resolvedStyle = resolveValue(style, state);
+    const mergedProps = mergeProps(otherProps, {
       onLayout: handleOnLayout,
-      disabled: isDisabled,
       focusable: false,
       ref,
       style: resolvedStyle,
@@ -47,11 +43,11 @@ export const CollapsiblePanel = React.memo(
 
     return (
       <View
+        {...mergedProps}
         accessibilityElementsHidden={!open}
         importantForAccessibility={open ? 'yes' : 'no-hide-descendants'}
-        {...mergedProps}
       >
-        {evaluateStyles(children, state)}
+        {resolveValue(children, state)}
       </View>
     );
   }),

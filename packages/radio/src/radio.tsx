@@ -1,17 +1,11 @@
-import {
-  evaluateStyles,
-  PressableWithKeyDown,
-  mergeProps,
-  mergeRefs,
-  useStyle,
-} from '@base-ui-rn/core';
+import { PressableWithKeyDown, mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View, type PressableStateCallbackType } from 'react-native';
 
 import { useOptionalRadioGroupContext } from './radio-group-context';
 import { RadioRootContext } from './radio-root-context';
 import type { RadioRootProps } from './types';
-import { useRadioRoot } from './use-radio';
+import { useRadio } from './use-radio';
 
 /**
  * Headless radio root primitive built on top of React Native Pressable.
@@ -33,11 +27,10 @@ export const RadioRoot = React.memo(
     const groupContext = useOptionalRadioGroupContext();
 
     const internalRef = React.useRef<View>(null);
-    const mergedRef = mergeRefs(internalRef, ref);
 
     const {
       checked,
-      disabled: isDisabled,
+      isDisabled,
       focusRingStyle,
       handleAccessibilityAction,
       handleBlur,
@@ -45,10 +38,9 @@ export const RadioRoot = React.memo(
       handleKeyDown,
       handlePress,
       isFocusable,
-      readOnly: isReadOnly,
       state,
       tabIndex,
-    } = useRadioRoot(props, groupContext);
+    } = useRadio(props, groupContext);
 
     React.useEffect(() => {
       if (groupContext && value && internalRef.current) {
@@ -58,41 +50,37 @@ export const RadioRoot = React.memo(
       return undefined;
     }, [value, groupContext]);
 
-    const resolvedStyle = useStyle({
-      additionalStyles: focusRingStyle,
-      state,
-      style,
-    });
-
-    const mergedProps = mergeProps(otherProps, {
+    const resolvedStyle = resolveValue(style, state)
+    const mergedProps = mergeProps(otherProps, { ref }, {
       onAccessibilityAction: handleAccessibilityAction,
       onBlur: handleBlur,
       onFocus: handleFocus,
       onKeyDown: handleKeyDown,
       onPress: handlePress,
-      ref: mergedRef,
-      style: resolvedStyle,
+      ref: internalRef,
+      style: [focusRingStyle, resolvedStyle],
       accessibilityState: {
-        checked: state.checked,
-        disabled: state.disabled,
+        checked: checked,
+        disabled: isDisabled,
       },
       accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
       accessibilityHint: 'Selects the radio option',
+      accessible: true,
+      role: "radio",
+
     });
 
     return (
       <RadioRootContext.Provider value={state}>
         <PressableWithKeyDown
-          accessible={isFocusable}
-          importantForAccessibility={isFocusable ? 'yes' : 'no'}
-          role='radio'
           {...mergedProps}
+          importantForAccessibility={isFocusable ? 'yes' : 'no'}
           disabled={isDisabled}
           focusable={isFocusable}
           tabIndex={tabIndex}
         >
           {(pressableState: PressableStateCallbackType) =>
-            evaluateStyles(children, { ...pressableState, ...state })
+            resolveValue(children, { ...pressableState, ...state })
           }
         </PressableWithKeyDown>
       </RadioRootContext.Provider>

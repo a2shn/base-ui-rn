@@ -1,4 +1,4 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -19,7 +19,7 @@ import type { RadioIndicatorProps } from './types';
  */
 export const RadioIndicator = React.memo(
   React.forwardRef<View, RadioIndicatorProps>((props, ref) => {
-    const { children, keepMounted = false, style } = props;
+    const { children, keepMounted = false, style, ...otherProps } = props;
 
     const context = useRadioRootContext();
 
@@ -27,17 +27,13 @@ export const RadioIndicator = React.memo(
       return null;
     }
 
-    const resolvedStyle = useStyle({
-      state: context,
-      style,
-    });
-
-    const mergedProps = mergeProps(props, {
+    const resolvedStyle = resolveValue(style, context)
+    const mergedProps = mergeProps(otherProps, {
       ref,
       style: resolvedStyle,
     });
 
-    return <View {...mergedProps}>{evaluateStyles(children, context)}</View>;
+    return <View {...mergedProps}>{resolveValue(children, context)}</View>;
   }),
 );
 

@@ -1,9 +1,9 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
 import type { TabPanelProps } from './types';
-import { useTabPanel } from './use-tabs';
+import { useTabPanel } from './use-tab-panel';
 
 /**
  * A panel displayed when the corresponding tab is active.
@@ -19,26 +19,16 @@ import { useTabPanel } from './use-tabs';
  */
 export const TabPanel = React.memo(
   React.forwardRef<View, TabPanelProps>((props, ref) => {
-    const {
-      children,
-      keepMounted,
-      style,
-      value
-    } = props;
+    const { children, keepMounted, style, value, ...otherProps } = props;
 
     const { shouldRender, state } = useTabPanel({ keepMounted, value });
 
-    const resolvedStyle = useStyle({
-      state,
-      style,
-    });
-
-    const mergedProps = mergeProps(props, {
-      handlers: {},
-      disabled: false,
+    const resolvedStyle = resolveValue(style, state);
+    const mergedProps = mergeProps(otherProps, {
       focusable: false,
       ref,
       style: resolvedStyle,
+      role: 'tabpanel',
     });
 
     if (!shouldRender) {
@@ -47,12 +37,13 @@ export const TabPanel = React.memo(
 
     return (
       <View
-        accessibilityElementsHidden={state.hidden}
-        importantForAccessibility={!state.hidden ? 'yes' : 'no-hide-descendants'}
-        role="tabpanel"
         {...mergedProps}
+        accessibilityElementsHidden={state.hidden}
+        importantForAccessibility={
+          !state.hidden ? 'yes' : 'no-hide-descendants'
+        }
       >
-        {evaluateStyles(children, state)}
+        {resolveValue(children, state)}
       </View>
     );
   }),

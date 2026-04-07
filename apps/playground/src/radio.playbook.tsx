@@ -20,10 +20,10 @@ export function RadioPlaybook() {
     <Gallery title='Radio'>
       <Section title='Basic'>
         <RadioGroup
+          loopFocus
           onValueChange={(v) => value.setValue(v)}
           style={styles.group}
           value={value.value as string}
-          loopFocus
         >
           <View style={styles.item}>
             <Radio.Root style={getRadioRootStyle} value='fuji'>

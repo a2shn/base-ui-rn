@@ -1,15 +1,13 @@
 import {
-  evaluateStyles,
-  mergeProps,
-  mergeRefs,
   PressableWithKeyDown,
-  useStyle,
+  mergeProps,
+  resolveValue,
 } from '@base-ui-rn/core';
 import * as React from 'react';
 import { Platform, View } from 'react-native';
 
 import type { CollapsibleTriggerProps } from './types';
-import { useCollapsibleTrigger } from './use-collapsible';
+import { useCollapsibleTrigger } from './use-collapsible-trigger';
 
 /**
  * A button that opens and closes the collapsible panel.
@@ -24,10 +22,7 @@ import { useCollapsibleTrigger } from './use-collapsible';
  */
 export const CollapsibleTrigger = React.memo(
   React.forwardRef<View, CollapsibleTriggerProps>((props, ref) => {
-    const {
-      children,
-      style,
-    } = props;
+    const { children, style, ...otherProps } = props;
 
     const {
       isDisabled,
@@ -45,38 +40,35 @@ export const CollapsibleTrigger = React.memo(
 
     const internalRef = React.useRef<View>(null);
 
-    const resolvedStyle = useStyle({
-      additionalStyles: [
-        focusRingStyle,
-        Platform.OS === 'web' && (open || focused) ? { zIndex: 1 } : undefined,
-      ],
-      state,
-      style,
-    });
+    const resolvedStyle = resolveValue(style, state);
 
     const mergedProps = mergeProps(props, {
       onBlur: handleBlur,
       onFocus: handleFocus,
       onPress: handlePress,
       onAccessibilityAction: handleAccessibilityAction,
-      ref: [internalRef, ref],
-      style: resolvedStyle,
+      ref: internalRef,
+      style: [
+        focusRingStyle,
+        Platform.OS === 'web' && (open || focused) ? { zIndex: 1 } : undefined,
+        resolvedStyle,
+      ],
       accessibilityState: {
         disabled: isDisabled,
         expanded: open,
       },
+      role: 'button',
+      accessibile: true,
     });
 
     return (
       <PressableWithKeyDown
-        accessible
-        role="button"
         {...mergedProps}
         tabIndex={tabIndex}
         disabled={isDisabled}
         focusable={isFocusable}
       >
-        {evaluateStyles(children, state)}
+        {resolveValue(children, state)}
       </PressableWithKeyDown>
     );
   }),

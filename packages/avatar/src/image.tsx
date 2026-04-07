@@ -1,4 +1,4 @@
-import { mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { Image } from 'react-native';
 
@@ -19,16 +19,17 @@ import { useAvatarImage } from './use-avatar-image';
  */
 export const AvatarImage = React.forwardRef<Image, AvatarImageProps>(
   (props, ref) => {
-    const { style, source } = props;
+    const { style, source, ...otherProps } = props;
     const { loadingStatus } = useAvatarContext();
     const { handleError, handleLoad, handleLoadStart } = useAvatarImage(props);
 
-    const resolvedStyle = useStyle({
-      state: { loadingStatus },
+    const resolvedStyle = resolveValue(
       style,
-    });
+      { loadingStatus },
 
-    const mergedProps = mergeProps(props, {
+    );
+
+    const mergedProps = mergeProps(otherProps, {
       onError: handleError,
       onLoad: handleLoad,
       onLoadStart: handleLoadStart,
@@ -36,11 +37,11 @@ export const AvatarImage = React.forwardRef<Image, AvatarImageProps>(
       focusable: false,
       ref,
       style: resolvedStyle,
+      accessible: true
     });
 
     return (
       <Image
-        accessible={props.accessible ?? false}
         {...mergedProps}
         source={source}
       />

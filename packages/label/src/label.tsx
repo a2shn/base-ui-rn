@@ -1,8 +1,6 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps } from '@base-ui-rn/core';
 import * as React from 'react';
-import { Text } from 'react-native';
-
-import type { LabelProps } from './types';
+import { Text, TextProps } from 'react-native';
 
 /**
  * A primitive text component used to label or describe UI elements.
@@ -16,24 +14,21 @@ import type { LabelProps } from './types';
  * ```
  */
 export const Label = React.memo(
-  React.forwardRef<Text, LabelProps>((props, ref) => {
-    const { children, nativeID, style } = props;
+  React.forwardRef<Text, TextProps>((props, ref) => {
+    const { children, nativeID, id, ...otherProps } = props;
 
-    const resolvedStyle = useStyle({
-      state: {}, // Can be extended if context is added later
-      style,
-    });
+    const reactId = React.useId();
+    const resolvedNativeID = nativeID || id || reactId;
 
-    const mergedProps = mergeProps(props, {
+    const mergedProps = mergeProps(otherProps, {
       disabled: false,
       focusable: false,
       ref,
-      style: resolvedStyle,
     });
 
     return (
-      <Text {...mergedProps} nativeID={nativeID}>
-        {evaluateStyles(children, {})}
+      <Text {...mergedProps} nativeID={resolvedNativeID}>
+        {children}
       </Text>
     );
   }),

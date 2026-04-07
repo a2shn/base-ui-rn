@@ -1,4 +1,4 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { Text } from 'react-native';
 
@@ -15,30 +15,27 @@ import type { ProgressValueProps } from './types';
  */
 export const ProgressValue = React.memo(
   React.forwardRef<Text, ProgressValueProps>((props, ref) => {
-    const { children, style } = props;
+    const { children, style, ...otherProps } = props;
     const context = useProgressContext();
     const { formattedValue } = context;
 
-    const resolvedStyle = useStyle({
-      state: context,
-      style,
-    });
-
-    const mergedProps = mergeProps(props, {
+    const resolvedStyle = resolveValue(style, context)
+    const mergedProps = mergeProps(otherProps, {
       handlers: {},
       disabled: false,
       focusable: false,
       ref,
       style: resolvedStyle,
+      accessibilityElementsHidden: true,
+      importantForAccessibility: "no-hide-descendants"
     });
 
     return (
       <Text
-        accessibilityElementsHidden
-        importantForAccessibility="no-hide-descendants"
+
         {...mergedProps}
       >
-        {evaluateStyles(children, context) ?? formattedValue}
+        {resolveValue(children, context) ?? formattedValue}
       </Text>
     );
   }),

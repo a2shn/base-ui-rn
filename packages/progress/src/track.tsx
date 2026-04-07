@@ -1,4 +1,4 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -15,28 +15,24 @@ import type { ProgressTrackProps } from './types';
  */
 export const ProgressTrack = React.memo(
   React.forwardRef<View, ProgressTrackProps>((props, ref) => {
-    const { children, style } = props;
+    const { children, style, ...otherProps } = props;
     const context = useProgressContext();
 
-    const resolvedStyle = useStyle({
-      state: context,
-      style,
-    });
+    const resolvedStyle = resolveValue(style, context)
 
-    const mergedProps = mergeProps(props, {
-      disabled: false,
+    const mergedProps = mergeProps(otherProps, {
       focusable: false,
       ref,
       style: resolvedStyle,
+      accessibilityElementsHidden: true,
+      importantForAccessibility: "no-hide-descendants"
     });
 
     return (
       <View
-        accessibilityElementsHidden
-        importantForAccessibility="no-hide-descendants"
         {...mergedProps}
       >
-        {evaluateStyles(children, context)}
+        {resolveValue(children, context)}
       </View>
     );
   }),

@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function getToggleStyle({ pressed, focusVisible }: ToggleState) {
+function getToggleStyle({ focusVisible, pressed }: ToggleState) {
   return [
     styles.toggle,
     pressed ? styles.togglePressed : styles.toggleDefault,

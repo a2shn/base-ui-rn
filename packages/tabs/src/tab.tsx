@@ -1,15 +1,13 @@
 import {
-  evaluateStyles,
-  mergeProps,
-  mergeRefs,
   PressableWithKeyDown,
-  useStyle,
+  mergeProps,
+  resolveValue,
 } from '@base-ui-rn/core';
 import * as React from 'react';
 import { Platform, View } from 'react-native';
 
 import type { TabProps } from './types';
-import { useTab } from './use-tabs';
+import { useTab } from './use-tab';
 
 /**
  * An individual interactive tab button that toggles the corresponding panel.
@@ -25,10 +23,7 @@ import { useTab } from './use-tabs';
  */
 export const Tab = React.memo(
   React.forwardRef<View, TabProps>((props, ref) => {
-    const {
-      children,
-      style,
-    } = props;
+    const { children, style, ...otherProps } = props;
 
     const {
       isDisabled,
@@ -45,44 +40,43 @@ export const Tab = React.memo(
       tabIndex,
     } = useTab(props);
 
-    const mergedRef = mergeRefs(internalRef, ref);
+    const resolvedStyle = resolveValue(style, state);
 
-    const resolvedStyle = useStyle({
-      additionalStyles: [
-        focusRingStyle,
-        Platform.OS === 'web' && (state.active || state.focused) ? { zIndex: 1 } : undefined,
-      ],
-      state,
-      style,
-    });
-
-    const mergedProps = mergeProps(props, {
-      onBlur: handleBlur,
-      onFocus: handleFocus,
-      onKeyDown: handleKeyDown,
-      onPress: handlePress,
-      onAccessibilityAction: handleAccessibilityAction,
-      onLayout: handleOnLayout,
-      ref: mergedRef,
-      style: resolvedStyle,
-      accessibilityState: {
-        disabled: isDisabled,
-        selected: state.active,
+    const mergedProps = mergeProps(
+      otherProps,
+      { ref },
+      {
+        onBlur: handleBlur,
+        onFocus: handleFocus,
+        onKeyDown: handleKeyDown,
+        onPress: handlePress,
+        onAccessibilityAction: handleAccessibilityAction,
+        onLayout: handleOnLayout,
+        ref: internalRef,
+        style: [
+          resolvedStyle,
+          focusRingStyle,
+          Platform.OS === 'web' && (state.active || state.focused)
+            ? { zIndex: 1 }
+            : undefined,
+        ],
+        accessibilityState: {
+          disabled: isDisabled,
+          selected: state.active,
+        },
+        accessible: true,
+        role: 'tab',
       },
-    });
-
+    );
 
     return (
       <PressableWithKeyDown
-        accessible
-        role="tab"
         {...mergedProps}
         tabIndex={tabIndex}
         disabled={isDisabled}
         focusable={isFocusable}
-
       >
-        {evaluateStyles(children, state)}
+        {resolveValue(children, state)}
       </PressableWithKeyDown>
     );
   }),

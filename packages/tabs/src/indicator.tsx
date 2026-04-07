@@ -1,9 +1,9 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
 import type { TabsIndicatorProps } from './types';
-import { useTabsIndicator } from './use-tabs';
+import { useTabsIndicator } from './use-tabs-indicator';
 
 /**
  * A visual indicator that can be styled to match the position of the currently active tab.
@@ -15,30 +15,19 @@ import { useTabsIndicator } from './use-tabs';
  */
 export const TabsIndicator = React.memo(
   React.forwardRef<View, TabsIndicatorProps>((props, ref) => {
-    const {
-      children,
-      style,
-    } = props;
+    const { children, style, ...otherProps } = props;
 
     const { state } = useTabsIndicator();
 
-    const resolvedStyle = useStyle({
-      state,
-      style,
-    });
-
-    const mergedProps = mergeProps(props, {
-      disabled: false,
+    const resolvedStyle = resolveValue(style, state);
+    const mergedProps = mergeProps(otherProps, {
       focusable: false,
       ref,
       style: resolvedStyle,
+      importantForAccessibility: 'no-hide-descendants',
     });
 
-    return (
-      <View importantForAccessibility="no-hide-descendants" {...mergedProps}>
-        {evaluateStyles(children, state)}
-      </View>
-    );
+    return <View {...mergedProps}>{resolveValue(children, state)}</View>;
   }),
 );
 

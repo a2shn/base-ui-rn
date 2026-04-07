@@ -1,10 +1,10 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
 import { TabsContext } from './context';
 import type { TabsRootProps } from './types';
-import { useTabsRoot } from './use-tabs';
+import { useTabs } from './use-tabs';
 
 /**
  * Headless tabs root primitive built on top of React Native View.
@@ -31,9 +31,10 @@ export const TabsRoot = React.memo(
       orientation,
       style,
       value,
+      ...otherProps
     } = props;
 
-    const { contextValue, state } = useTabsRoot({
+    const { contextValue, state } = useTabs({
       activateOnFocus,
       defaultValue,
       onFocusChange,
@@ -42,13 +43,8 @@ export const TabsRoot = React.memo(
       value,
     });
 
-    const resolvedStyle = useStyle({
-      state,
-      style,
-    });
-
-    const mergedProps = mergeProps(props, {
-      disabled: false,
+    const resolvedStyle = resolveValue(style, state);
+    const mergedProps = mergeProps(otherProps, {
       focusable: false,
       ref,
       style: resolvedStyle,
@@ -56,9 +52,7 @@ export const TabsRoot = React.memo(
 
     return (
       <TabsContext.Provider value={contextValue}>
-        <View {...mergedProps}>
-          {evaluateStyles(children, state)}
-        </View>
+        <View {...mergedProps}>{resolveValue(children, state)}</View>
       </TabsContext.Provider>
     );
   }),

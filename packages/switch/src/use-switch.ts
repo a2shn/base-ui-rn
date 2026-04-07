@@ -1,4 +1,4 @@
-import { useControllableState, isActivationAction } from '@base-ui-rn/core';
+import { isActivationAction, useControllableState } from '@base-ui-rn/core';
 import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 

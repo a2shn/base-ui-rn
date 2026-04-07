@@ -1,4 +1,4 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -27,41 +27,35 @@ export const ProgressRoot = React.memo(
       accessibilityLiveRegion,
       children,
       style,
+      ...otherProps
     } = props;
 
-    const { accessibilityProps, labelId, state } = useProgress(props);
+    const { accessibilityProps, state } = useProgress(props);
 
-    const contextValue = React.useMemo(
-      () => ({
-        ...state,
-        labelId,
-      }),
-      [state, labelId],
-    );
 
-    const resolvedStyle = useStyle({ state, style });
+    const resolvedStyle = resolveValue(style, state)
 
     const mergedProps = mergeProps(props, {
-      disabled: false,
       focusable: false,
       ref,
       style: resolvedStyle,
+      accessibilityLiveRegion: 'polite',
+      accessible: true,
+      importantForAccessibility: "yes",
+      role: "progressbar"
     });
 
     return (
-      <ProgressContext.Provider value={contextValue}>
+      <ProgressContext.Provider value={state}>
         <View
-          accessibilityLiveRegion={accessibilityLiveRegion ?? 'polite'}
-          accessibilityValue={accessibilityProps}
-          accessible={true}
-          aria-labelledby={accessibilityLabel ? undefined : labelId}
-          importantForAccessibility="yes"
-          role="progressbar"
+
           {...mergedProps}
+
+          accessibilityValue={accessibilityProps}
         >
-          {evaluateStyles(children, state)}
+          {resolveValue(children, state)}
         </View>
-      </ProgressContext.Provider>
+      </ProgressContext.Provider >
     );
   }),
 );

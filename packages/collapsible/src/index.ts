@@ -8,5 +8,7 @@ export const Collapsible = {
   Trigger: CollapsibleTrigger,
 };
 
-
 export * from './types';
+export * from './use-collapsible-root';
+export * from './use-collapsible-trigger';
+export * from './use-collapsible-panel';

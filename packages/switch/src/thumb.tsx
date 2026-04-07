@@ -1,4 +1,4 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -19,15 +19,12 @@ import type { SwitchThumbProps } from './types';
  */
 export const SwitchThumb = React.memo(
   React.forwardRef<View, SwitchThumbProps>((props, ref) => {
-    const { children, style } = props;
+    const { children, style, ...otherProps } = props;
     const state = useSwitchContext();
 
-    const resolvedStyle = useStyle({
-      state,
-      style,
-    });
+    const resolvedStyle = resolveValue(style, state)
 
-    const mergedProps = mergeProps(props, {
+    const mergedProps = mergeProps(otherProps, {
       focusable: false,
       ref,
       style: resolvedStyle,
@@ -35,7 +32,7 @@ export const SwitchThumb = React.memo(
 
     return (
       <View {...mergedProps}>
-        {evaluateStyles(children, state)}
+        {resolveValue(children, state)}
       </View>
     );
   }),

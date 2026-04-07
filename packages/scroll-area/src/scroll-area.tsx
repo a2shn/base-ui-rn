@@ -1,4 +1,4 @@
-import { evaluateStyles, useKeyboard } from '@base-ui-rn/core';
+import { resolveValue, useKeyboard } from '@base-ui-rn/core';
 import * as React from 'react';
 import {
   type NativeSyntheticEvent,
@@ -159,7 +159,7 @@ export const Root = React.memo(
       onKeyDown?.(e);
     };
 
-    const resolvedStyle = evaluateStyles(style, state);
+    const resolvedStyle = resolveValue(style, state);
 
     let webOnlyProps = {};
     if (isWeb) {

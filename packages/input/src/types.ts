@@ -121,11 +121,4 @@ export interface InputProps extends Omit<
   focusableWhenDisabled?: boolean;
 }
 
-/**
- * Props for the Label component.
- */
-export interface LabelProps extends Omit<TextProps, 'style' | 'children'> {
-  style?: StyleProp<TextStyle>;
-  children?: React.ReactNode;
-  nativeID: string;
-}
+

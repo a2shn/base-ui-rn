@@ -1,4 +1,4 @@
-import { evaluateStyles } from '@base-ui-rn/core';
+import { resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import {
   Animated,
@@ -193,7 +193,7 @@ export const Thumb = React.memo(
       scrollY,
     ]);
 
-    const resolvedStyle = evaluateStyles(style, thumbState);
+    const resolvedStyle = resolveValue(style, thumbState);
 
     let sizeStyle: StyleProp<ViewStyle> = { height: thumbSize, width: '100%' };
     if (isHorizontal) {

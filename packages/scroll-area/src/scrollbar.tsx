@@ -1,4 +1,4 @@
-import { evaluateStyles } from '@base-ui-rn/core';
+import { resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import {
   type LayoutChangeEvent,
@@ -89,7 +89,7 @@ export const Scrollbar = React.memo(
       return null;
     }
 
-    const resolvedStyle = evaluateStyles(style, scrollbarState);
+    const resolvedStyle = resolveValue(style, scrollbarState);
 
     const isWeb = Platform.OS === 'web';
     let webStyle: StyleProp<ViewStyle> = {};

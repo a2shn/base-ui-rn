@@ -1,8 +1,8 @@
 import {
-  evaluateStyles,
-  mergeProps,
   PressableWithKeyDown,
-  useStyle,
+  mergeProps,
+  resolveStatefulValue,
+  resolveValue,
 } from '@base-ui-rn/core';
 import * as React from 'react';
 import { type PressableStateCallbackType, View } from 'react-native';
@@ -25,7 +25,7 @@ import { useButton } from './use-button';
  */
 export const Button = React.memo(
   React.forwardRef<View, ButtonProps>(function Button(props, ref) {
-    const { children, style } = props;
+    const { children, style, ...otherProps } = props;
 
     const internalRef = React.useRef<View>(null);
 
@@ -48,36 +48,32 @@ export const Button = React.memo(
       [focused, focusVisible, isDisabled, pressed],
     );
 
-    const resolvedStyle = useStyle({
-      additionalStyles: focusRingStyle,
-      state: buttonState,
-      style,
-    });
+    const resolvedStyle = resolveValue(style, buttonState);
 
-    const mergedProps = mergeProps(props, {
+    const mergedProps = mergeProps(otherProps, { ref }, {
       accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
+      accessibilityHint: 'Activates the button',
       accessibilityState: { disabled: isDisabled, selected: pressed },
+      accessible: true,
       onBlur: handleBlur,
       onFocus: handleFocus,
       onPressIn: handlePressIn,
       onPressOut: handlePressOut,
-      ref: [internalRef, ref],
-      style: resolvedStyle,
+      ref: internalRef,
+      role: 'button',
     });
 
     return (
       <PressableWithKeyDown
-        accessibilityHint='Activates the button'
-        accessible={true}
-        importantForAccessibility={isFocusable ? 'yes' : 'no'}
-        role='button'
         {...mergedProps}
+        style={[resolvedStyle, focusRingStyle]}
         disabled={isDisabled}
         focusable={isFocusable}
         tabIndex={tabIndex}
+        importantForAccessibility={isFocusable ? 'yes' : 'no'}
       >
         {(pressableState: PressableStateCallbackType) =>
-          evaluateStyles(children, { ...pressableState, ...buttonState })
+          resolveValue(children, { ...pressableState, ...buttonState })
         }
       </PressableWithKeyDown>
     );

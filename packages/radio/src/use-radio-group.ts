@@ -1,18 +1,9 @@
-import {
-  useControllableState,
-  useKeyboardNavigation,
-  KeyDownEventData,
-} from '@base-ui-rn/core';
+import { KeyDownEventData, useControllableState, useKeyboardNavigation } from '@base-ui-rn/core';
 import * as React from 'react';
 import type { NativeSyntheticEvent } from 'react-native';
 
 import type { RadioGroupProps, RadioGroupState, RadioValue } from './types';
 
-/**
- * Manages the state and logic for the RadioGroup primitive.
- * @param props The initialization properties.
- * @returns State and event handlers for the group component.
- */
 export function useRadioGroup(props: RadioGroupProps) {
   const {
     defaultValue,

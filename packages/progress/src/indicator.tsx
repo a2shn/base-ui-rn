@@ -1,4 +1,4 @@
-import { mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View, type ViewStyle } from 'react-native';
 
@@ -15,7 +15,7 @@ import type { ProgressIndicatorProps } from './types';
  */
 export const ProgressIndicator = React.memo(
   React.forwardRef<View, ProgressIndicatorProps>((props, ref) => {
-    const { style } = props;
+    const { style, ...otherProps } = props;
     const context = useProgressContext();
     const { percentage } = context;
 
@@ -26,22 +26,19 @@ export const ProgressIndicator = React.memo(
       };
     }, [percentage]);
 
-    const resolvedStyle = useStyle({
-      state: context,
-      style,
-    });
+    const resolvedStyle = resolveValue(style, context)
 
-    const mergedProps = mergeProps(props, {
-      disabled: false,
+    const mergedProps = mergeProps(otherProps, {
       focusable: false,
       ref,
       style: [indicatorStyle, resolvedStyle],
+      accessibilityElementsHidden: true,
+      importantForAccessibility: "no-hide-descendants"
     });
 
     return (
       <View
-        accessibilityElementsHidden
-        importantForAccessibility="no-hide-descendants"
+
         {...mergedProps}
       />
     );

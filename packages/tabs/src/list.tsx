@@ -1,9 +1,9 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
 import type { TabsListProps } from './types';
-import { useTabsList } from './use-tabs';
+import { useTabsList } from './use-tabs-list';
 
 /**
  * Groups the individual tab buttons.
@@ -20,31 +20,19 @@ import { useTabsList } from './use-tabs';
  */
 export const TabsList = React.memo(
   React.forwardRef<View, TabsListProps>((props, ref) => {
-    const {
-      children,
-      style,
-
-    } = props;
+    const { children, style, ...otherProps } = props;
 
     const { state } = useTabsList();
 
-    const resolvedStyle = useStyle({
-      state,
-      style,
-    });
-
-    const mergedProps = mergeProps(props, {
-      disabled: false,
+    const resolvedStyle = resolveValue(style, state);
+    const mergedProps = mergeProps(otherProps, {
       focusable: false,
       ref,
       style: resolvedStyle,
+      role: 'tablist',
     });
 
-    return (
-      <View role="tablist" {...mergedProps}>
-        {evaluateStyles(children, state)}
-      </View>
-    );
+    return <View {...mergedProps}>{resolveValue(children, state)}</View>;
   }),
 );
 

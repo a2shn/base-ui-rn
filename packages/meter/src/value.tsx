@@ -1,4 +1,4 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { Text } from 'react-native';
 
@@ -17,29 +17,24 @@ import type { MeterValueProps } from './types';
  */
 export const MeterValue = React.memo(
   React.forwardRef<Text, MeterValueProps>((props, ref) => {
-    const { children, style } = props;
+    const { children, style, ...otherProps } = props;
     const context = useMeterContext();
     const { formattedValue } = context;
 
-    const resolvedStyle = useStyle({
-      state: context,
-      style,
-    });
-
-    const mergedProps = mergeProps(props, {
-      disabled: false,
+    const resolvedStyle = resolveValue(style, context)
+    const mergedProps = mergeProps(otherProps, {
       focusable: false,
       ref,
+      accessibilityElementsHidden: true,
+      importantForAccessibility: 'no-hide-descendants',
       style: resolvedStyle,
     });
 
     return (
       <Text
-        accessibilityElementsHidden
-        importantForAccessibility='no-hide-descendants'
         {...mergedProps}
       >
-        {evaluateStyles(children, context) ?? formattedValue}
+        {resolveValue(children, context) ?? formattedValue}
       </Text>
     );
   }),

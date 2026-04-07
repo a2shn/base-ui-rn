@@ -1,4 +1,4 @@
-import { evaluateStyles } from '@base-ui-rn/core';
+import { resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -35,7 +35,7 @@ export const Corner = React.memo(
     } = props;
     const { state } = useScrollAreaContext();
 
-    const resolvedStyle = evaluateStyles(style, state);
+    const resolvedStyle = resolveValue(style, state);
 
     if (!state.hasOverflowX || !state.hasOverflowY) {
       return null;

@@ -1,4 +1,4 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -23,41 +23,32 @@ import { useMeter } from './use-meter';
 export const MeterRoot = React.memo(
   React.forwardRef<View, MeterRootProps>((props, ref) => {
     const {
-      accessibilityLabel,
-      accessibilityLiveRegion,
-      accessible,
       children,
       style,
+      ...otherProps
     } = props;
 
-    const { accessibilityProps, labelId, state } = useMeter(props);
+    const { accessibilityProps, state } = useMeter(props);
+    const resolvedStyle = resolveValue(style, state)
 
-    const contextValue = React.useMemo(
-      () => ({ ...state, labelId }),
-      [state, labelId],
-    );
-
-    const resolvedStyle = useStyle({ state, style });
-
-    const mergedProps = mergeProps(props, {
-      disabled: false,
+    const mergedProps = mergeProps(otherProps, {
       focusable: false,
       ref,
       style: resolvedStyle,
+      accessibilityLiveRegion: "none",
+      accessible: true,
+      importantForAccessibility: 'yes',
+      role: 'progressbar'
     });
 
     return (
-      <MeterContext.Provider value={contextValue}>
+      <MeterContext.Provider value={state}>
         <View
-          accessibilityLabelledBy={accessibilityLabel ? undefined : [labelId]}
-          accessibilityLiveRegion={accessibilityLiveRegion ?? 'none'}
-          accessibilityValue={accessibilityProps}
-          accessible={accessible ?? true}
-          importantForAccessibility='yes'
-          role='progressbar'
           {...mergedProps}
+
+          accessibilityValue={accessibilityProps}
         >
-          {evaluateStyles(children, state)}
+          {resolveValue(children, state)}
         </View>
       </MeterContext.Provider>
     );

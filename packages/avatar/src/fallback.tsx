@@ -1,4 +1,4 @@
-import { mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -17,7 +17,7 @@ import type { AvatarFallbackProps } from './types';
  */
 export const AvatarFallback = React.forwardRef<View, AvatarFallbackProps>(
   (props, ref) => {
-    const { children, delay, style } = props;
+    const { children, delay, style, ...otherProps } = props;
     const { loadingStatus } = useAvatarContext();
     const [canRender, setCanRender] = React.useState(delay === undefined);
 
@@ -31,25 +31,25 @@ export const AvatarFallback = React.forwardRef<View, AvatarFallbackProps>(
       return undefined;
     }, [delay]);
 
-    const resolvedStyle = useStyle({
-      state: { loadingStatus },
+    const resolvedStyle = resolveValue(
       style,
-    });
+      { loadingStatus },
+    );
 
-    const mergedProps = mergeProps(props, {
+    const mergedProps = mergeProps(otherProps, {
       disabled: false,
       focusable: false,
       ref,
       style: resolvedStyle,
+      accessible: true
     });
 
     if (canRender && loadingStatus !== 'loaded') {
       return (
         <View
-          accessibilityElementsHidden={isLoading}
-          accessible={props.accessible ?? true}
-          importantForAccessibility={isLoading ? 'no-hide-descendants' : 'yes'}
           {...mergedProps}
+          accessibilityElementsHidden={isLoading}
+          importantForAccessibility={isLoading ? 'no-hide-descendants' : 'yes'}
         >
           {children}
         </View>

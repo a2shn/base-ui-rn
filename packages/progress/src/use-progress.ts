@@ -1,4 +1,4 @@
-import { useControllableState } from '@base-ui-rn/core';
+import { useControllableState, useFormatter } from '@base-ui-rn/core';
 import * as React from 'react';
 
 import type { ProgressRootProps, ProgressState } from './types';
@@ -39,15 +39,16 @@ export function useProgress(props: ProgressRootProps) {
     return clampedRatio * 100;
   }, [value, min, max]);
 
-  const formattedValue = React.useMemo(() => {
-    if (value === null) return null;
+  const { formattedValues } = useFormatter(
+    React.useMemo(() => (value === null ? [] : [value]), [value]),
+    {
+      formatOptions: format,
+      locale,
+    },
+  );
 
-    try {
-      return new Intl.NumberFormat(locale, format).format(value);
-    } catch {
-      return String(value);
-    }
-  }, [value, locale, format]);
+  const formattedValue =
+    value === null ? null : (formattedValues[0] ?? String(value));
 
   const state: ProgressState = React.useMemo(
     () => ({

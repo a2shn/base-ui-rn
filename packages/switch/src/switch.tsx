@@ -1,9 +1,4 @@
-import {
-  evaluateStyles,
-  mergeProps,
-  PressableWithKeyDown,
-  useStyle,
-} from '@base-ui-rn/core';
+import { PressableWithKeyDown, mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { Platform, View } from 'react-native';
 
@@ -28,8 +23,8 @@ export const SwitchRoot = React.memo(
   React.forwardRef<View, SwitchRootProps>((props, ref) => {
     const {
       children,
-      id,
       style,
+      ...otherProps
     } = props;
 
     const {
@@ -47,42 +42,34 @@ export const SwitchRoot = React.memo(
 
     const internalRef = React.useRef<View>(null);
 
-    const resolvedStyle = useStyle({
-      additionalStyles: [
-        focusRingStyle,
-        Platform.OS === 'web' && state.focused ? { zIndex: 1 } : undefined,
-      ],
-      state,
-      style,
-    });
+    const resolvedStyle = resolveValue(style, state)
 
-    const mergedProps = mergeProps(props, {
+    const mergedProps = mergeProps(otherProps, { ref }, {
       onBlur: handleBlur,
       onFocus: handleFocus,
       onPress: handlePress,
       onAccessibilityAction: handleAccessibilityAction,
-      disabled: isDisabled,
-      focusable: isFocusable,
-      ref: [internalRef, ref],
-      style: resolvedStyle,
+      ref: internalRef,
+      style: [resolvedStyle, focusRingStyle,
+        Platform.OS === 'web' && state.focused ? { zIndex: 1 } : undefined]
+      ,
       accessibilityState: {
         checked,
         disabled: isDisabled,
       },
+      accessible: true,
+      role: 'switch'
     });
 
     return (
       <SwitchContext.Provider value={state}>
         <PressableWithKeyDown
-          accessible
-          nativeID={id}
-          role="switch"
           {...mergedProps}
           disabled={isDisabled}
           focusable={isFocusable}
           tabIndex={tabIndex}
         >
-          {evaluateStyles(children, state)}
+          {resolveValue(children, state)}
         </PressableWithKeyDown>
       </SwitchContext.Provider>
     );

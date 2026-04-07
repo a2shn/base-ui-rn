@@ -1,14 +1,9 @@
-import {
-  isActivationAction,
-  useControllableState,
-  KeyDownEventData,
-} from '@base-ui-rn/core';
+import { KeyDownEventData, isActivationAction } from '@base-ui-rn/core';
 import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import {
   type NativeSyntheticEvent,
   Platform,
-  type TargetedEvent,
 } from 'react-native';
 
 import type {
@@ -17,7 +12,7 @@ import type {
   RadioRootState,
 } from './types';
 
-export function useRadioRoot(
+export function useRadio(
   props: RadioRootProps,
   groupContext: RadioGroupContextValue | null,
 ) {
@@ -102,14 +97,14 @@ export function useRadioRoot(
   );
 
   const handleFocus = React.useCallback(
-    (event: NativeSyntheticEvent<TargetedEvent>) => {
+    () => {
       handleFocusIn();
     },
     [handleFocusIn],
   );
 
   const handleBlur = React.useCallback(
-    (event: NativeSyntheticEvent<TargetedEvent>) => {
+    () => {
       handleFocusOut();
     },
     [handleFocusOut],
@@ -125,7 +120,7 @@ export function useRadioRoot(
 
   return {
     checked,
-    disabled: isDisabled,
+    isDisabled,
     focusRingStyle,
     handleAccessibilityAction,
     handleBlur,

@@ -1,17 +1,13 @@
 import * as React from 'react';
 import type { View } from 'react-native';
 
-import type { CommitEventDetails, SliderState } from './types';
+import type { SliderState } from './types';
 
 interface SliderContextValue {
   state: SliderState;
-  setValueAtIndex: (
-    index: number,
-    next: number,
-    reason: CommitEventDetails['reason'],
-  ) => void;
+  setValueAtIndex: (index: number, next: number) => void;
   stepBy: (index: number, delta: number) => void;
-  commitValue: (reason: CommitEventDetails['reason']) => void;
+  commitValue: () => void;
   locale?: Intl.LocalesArgument;
   format?: Intl.NumberFormatOptions;
   thumbAlignment?: 'center' | 'edge' | 'edge-client-only';
@@ -23,7 +19,6 @@ interface SliderContextValue {
   setFocusedThumbIndex: (index: number | null) => void;
   focusedThumbIndex: number | null;
   focusThumb: (index: number) => void;
-  formatter: Intl.NumberFormat | null;
   setDragging: (dragging: boolean) => void;
 }
 

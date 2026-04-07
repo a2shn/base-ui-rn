@@ -1,10 +1,10 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
 import { AccordionItemContext } from './context';
 import type { AccordionItemProps } from './types';
-import { useAccordionItem } from './use-accordion';
+import { useAccordionItem } from './use-accordion-item';
 
 /**
  * A single item within an accordion.
@@ -22,9 +22,10 @@ import { useAccordionItem } from './use-accordion';
  */
 export const AccordionItem = React.memo(
   React.forwardRef<View, AccordionItemProps>((props, ref) => {
-    const { children, style } = props;
+    const { children, style, ...otherProps } = props;
 
-    const { isDisabled, index, open, triggerRef, state, value } = useAccordionItem(props);
+    const { isDisabled, index, open, triggerRef, state, value } =
+      useAccordionItem(props);
 
     const itemContextValue = React.useMemo(
       () => ({
@@ -37,13 +38,9 @@ export const AccordionItem = React.memo(
       [isDisabled, index, open, triggerRef, value],
     );
 
-    const resolvedStyle = useStyle({
-      state,
-      style,
-    });
+    const resolvedStyle = resolveValue(style, state);
 
-    const mergedProps = mergeProps(props, {
-      disabled: isDisabled,
+    const mergedProps = mergeProps(otherProps, {
       focusable: false,
       ref,
       style: resolvedStyle,
@@ -55,9 +52,7 @@ export const AccordionItem = React.memo(
 
     return (
       <AccordionItemContext.Provider value={itemContextValue}>
-        <View {...mergedProps}>
-          {evaluateStyles(children, state)}
-        </View>
+        <View {...mergedProps}>{resolveValue(children, state)}</View>
       </AccordionItemContext.Provider>
     );
   }),

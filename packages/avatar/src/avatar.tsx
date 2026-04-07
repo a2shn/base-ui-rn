@@ -1,4 +1,4 @@
-import { mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -21,7 +21,7 @@ import type { AvatarRootProps, ImageLoadingStatus } from './types';
  */
 export const AvatarRoot = React.forwardRef<View, AvatarRootProps>(
   (props, ref) => {
-    const { children, style } = props;
+    const { children, style, ...otherProps } = props;
 
     const [loadingStatus, setLoadingStatus] =
       React.useState<ImageLoadingStatus>('idle');
@@ -42,12 +42,12 @@ export const AvatarRoot = React.forwardRef<View, AvatarRootProps>(
     );
 
     const isLoading = loadingStatus === 'loading';
-    const resolvedStyle = useStyle({
-      state: { loadingStatus },
-      style
-    });
+    const resolvedStyle = resolveValue(
+      style,
+      { loadingStatus }
+    );
 
-    const mergedProps = mergeProps(props, {
+    const mergedProps = mergeProps(otherProps, {
       disabled: false,
       focusable: false,
       ref,
@@ -55,14 +55,15 @@ export const AvatarRoot = React.forwardRef<View, AvatarRootProps>(
       accessibilityState: {
         busy: isLoading,
       },
+      accessible: true,
+      importantForAccessibility: "yes",
+      role: "img"
     });
 
     return (
       <AvatarContext.Provider value={contextValue}>
         <View
-          accessible={true}
-          importantForAccessibility="yes"
-          role="img"
+
           {...mergedProps}
         >
           {children}
