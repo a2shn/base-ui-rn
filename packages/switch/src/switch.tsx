@@ -38,6 +38,7 @@ export const SwitchRoot = React.memo(
       state,
       isFocusable,
       tabIndex,
+      handleKeyDown
     } = useSwitchRoot(props);
 
     const internalRef = React.useRef<View>(null);
@@ -48,6 +49,7 @@ export const SwitchRoot = React.memo(
       onBlur: handleBlur,
       onFocus: handleFocus,
       onPress: handlePress,
+      onKeyDown: handleKeyDown,
       onAccessibilityAction: handleAccessibilityAction,
       ref: internalRef,
       style: [resolvedStyle, focusRingStyle,

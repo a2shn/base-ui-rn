@@ -37,6 +37,16 @@ export function useSwitchRoot(props: SwitchRootProps) {
     setChecked((prev) => !prev);
   }, [isDisabled, readOnly, setChecked]);
 
+  const handleKeyDown = React.useCallback(
+    (event: any) => {
+      const { key } = event.nativeEvent;
+      if (key === ' ' || key === 'Spacebar') {
+        handlePress();
+      }
+    },
+    [handlePress],
+  );
+
   const handleAccessibilityAction = React.useCallback(
     (event: any) => {
       if (isActivationAction(event.nativeEvent.actionName) && !isDisabled && !readOnly) {
@@ -64,6 +74,7 @@ export function useSwitchRoot(props: SwitchRootProps) {
     handleBlur: onBlur,
     handleFocus: onFocus,
     handlePress,
+    handleKeyDown,
     handleAccessibilityAction,
     isFocusable,
     readOnly,

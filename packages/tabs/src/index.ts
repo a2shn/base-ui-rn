@@ -13,7 +13,7 @@ export const Tabs = {
 };
 
 export * from './types';
-export * from './use-tabs-root';
+export * from './use-tabs';
 export * from './use-tabs-list';
 export * from './use-tab';
 export * from './use-tabs-indicator';

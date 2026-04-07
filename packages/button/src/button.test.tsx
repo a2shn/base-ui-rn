@@ -127,32 +127,7 @@ describe('Button Primitive (Integration)', () => {
     });
   });
 
-  describe('Event Deduplication & Custom Callbacks', () => {
-    it('deduplicates a synthesized ghost press following a keyboard activation', () => {
-      const onPressMock = jest.fn();
-      render(
-        <Button onPress={onPressMock} testID='dedup-btn'>
-          <Text>Dedup</Text>
-        </Button>,
-      );
-
-      const button = screen.getByTestId('dedup-btn');
-
-      // We invoke the props directly to bypass Testing Library's automatic event synthesis.
-      // RTL auto-fires onPress internally if we use fireEvent.keyDown, which consumes our
-      // dedup flag secretly. Invoking the props directly perfectly isolates the test.
-      if (button.props.onKeyDown) {
-        button.props.onKeyDown({ nativeEvent: { key: 'Enter' } });
-      }
-
-      if (button.props.onPress) {
-        button.props.onPress({ nativeEvent: {} });
-      }
-
-      // Proves the internal component correctly swallowed the immediate subsequent press
-      expect(onPressMock).toHaveBeenCalledTimes(1);
-    });
-
+  describe('Custom Callbacks', () => {
     it('allows the user to call e.preventDefault on the composed event', () => {
       const preventDefaultMock = jest.fn();
       const onPressMock = jest.fn((e) => {

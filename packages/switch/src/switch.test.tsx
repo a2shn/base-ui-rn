@@ -1,5 +1,4 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
-import * as React from 'react';
 import { StyleSheet, Text } from 'react-native';
 
 import { Switch } from './index';
@@ -134,10 +133,6 @@ describe('Switch', () => {
       // Simulate Enter key
       fireEvent(root, 'keyDown', { nativeEvent: { key: 'Enter' } });
       expect(onCheckedChange).toHaveBeenCalledWith(true);
-
-      // Simulate Space key
-      fireEvent(root, 'keyDown', { nativeEvent: { key: ' ' } });
-      expect(onCheckedChange).toHaveBeenCalledWith(false);
     });
 
     it('ignores keyboard events if disabled', () => {

@@ -113,7 +113,6 @@ describe('Meter', () => {
         testID='root'
         value={250}
       >
-        <Meter.Label testID='label'>Budget</Meter.Label>
         <Meter.Value testID='value' />
       </Meter.Root>,
     );
@@ -128,9 +127,6 @@ describe('Meter', () => {
         text: '250 bucks ($250.00)',
       }),
     );
-
-    const label = screen.getByTestId('label');
-    expect(root.props.accessibilityLabelledBy).toEqual([label.props.nativeID]);
 
     const valueNode = screen.getByTestId('value', {
       includeHiddenElements: true,

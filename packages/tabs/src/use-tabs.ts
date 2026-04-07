@@ -6,7 +6,7 @@ import {
 import * as React from 'react';
 import type { NativeSyntheticEvent, View } from 'react-native';
 
-import { type TabMeasurement, useTabsContext } from './context';
+import { type TabMeasurement } from './context';
 import type {
   ActivationDirection,
   TabsRootProps,
@@ -14,7 +14,7 @@ import type {
   TabValue,
 } from './types';
 
-export function useTabsRoot(props: TabsRootProps) {
+export function useTabs(props: TabsRootProps) {
   const {
     activateOnFocus = false,
     defaultValue,

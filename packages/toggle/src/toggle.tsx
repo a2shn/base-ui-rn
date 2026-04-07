@@ -1,7 +1,6 @@
 import {
   PressableWithKeyDown,
   mergeProps,
-  resolveStatefulValue,
   resolveValue,
 } from '@base-ui-rn/core';
 import * as React from 'react';
@@ -58,27 +57,32 @@ export const Toggle = React.memo(
       return undefined;
     }, [value, isInGroup, registerItem, registerValue]);
 
-    const resolvedStyle = resolveStatefulValue(style, state);
+    const resolvedStyle = resolveValue(style, state);
 
-    const mergedProps = mergeProps(otherProps, { ref }, {
-      accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
-      accessibilityHint: 'Toggles the state',
-      accessibilityLiveRegion: 'polite',
-      accessibilityState: {
-        checked: state.pressed,
-        disabled: isDisabled,
+    const mergedProps = mergeProps(
+      {
+        accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
+        accessibilityState: {
+          checked: state.pressed,
+          disabled: isDisabled,
+        },
+        onAccessibilityAction: handleAccessibilityAction,
+        onBlur: handleBlur,
+        onFocus: handleFocus,
+        onKeyDown: handleKeyDown,
+        onPress: handlePress,
+        ref: internalRef,
+        style: [resolvedStyle, focusRingStyle]
       },
-      accessible: true,
-      onAccessibilityAction: handleAccessibilityAction,
-      onBlur: handleBlur,
-      onFocus: handleFocus,
-      onKeyDown: handleKeyDown,
-      onPress: handlePress,
-      ref: internalRef,
-      role: role ?? 'checkbox',
-      style: { resolvedStyle, focusRingStyle }
-    });
-
+      { ref },
+      otherProps,
+      {
+        accessibilityHint: 'Toggles the state',
+        accessibilityLiveRegion: 'polite',
+        accessible: true,
+        role: role ?? 'checkbox',
+      }
+    );
     return (
       <PressableWithKeyDown
         {...mergedProps}

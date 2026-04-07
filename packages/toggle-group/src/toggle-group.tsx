@@ -19,11 +19,12 @@ import { useToggleGroup } from './use-toggle-group';
  * @example
  * ```tsx
  * <ToggleGroup value={value} onValueChange={setValue} multiple>
- *  <Toggle value="a"><Text>Option A</Text></Toggle>
- *  <Toggle value="b"><Text>Option B</Text></Toggle>
+ * <Toggle value="a"><Text>Option A</Text></Toggle>
+ * <Toggle value="b"><Text>Option B</Text></Toggle>
  * </ToggleGroup>
  * ```
- */ export const ToggleGroup = React.memo(
+ */
+export const ToggleGroup = React.memo(
   React.forwardRef<View, ToggleGroupProps>((props, ref) => {
     const { children, style, role, ...otherProps } = props;
 
@@ -70,28 +71,30 @@ import { useToggleGroup } from './use-toggle-group';
       ],
     );
 
-    const resolvedStyle = resolveValue(style, state)
+    const resolvedStyle = resolveValue(style, state);
 
-    const mergedProps = mergeProps(otherProps, {
-      accessibilityState: {
-        disabled: state.disabled,
+    const mergedProps = mergeProps(
+      {
+        accessibilityState: {
+          disabled: state.disabled,
+        },
+        style: resolvedStyle,
       },
-      focusable: false,
-      ref,
-      style: resolvedStyle,
-      accessible: true,
-      accessibilityLiveRegion: 'none',
-      importantForAccessibility: 'yes',
-      role: role ?? (multiple ? 'group' : 'radiogroup')
-    });
+      { ref },
+      otherProps,
+      {
+        focusable: false,
+        accessible: true,
+        accessibilityLiveRegion: 'none',
+        importantForAccessibility: 'yes',
+        role: role ?? (multiple ? 'group' : 'radiogroup')
+      }
+    );
 
     return (
       <ToggleGroupActionContext.Provider value={actionContext}>
         <ToggleGroupValueContext.Provider value={valueContext}>
-          <View
-
-            {...mergedProps}
-          >
+          <View {...mergedProps}>
             {resolveValue(children, state)}
           </View>
         </ToggleGroupValueContext.Provider>

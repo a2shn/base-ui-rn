@@ -9,6 +9,6 @@ export const Collapsible = {
 };
 
 export * from './types';
-export * from './use-collapsible-root';
+export * from './use-collapsible';
 export * from './use-collapsible-trigger';
 export * from './use-collapsible-panel';

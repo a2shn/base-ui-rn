@@ -1,7 +1,6 @@
 import {
   PressableWithKeyDown,
   mergeProps,
-  resolveStatefulValue,
   resolveValue,
 } from '@base-ui-rn/core';
 import * as React from 'react';

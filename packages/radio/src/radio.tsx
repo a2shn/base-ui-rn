@@ -25,7 +25,6 @@ export const RadioRoot = React.memo(
     const { children, style, value, ...otherProps } = props;
 
     const groupContext = useOptionalRadioGroupContext();
-
     const internalRef = React.useRef<View>(null);
 
     const {
@@ -50,33 +49,39 @@ export const RadioRoot = React.memo(
       return undefined;
     }, [value, groupContext]);
 
-    const resolvedStyle = resolveValue(style, state)
-    const mergedProps = mergeProps(otherProps, { ref }, {
-      onAccessibilityAction: handleAccessibilityAction,
-      onBlur: handleBlur,
-      onFocus: handleFocus,
-      onKeyDown: handleKeyDown,
-      onPress: handlePress,
-      ref: internalRef,
-      style: [focusRingStyle, resolvedStyle],
-      accessibilityState: {
-        checked: checked,
-        disabled: isDisabled,
-      },
-      accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
-      accessibilityHint: 'Selects the radio option',
-      accessible: true,
-      role: "radio",
+    const resolvedStyle = resolveValue(style, state);
 
-    });
+    const mergedProps = mergeProps(
+      {
+        accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
+        accessibilityState: {
+          checked: checked,
+          disabled: isDisabled,
+        },
+        onAccessibilityAction: handleAccessibilityAction,
+        onBlur: handleBlur,
+        onFocus: handleFocus,
+        onKeyDown: handleKeyDown,
+        onPress: handlePress,
+        ref: internalRef,
+        style: [resolvedStyle, focusRingStyle],
+      },
+      { ref },
+      otherProps,
+      {
+        accessibilityHint: 'Selects the radio option',
+        accessible: true,
+        role: "radio",
+      }
+    );
 
     return (
       <RadioRootContext.Provider value={state}>
         <PressableWithKeyDown
           {...mergedProps}
-          importantForAccessibility={isFocusable ? 'yes' : 'no'}
           disabled={isDisabled}
           focusable={isFocusable}
+          importantForAccessibility={isFocusable ? 'yes' : 'no'}
           tabIndex={tabIndex}
         >
           {(pressableState: PressableStateCallbackType) =>

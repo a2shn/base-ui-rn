@@ -6,7 +6,6 @@ import {
 import * as React from 'react';
 import type { NativeSyntheticEvent, View } from 'react-native';
 
-import { useAccordionContext } from './context';
 import type { AccordionRootProps, AccordionRootState } from './types';
 
 function useId(prefix = 'accordion') {
@@ -21,7 +20,7 @@ function getValueArray(value: string | string[] | undefined): string[] {
   return Array.isArray(value) ? value : [value];
 }
 
-export function useAccordionRoot(props: AccordionRootProps) {
+export function useAccordion(props: AccordionRootProps) {
   const {
     defaultValue,
     disabled = false,

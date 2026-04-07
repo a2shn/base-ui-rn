@@ -79,7 +79,7 @@ export function useToggle(props: ToggleProps) {
   }, [toggle]);
 
   const handleAccessibilityAction = React.useCallback(
-    (event: { nativeEvent?: { actionName?: string } }) => {
+    (event: any) => {
       if (isActivationAction(event.nativeEvent?.actionName) && !isDisabled) {
         toggle();
       }

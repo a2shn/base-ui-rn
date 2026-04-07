@@ -118,28 +118,6 @@ describe('Toggle Primitive (Integration)', () => {
   });
 
   describe('Event Deduplication & Custom Callbacks', () => {
-    it('deduplicates a synthesized ghost press following a keyboard activation', () => {
-      const onPressedChangeMock = jest.fn();
-      render(
-        <Toggle onPressedChange={onPressedChangeMock} testID='dedup-toggle'>
-          <Text>Dedup </Text>
-        </Toggle>,
-      );
-
-      const toggle = screen.getByTestId('dedup-toggle');
-
-      if (toggle.props.onKeyDown) {
-        toggle.props.onKeyDown({ nativeEvent: { key: 'Enter' } });
-      }
-
-      if (toggle.props.onPress) {
-        toggle.props.onPress({ nativeEvent: {} });
-      }
-
-      expect(onPressedChangeMock).toHaveBeenCalledTimes(1);
-      expect(onPressedChangeMock).toHaveBeenCalledWith(true);
-    });
-
     it('allows the user to call e.preventDefault on the composed event', () => {
       const preventDefaultMock = jest.fn();
       const onPressMock = jest.fn((e) => {

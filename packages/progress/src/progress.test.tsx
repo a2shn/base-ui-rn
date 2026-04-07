@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react-native';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 
 import { Progress } from './index';
 
@@ -103,7 +103,7 @@ describe('Progress', () => {
     it('sets correct accessibility properties on the root', () => {
       render(
         <Progress.Root max={100} min={0} testID="root" value={30}>
-          <Progress.Label>Loading</Progress.Label>
+          <Text>Loading</Text>
         </Progress.Root>,
       );
 
@@ -121,7 +121,7 @@ describe('Progress', () => {
     it('links Label and Root via accessibilityLabelledBy', () => {
       render(
         <Progress.Root testID="root" value={50}>
-          <Progress.Label testID="label">Downloading...</Progress.Label>
+          <Text testID="label">Downloading...</Text>
         </Progress.Root>,
       );
 

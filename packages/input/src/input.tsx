@@ -1,4 +1,4 @@
-import { evaluateStyles, mergeProps, useStyle } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { TextInput } from 'react-native';
 
@@ -24,7 +24,7 @@ export const Input = React.memo(
     const {
       focusRingStyle,
       handleBlur,
-      handleChange,
+      handleChangeText,
       handleFocus,
       isDisabled,
       isFocusable,
@@ -35,21 +35,17 @@ export const Input = React.memo(
 
     const internalRef = React.useRef<TextInput>(null);
 
-    const resolvedStyle = useStyle({
-      additionalStyles: focusRingStyle,
-      state,
-      style,
-    });
+    const resolvedStyle = resolveValue(style, state)
 
     const mergedProps = mergeProps(otherProps, { ref }, {
       accessibilityState: {
         disabled: isDisabled
       },
       onBlur: handleBlur,
-      onChange: handleChange,
+      onChangeText: handleChangeText,
       onFocus: handleFocus,
       ref: internalRef,
-      style: resolvedStyle,
+      style: [resolvedStyle, focusRingStyle],
       submitBehavior: 'blurAndSubmit',
       accessible: true
     });
@@ -62,7 +58,7 @@ export const Input = React.memo(
         tabIndex={tabIndex}
         value={value}
       >
-        {evaluateStyles(children, state)}
+        {resolveValue(children, state)}
       </TextInput>
     );
   }),

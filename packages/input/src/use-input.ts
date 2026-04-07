@@ -63,16 +63,16 @@ export function useInput(props: InputProps) {
     setTouched(true);
   }, [onBlur, setTouched]);
 
-  const handleChange = React.useCallback(
-    (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+  const handleChangeText = React.useCallback(
+    (text: string) => {
       if (readOnly || isDisabled) return;
 
-      const nextValue = e.nativeEvent.text;
+      const nextValue = text;
 
       setValue(nextValue);
       setDirty(true);
 
-      onValueChange?.(nextValue, { nativeEvent: e });
+      onValueChange?.(nextValue);
     },
     [readOnly, isDisabled, setValue, setDirty, onValueChange],
   );
@@ -107,7 +107,7 @@ export function useInput(props: InputProps) {
   return {
     focusRingStyle,
     handleBlur,
-    handleChange,
+    handleChangeText,
     handleFocus: onFocus,
     isDisabled,
     isFocusable,

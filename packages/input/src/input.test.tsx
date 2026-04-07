@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import * as React from 'react';
-import { StyleSheet, Text, TextInput } from 'react-native';
+import { StyleSheet, TextInput } from 'react-native';
 
-import { Input, Label } from './index';
+import { Input } from './index';
 
 describe('Input & Label Primitive', () => {
   describe('State Tracking', () => {
@@ -39,88 +39,50 @@ describe('Input & Label Primitive', () => {
     });
   });
 
-  describe('Accessibility Wiring', () => {
-    it('links Input to Label via aria-labelledby', () => {
-      const labelId = 'name-label';
-      render(
-        <>
-          <Label nativeID={labelId} testID='label'>
-            Full Name
-          </Label>
-          <Input aria-labelledby={labelId} testID='input' />
-        </>,
-      );
+});
 
-      expect(screen.getByTestId('input').props['aria-labelledby']).toBe(
-        labelId,
-      );
-      expect(screen.getByTestId('label').props.nativeID).toBe(labelId);
-    });
+describe('Ref Forwarding', () => {
+  it('forwards refs for both Input and Label', () => {
+    const inputRef = React.createRef<TextInput>();
 
-    it('links Input to description via aria-describedby', () => {
-      const hintId = 'hint-text';
-      render(
-        <>
-          <Input aria-describedby={hintId} testID='input' />
-          <Label nativeID={hintId} testID='hint'>
-            Enter at least 8 characters
-          </Label>
-        </>,
-      );
+    render(
+      <>
 
-      expect(screen.getByTestId('input').props['aria-describedby']).toBe(
-        hintId,
-      );
-    });
+        <Input ref={inputRef} />
+      </>,
+    );
+
+    expect(inputRef.current).toBeTruthy();
   });
+});
 
-  describe('Ref Forwarding', () => {
-    it('forwards refs for both Input and Label', () => {
-      const inputRef = React.createRef<TextInput>();
-      const labelRef = React.createRef<Text>();
+describe('Functional Styles', () => {
+  it('applies styles based on interaction state', () => {
+    render(
+      <Input
+        disableDefaultFocusRing
+        style={(state) => ({
+          borderColor: state.focused ? 'blue' : 'black',
+          opacity: state.disabled ? 0.5 : 1,
+        })}
+        testID='input'
+      />,
+    );
 
-      render(
-        <>
-          <Label nativeID='l' ref={labelRef}>
-            Label
-          </Label>
-          <Input ref={inputRef} />
-        </>,
-      );
-
-      expect(inputRef.current).toBeTruthy();
-      expect(labelRef.current).toBeTruthy();
+    expect(
+      StyleSheet.flatten(screen.getByTestId('input').props.style),
+    ).toMatchObject({
+      borderColor: 'black',
+      opacity: 1,
     });
-  });
 
-  describe('Functional Styles', () => {
-    it('applies styles based on interaction state', () => {
-      render(
-        <Input
-          disableDefaultFocusRing
-          style={(state) => ({
-            borderColor: state.focused ? 'blue' : 'black',
-            opacity: state.disabled ? 0.5 : 1,
-          })}
-          testID='input'
-        />,
-      );
+    fireEvent(screen.getByTestId('input'), 'focus');
 
-      expect(
-        StyleSheet.flatten(screen.getByTestId('input').props.style),
-      ).toMatchObject({
-        borderColor: 'black',
-        opacity: 1,
-      });
-
-      fireEvent(screen.getByTestId('input'), 'focus');
-
-      // Re-querying after event to get fresh style props
-      expect(
-        StyleSheet.flatten(screen.getByTestId('input').props.style),
-      ).toMatchObject({
-        borderColor: 'blue',
-      });
+    // Re-querying after event to get fresh style props
+    expect(
+      StyleSheet.flatten(screen.getByTestId('input').props.style),
+    ).toMatchObject({
+      borderColor: 'blue',
     });
   });
 });

@@ -13,7 +13,7 @@ export const Accordion = {
 };
 
 export * from './types';
-export * from './use-accordion-root';
+export * from './use-accordion';
 export * from './use-accordion-item';
 export * from './use-accordion-trigger';
 export * from './use-accordion-header';
