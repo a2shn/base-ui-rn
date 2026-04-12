@@ -82,6 +82,7 @@ export function useGesture(props: UseGestureProps) {
           } else {
             initialScrollRef.current = rawScrollY.current;
           }
+          viewportRef.current?.setNativeProps?.({ scrollEnabled: false });
         },
         onPanResponderMove: (_, gestureState) => {
           if (scrollbarDimRef.current === thumbSize) {
@@ -115,9 +116,11 @@ export function useGesture(props: UseGestureProps) {
         },
         onPanResponderRelease: () => {
           setIsDragging(false);
+          viewportRef.current?.setNativeProps?.({ scrollEnabled: true });
         },
         onPanResponderTerminate: () => {
           setIsDragging(false);
+          viewportRef.current?.setNativeProps?.({ scrollEnabled: true });
         },
         onStartShouldSetPanResponder: () => false,
       }),

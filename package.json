@@ -5,10 +5,11 @@
     "lint": "pnpm -r lint",
     "dev": "pnpm -r dev",
     "test": "jest",
-    "test:e2e": "tsx scripts/manage.ts e2e",
+    "test:e2e": "node scripts/manage.ts e2e",
     "test:e2e:all": "maestro test apps/playground/e2e/",
     "studio": "maestro studio",
-    "manage": "tsx scripts/manage.ts"
+    "manage": "node scripts/manage.cjs",
+    "ctx": "node scripts/context.js"
   },
   "devDependencies": {
     "@testing-library/react-native": "^13.3.3",
@@ -16,7 +17,6 @@
     "jest-expo": "~54.0.17",
     "prettier": "^3.8.1",
     "react-test-renderer": "19.1.0",
-    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
 }

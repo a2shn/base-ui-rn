@@ -9,11 +9,11 @@ const rl = createInterface({
   output: process.stdout,
 });
 
-const ask = (query: string): Promise<string> => {
+const ask = (query) => {
   return new Promise((resolve) => rl.question(query, resolve));
 };
 
-const runCommand = (cmd: string, args: string[]): Promise<number> => {
+const runCommand = (cmd, args) => {
   return new Promise((resolve, reject) => {
     const proc = spawn(cmd, args, {
       stdio: 'inherit',
@@ -30,7 +30,7 @@ const runCommand = (cmd: string, args: string[]): Promise<number> => {
   });
 };
 
-async function getE2EFiles(): Promise<string[]> {
+async function getE2EFiles() {
   const e2eDir = join(process.cwd(), 'apps/playground/e2e');
   try {
     const files = await readdir(e2eDir);
@@ -42,8 +42,8 @@ async function getE2EFiles(): Promise<string[]> {
   }
 }
 
-async function runTests(packageName?: string) {
-  let exitCode: number;
+async function runTests(packageName) {
+  let exitCode;
   if (packageName) {
     console.log(`\n🧪 Running tests for ${packageName}...\n`);
     exitCode = await runCommand('jest', [`packages/${packageName}`]);
@@ -54,7 +54,7 @@ async function runTests(packageName?: string) {
   process.exit(exitCode);
 }
 
-async function runE2ETests(testName?: string) {
+async function runE2ETests(testName) {
   const e2eFiles = await getE2EFiles();
 
   if (e2eFiles.length === 0) {
@@ -62,7 +62,7 @@ async function runE2ETests(testName?: string) {
     process.exit(1);
   }
 
-  let selectedTest: string;
+  let selectedTest;
 
   if (testName) {
     if (e2eFiles.includes(testName)) {
@@ -107,7 +107,8 @@ async function runE2ETests(testName?: string) {
     `\n🚀 Running ${selectedTest === 'all' ? 'all tests' : selectedTest}...\n`,
   );
 
-  let exitCode: number;
+  let exitCode;
+
   if (selectedTest === 'all') {
     exitCode = await runCommand('maestro', ['test', 'apps/playground/e2e/']);
   } else {
@@ -138,7 +139,7 @@ async function createNewPackage() {
     console.error(`Error: packages/${safeName} already exists.`);
     rl.close();
     return;
-  } catch {}
+  } catch { }
 
   try {
     await mkdir(packageDir, { recursive: true });
@@ -165,7 +166,6 @@ async function createNewPackage() {
       },
       devDependencies: {
         [`${scope}/eslint-config`]: 'workspace:*',
-        [`${scope}/test-utils`]: 'workspace:*',
         '@types/jest': '^30.0.0',
         '@types/node': '^22.0.0',
         '@types/react': '^19.0.0',
@@ -197,7 +197,7 @@ async function createNewPackage() {
         },
         types: ['node', 'jest'],
       },
-      exclude: ['node_modules', 'dist', '**/__tests__', '**/*.test.tsx'],
+      exclude: ['node_modules', 'dist'],
       include: ['src'],
     };
 
@@ -226,7 +226,7 @@ async function createNewPackage() {
   }
 }
 
-async function cleanCodebase(hard: boolean) {
+async function cleanCodebase(hard) {
   const targets = ['dist', 'build', '.turbo', '.expo', 'tsconfig.tsbuildinfo'];
   if (hard) targets.push('node_modules', 'pnpm-lock.yaml');
   await recursiveDelete(process.cwd(), targets);
@@ -234,7 +234,7 @@ async function cleanCodebase(hard: boolean) {
   rl.close();
 }
 
-async function recursiveDelete(dir: string, targetNames: string[]) {
+async function recursiveDelete(dir, targetNames) {
   try {
     const entries = await readdir(dir, { withFileTypes: true });
     for (const entry of entries) {
@@ -251,7 +251,7 @@ async function recursiveDelete(dir: string, targetNames: string[]) {
         await recursiveDelete(fullPath, targetNames);
       }
     }
-  } catch (err) {}
+  } catch (err) { }
 }
 
 async function showMenu() {

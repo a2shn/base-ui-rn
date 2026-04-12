@@ -1,4 +1,3 @@
-import type { ARIABaseProps, ARIATraitOrientation } from '@base-ui-rn/core';
 import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type * as React from 'react';
 import type {
@@ -162,138 +161,10 @@ export interface ScrollAreaThumbState {
 export type ScrollAreaCornerState = ScrollAreaRootState;
 
 /**
- * Web-specific accessibility and data attributes for ScrollArea Root.
- */
-export interface WebScrollAreaRootProps extends ARIABaseProps {
-  /**
-   * Present when the scroll area content is wider than the viewport.
-   */
-  'data-has-overflow-x'?: boolean;
-  /**
-   * Present when the scroll area content is taller than the viewport.
-   */
-  'data-has-overflow-y'?: boolean;
-  /**
-   * Present when there is overflow on the horizontal end side.
-   */
-  'data-overflow-x-end'?: boolean;
-  /**
-   * Present when there is overflow on the horizontal start side.
-   */
-  'data-overflow-x-start'?: boolean;
-  /**
-   * Present when there is overflow on the vertical end side.
-   */
-  'data-overflow-y-end'?: boolean;
-  /**
-   * Present when there is overflow on the vertical start side.
-   */
-  'data-overflow-y-start'?: boolean;
-  /**
-   * Present when the user is currently scrolling.
-   */
-  'data-scrolling'?: boolean;
-}
-
-/**
- * Web-specific accessibility and data attributes for ScrollArea Viewport.
- */
-export interface WebScrollAreaViewportProps extends ARIABaseProps {
-  /**
-   * Present when the scroll area content is wider than the viewport.
-   */
-  'data-has-overflow-x'?: boolean;
-  /**
-   * Present when the scroll area content is taller than the viewport.
-   */
-  'data-has-overflow-y'?: boolean;
-  /**
-   * Present when there is overflow on the horizontal end side.
-   */
-  'data-overflow-x-end'?: boolean;
-  /**
-   * Present when there is overflow on the horizontal start side.
-   */
-  'data-overflow-x-start'?: boolean;
-  /**
-   * Present when there is overflow on the vertical end side.
-   */
-  'data-overflow-y-end'?: boolean;
-  /**
-   * Present when there is overflow on the vertical start side.
-   */
-  'data-overflow-y-start'?: boolean;
-  /**
-   * Present when the user is currently scrolling.
-   */
-  'data-scrolling'?: boolean;
-}
-
-/**
- * Web-specific accessibility and data attributes for ScrollArea Scrollbar.
- */
-export interface WebScrollAreaScrollbarProps extends ARIABaseProps {
-  /**
-   * Indicates the orientation of the scrollbar.
-   */
-  'data-orientation'?: ScrollAreaOrientation;
-  /**
-   * Present when the scroll area content is wider than the viewport.
-   */
-  'data-has-overflow-x'?: boolean;
-  /**
-   * Present when the scroll area content is taller than the viewport.
-   */
-  'data-has-overflow-y'?: boolean;
-  /**
-   * Present when the pointer is over the scroll area.
-   */
-  'data-hovering'?: boolean;
-  /**
-   * Present when there is overflow on the horizontal end side.
-   */
-  'data-overflow-x-end'?: boolean;
-  /**
-   * Present when there is overflow on the horizontal start side.
-   */
-  'data-overflow-x-start'?: boolean;
-  /**
-   * Present when there is overflow on the vertical end side.
-   */
-  'data-overflow-y-end'?: boolean;
-  /**
-   * Present when there is overflow on the vertical start side.
-   */
-  'data-overflow-y-start'?: boolean;
-  /**
-   * Present when the user is currently scrolling.
-   */
-  'data-scrolling'?: boolean;
-  /**
-   * Defines a keyboard shortcut that activates or focuses the element.
-   */
-  'aria-keyshortcuts'?: string;
-}
-
-/**
- * Web-specific accessibility and data attributes for ScrollArea Thumb.
- */
-export interface WebScrollAreaThumbProps extends ARIABaseProps {
-  /**
-   * Indicates the orientation of the scrollbar.
-   */
-  'data-orientation'?: ScrollAreaOrientation;
-  /**
-   * Defines a keyboard shortcut that activates or focuses the element.
-   */
-  'aria-keyshortcuts'?: string;
-}
-
-/**
  * Props for the ScrollArea root element.
  */
 export interface ScrollAreaRootProps
-  extends Omit<ViewProps, 'style'>, WebScrollAreaRootProps {
+  extends Omit<ViewProps, 'style'> {
   /**
    * The visibility of the scrollbars.
    * - 'auto': Visible when scrolling and when hovering.
@@ -327,10 +198,7 @@ export interface ScrollAreaRootProps
    * @default 0.9
    */
   keyboardPageStep?: number;
-  /**
-   * The children of the component.
-   */
-  children?: React.ReactNode;
+
   /**
    * Event handler for key down events on web.
    */
@@ -347,15 +215,6 @@ export interface ScrollAreaRootProps
    */
   disableDefaultFocusRing?: boolean;
   /**
-   * Custom style for the focus ring.
-   */
-  focusRingStyle?: StyleProp<ViewStyle>;
-  /**
-   * Whether to force the focus visible state.
-   * @default false
-   */
-  focusVisible?: boolean;
-  /**
    * Whether the element should remain focusable when disabled.
    * @default false
    */
@@ -367,12 +226,7 @@ export interface ScrollAreaRootProps
  */
 export interface ScrollAreaViewportProps
   extends
-    Omit<ScrollViewProps, 'style' | 'children'>,
-    WebScrollAreaViewportProps {
-  /**
-   * The children of the component.
-   */
-  children?: React.ReactNode;
+    Omit<ScrollViewProps, 'style'> {
   /**
    * The style applied to the component.
    */
@@ -394,21 +248,14 @@ export interface ScrollAreaViewportProps
    * Custom style for the focus ring.
    */
   focusRingStyle?: StyleProp<ViewStyle>;
-  /**
-   * Whether to force the focus visible state.
-   * @default false
-   */
-  focusVisible?: boolean;
+
 }
 
 /**
  * Props for the ScrollArea content element.
  */
 export interface ScrollAreaContentProps extends ViewProps {
-  /**
-   * The children of the component.
-   */
-  children?: React.ReactNode;
+
 }
 
 /**
@@ -416,9 +263,7 @@ export interface ScrollAreaContentProps extends ViewProps {
  */
 export interface ScrollAreaScrollbarProps
   extends
-    Omit<ViewProps, 'style'>,
-    WebScrollAreaScrollbarProps,
-    ARIATraitOrientation {
+    Omit<ViewProps, 'style'>{
   /**
    * Whether the scrollbar controls vertical or horizontal scroll.
    * @default 'vertical'
@@ -429,10 +274,7 @@ export interface ScrollAreaScrollbarProps
    * @default false
    */
   keepMounted?: boolean;
-  /**
-   * The children of the component.
-   */
-  children?: React.ReactNode;
+ 
   /**
    * The style applied to the component.
    */
@@ -445,11 +287,7 @@ export interface ScrollAreaScrollbarProps
  * Props for the ScrollArea thumb element.
  */
 export interface ScrollAreaThumbProps
-  extends Omit<ViewProps, 'style'>, WebScrollAreaThumbProps {
-  /**
-   * The children of the component.
-   */
-  children?: React.ReactNode;
+  extends Omit<ViewProps, 'style'> {
   /**
    * The style applied to the component.
    */
@@ -462,15 +300,11 @@ export interface ScrollAreaThumbProps
  * Props for the ScrollArea corner element.
  */
 export interface ScrollAreaCornerProps
-  extends Omit<ViewProps, 'style'>, ARIABaseProps {
+  extends Omit<ViewProps, 'style'> {
   /**
    * The style applied to the component.
    */
   style?:
     | StyleProp<ViewStyle>
     | ((state: ScrollAreaCornerState) => StyleProp<ViewStyle>);
-  /**
-   * Defines a keyboard shortcut that activates or focuses the element.
-   */
-  'aria-keyshortcuts'?: string;
 }

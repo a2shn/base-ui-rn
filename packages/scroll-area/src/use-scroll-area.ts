@@ -1,12 +1,11 @@
 import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
+import { useKeyboard } from '@base-ui-rn/core';
 import * as React from 'react';
 import { Animated, type ScrollView } from 'react-native';
 
 import type { ScrollAreaRootProps, ScrollAreaRootState } from './types';
 
-export type UseScrollAreaProps = ScrollAreaRootProps;
-
-export function useScrollArea(props: UseScrollAreaProps) {
+export function useScrollArea(props: ScrollAreaRootProps) {
   const {
     disableDefaultFocusRing = false,
     focusableWhenDisabled = false,
@@ -15,6 +14,7 @@ export function useScrollArea(props: UseScrollAreaProps) {
     overflowEdgeThreshold = 0,
     scrollbarVisibility = 'auto',
     tabIndex: tabIndexProp,
+    onKeyDown
   } = props;
 
   const [viewportWidth, setViewportWidth] = React.useState(0);
@@ -28,82 +28,64 @@ export function useScrollArea(props: UseScrollAreaProps) {
   const scrollingTimeoutRef = React.useRef<ReturnType<typeof setTimeout>>(null);
 
   const setScrolling = React.useCallback((s: boolean) => {
-    if (scrollingTimeoutRef.current) {
-      clearTimeout(scrollingTimeoutRef.current);
-    }
-    if (s) {
-      setIsScrolling(true);
-    }
-    // Always schedule a fade-out after 1s of no "true" events
-    scrollingTimeoutRef.current = setTimeout(() => {
-      setIsScrolling(false);
-    }, 1000);
+    if (scrollingTimeoutRef.current) clearTimeout(scrollingTimeoutRef.current);
+    if (s) setIsScrolling(true);
+    scrollingTimeoutRef.current = setTimeout(() => setIsScrolling(false), 1000);
   }, []);
 
   const [isHovering, setIsHovering] = React.useState(false);
 
-  const { focused, focusRingStyle, isFocusable, onBlur, onFocus } =
-    useFocusRing({
-      disabled: false,
-      disableDefaultFocusRing,
-      focusableWhenDisabled,
-    });
+  const { focused, focusRingStyle, isFocusable, focusVisible, onBlur, onFocus } = useFocusRing({
+    disabled: false,
+    disableDefaultFocusRing,
+    focusableWhenDisabled,
+  });
 
-  const tabIndex = resolveTabIndex(
-    isFocusable,
-    tabIndexProp as 0 | -1 | undefined,
-  );
+  const tabIndex = resolveTabIndex(isFocusable, tabIndexProp as 0 | -1 | undefined);
 
   const scrollX = React.useRef(new Animated.Value(0)).current;
   const scrollY = React.useRef(new Animated.Value(0)).current;
   const viewportRef = React.useRef<ScrollView>(null);
-
   const rawScrollX = React.useRef(0);
   const rawScrollY = React.useRef(0);
 
-  const [overflowDistances, setOverflowDistances] = React.useState({
-    xEnd: 0,
-    xStart: 0,
-    yEnd: 0,
-    yStart: 0,
-  });
-
+  const [overflowDistances, setOverflowDistances] = React.useState({ xEnd: 0, xStart: 0, yEnd: 0, yStart: 0 });
   const lastUpdateRef = React.useRef(0);
 
-  const updateOverflowDistances = React.useCallback(
-    (x: number, y: number) => {
-      const now = Date.now();
-      // Throttle updates to ~60fps (16ms) to improve performance during scrolling
-      if (now - lastUpdateRef.current < 16) {
-        return;
-      }
-      lastUpdateRef.current = now;
+  const updateOverflowDistances = React.useCallback((x: number, y: number) => {
+    const now = Date.now();
+    if (now - lastUpdateRef.current < 150) return;
+    lastUpdateRef.current = now;
 
-      setOverflowDistances({
-        xEnd: Math.max(0, contentWidth - viewportWidth - x),
+    setOverflowDistances((prev) => {
+      const nextXEnd = Math.max(0, contentWidth - viewportWidth - x);
+      const nextYEnd = Math.max(0, contentHeight - viewportHeight - y);
+
+      if (
+        Math.abs(prev.xStart - x) < 2 &&
+        Math.abs(prev.yStart - y) < 2 &&
+        Math.abs(prev.xEnd - nextXEnd) < 2 &&
+        Math.abs(prev.yEnd - nextYEnd) < 2
+      ) {
+        return prev;
+      }
+
+      return {
+        xEnd: nextXEnd,
         xStart: x,
-        yEnd: Math.max(0, contentHeight - viewportHeight - y),
+        yEnd: nextYEnd,
         yStart: y,
-      });
-    },
-    [contentWidth, viewportWidth, contentHeight, viewportHeight],
-  );
+      };
+    });
+  }, [contentWidth, viewportWidth, contentHeight, viewportHeight]);
 
   React.useEffect(() => {
-    const idX = scrollX.addListener(({ value }) => {
-      rawScrollX.current = value;
-      updateOverflowDistances(value, rawScrollY.current);
-    });
-    const idY = scrollY.addListener(({ value }) => {
-      rawScrollY.current = value;
-      updateOverflowDistances(rawScrollX.current, value);
-    });
+    const idX = scrollX.addListener(({ value }) => { rawScrollX.current = value; updateOverflowDistances(value, rawScrollY.current); });
+    const idY = scrollY.addListener(({ value }) => { rawScrollY.current = value; updateOverflowDistances(rawScrollX.current, value); });
     return () => {
       scrollX.removeListener(idX);
       scrollY.removeListener(idY);
-      if (scrollingTimeoutRef.current) {
-        clearTimeout(scrollingTimeoutRef.current);
-      }
+      if (scrollingTimeoutRef.current) clearTimeout(scrollingTimeoutRef.current);
     };
   }, [scrollX, scrollY, updateOverflowDistances]);
 
@@ -112,143 +94,77 @@ export function useScrollArea(props: UseScrollAreaProps) {
 
   const thresholds = React.useMemo(() => {
     if (typeof overflowEdgeThreshold === 'number') {
-      return {
-        xEnd: overflowEdgeThreshold,
-        xStart: overflowEdgeThreshold,
-        yEnd: overflowEdgeThreshold,
-        yStart: overflowEdgeThreshold,
-      };
+      return { xEnd: overflowEdgeThreshold, xStart: overflowEdgeThreshold, yEnd: overflowEdgeThreshold, yStart: overflowEdgeThreshold };
     }
     return {
-      xEnd: overflowEdgeThreshold.xEnd ?? 0,
-      xStart: overflowEdgeThreshold.xStart ?? 0,
-      yEnd: overflowEdgeThreshold.yEnd ?? 0,
-      yStart: overflowEdgeThreshold.yStart ?? 0,
+      xEnd: overflowEdgeThreshold.xEnd ?? 0, xStart: overflowEdgeThreshold.xStart ?? 0,
+      yEnd: overflowEdgeThreshold.yEnd ?? 0, yStart: overflowEdgeThreshold.yStart ?? 0,
     };
   }, [overflowEdgeThreshold]);
 
   const overflowXStart = hasOverflowX && rawScrollX.current > thresholds.xStart;
-  const overflowXEnd =
-    hasOverflowX &&
-    rawScrollX.current < contentWidth - viewportWidth - thresholds.xEnd;
+  const overflowXEnd = hasOverflowX && rawScrollX.current < contentWidth - viewportWidth - thresholds.xEnd;
   const overflowYStart = hasOverflowY && rawScrollY.current > thresholds.yStart;
-  const overflowYEnd =
-    hasOverflowY &&
-    rawScrollY.current < contentHeight - viewportHeight - thresholds.yEnd;
+  const overflowYEnd = hasOverflowY && rawScrollY.current < contentHeight - viewportHeight - thresholds.yEnd;
 
   const isVisible = React.useMemo(() => {
     if (scrollbarVisibility === 'always') return true;
     if (scrollbarVisibility === 'scroll') return isScrolling;
     if (scrollbarVisibility === 'hover') return isHovering || isScrolling;
-    return isScrolling || isHovering; // 'auto'
+    return isScrolling || isHovering;
   }, [scrollbarVisibility, isScrolling, isHovering]);
 
   const thumbSizeX = React.useMemo(() => {
     if (scrollbarWidth === 0 || contentWidth === 0) return 0;
-    const ratio = viewportWidth / contentWidth;
-    const size = scrollbarWidth * ratio;
-    return Math.min(Math.max(40, size), 100);
+    return Math.min(Math.max(40, scrollbarWidth * (viewportWidth / contentWidth)), 100);
   }, [scrollbarWidth, contentWidth, viewportWidth]);
 
   const thumbSizeY = React.useMemo(() => {
     if (scrollbarHeight === 0 || contentHeight === 0) return 0;
-    const ratio = viewportHeight / contentHeight;
-    const size = scrollbarHeight * ratio;
-    return Math.min(Math.max(40, size), 100);
+    return Math.min(Math.max(40, scrollbarHeight * (viewportHeight / contentHeight)), 100);
   }, [scrollbarHeight, contentHeight, viewportHeight]);
 
-  const state: ScrollAreaRootState = React.useMemo(
-    () => ({
-      corner: {
-        height: scrollbarHeight,
-        width: scrollbarWidth,
-      },
-      focused,
-      hasOverflowX,
-      hasOverflowY,
-      isHovering,
-      isScrolling,
-      isVisible,
-      overflow: overflowDistances,
-      overflowXEnd,
-      overflowXStart,
-      overflowYEnd,
-      overflowYStart,
-      thumb: {
-        height: thumbSizeY,
-        width: thumbSizeX,
-      },
-    }),
-    [
-      focused,
-      hasOverflowX,
-      hasOverflowY,
-      isScrolling,
-      isHovering,
-      isVisible,
-      overflowXStart,
-      overflowXEnd,
-      overflowYStart,
-      overflowYEnd,
-      scrollbarHeight,
-      scrollbarWidth,
-      thumbSizeY,
-      thumbSizeX,
-      overflowDistances,
-    ],
-  );
+  const state: ScrollAreaRootState = React.useMemo(() => ({
+    corner: { height: scrollbarHeight, width: scrollbarWidth },
+    focused, focusVisible, hasOverflowX, hasOverflowY, isHovering, isScrolling, isVisible,
+    overflow: overflowDistances, overflowXEnd, overflowXStart, overflowYEnd, overflowYStart,
+    thumb: { height: thumbSizeY, width: thumbSizeX },
+  }), [focused, focusVisible, hasOverflowX, hasOverflowY, isHovering, isScrolling, isVisible, overflowDistances, overflowXEnd, overflowXStart, overflowYEnd, overflowYStart, scrollbarHeight, scrollbarWidth, thumbSizeX, thumbSizeY]);
 
-  return React.useMemo(
-    () => ({
-      contentHeight,
-      contentWidth,
-      focusRingStyle,
-      isFocusable,
-      keyboardPageStep,
-      keyboardStep,
-      onBlur,
-      onFocus,
-      rawScrollX,
-      rawScrollY,
-      scrollbarHeight,
-      scrollbarWidth,
-      scrollX,
-      scrollY,
-      setContentHeight,
-      setContentWidth,
-      setIsHovering,
-      setIsScrolling: setScrolling,
-      setScrollbarHeight,
-      setScrollbarWidth,
-      setViewportHeight,
-      setViewportWidth,
-      state,
-      tabIndex,
-      viewportHeight,
-      viewportRef,
-      viewportWidth,
-    }),
-    [
-      contentHeight,
-      contentWidth,
-      focusRingStyle,
-      isFocusable,
-      keyboardPageStep,
-      keyboardStep,
-      onBlur,
-      onFocus,
-      rawScrollX,
-      rawScrollY,
-      scrollbarHeight,
-      scrollbarWidth,
-      scrollX,
-      scrollY,
-      setScrolling,
-      state,
-      tabIndex,
-      viewportHeight,
-      viewportRef,
-      viewportWidth,
-    ],
-  );
+  const handleKeyBoard = useKeyboard({
+    onArrowDown: () => viewportRef.current?.scrollTo({ animated: false, x: rawScrollX.current, y: rawScrollY.current + keyboardStep }),
+    onArrowLeft: () => viewportRef.current?.scrollTo({ animated: false, x: rawScrollX.current - keyboardStep, y: rawScrollY.current }),
+    onArrowRight: () => viewportRef.current?.scrollTo({ animated: false, x: rawScrollX.current + keyboardStep, y: rawScrollY.current }),
+    onArrowUp: () => viewportRef.current?.scrollTo({ animated: false, x: rawScrollX.current, y: rawScrollY.current - keyboardStep }),
+    onEnd: () => viewportRef.current?.scrollTo({ animated: false, x: hasOverflowX ? contentWidth - viewportWidth : rawScrollX.current, y: hasOverflowY ? contentHeight - viewportHeight : rawScrollY.current }),
+    onHome: () => viewportRef.current?.scrollTo({ animated: false, x: hasOverflowX ? 0 : rawScrollX.current, y: hasOverflowY ? 0 : rawScrollY.current }),
+    onPageDown: () => viewportRef.current?.scrollTo({ animated: false, x: hasOverflowX ? rawScrollX.current + (viewportWidth || 0) * keyboardPageStep : rawScrollX.current, y: hasOverflowY ? rawScrollY.current + (viewportHeight || 200) * keyboardPageStep : rawScrollY.current }),
+    onPageUp: () => viewportRef.current?.scrollTo({ animated: false, x: hasOverflowX ? rawScrollX.current - (viewportWidth || 0) * keyboardPageStep : rawScrollX.current, y: hasOverflowY ? rawScrollY.current - (viewportHeight || 200) * keyboardPageStep : rawScrollY.current }),
+  });
+
+
+  const handleKeyDown = React.useCallback((e: any) => {
+    handleKeyBoard(e);
+  }, [handleKeyBoard, onKeyDown]);
+
+  const contextValue = {
+    contentHeight, contentWidth, isFocusable, keyboardPageStep, keyboardStep,
+    rawScrollX, rawScrollY, scrollbarHeight, scrollbarWidth, scrollX, scrollY,
+    setContentHeight, setContentWidth, setIsHovering, setIsScrolling: setScrolling,
+    setScrollbarHeight, setScrollbarWidth, setViewportHeight, setViewportWidth,
+    state, tabIndex: tabIndex ?? 0, viewportHeight, viewportRef, viewportWidth,
+    focusRingStyle, onBlur, onFocus, handleKeyDown
+  };
+
+  return {
+    contextValue,
+    state,
+    focusRingStyle,
+    isFocusable,
+    tabIndex,
+    handleBlur: onBlur,
+    handleFocus: onFocus,
+    handleKeyDown,
+    setIsHovering,
+  };
 }

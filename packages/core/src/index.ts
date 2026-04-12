@@ -14,6 +14,7 @@ export { mergeProps } from './utils/merge-props';
 export { useControllableState } from './utils/use-controllable-state';
 export { useLabels } from './utils/use-labels';
 export { useFormatter } from './utils/use-formatter';
+export { mergeRefs } from './utils/merge-refs';
 
 export { clamp } from './utils/math';
 
