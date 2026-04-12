@@ -1,8 +1,5 @@
 import type { ViewStyle } from 'react-native';
 
-/**
- * Props for a section in the playbook gallery.
- */
 export interface SectionProps {
   /**
    * The title of the section.

@@ -1,45 +1,18 @@
 import type * as React from 'react';
-import type {
-  StyleProp,
-  TextProps,
-  TextStyle,
-  ViewProps,
-  ViewStyle,
-} from 'react-native';
+import type { StyleProp, TextProps, TextStyle, ViewProps, ViewStyle } from 'react-native';
 
-/**
- * Represents the current visual and semantic state of the meter.
- */
 export interface MeterState {
-  /** The current value of the meter. */
   value: number;
-  /** The minimum value of the meter. */
   min: number;
-  /** The maximum value of the meter. */
   max: number;
-  /** * The upper bound of the "low" range.
-   * Values below this are considered sub-optimal in the lower direction.
-   */
   low: number;
-  /** * The lower bound of the "high" range.
-   * Values above this are considered sub-optimal in the upper direction.
-   */
   high: number;
-  /** * The ideal or "perfect" value for this meter.
-   * Used to determine which segment is considered the "optimum" range.
-   */
   optimum: number;
-  /** The percentage of completion (0-100) based on min and max. */
   percentage: number;
-  /** The human-readable value string, localized and formatted. */
   formattedValue: string;
-  /** * The semantic status of the current value.
-   * - 'low': value is less than `low`.
-   * - 'high': value is greater than `high`.
-   * - 'optimum': value is between `low` and `high`.
-   */
   status: 'low' | 'high' | 'optimum';
 }
+
 export interface MeterRootProps extends Omit<ViewProps, 'children' | 'style'> {
   /**
    * The current value of the meter.
@@ -57,13 +30,11 @@ export interface MeterRootProps extends Omit<ViewProps, 'children' | 'style'> {
   max?: number;
   /**
    * The upper bound of the "low" range.
-   * Must be greater than or equal to `min`.
    * @default min
    */
   low?: number;
   /**
    * The lower bound of the "high" range.
-   * Must be less than or equal to `max` and greater than or equal to `low`.
    * @default max
    */
   high?: number;
@@ -85,17 +56,16 @@ export interface MeterRootProps extends Omit<ViewProps, 'children' | 'style'> {
    */
   format?: Intl.NumberFormatOptions;
   /**
-   * Style of the root component. Can be a standard style object or a function
-   * that receives the current `MeterState`.
+   * Style of the root component.
    */
   style?: StyleProp<ViewStyle> | ((state: MeterState) => StyleProp<ViewStyle>);
   /**
-   * Children of the root component. Can be a React node or a render function
-   * that receives the current `MeterState`.
+   * Children of the root component.
    */
   children?: React.ReactNode | ((state: MeterState) => React.ReactNode);
   defaultValue?: number;
 }
+
 export interface MeterLabelProps extends Omit<TextProps, 'children' | 'style'> {
   /**
    * Children of the label component.
@@ -136,9 +106,4 @@ export interface MeterValueProps extends Omit<TextProps, 'children' | 'style'> {
   style?: StyleProp<TextStyle> | ((state: MeterState) => StyleProp<TextStyle>);
 }
 
-/**
- * The context value for the Meter component.
- */
-export interface MeterContextValue extends MeterState {
-
-}
+export interface MeterContextValue extends MeterState {}

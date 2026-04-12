@@ -1,58 +1,20 @@
 import { PressableWithKeyDown } from '@base-ui-rn/core';
 import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type * as React from 'react';
-import type {
-  TextProps,
-  ViewProps,
-  ViewStyle,
-} from 'react-native';
+import type { TextProps, ViewProps, ViewStyle } from 'react-native';
 
-/**
- * The value of the slider.
- */
 export type SliderValue = number | number[];
 
 export interface SliderState {
-  /**
-   * The current values of the slider thumbs.
-   */
   value: number[];
-  /**
-   * The minimum allowed value.
-   */
   min: number;
-  /**
-   * The maximum allowed value.
-   */
   max: number;
-  /**
-   * The step increment.
-   */
   step: number;
-  /**
-   * Whether the slider is disabled.
-   */
   disabled: boolean;
-  /**
-   * Whether the user is currently dragging a thumb.
-   */
   dragging: boolean;
-  /**
-   * The index of the currently focused or dragged thumb.
-   */
   activeIndex: number | null;
-  /**
-   * The orientation of the slider.
-   */
   orientation: 'horizontal' | 'vertical';
-  /**
-   * The minimum number of steps between thumbs.
-   */
   minStepsBetweenValues: number;
-  /**
-   * The maximum number of steps between thumbs.
-   * @default 0 (no maximum)
-   */
   maxStepsBetweenValues: number;
 }
 
@@ -63,11 +25,7 @@ export interface SliderIndicatorProps extends Omit<ViewProps, 'style'> {
   style?: ViewStyle | ((state: SliderState) => ViewStyle | undefined);
 }
 
-/**
- * Props for the Slider.Root component.
- */
-export interface SliderRootProps
-  extends Omit<ViewProps, 'style' | 'children'> {
+export interface SliderRootProps extends Omit<ViewProps, 'style' | 'children'> {
   /**
    * Style applied to the slider root view.
    */
@@ -81,7 +39,7 @@ export interface SliderRootProps
    */
   name?: string;
   /**
-   * The controlled value of the slider.
+   * The controlled value of the slider. Use with `onValueChange`.
    */
   value?: SliderValue;
   /**
@@ -89,11 +47,9 @@ export interface SliderRootProps
    */
   defaultValue?: SliderValue;
   /**
-   * Callback fired when the value changes.
+   * Fired when the value changes.
    */
-  onValueChange?: (
-    value: SliderValue,
-  ) => void;
+  onValueChange?: (value: SliderValue) => void;
   /**
    * Whether the slider is disabled.
    * @default false
@@ -157,20 +113,12 @@ export interface SliderRootProps
    */
   thumbCollisionBehavior?: 'none' | 'push' | 'swap';
   /**
-   * Callback fired when the value is committed.
+   * Fired when the value is committed.
    */
-  onValueCommitted?: (
-    value: SliderValue,
-  ) => void;
+  onValueCommitted?: (value: SliderValue) => void;
 }
 
-/**
- * Props for the Slider.Thumb component.
- */
-export interface SliderThumbProps
-  extends
-  Omit<React.ComponentProps<typeof PressableWithKeyDown>,
-    'style' | "children"> {
+export interface SliderThumbProps extends Omit<React.ComponentProps<typeof PressableWithKeyDown>, 'style' | "children"> {
   /**
    * Whether the thumb remains focusable when disabled.
    * @default false
@@ -186,46 +134,28 @@ export interface SliderThumbProps
    * @default 0
    */
   index?: number;
-
   /**
    * A function to generate a human-readable text alternative for the current value.
    */
-  getAccessibilityValueText?: (
-    formattedValue: string,
-    value: number,
-    index: number,
-  ) => string;
+  getAccessibilityValueText?: (formattedValue: string, value: number, index: number) => string;
   /**
    * Style applied to the thumb view.
    */
   style?: ViewStyle | ((state: SliderThumbState) => ViewStyle | undefined);
   /**
-     * The content of the slider thumb.
-     */
+   * The content of the slider thumb.
+   */
   children?: React.ReactNode | ((state: SliderState) => React.ReactNode);
-
 }
 
 export interface SliderThumbState extends SliderState, FocusRingState {
-  /**
-   * The index of the thumb.
-   */
   index: number;
-  /**
-   * The current value of this thumb.
-   */
   valueNow: number;
 }
-/**
- * Props for the Slider.Value component.
- */
-export interface SliderValueProps
-  extends Omit<TextProps, 'children'> {
+
+export interface SliderValueProps extends Omit<TextProps, 'children'> {
   /**
    * A function that returns content based on the formatted values.
    */
-  children?:
-  | React.ReactNode
-  | ((formattedValues: string[], values: number[]) => React.ReactNode);
+  children?: React.ReactNode | ((formattedValues: string[], values: number[]) => React.ReactNode);
 }
-
