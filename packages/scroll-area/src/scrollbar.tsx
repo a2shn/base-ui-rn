@@ -7,6 +7,16 @@ import { useScrollAreaScrollbar } from './use-scroll-area-scrollbar';
 
 export const ScrollbarContext = React.createContext<{ orientation: 'horizontal' | 'vertical' } | null>(null);
 
+/**
+ * The track that contains the draggable thumb.
+ *
+ * @example
+ * ```tsx
+ * <ScrollArea.Scrollbar orientation="vertical">
+ * <ScrollArea.Thumb />
+ * </ScrollArea.Scrollbar>
+ * ```
+ */
 export const Scrollbar = React.memo(
   React.forwardRef<View, ScrollAreaScrollbarProps>((props, ref) => {
     const { children, keepMounted, onLayout, orientation, style, ...otherProps } = props;

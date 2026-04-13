@@ -14,12 +14,10 @@ import { getIndicatorDynamicStyles } from './styles';
  * @example
  * ```tsx
  * <Slider.Track>
- *   <Slider.Indicator />
+ * <Slider.Indicator />
  * </Slider.Track>
  * ```
  */
-
-
 export const SliderIndicator = React.memo(
   React.forwardRef<View, SliderIndicatorProps>(
     function SliderIndicator(props, ref) {

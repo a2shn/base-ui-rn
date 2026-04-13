@@ -13,10 +13,10 @@ import { useSliderContext } from './context';
  * @example
  * ```tsx
  * <Slider.Root>
- *   <Slider.Track>
- *     <Slider.Indicator />
- *     <Slider.Thumb />
- *   </Slider.Track>
+ * <Slider.Track>
+ * <Slider.Indicator />
+ * <Slider.Thumb />
+ * </Slider.Track>
  * </Slider.Root>
  * ```
  */

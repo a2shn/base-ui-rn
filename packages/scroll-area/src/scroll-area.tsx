@@ -6,6 +6,19 @@ import { ScrollAreaContext } from './context';
 import type { ScrollAreaRootProps } from './types';
 import { useScrollArea } from './use-scroll-area';
 
+/**
+ * The main container for the scroll area component.
+ *
+ * Manages focus, pointer interactions, and renders focus overlays.
+ * Provides context to Viewport and Scrollbar sub-components.
+ *
+ * @example
+ * ```tsx
+ * <ScrollArea.Root>
+ * <ScrollArea.Viewport>...</ScrollArea.Viewport>
+ * </ScrollArea.Root>
+ * ```
+ */
 export const Root = React.memo(
   React.forwardRef<View, ScrollAreaRootProps>((props, ref) => {
     const {

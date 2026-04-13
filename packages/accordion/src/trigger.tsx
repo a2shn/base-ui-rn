@@ -11,6 +11,7 @@ import type { AccordionTriggerProps } from './types';
 import { useAccordionTrigger } from './use-accordion-trigger';
 
 /**
+ * The button that toggles the accordion item.
  *
  * Supports keyboard activation, focus states, and accessibility attributes.
  * Must be used within an `Accordion.Item`.
@@ -18,7 +19,7 @@ import { useAccordionTrigger } from './use-accordion-trigger';
  * @example
  * ```tsx
  * <Accordion.Trigger>
- *   {({ open }) => <Text>{open ? 'Close' : 'Open'}</Text>}
+ * {({ open }) => <Text>{open ? 'Close' : 'Open'}</Text>}
  * </Accordion.Trigger>
  * ```
  */

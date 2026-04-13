@@ -4,7 +4,8 @@ import { Text, TextProps } from 'react-native';
 
 /**
  * A primitive text component used to label or describe UI elements.
- * * Can be used as a primary label (aria-labelledby), a description (aria-describedby),
+ *
+ * Can be used as a primary label (aria-labelledby), a description (aria-describedby),
  * or an error message (aria-errormessage).
  *
  * @example

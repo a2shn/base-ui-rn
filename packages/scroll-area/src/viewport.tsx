@@ -11,6 +11,18 @@ import {
 import type { ScrollAreaViewportProps } from './types';
 import { useScrollAreaViewport } from './use-scroll-area-viewport';
 
+/**
+ * The scrollable viewing area.
+ *
+ * Captures keyboard interactions, focus, and native scrolling events.
+ *
+ * @example
+ * ```tsx
+ * <ScrollArea.Viewport>
+ * <ScrollArea.Content>...</ScrollArea.Content>
+ * </ScrollArea.Viewport>
+ * ```
+ */
 export const Viewport = React.memo(
   React.forwardRef<ScrollView, ScrollAreaViewportProps>((props, ref) => {
     const {

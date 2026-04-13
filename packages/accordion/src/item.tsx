@@ -15,8 +15,8 @@ import { useAccordionItem } from './use-accordion-item';
  * @example
  * ```tsx
  * <Accordion.Item value="item-1">
- *   <Accordion.Header>...</Accordion.Header>
- *   <Accordion.Panel>...</Accordion.Panel>
+ * <Accordion.Header>...</Accordion.Header>
+ * <Accordion.Panel>...</Accordion.Panel>
  * </Accordion.Item>
  * ```
  */

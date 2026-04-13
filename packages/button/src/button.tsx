@@ -18,7 +18,7 @@ import { useButton } from './use-button';
  * @example
  * ```tsx
  * <Button onPress={() => console.log('pressed')}>
- *   <Text>Click me</Text>
+ * <Text>Click me</Text>
  * </Button>
  * ```
  */

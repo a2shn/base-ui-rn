@@ -6,7 +6,6 @@ import type { InputProps } from './types';
 import { useInput } from './use-input';
 
 /**
-
  * Headless input primitive built on top of React Native TextInput.
  *
  * Provides a high-quality, unstyled input component with enhanced 
@@ -14,7 +13,7 @@ import { useInput } from './use-input';
  *
  * @example
  * ```tsx
- * <Input />
+ * <Input placeholder="Enter text..." />
  * ```
  */
 export const Input = React.memo(

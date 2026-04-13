@@ -13,9 +13,9 @@ import { getWebControlStyles } from './styles';
  * @example
  * ```tsx
  * <Slider.Root>
- *   <Slider.Control>
- *     <Slider.Track />
- *   </Slider.Control>
+ * <Slider.Control>
+ * <Slider.Track />
+ * </Slider.Control>
  * </Slider.Root>
  * ```
  */

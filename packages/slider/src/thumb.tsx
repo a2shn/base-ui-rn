@@ -16,9 +16,9 @@ import { getThumbDynamicStyles, getWebThumbStyles } from './styles';
  * @example
  * ```tsx
  * <Slider.Root defaultValue={50}>
- *   <Slider.Control>
- *     <Slider.Thumb />
- *   </Slider.Control>
+ * <Slider.Control>
+ * <Slider.Thumb />
+ * </Slider.Control>
  * </Slider.Root>
  * ```
  */

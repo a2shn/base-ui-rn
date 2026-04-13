@@ -15,8 +15,8 @@ import { useRadioGroup } from './use-radio-group';
  * @example
  * ```tsx
  * <RadioGroup defaultValue="a">
- *   <Radio.Root value="a"><Radio.Indicator /></Radio.Root>
- *   <Radio.Root value="b"><Radio.Indicator /></Radio.Root>
+ * <Radio.Root value="a"><Radio.Indicator /></Radio.Root>
+ * <Radio.Root value="b"><Radio.Indicator /></Radio.Root>
  * </RadioGroup>
  * ```
  */

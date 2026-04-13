@@ -13,7 +13,7 @@ import type { RadioIndicatorProps } from './types';
  * @example
  * ```tsx
  * <Radio.Root value="option-a">
- *   <Radio.Indicator />
+ * <Radio.Indicator />
  * </Radio.Root>
  * ```
  */

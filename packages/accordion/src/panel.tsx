@@ -14,7 +14,7 @@ import { useAccordionPanel } from './use-accordion-panel';
  * @example
  * ```tsx
  * <Accordion.Panel>
- *   <Text>Panel content here</Text>
+ * <Text>Panel content here</Text>
  * </Accordion.Panel>
  * ```
  */

@@ -5,6 +5,18 @@ import { Animated, Platform, View, type StyleProp, type ViewStyle } from 'react-
 import type { ScrollAreaThumbProps } from './types';
 import { useScrollAreaThumb } from './use-scroll-area-thumb';
 
+/**
+ * The draggable handle within the scrollbar.
+ *
+ * Supports pointer drag interactions to scroll the viewport.
+ *
+ * @example
+ * ```tsx
+ * <ScrollArea.Scrollbar>
+ * <ScrollArea.Thumb />
+ * </ScrollArea.Scrollbar>
+ * ```
+ */
 export const Thumb = React.memo(
   React.forwardRef<View, ScrollAreaThumbProps>((props, ref) => {
     const { children, style, ...otherProps } = props;

@@ -14,7 +14,7 @@ import { useFormatter } from '@base-ui-rn/core';
  * @example
  * ```tsx
  * <Slider.Root>
- *   <Slider.Value />
+ * <Slider.Value />
  * </Slider.Root>
  * ```
  */

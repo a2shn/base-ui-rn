@@ -6,6 +6,7 @@ import type { AccordionHeaderProps } from './types';
 import { useAccordionHeader } from './use-accordion-header';
 
 /**
+ * Header component for a single accordion item.
  *
  * Typically used to provide semantic structure (e.g., heading levels)
  * while inheriting the item's state.
@@ -13,7 +14,7 @@ import { useAccordionHeader } from './use-accordion-header';
  * @example
  * ```tsx
  * <Accordion.Header>
- *   <Accordion.Trigger>...</Accordion.Trigger>
+ * <Accordion.Trigger>...</Accordion.Trigger>
  * </Accordion.Header>
  * ```
  */

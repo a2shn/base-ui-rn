@@ -5,6 +5,20 @@ import { View } from 'react-native';
 import type { ScrollAreaContentProps } from './types';
 import { useScrollAreaContent } from './use-scroll-area-content';
 
+/**
+ * Wrapper for the scrollable content inside the viewport.
+ *
+ * Handles layout measurements required for accurate scrollbar track sizing.
+ *
+ * @example
+ * ```tsx
+ * <ScrollArea.Viewport>
+ * <ScrollArea.Content>
+ * <Text>Scrollable content...</Text>
+ * </ScrollArea.Content>
+ * </ScrollArea.Viewport>
+ * ```
+ */
 export const Content = React.memo(
   React.forwardRef<View, ScrollAreaContentProps>((props, ref) => {
     const { children, ...otherProps } = props;

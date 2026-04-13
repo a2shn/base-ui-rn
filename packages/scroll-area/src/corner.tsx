@@ -5,6 +5,16 @@ import { View } from 'react-native';
 import type { ScrollAreaCornerProps } from './types';
 import { useScrollAreaContext } from './context';
 
+/**
+ * Visual element rendered at the intersection of horizontal and vertical scrollbars.
+ *
+ * Only visible when both scrollbars are overflowing.
+ *
+ * @example
+ * ```tsx
+ * <ScrollArea.Corner />
+ * ```
+ */
 export const Corner = React.memo(
   React.forwardRef<View, ScrollAreaCornerProps>((props, ref) => {
     const { style, ...otherProps } = props;

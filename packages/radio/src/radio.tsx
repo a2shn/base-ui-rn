@@ -16,7 +16,7 @@ import { useRadio } from './use-radio';
  * @example
  * ```tsx
  * <Radio.Root value="option-a">
- *   <Radio.Indicator />
+ * <Radio.Indicator />
  * </Radio.Root>
  * ```
  */

@@ -17,7 +17,7 @@ import { useToggle } from './use-toggle';
  *
  * @example
  * ```tsx
- * <Toggle onPressedChange={...}>
+ * <Toggle onPressedChange={console.log}>
  * {({ pressed }) => <Text>{pressed ? 'On' : 'Off'}</Text>}
  * </Toggle>
  * ```
