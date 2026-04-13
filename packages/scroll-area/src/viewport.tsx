@@ -3,7 +3,6 @@ import * as React from 'react';
 import {
   Animated,
   Platform,
-  View,
   type ScrollView,
   type StyleProp,
   type ViewStyle,
@@ -14,38 +13,55 @@ import { useScrollAreaViewport } from './use-scroll-area-viewport';
 
 export const Viewport = React.memo(
   React.forwardRef<ScrollView, ScrollAreaViewportProps>((props, ref) => {
-    const { children, contentContainerStyle, horizontal, measure, onLayout, style, onBlur, onFocus, ...otherProps } = props;
+    const {
+      children,
+      contentContainerStyle,
+      horizontal,
+      style,
+      ...otherProps
+    } = props;
 
     const {
-      state,
-      viewportRef,
+      handleKeyDown,
       handleLayout,
       handleScroll,
       handleScrollBegin,
-      handleBlur,
-      handleFocus,
+      isFocusable,
+      state,
+      tabIndex,
+      viewportRef,
     } = useScrollAreaViewport(props);
 
-    const mergedRef = mergeRefs(ref, props.measure !== false ? viewportRef : undefined);
-    const isWeb = Platform.OS === 'web';
+    const mergedRef = mergeRefs(
+      ref,
+      props.measure !== false ? viewportRef : undefined,
+    );
 
+    const isWeb = Platform.OS === 'web';
     const resolvedStyle = resolveValue(style, state);
-    const webStyle: StyleProp<ViewStyle> = isWeb ? { outlineStyle: 'none', touchAction: 'auto' } as any : {};
+    const webStyle: StyleProp<ViewStyle> = isWeb
+      ? ({ outlineOffset: '-3px', touchAction: 'auto' } as any)
+      : {};
 
     const mergedProps = mergeProps(
       {
-        onBlur: handleBlur,
-        onFocus: handleFocus,
         onLayout: handleLayout,
         onMomentumScrollBegin: handleScrollBegin,
         onScroll: handleScroll,
         onScrollBeginDrag: handleScrollBegin,
+        ...(handleKeyDown ? { onKeyDown: handleKeyDown } : {}),
+        contentContainerStyle: [
+          horizontal
+            ? ({ flexDirection: 'row', flexWrap: 'nowrap' } as const)
+            : ({ flexGrow: 1 } as const),
+          contentContainerStyle as StyleProp<ViewStyle>,
+        ],
         style: [{ flex: 1 }, resolvedStyle, webStyle],
-        contentContainerStyle: [horizontal ? ({ flexDirection: 'row', flexWrap: 'nowrap' } as const) : ({ flexGrow: 1 } as const), contentContainerStyle as StyleProp<ViewStyle>]
       },
       { ref: mergedRef },
       otherProps,
       {
+        accessible: false,
         collapsable: false,
         horizontalScrollEventThrottle: 16,
         nestedScrollEnabled: true,
@@ -53,15 +69,20 @@ export const Viewport = React.memo(
         scrollEventThrottle: 20,
         showsHorizontalScrollIndicator: false,
         showsVerticalScrollIndicator: false,
-        accessible: false,
-      }
+      },
     );
 
     return (
-      <Animated.ScrollView {...mergedProps}
+      // Viewport is the tab stop: tabIndex + focusable live here so keyboard
+      // focus lands on the ScrollView. onFocus/onBlur are omitted — they bubble
+      // up to Root which drives state.focused and the native focus ring overlay.
+      <Animated.ScrollView
+        {...mergedProps}
+        focusable={isFocusable}
         horizontal={horizontal}
-        keyboardShouldPersistTaps="handled"
-        keyboardDismissMode="none"
+        keyboardDismissMode='none'
+        keyboardShouldPersistTaps='handled'
+        tabIndex={tabIndex}
       >
         {children}
       </Animated.ScrollView>

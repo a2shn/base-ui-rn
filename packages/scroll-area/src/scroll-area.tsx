@@ -1,6 +1,6 @@
-import { mergeProps, PressableWithKeyDown, resolveValue } from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
-import { Platform, StyleSheet, View, type NativeSyntheticEvent, type TargetedEvent, type ViewStyle } from 'react-native';
+import { Platform, StyleSheet, View, type ViewStyle } from 'react-native';
 
 import { ScrollAreaContext } from './context';
 import type { ScrollAreaRootProps } from './types';
@@ -10,30 +10,17 @@ export const Root = React.memo(
   React.forwardRef<View, ScrollAreaRootProps>((props, ref) => {
     const {
       children,
-      disableDefaultFocusRing,
-      focusableWhenDisabled,
-      keyboardPageStep,
-      keyboardStep,
-      overflowEdgeThreshold,
-      scrollbarVisibility,
       style,
-      onBlur,
-      onFocus,
-      onKeyDown,
-      tabIndex,
       ...otherProps
     } = props;
 
     const {
       contextValue,
-      state,
       focusRingStyle,
-      isFocusable,
-      tabIndex: resolvedTabIndex,
       handleBlur,
       handleFocus,
-      handleKeyDown,
       setIsHovering,
+      state,
     } = useScrollArea(props);
 
     const isWeb = Platform.OS === 'web';
@@ -41,41 +28,46 @@ export const Root = React.memo(
 
     const mergedProps = mergeProps(
       {
+        // Root captures bubbled focus/blur from the Viewport inside.
+        // This drives state.focused so the native overlay renders correctly.
         onBlur: handleBlur,
         onFocus: handleFocus,
-        onKeyDown: handleKeyDown,
         onPointerEnter: () => setIsHovering(true),
         onPointerLeave: () => setIsHovering(false),
         style: resolvedStyle,
       },
       { ref },
       otherProps,
-      { accessible: true, collapsable: false }
+      // Root is not a tab stop — Viewport owns tabIndex/focusable
+      { accessible: false, collapsable: false },
     );
 
     const flattened = (StyleSheet.flatten(resolvedStyle) || {}) as ViewStyle;
+    // Overlay is shown when Viewport reports focus (state.focused is set via context onFocus/onBlur)
     const renderFocusOverlay = !isWeb && state.focused && focusRingStyle;
+
 
     return (
       <ScrollAreaContext.Provider value={contextValue}>
-        <View {...mergedProps}
-          onTouchStart={(e) => e.stopPropagation?.()}
-          pointerEvents="box-none"
-          focusable={isFocusable}
-          tabIndex={resolvedTabIndex}>
+        <View
+          {...mergedProps}
+          pointerEvents='box-none'
+        >
           {resolveValue(children, state)}
           {renderFocusOverlay && (
             <View
-              pointerEvents="none"
+              pointerEvents='none'
               style={[
                 StyleSheet.absoluteFill,
                 focusRingStyle,
-                { borderRadius: flattened.borderRadius || 0, margin: -(flattened.borderWidth || 0) }
+                {
+                  borderRadius: flattened.borderRadius || 0,
+                  margin: -(flattened.borderWidth || 0),
+                },
               ]}
             />
           )}
         </View>
-
       </ScrollAreaContext.Provider>
     );
   }),

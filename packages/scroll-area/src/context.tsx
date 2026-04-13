@@ -11,6 +11,8 @@ export interface ScrollAreaContextValue {
   viewportHeight: number;
   contentWidth: number;
   contentHeight: number;
+  hasOverflowX: boolean;
+  hasOverflowY: boolean;
   scrollbarWidth: number;
   scrollbarHeight: number;
   viewportRef: React.RefObject<ScrollView | null>;
@@ -21,7 +23,7 @@ export interface ScrollAreaContextValue {
   onBlur: () => void;
   onFocus: () => void;
   isFocusable: boolean;
-  tabIndex: number;
+  tabIndex: 0 | -1 | undefined;
   setViewportWidth: (w: number) => void;
   setViewportHeight: (h: number) => void;
   setContentWidth: (w: number) => void;

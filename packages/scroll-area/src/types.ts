@@ -1,9 +1,13 @@
 import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type * as React from 'react';
-import type { ScrollViewProps, StyleProp, ViewProps, ViewStyle } from 'react-native';
+import type {
+  ScrollViewProps,
+  StyleProp,
+  ViewProps,
+  ViewStyle,
+} from 'react-native';
 
 export type ScrollAreaOrientation = 'horizontal' | 'vertical';
-
 export type ScrollAreaVisibility = 'auto' | 'always' | 'scroll' | 'hover';
 
 export interface ScrollAreaRootState extends FocusRingState {
@@ -55,7 +59,9 @@ export interface ScrollAreaRootProps extends Omit<ViewProps, 'style'> {
    * The threshold in pixels that must be passed before the overflow edge attributes are applied.
    * @default 0
    */
-  overflowEdgeThreshold?: number | { xStart?: number; xEnd?: number; yStart?: number; yEnd?: number; };
+  overflowEdgeThreshold?:
+  | number
+  | { xStart?: number; xEnd?: number; yStart?: number; yEnd?: number };
   /**
    * The number of pixels to scroll when using arrow keys on web.
    * @default 40
@@ -67,13 +73,11 @@ export interface ScrollAreaRootProps extends Omit<ViewProps, 'style'> {
    */
   keyboardPageStep?: number;
   /**
-   * Event handler for key down events on web.
-   */
-  onKeyDown?: (event: React.KeyboardEvent) => void;
-  /**
    * The style applied to the component.
    */
-  style?: StyleProp<ViewStyle> | ((state: ScrollAreaRootState) => StyleProp<ViewStyle>);
+  style?:
+  | StyleProp<ViewStyle>
+  | ((state: ScrollAreaRootState) => StyleProp<ViewStyle>);
   /**
    * Whether the default focus ring should be disabled.
    * @default false
@@ -86,11 +90,16 @@ export interface ScrollAreaRootProps extends Omit<ViewProps, 'style'> {
   focusableWhenDisabled?: boolean;
 }
 
-export interface ScrollAreaViewportProps extends Omit<ScrollViewProps, 'style'> {
+export interface ScrollAreaViewportProps extends Omit<
+  ScrollViewProps,
+  'style'
+> {
   /**
    * The style applied to the component.
    */
-  style?: StyleProp<ViewStyle> | ((state: ScrollAreaViewportState) => StyleProp<ViewStyle>);
+  style?:
+  | StyleProp<ViewStyle>
+  | ((state: ScrollAreaViewportState) => StyleProp<ViewStyle>);
   /**
    * Whether the viewport should measure its layout and update the ScrollArea state.
    * @default true
@@ -107,7 +116,7 @@ export interface ScrollAreaViewportProps extends Omit<ScrollViewProps, 'style'> 
   focusRingStyle?: StyleProp<ViewStyle>;
 }
 
-export interface ScrollAreaContentProps extends ViewProps {}
+export interface ScrollAreaContentProps extends ViewProps { }
 
 export interface ScrollAreaScrollbarProps extends Omit<ViewProps, 'style'> {
   /**
@@ -123,19 +132,25 @@ export interface ScrollAreaScrollbarProps extends Omit<ViewProps, 'style'> {
   /**
    * The style applied to the component.
    */
-  style?: StyleProp<ViewStyle> | ((state: ScrollAreaScrollbarState) => StyleProp<ViewStyle>);
+  style?:
+  | StyleProp<ViewStyle>
+  | ((state: ScrollAreaScrollbarState) => StyleProp<ViewStyle>);
 }
 
 export interface ScrollAreaThumbProps extends Omit<ViewProps, 'style'> {
   /**
    * The style applied to the component.
    */
-  style?: StyleProp<ViewStyle> | ((state: ScrollAreaThumbState) => StyleProp<ViewStyle>);
+  style?:
+  | StyleProp<ViewStyle>
+  | ((state: ScrollAreaThumbState) => StyleProp<ViewStyle>);
 }
 
 export interface ScrollAreaCornerProps extends Omit<ViewProps, 'style'> {
   /**
    * The style applied to the component.
    */
-  style?: StyleProp<ViewStyle> | ((state: ScrollAreaCornerState) => StyleProp<ViewStyle>);
+  style?:
+  | StyleProp<ViewStyle>
+  | ((state: ScrollAreaCornerState) => StyleProp<ViewStyle>);
 }
