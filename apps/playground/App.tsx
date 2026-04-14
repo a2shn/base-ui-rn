@@ -2,7 +2,7 @@ import { PlaybookApp, type PlaybookConfig } from '@base-ui-rn/playbook';
 import * as React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { SwitchPlaybook } from '@/switch.playbook';
+import { SwitchPlaybook } from './src/switch.playbook';
 
 import { AccordionPlaybook } from './src/accordion.playbook';
 import { AvatarPlaybook } from './src/avatar.playbook';

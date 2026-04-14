@@ -1,0 +1,30 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "jsx": "react-native",
+        "lib": [
+            "ESNext"
+        ],
+        "declaration": true,
+        "declarationMap": true,
+        "rootDir": "${configDir}/src",
+        "outDir": "${configDir}/dist",
+        "isolatedModules": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "types": [
+            "node",
+            "jest"
+        ]
+    },
+    "exclude": [
+        "${configDir}/node_modules",
+        "${configDir}/dist"
+    ],
+    "include": [
+        "${configDir}/src"
+    ]
+}

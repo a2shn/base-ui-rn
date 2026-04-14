@@ -165,7 +165,7 @@ async function createNewPackage() {
         'react-native': '>=0.81.5',
       },
       devDependencies: {
-        [`${scope}/eslint-config`]: 'workspace:*',
+        [`${scope}/config`]: 'workspace:*',
         '@types/jest': '^30.0.0',
         '@types/node': '^22.0.0',
         '@types/react': '^19.0.0',
@@ -211,7 +211,7 @@ async function createNewPackage() {
     );
     await writeFile(
       join(packageDir, 'eslint.config.js'),
-      `import {config} from "${scope}/eslint-config";\n\nexport default config();\n`,
+      `import {config} from "${scope}/config";\n\nexport default config();\n`,
     );
     await writeFile(
       join(packageDir, 'src', 'index.ts'),

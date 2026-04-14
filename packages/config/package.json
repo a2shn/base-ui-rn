@@ -1,7 +1,7 @@
 {
-  "name": "@base-ui-rn/eslint-config",
+  "name": "@base-ui-rn/config",
   "version": "0.0.0",
-  "description": "Eslint rules for base-ui-rn",
+  "description": "Config for base-ui-rn",
   "license": "MIT",
   "type": "module",
   "main": "index.js",
@@ -21,6 +21,6 @@
     "eslint-plugin-package-json": "^0.88.2",
     "eslint-plugin-perfectionist": "^5.7.0",
     "eslint-plugin-yml": "^3.1.2",
-    "typescript": "^5.9.3"
+    "typescript": "latest"
   }
 }

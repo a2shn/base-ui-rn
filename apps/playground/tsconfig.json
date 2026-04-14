@@ -4,12 +4,19 @@
   "compilerOptions": {
     "jsx": "react-native",
     "strict": true,
-    "baseUrl": ".",
     "paths": {
-      "@base-ui-rn/*": ["../../packages/*/src"],
-      "@/*": ["src/*"]
+      "@base-ui-rn/*": [
+        "../../packages/*/src"
+      ],
     },
-    "types": ["jest", "@testing-library/react-native"]
+    "types": [
+      "jest",
+      "@testing-library/react-native"
+    ]
   },
-  "include": ["**/*.ts", "**/*.tsx", "../../packages/**/src/**/*"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "../../packages/**/src/**/*"
+  ]
 }

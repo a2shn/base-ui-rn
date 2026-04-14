@@ -18,12 +18,12 @@
     "react-native": ">=0.81.5"
   },
   "devDependencies": {
-    "@base-ui-rn/eslint-config": "workspace:*",
+    "@base-ui-rn/config": "workspace:*",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "react": "19.1.0",
     "react-native": "0.81.5",
-    "typescript": "^5.9.3"
+    "typescript": "latest"
   }
 }
