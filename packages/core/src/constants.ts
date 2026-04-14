@@ -20,5 +20,4 @@ export const ACTIVATION_KEYS = [
   'Cross',
 ] as const;
 
-
 export const ACTIVATION_ACTIONS = ['activate', 'magicTap'] as const;

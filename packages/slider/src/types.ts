@@ -118,7 +118,10 @@ export interface SliderRootProps extends Omit<ViewProps, 'style' | 'children'> {
   onValueCommitted?: (value: SliderValue) => void;
 }
 
-export interface SliderThumbProps extends Omit<React.ComponentProps<typeof PressableWithKeyDown>, 'style' | "children"> {
+export interface SliderThumbProps extends Omit<
+  React.ComponentProps<typeof PressableWithKeyDown>,
+  'style' | 'children'
+> {
   /**
    * Whether the thumb remains focusable when disabled.
    * @default false
@@ -137,7 +140,11 @@ export interface SliderThumbProps extends Omit<React.ComponentProps<typeof Press
   /**
    * A function to generate a human-readable text alternative for the current value.
    */
-  getAccessibilityValueText?: (formattedValue: string, value: number, index: number) => string;
+  getAccessibilityValueText?: (
+    formattedValue: string,
+    value: number,
+    index: number,
+  ) => string;
   /**
    * Style applied to the thumb view.
    */
@@ -157,5 +164,7 @@ export interface SliderValueProps extends Omit<TextProps, 'children'> {
   /**
    * A function that returns content based on the formatted values.
    */
-  children?: React.ReactNode | ((formattedValues: string[], values: number[]) => React.ReactNode);
+  children?:
+    | React.ReactNode
+    | ((formattedValues: string[], values: number[]) => React.ReactNode);
 }

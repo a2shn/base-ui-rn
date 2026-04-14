@@ -49,7 +49,7 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
   }, [isDisabled, rootContext, itemContext.value]);
 
   const handleAccessibilityAction = React.useCallback(
-    () => (event: any) => {
+    () => (event: { nativeEvent: { actionName: string } }) => {
       if (isActivationAction(event.nativeEvent.actionName) && !isDisabled) {
         rootContext.toggleItem(itemContext.value, { value: itemContext.value });
       }
@@ -65,16 +65,16 @@ export function useAccordionTrigger(props: AccordionTriggerProps) {
   };
 
   return {
-    isDisabled,
     focused,
-    focusVisible,
     focusRingStyle,
+    focusVisible,
+    handleAccessibilityAction,
     handleBlur: focusOnBlur,
     handleFocus: focusOnFocus,
-    handleAccessibilityAction,
     handleKeyDown,
-    isFocusable,
     handlePress,
+    isDisabled,
+    isFocusable,
     open: itemContext.open,
     state,
     tabIndex,

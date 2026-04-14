@@ -9,22 +9,29 @@ export function useSwitchRoot(props: SwitchRootProps) {
     checked: controlledChecked,
     defaultChecked = false,
     disabled = false,
-    readOnly = false,
     disableDefaultFocusRing = false,
     focusableWhenDisabled = false,
     onCheckedChange,
+    readOnly = false,
     tabIndex: tabIndexProp,
   } = props;
 
   const [checked = false, setChecked] = useControllableState<boolean>({
-    prop: controlledChecked,
     defaultProp: defaultChecked,
     onChange: (nextChecked: boolean) => onCheckedChange?.(nextChecked),
+    prop: controlledChecked,
   });
 
   const isDisabled = disabled === true;
 
-  const { focused, focusVisible, focusRingStyle, isFocusable, onBlur, onFocus } = useFocusRing({
+  const {
+    focused,
+    focusRingStyle,
+    focusVisible,
+    isFocusable,
+    onBlur,
+    onFocus,
+  } = useFocusRing({
     disabled: isDisabled,
     disableDefaultFocusRing,
     focusableWhenDisabled,
@@ -38,7 +45,7 @@ export function useSwitchRoot(props: SwitchRootProps) {
   }, [isDisabled, readOnly, setChecked]);
 
   const handleKeyDown = React.useCallback(
-    (event: any) => {
+    (event: { nativeEvent: { key: string } }) => {
       const { key } = event.nativeEvent;
       if (key === ' ' || key === 'Spacebar') {
         handlePress();
@@ -48,8 +55,12 @@ export function useSwitchRoot(props: SwitchRootProps) {
   );
 
   const handleAccessibilityAction = React.useCallback(
-    (event: any) => {
-      if (isActivationAction(event.nativeEvent.actionName) && !isDisabled && !readOnly) {
+    (event: { nativeEvent: { actionName: string } }) => {
+      if (
+        isActivationAction(event.nativeEvent.actionName) &&
+        !isDisabled &&
+        !readOnly
+      ) {
         setChecked((prev) => !prev);
       }
     },
@@ -69,13 +80,13 @@ export function useSwitchRoot(props: SwitchRootProps) {
 
   return {
     checked,
-    isDisabled,
     focusRingStyle,
+    handleAccessibilityAction,
     handleBlur: onBlur,
     handleFocus: onFocus,
-    handlePress,
     handleKeyDown,
-    handleAccessibilityAction,
+    handlePress,
+    isDisabled,
     isFocusable,
     readOnly,
     state,

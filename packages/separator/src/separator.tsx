@@ -17,24 +17,19 @@ import type { SeparatorProps } from './types';
  */
 export const Separator = React.forwardRef<View, SeparatorProps>(
   (props, ref) => {
-    const { decorative = false, style, role, ...otherProps } = props;
+    const { decorative = false, role, style, ...otherProps } = props;
 
-    const mergedProps = mergeProps(
-    { style },
-    { ref },
-    otherProps,
-    {
+    const mergedProps = mergeProps({ style }, { ref }, otherProps, {
       accessible: true,
-      focusable: false
-    }
-  );
+      focusable: false,
+    });
 
     return (
       <View
         {...mergedProps}
-        role={role ?? (decorative ? 'presentation' : 'separator')}
         accessibilityElementsHidden={decorative}
         importantForAccessibility={decorative ? 'no-hide-descendants' : 'yes'}
+        role={role ?? (decorative ? 'presentation' : 'separator')}
       />
     );
   },

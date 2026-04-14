@@ -36,7 +36,6 @@ export function ProgressPlaybook() {
         <View style={styles.container}>
           <Progress.Root style={styles.meterRoot} value={progressValue.value}>
             <View style={styles.meterHeader}>
-
               <Progress.Value style={styles.meterValue} />
             </View>
             <Progress.Track style={styles.meterTrack}>
@@ -55,7 +54,6 @@ export function ProgressPlaybook() {
       <Section title='Indeterminate'>
         <View style={styles.container}>
           <Progress.Root style={styles.meterRoot} value={null}>
-
             <Progress.Track style={styles.meterTrack}>
               <Progress.Indicator
                 style={[styles.meterIndicator, styles.indicatorIndeterminate]}
@@ -92,14 +90,18 @@ export function ProgressPlaybook() {
           <Progress.Root style={styles.meterRoot} value={progressValue.value}>
             {(state) => (
               <>
-                <Text style={getProgressLabelStyle(state)}>{(state.isComplete ? '✓ Completed' : 'Processing...')}</Text>
+                <Text style={getProgressLabelStyle(state)}>
+                  {state.isComplete ? '✓ Completed' : 'Processing...'}
+                </Text>
 
                 <Progress.Track style={styles.meterTrack}>
                   <Progress.Indicator
                     style={(state) => [
                       styles.meterIndicator,
                       styles.indicatorComplete,
-                      { width: state.percentage ? `${state.percentage}%` : '0%' },
+                      {
+                        width: state.percentage ? `${state.percentage}%` : '0%',
+                      },
                     ]}
                   />
                 </Progress.Track>

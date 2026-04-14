@@ -1,5 +1,11 @@
 import type * as React from 'react';
-import type { StyleProp, TextProps, TextStyle, ViewProps, ViewStyle } from 'react-native';
+import type {
+  StyleProp,
+  TextProps,
+  TextStyle,
+  ViewProps,
+  ViewStyle,
+} from 'react-native';
 
 export interface MeterState {
   value: number;
@@ -106,4 +112,4 @@ export interface MeterValueProps extends Omit<TextProps, 'children' | 'style'> {
   style?: StyleProp<TextStyle> | ((state: MeterState) => StyleProp<TextStyle>);
 }
 
-export interface MeterContextValue extends MeterState {}
+export type MeterContextValue = MeterState;

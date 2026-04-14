@@ -1,4 +1,4 @@
-import { Input, type InputState, Label } from '@base-ui-rn/input';
+import { Input, type InputState } from '@base-ui-rn/input';
 import {
   Gallery,
   LiveConsole,

@@ -11,8 +11,8 @@ describe('Switch', () => {
   describe('Basic Rendering & Uncontrolled State', () => {
     it('renders unchecked by default', () => {
       render(
-        <Switch.Root testID="switch-root">
-          <Switch.Thumb testID="switch-thumb" />
+        <Switch.Root testID='switch-root'>
+          <Switch.Thumb testID='switch-thumb' />
         </Switch.Root>,
       );
 
@@ -26,7 +26,7 @@ describe('Switch', () => {
 
     it('renders checked when defaultChecked is true', () => {
       render(
-        <Switch.Root defaultChecked testID="switch-root">
+        <Switch.Root defaultChecked testID='switch-root'>
           <Switch.Thumb />
         </Switch.Root>,
       );
@@ -38,7 +38,7 @@ describe('Switch', () => {
     it('toggles state on press when uncontrolled', () => {
       const onCheckedChange = jest.fn();
       render(
-        <Switch.Root onCheckedChange={onCheckedChange} testID="switch-root">
+        <Switch.Root onCheckedChange={onCheckedChange} testID='switch-root'>
           <Switch.Thumb />
         </Switch.Root>,
       );
@@ -61,7 +61,11 @@ describe('Switch', () => {
     it('respects the checked prop and does not update internal state', () => {
       const onCheckedChange = jest.fn();
       const { rerender } = render(
-        <Switch.Root checked={true} onCheckedChange={onCheckedChange} testID="switch-root">
+        <Switch.Root
+          checked={true}
+          onCheckedChange={onCheckedChange}
+          testID='switch-root'
+        >
           <Switch.Thumb />
         </Switch.Root>,
       );
@@ -76,7 +80,11 @@ describe('Switch', () => {
 
       // Rerender with new prop to simulate parent component updating it
       rerender(
-        <Switch.Root checked={false} onCheckedChange={onCheckedChange} testID="switch-root">
+        <Switch.Root
+          checked={false}
+          onCheckedChange={onCheckedChange}
+          testID='switch-root'
+        >
           <Switch.Thumb />
         </Switch.Root>,
       );
@@ -88,7 +96,11 @@ describe('Switch', () => {
     it('prevents toggling and updates accessibilityState when disabled', () => {
       const onCheckedChange = jest.fn();
       render(
-        <Switch.Root disabled onCheckedChange={onCheckedChange} testID="switch-root">
+        <Switch.Root
+          disabled
+          onCheckedChange={onCheckedChange}
+          testID='switch-root'
+        >
           <Switch.Thumb />
         </Switch.Root>,
       );
@@ -104,7 +116,11 @@ describe('Switch', () => {
     it('prevents toggling when readOnly is true (but does not mark as visually disabled)', () => {
       const onCheckedChange = jest.fn();
       render(
-        <Switch.Root readOnly onCheckedChange={onCheckedChange} testID="switch-root">
+        <Switch.Root
+          onCheckedChange={onCheckedChange}
+          readOnly
+          testID='switch-root'
+        >
           <Switch.Thumb />
         </Switch.Root>,
       );
@@ -123,7 +139,11 @@ describe('Switch', () => {
     it('ignores keyboard events if disabled', () => {
       const onCheckedChange = jest.fn();
       render(
-        <Switch.Root disabled onCheckedChange={onCheckedChange} testID="switch-root">
+        <Switch.Root
+          disabled
+          onCheckedChange={onCheckedChange}
+          testID='switch-root'
+        >
           <Switch.Thumb />
         </Switch.Root>,
       );
@@ -138,10 +158,10 @@ describe('Switch', () => {
     it('evaluates style functions on the Root based on state', () => {
       render(
         <Switch.Root
-          testID="switch-root"
           style={({ checked }) => ({
             backgroundColor: checked ? 'green' : 'red',
           })}
+          testID='switch-root'
         >
           <Switch.Thumb />
         </Switch.Root>,
@@ -160,12 +180,12 @@ describe('Switch', () => {
 
     it('evaluates style functions on the Thumb via Context', () => {
       render(
-        <Switch.Root testID="switch-root">
+        <Switch.Root testID='switch-root'>
           <Switch.Thumb
-            testID="switch-thumb"
             style={({ checked }) => ({
               transform: [{ translateX: checked ? 20 : 0 }],
             })}
+            testID='switch-thumb'
           />
         </Switch.Root>,
       );
@@ -186,7 +206,7 @@ describe('Switch', () => {
 
     it('exposes state to children as a function', () => {
       render(
-        <Switch.Root testID="switch-root">
+        <Switch.Root testID='switch-root'>
           {({ checked }) => <Text>{checked ? 'ON' : 'OFF'}</Text>}
         </Switch.Root>,
       );

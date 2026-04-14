@@ -1,7 +1,10 @@
 import { useId } from 'react';
 import type { AccessibilityProps } from 'react-native';
 
-export interface NativeAriaLabelingProps extends Omit<AccessibilityProps, 'accessibilityLabel' | 'accessibilityLabelledBy'> {
+export interface NativeAriaLabelingProps extends Omit<
+  AccessibilityProps,
+  'accessibilityLabel' | 'accessibilityLabelledBy'
+> {
   id?: string;
   nativeID?: string;
   accessibilityLabel?: string | string[];
@@ -17,9 +20,9 @@ export interface ResolvedNativeAriaLabelingProps {
 
 export function useLabels(
   props: NativeAriaLabelingProps,
-  defaultLabel?: string
+  defaultLabel?: string,
 ): ResolvedNativeAriaLabelingProps {
-  let { id, nativeID, accessibilityLabel, accessibilityLabelledBy } = props;
+  const { accessibilityLabel, accessibilityLabelledBy, id, nativeID } = props;
 
   const reactId = useId();
   const currentId = id || nativeID || reactId;
@@ -52,9 +55,9 @@ export function useLabels(
   }
 
   return {
-    id: currentId,
-    nativeID: currentId,
     accessibilityLabel: label,
     accessibilityLabelledBy: finalLabelledBy,
+    id: currentId,
+    nativeID: currentId,
   };
 }

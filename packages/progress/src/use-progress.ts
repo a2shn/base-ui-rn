@@ -5,18 +5,18 @@ import type { ProgressRootProps, ProgressState } from './types';
 
 export function useProgress(props: ProgressRootProps) {
   const {
+    defaultValue = 0,
     format,
     getAccessibilityValueText,
     locale,
     max = 100,
     min = 0,
     value: controlledValue,
-    defaultValue = 0,
   } = props;
 
   const [value = null] = useControllableState<number | null>({
-    prop: controlledValue,
     defaultProp: defaultValue,
+    prop: controlledValue,
   });
 
   const labelId = React.useId();

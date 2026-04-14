@@ -17,6 +17,7 @@ export function useSliderThumb(props: SliderThumbProps) {
     disabled,
     disableDefaultFocusRing = false,
     focusableWhenDisabled = false,
+    getAccessibilityValueText,
     index = 0,
     onBlur,
     onFocus,
@@ -24,26 +25,22 @@ export function useSliderThumb(props: SliderThumbProps) {
     onLayout,
     onPress,
     tabIndex: tabIndexProp,
-    getAccessibilityValueText
   } = props;
-
-
 
   const {
     focusedThumbIndex,
     focusThumb,
+    format,
     largeStep,
+    locale,
     setFocusedThumbIndex,
     setThumbSize,
     state,
     stepBy,
+    thumbAlignment,
     thumbNodeHandles,
     thumbRefs,
-    format,
-    locale,
-    thumbAlignment
   } = useSliderContext();
-
 
   const isDisabled = Boolean(state.disabled || disabled);
   const valueNow = state.value[index] ?? state.min;
@@ -54,10 +51,10 @@ export function useSliderThumb(props: SliderThumbProps) {
   const {
     focused,
     focusRingStyle,
+    focusVisible,
     isFocusable,
     onBlur: onRingBlur,
     onFocus: onRingFocus,
-    focusVisible,
   } = useFocusRing({
     disabled: isDisabled,
     disableDefaultFocusRing,
@@ -179,7 +176,6 @@ export function useSliderThumb(props: SliderThumbProps) {
     [isDisabled, index, stepBy],
   );
 
-
   const { formattedValues } = useFormatter([valueNow], {
     formatOptions: format,
     locale: locale,
@@ -205,16 +201,16 @@ export function useSliderThumb(props: SliderThumbProps) {
   );
 
   const thumbState = React.useMemo(
-    () => ({ ...state, focusVisible, focused, index, valueNow }),
+    () => ({ ...state, focused, focusVisible, index, valueNow }),
     [state, focusVisible, focused, index, valueNow],
-  )
-
+  );
 
   return {
-    focusRingStyle,
-    focusVisible,
+    accessibilityValue,
     focused,
     focusedThumbIndex,
+    focusRingStyle,
+    focusVisible,
     handleAccessibilityAction,
     handleBlur,
     handleFocus,
@@ -225,8 +221,7 @@ export function useSliderThumb(props: SliderThumbProps) {
     isDisabled,
     state: thumbState,
     tabIndex,
-    valueNow,
     thumbAlignment,
-    accessibilityValue
+    valueNow,
   };
 }

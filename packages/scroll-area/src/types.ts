@@ -1,5 +1,4 @@
 import type { FocusRingState } from '@base-ui-rn/focus-ring';
-import type * as React from 'react';
 import type {
   ScrollViewProps,
   StyleProp,
@@ -60,8 +59,8 @@ export interface ScrollAreaRootProps extends Omit<ViewProps, 'style'> {
    * @default 0
    */
   overflowEdgeThreshold?:
-  | number
-  | { xStart?: number; xEnd?: number; yStart?: number; yEnd?: number };
+    | number
+    | { xStart?: number; xEnd?: number; yStart?: number; yEnd?: number };
   /**
    * The number of pixels to scroll when using arrow keys on web.
    * @default 40
@@ -76,8 +75,8 @@ export interface ScrollAreaRootProps extends Omit<ViewProps, 'style'> {
    * The style applied to the component.
    */
   style?:
-  | StyleProp<ViewStyle>
-  | ((state: ScrollAreaRootState) => StyleProp<ViewStyle>);
+    | StyleProp<ViewStyle>
+    | ((state: ScrollAreaRootState) => StyleProp<ViewStyle>);
   /**
    * Whether the default focus ring should be disabled.
    * @default false
@@ -98,8 +97,8 @@ export interface ScrollAreaViewportProps extends Omit<
    * The style applied to the component.
    */
   style?:
-  | StyleProp<ViewStyle>
-  | ((state: ScrollAreaViewportState) => StyleProp<ViewStyle>);
+    | StyleProp<ViewStyle>
+    | ((state: ScrollAreaViewportState) => StyleProp<ViewStyle>);
   /**
    * Whether the viewport should measure its layout and update the ScrollArea state.
    * @default true
@@ -116,7 +115,7 @@ export interface ScrollAreaViewportProps extends Omit<
   focusRingStyle?: StyleProp<ViewStyle>;
 }
 
-export interface ScrollAreaContentProps extends ViewProps { }
+export type ScrollAreaContentProps = ViewProps;
 
 export interface ScrollAreaScrollbarProps extends Omit<ViewProps, 'style'> {
   /**
@@ -133,8 +132,8 @@ export interface ScrollAreaScrollbarProps extends Omit<ViewProps, 'style'> {
    * The style applied to the component.
    */
   style?:
-  | StyleProp<ViewStyle>
-  | ((state: ScrollAreaScrollbarState) => StyleProp<ViewStyle>);
+    | StyleProp<ViewStyle>
+    | ((state: ScrollAreaScrollbarState) => StyleProp<ViewStyle>);
 }
 
 export interface ScrollAreaThumbProps extends Omit<ViewProps, 'style'> {
@@ -142,8 +141,8 @@ export interface ScrollAreaThumbProps extends Omit<ViewProps, 'style'> {
    * The style applied to the component.
    */
   style?:
-  | StyleProp<ViewStyle>
-  | ((state: ScrollAreaThumbState) => StyleProp<ViewStyle>);
+    | StyleProp<ViewStyle>
+    | ((state: ScrollAreaThumbState) => StyleProp<ViewStyle>);
 }
 
 export interface ScrollAreaCornerProps extends Omit<ViewProps, 'style'> {
@@ -151,6 +150,6 @@ export interface ScrollAreaCornerProps extends Omit<ViewProps, 'style'> {
    * The style applied to the component.
    */
   style?:
-  | StyleProp<ViewStyle>
-  | ((state: ScrollAreaCornerState) => StyleProp<ViewStyle>);
+    | StyleProp<ViewStyle>
+    | ((state: ScrollAreaCornerState) => StyleProp<ViewStyle>);
 }

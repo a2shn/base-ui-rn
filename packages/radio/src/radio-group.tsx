@@ -44,25 +44,23 @@ export const RadioGroup = React.memo(
       [state, onRadioKeyDown, onValueChange, readOnly, registerItem],
     );
 
-    const resolvedStyle = resolveValue(style, state)
+    const resolvedStyle = resolveValue(style, state);
     const mergedProps = mergeProps(
-    {
-      accessibilityState: { disabled },
-      style: resolvedStyle
-    },
-    { ref },
-    otherProps,
-    {
-      focusable: false,
-      role: "group"
-    }
-  );
+      {
+        accessibilityState: { disabled },
+        style: resolvedStyle,
+      },
+      { ref },
+      otherProps,
+      {
+        focusable: false,
+        role: 'group',
+      },
+    );
 
     return (
       <RadioGroupContext.Provider value={contextValue}>
-        <View {...mergedProps}>
-          {resolveValue(children, state)}
-        </View>
+        <View {...mergedProps}>{resolveValue(children, state)}</View>
       </RadioGroupContext.Provider>
     );
   }),

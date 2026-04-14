@@ -8,7 +8,10 @@ export interface SwitchState extends FocusRingState {
   readOnly: boolean;
 }
 
-export interface SwitchRootProps extends Omit<React.ComponentProps<typeof PressableWithKeyDown>, 'children' | 'style'> {
+export interface SwitchRootProps extends Omit<
+  React.ComponentProps<typeof PressableWithKeyDown>,
+  'children' | 'style'
+> {
   /**
    * Identifies the field when a form is submitted.
    */
@@ -64,7 +67,10 @@ export interface SwitchRootProps extends Omit<React.ComponentProps<typeof Pressa
   focusableWhenDisabled?: boolean;
 }
 
-export interface SwitchThumbProps extends Omit<ViewProps, 'style' | 'children'> {
+export interface SwitchThumbProps extends Omit<
+  ViewProps,
+  'style' | 'children'
+> {
   /**
    * The content of the thumb.
    */

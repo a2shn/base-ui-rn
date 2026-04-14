@@ -1,5 +1,11 @@
 import type * as React from 'react';
-import type { StyleProp, TextProps, TextStyle, ViewProps, ViewStyle } from 'react-native';
+import type {
+  StyleProp,
+  TextProps,
+  TextStyle,
+  ViewProps,
+  ViewStyle,
+} from 'react-native';
 
 export interface ProgressState {
   value: number | null;
@@ -12,7 +18,10 @@ export interface ProgressState {
   isProgressing: boolean;
 }
 
-export interface ProgressRootProps extends Omit<ViewProps, 'children' | 'style'> {
+export interface ProgressRootProps extends Omit<
+  ViewProps,
+  'children' | 'style'
+> {
   /**
    * The current value of the progress bar.
    * @default null
@@ -31,7 +40,10 @@ export interface ProgressRootProps extends Omit<ViewProps, 'children' | 'style'>
   /**
    * A function to generate a human-readable representation of the value for screen readers.
    */
-  getAccessibilityValueText?: (formattedValue: string | null, value: number | null) => string;
+  getAccessibilityValueText?: (
+    formattedValue: string | null,
+    value: number | null,
+  ) => string;
   /**
    * The locale to use for formatting the value.
    */
@@ -43,7 +55,9 @@ export interface ProgressRootProps extends Omit<ViewProps, 'children' | 'style'>
   /**
    * Style of the root component.
    */
-  style?: StyleProp<ViewStyle> | ((state: ProgressState) => StyleProp<ViewStyle>);
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: ProgressState) => StyleProp<ViewStyle>);
   /**
    * Children of the root component.
    */
@@ -51,7 +65,10 @@ export interface ProgressRootProps extends Omit<ViewProps, 'children' | 'style'>
   defaultValue?: number;
 }
 
-export interface ProgressLabelProps extends Omit<TextProps, 'children' | 'style'> {
+export interface ProgressLabelProps extends Omit<
+  TextProps,
+  'children' | 'style'
+> {
   /**
    * Children of the label component.
    */
@@ -59,10 +76,15 @@ export interface ProgressLabelProps extends Omit<TextProps, 'children' | 'style'
   /**
    * Style of the label component.
    */
-  style?: StyleProp<TextStyle> | ((state: ProgressState) => StyleProp<TextStyle>);
+  style?:
+    | StyleProp<TextStyle>
+    | ((state: ProgressState) => StyleProp<TextStyle>);
 }
 
-export interface ProgressTrackProps extends Omit<ViewProps, 'children' | 'style'> {
+export interface ProgressTrackProps extends Omit<
+  ViewProps,
+  'children' | 'style'
+> {
   /**
    * Children of the track component.
    */
@@ -70,17 +92,24 @@ export interface ProgressTrackProps extends Omit<ViewProps, 'children' | 'style'
   /**
    * Style of the track component.
    */
-  style?: StyleProp<ViewStyle> | ((state: ProgressState) => StyleProp<ViewStyle>);
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: ProgressState) => StyleProp<ViewStyle>);
 }
 
 export interface ProgressIndicatorProps extends Omit<ViewProps, 'style'> {
   /**
    * Style of the indicator component.
    */
-  style?: StyleProp<ViewStyle> | ((state: ProgressState) => StyleProp<ViewStyle>);
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: ProgressState) => StyleProp<ViewStyle>);
 }
 
-export interface ProgressValueProps extends Omit<TextProps, 'children' | 'style'> {
+export interface ProgressValueProps extends Omit<
+  TextProps,
+  'children' | 'style'
+> {
   /**
    * Children of the value component.
    */
@@ -88,7 +117,9 @@ export interface ProgressValueProps extends Omit<TextProps, 'children' | 'style'
   /**
    * Style of the value component.
    */
-  style?: StyleProp<TextStyle> | ((state: ProgressState) => StyleProp<TextStyle>);
+  style?:
+    | StyleProp<TextStyle>
+    | ((state: ProgressState) => StyleProp<TextStyle>);
 }
 
 export interface ProgressContextValue extends ProgressState {

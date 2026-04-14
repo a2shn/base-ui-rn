@@ -51,8 +51,9 @@ export const Viewport = React.memo(
 
     const isWeb = Platform.OS === 'web';
     const resolvedStyle = resolveValue(style, state);
-    const webStyle: StyleProp<ViewStyle> = isWeb
-      ? ({ outlineOffset: '-3px', touchAction: 'auto' } as any)
+
+    const webStyle = isWeb
+      ? { outlineOffset: '-3px', touchAction: 'auto' }
       : {};
 
     const mergedProps = mergeProps(
@@ -68,7 +69,7 @@ export const Viewport = React.memo(
             : ({ flexGrow: 1 } as const),
           contentContainerStyle as StyleProp<ViewStyle>,
         ],
-        style: [{ flex: 1 }, resolvedStyle, webStyle],
+        style: [{ flex: 1 }, resolvedStyle, webStyle] as StyleProp<ViewStyle>,
       },
       { ref: mergedRef },
       otherProps,

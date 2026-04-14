@@ -1,28 +1,29 @@
-import { composeEventHandler } from './compose-event-handlers';
+import { Ref } from 'react';
+import { StyleProp } from 'react-native';
+
 import {
   mergeAccessibilityActions,
   mergeAccessibilityState,
 } from '../accessibility/merge-accessibility-props';
+import { composeEventHandler } from './compose-event-handlers';
 import { mergeRefs } from './merge-refs';
-import { StyleProp } from 'react-native';
-import { Ref } from 'react';
 
-type PropsArg = Record<string, any> | null | undefined;
+type PropsArg = Record<string, unknown> | null | undefined;
 
 type TupleTypes<T> = { [P in keyof T]: T[P] } extends { [key: number]: infer V }
   ? NullToObject<V>
   : never;
-type NullToObject<T> = T extends null | undefined ? {} : T;
+type NullToObject<T> = T extends null | undefined ? Record<string, never> : T;
 
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-  k: infer I,
-) => void
+type UnionToIntersection<U> = (
+  U extends unknown ? (k: U) => void : never
+) extends (k: infer I) => void
   ? I
   : never;
 
 export type MergedResult<T> = UnionToIntersection<TupleTypes<T>> & {
-  ref: Ref<any>;
-  style: StyleProp<any>;
+  ref: Ref<unknown>;
+  style: StyleProp<unknown>;
 };
 /**
  * Merges user props with internal component configuration.
@@ -31,15 +32,15 @@ export type MergedResult<T> = UnionToIntersection<TupleTypes<T>> & {
  * Derived from Adobe's React Aria (Apache-2.0 License).
  */
 export function mergeProps<T extends PropsArg[]>(...args: T): MergedResult<T> {
-  let result: Record<string, any> = { ...args[0] };
+  const result: Record<string, unknown> = { ...args[0] };
 
   for (let i = 1; i < args.length; i++) {
-    let props = args[i];
+    const props = args[i];
     if (!props) continue;
 
-    for (let key in props) {
-      let a = result[key];
-      let b = props[key];
+    for (const key in props) {
+      const a = result[key];
+      const b = props[key];
 
       const isEventHandler =
         key[0] === 'o' &&
@@ -49,20 +50,27 @@ export function mergeProps<T extends PropsArg[]>(...args: T): MergedResult<T> {
 
       if (isEventHandler) {
         if (typeof a === 'function' && typeof b === 'function') {
-          result[key] = composeEventHandler(a, b);
+          result[key] = composeEventHandler(
+            a as (...args: unknown[]) => void,
+            b as (...args: unknown[]) => void,
+          );
         } else {
           result[key] = typeof a === 'function' ? a : b;
         }
       }
       // 2. Special Merges
       else if (key === 'ref') {
-        result.ref = (a && b) ? mergeRefs(a, b) : (a || b);
+        result.ref =
+          a && b
+            ? mergeRefs(a as Ref<unknown>, b as Ref<unknown>)
+            : (a as Ref<unknown>) || (b as Ref<unknown>);
       } else if (key === 'style') {
-        result.style = (a && b) ? [a, b] : (a || b);
+        result.style = a && b ? [a, b] : a || b;
       } else if (key === 'accessibilityState') {
-        result[key] = (a && b) ? mergeAccessibilityState(a, b) : (a || b);
+        result[key] = a && b ? mergeAccessibilityState(a, b) : a || b;
       } else if (key === 'accessibilityActions') {
-        result[key] = (a && b) ? mergeAccessibilityActions(a, b) : (a || b);
+        result[key] =
+          a && b ? mergeAccessibilityActions(a as never, b as never) : a || b;
       }
       // 3. Standard Props: First-in-Wins
       else {

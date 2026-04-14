@@ -26,11 +26,11 @@ export function useTabs(props: TabsRootProps) {
 
   const [currentValue = null, setCurrentValue] =
     useControllableState<TabValue | null>({
-      prop: controlledValue,
       defaultProp: defaultValue ?? null,
-      onChange: (v: string) => {
+      onChange: (v: TabValue | null) => {
         if (v !== null) onValueChange?.(v);
       },
+      prop: controlledValue,
     });
 
   const [focusedValue, setFocusedValue] = React.useState<TabValue | null>(

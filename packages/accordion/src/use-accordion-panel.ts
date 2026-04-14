@@ -36,9 +36,9 @@ export function useAccordionPanel(props: AccordionPanelProps) {
   };
 
   return {
-    isDisabled: itemContext.isDisabled,
-    index: itemContext.index,
     handleOnLayout,
+    index: itemContext.index,
+    isDisabled: itemContext.isDisabled,
     open: itemContext.open,
     orientation: rootContext.orientation,
     shouldRender,

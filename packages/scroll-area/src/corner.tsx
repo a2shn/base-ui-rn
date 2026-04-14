@@ -2,8 +2,8 @@ import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
-import type { ScrollAreaCornerProps } from './types';
 import { useScrollAreaContext } from './context';
+import type { ScrollAreaCornerProps } from './types';
 
 /**
  * Visual element rendered at the intersection of horizontal and vertical scrollbars.
@@ -24,9 +24,13 @@ export const Corner = React.memo(
     if (!isVisible) return null;
 
     const resolvedStyle = resolveValue(style, state);
-    const internalProps = { style: [{ backgroundColor: 'transparent' }, resolvedStyle] };
+    const internalProps = {
+      style: [{ backgroundColor: 'transparent' }, resolvedStyle],
+    };
 
-    const mergedProps = mergeProps(internalProps, { ref }, otherProps, { focusable: false });
+    const mergedProps = mergeProps(internalProps, { ref }, otherProps, {
+      focusable: false,
+    });
 
     return <View {...mergedProps} />;
   }),

@@ -30,6 +30,6 @@ export interface UseControllableStateParams<T> {
 
 export type ActivationAction = (typeof ACTIVATION_ACTIONS)[number];
 
-export type AnyFn = (...args: any[]) => void;
+export type AnyFn = (...args: unknown[]) => void;
 
 export type HandlerMap = Record<string, AnyFn | null | undefined>;

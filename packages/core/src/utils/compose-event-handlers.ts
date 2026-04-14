@@ -35,7 +35,7 @@ export function composeEventHandler(
 
 /**
  * Detects if `event.preventDefault()` was called.
- * 
+ *
  * Handles multiple event systems:
  * - React SyntheticEvent (isDefaultPrevented() method)
  * - DOM Events (defaultPrevented property)

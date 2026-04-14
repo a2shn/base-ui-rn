@@ -9,21 +9,21 @@ describe('mergeProps', () => {
       const result = mergeProps(
         { id: 'internal-id', role: 'button' },
         { id: 'user-id', tabIndex: 0 },
-        { role: 'default-role', accessible: true }
+        { accessible: true, role: 'default-role' },
       );
 
       expect(result).toEqual({
+        accessible: true, // Third arg provides this
         id: 'internal-id', // First arg wins
-        role: 'button',    // First arg wins over default
-        tabIndex: 0,       // Second arg provides this
-        accessible: true,  // Third arg provides this
+        role: 'button', // First arg wins over default
+        tabIndex: 0, // Second arg provides this
       });
     });
 
     it('ignores undefined values in subsequent arguments', () => {
-      const result: any = mergeProps(
+      const result = mergeProps(
         { accessible: true },
-        { accessible: undefined }
+        { accessible: undefined },
       );
       expect(result.accessible).toBe(true);
     });
@@ -47,18 +47,24 @@ describe('mergeProps', () => {
       const onPressMock = jest.fn();
 
       // Left side exists, right side undefined
-      const result1: any = mergeProps({ onPress: onPressMock }, { onPress: undefined });
+      const result1 = mergeProps(
+        { onPress: onPressMock },
+        { onPress: undefined },
+      );
       expect(result1.onPress).toBe(onPressMock);
 
       // Left side undefined, right side exists
-      const result2: any = mergeProps({ onPress: undefined }, { onPress: onPressMock });
+      const result2 = mergeProps(
+        { onPress: undefined },
+        { onPress: onPressMock },
+      );
       expect(result2.onPress).toBe(onPressMock);
     });
 
     it('does not attempt to compose non-function props that start with "on"', () => {
-      const result: any = mergeProps(
+      const result = mergeProps(
         { onlyHasBoolean: true },
-        { onlyHasBoolean: false }
+        { onlyHasBoolean: false },
       );
 
       // Falls back to First-in-Wins
@@ -76,9 +82,11 @@ describe('mergeProps', () => {
     });
 
     it('preserves a single style object without wrapping it in an array', () => {
-      const style1: any = { color: 'red' };
+      const style1 = { color: 'red' };
 
-      expect(mergeProps({ style: style1 }, { style: undefined }).style).toBe(style1);
+      expect(mergeProps({ style: style1 }, { style: undefined }).style).toBe(
+        style1,
+      );
       expect(mergeProps({ style: null }, { style: style1 }).style).toBe(style1);
     });
 
@@ -98,23 +106,25 @@ describe('mergeProps', () => {
     it('preserves a single ref if the other is undefined or null', () => {
       const refMock = jest.fn();
 
-      expect((mergeProps({ ref: refMock }, { ref: undefined }) as any).ref).toBe(refMock);
-      expect((mergeProps({ ref: null }, { ref: refMock }) as any).ref).toBe(refMock);
+      expect(mergeProps({ ref: refMock }, { ref: undefined }).ref).toBe(
+        refMock,
+      );
+      expect(mergeProps({ ref: null }, { ref: refMock }).ref).toBe(refMock);
     });
 
     it('deep merges accessibilityState', () => {
-      const state1 = { disabled: true, checked: true };
+      const state1 = { checked: true, disabled: true };
       const state2 = { checked: false, expanded: true };
 
       const result = mergeProps(
         { accessibilityState: state1 },
-        { accessibilityState: state2 }
+        { accessibilityState: state2 },
       );
 
       // Assuming mergeAccessibilityState handles standard object spreading {...a, ...b}
       expect(result.accessibilityState).toEqual({
-        disabled: true,
         checked: false, // In a11y state merges, the later arg usually overrides the earlier one
+        disabled: true,
         expanded: true,
       });
     });
@@ -124,8 +134,8 @@ describe('mergeProps', () => {
       const actions2 = [{ name: 'magicTap' }];
 
       const result = mergeProps(
-        { accessibilityActions: actions1 as any },
-        { accessibilityActions: actions2 as any }
+        { accessibilityActions: actions1 },
+        { accessibilityActions: actions2 },
       );
 
       expect(result.accessibilityActions).toEqual([
@@ -142,7 +152,7 @@ describe('mergeProps', () => {
         null,
         undefined,
         {},
-        { name: 'button' }
+        { name: 'button' },
       );
 
       expect(result).toEqual({

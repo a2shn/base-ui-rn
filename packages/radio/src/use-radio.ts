@@ -1,10 +1,7 @@
-import { KeyDownEventData, isActivationAction } from '@base-ui-rn/core';
+import { isActivationAction, KeyDownEventData } from '@base-ui-rn/core';
 import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
-import {
-  type NativeSyntheticEvent,
-  Platform,
-} from 'react-native';
+import { type NativeSyntheticEvent, Platform } from 'react-native';
 
 import type {
   RadioGroupContextValue,
@@ -96,19 +93,13 @@ export function useRadio(
     [isDisabled, select],
   );
 
-  const handleFocus = React.useCallback(
-    () => {
-      handleFocusIn();
-    },
-    [handleFocusIn],
-  );
+  const handleFocus = React.useCallback(() => {
+    handleFocusIn();
+  }, [handleFocusIn]);
 
-  const handleBlur = React.useCallback(
-    () => {
-      handleFocusOut();
-    },
-    [handleFocusOut],
-  );
+  const handleBlur = React.useCallback(() => {
+    handleFocusOut();
+  }, [handleFocusOut]);
 
   const state: RadioRootState = {
     checked,
@@ -120,13 +111,13 @@ export function useRadio(
 
   return {
     checked,
-    isDisabled,
     focusRingStyle,
     handleAccessibilityAction,
     handleBlur,
     handleFocus,
     handleKeyDown,
     handlePress,
+    isDisabled,
     isFocusable,
     readOnly: isReadOnly,
     state,

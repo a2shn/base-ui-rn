@@ -9,7 +9,7 @@ export function useFormatter(
   values: number[],
   options: UseFormatterOptions = {},
 ) {
-  const { locale, formatOptions } = options;
+  const { formatOptions, locale } = options;
 
   const formatter = React.useMemo(() => {
     try {

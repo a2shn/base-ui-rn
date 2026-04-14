@@ -1,7 +1,4 @@
-import {
-  mergeProps,
-  resolveValue,
-} from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -28,9 +25,9 @@ export const AccordionRoot = React.memo(
 
     const {
       baseId,
-      isDisabled,
       getItemIndex,
       getItemRef,
+      isDisabled,
       multiple,
       onTriggerKeyDown,
       openItems,
@@ -44,9 +41,9 @@ export const AccordionRoot = React.memo(
     const contextValue = React.useMemo(
       () => ({
         baseId,
-        isDisabled,
         getItemIndex,
         getItemRef,
+        isDisabled,
         multiple,
         onTriggerKeyDown,
         openItems,
@@ -67,25 +64,22 @@ export const AccordionRoot = React.memo(
         registerItem,
         registerTrigger,
         toggleItem,
-      ]
+      ],
     );
 
-    const resolvedStyle = resolveValue(
-      style,
-      state,
-    );
+    const resolvedStyle = resolveValue(style, state);
 
     const mergedProps = mergeProps(
-    {
-      accessibilityState: { disabled: isDisabled }
-    },
-    { ref },
-    otherProps,
-    {
-      focusable: false,
-      role: "group"
-    }
-  );
+      {
+        accessibilityState: { disabled: isDisabled },
+      },
+      { ref },
+      otherProps,
+      {
+        focusable: false,
+        role: 'group',
+      },
+    );
 
     return (
       <AccordionContext.Provider value={contextValue}>

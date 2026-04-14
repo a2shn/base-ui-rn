@@ -22,35 +22,27 @@ import { useMeter } from './use-meter';
  */
 export const MeterRoot = React.memo(
   React.forwardRef<View, MeterRootProps>((props, ref) => {
-    const {
-      children,
-      style,
-      ...otherProps
-    } = props;
+    const { children, style, ...otherProps } = props;
 
     const { accessibilityProps, state } = useMeter(props);
-    const resolvedStyle = resolveValue(style, state)
+    const resolvedStyle = resolveValue(style, state);
 
     const mergedProps = mergeProps(
-    { style: resolvedStyle },
-    { ref },
-    otherProps,
-    {
-      accessibilityLiveRegion: "none",
-      accessible: true,
-      focusable: false,
-      importantForAccessibility: "yes",
-      role: "progressbar"
-    }
-  );
+      { style: resolvedStyle },
+      { ref },
+      otherProps,
+      {
+        accessibilityLiveRegion: 'none',
+        accessible: true,
+        focusable: false,
+        importantForAccessibility: 'yes',
+        role: 'progressbar',
+      },
+    );
 
     return (
       <MeterContext.Provider value={state}>
-        <View
-          {...mergedProps}
-
-          accessibilityValue={accessibilityProps}
-        >
+        <View {...mergedProps} accessibilityValue={accessibilityProps}>
           {resolveValue(children, state)}
         </View>
       </MeterContext.Provider>

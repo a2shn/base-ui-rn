@@ -22,43 +22,36 @@ import { useProgress } from './use-progress';
  */
 export const ProgressRoot = React.memo(
   React.forwardRef<View, ProgressRootProps>((props, ref) => {
-    const {
-      accessibilityLabel,
-      accessibilityLiveRegion,
-      children,
-      style,
-      ...otherProps
-    } = props;
+    const { children, style, ...otherProps } = props;
 
-    const { accessibilityProps, state } = useProgress(props);
+    const { accessibilityProps, labelId, state } = useProgress(props);
 
+    const contextValue = React.useMemo(
+      () => ({ ...state, labelId }),
+      [state, labelId],
+    );
 
-    const resolvedStyle = resolveValue(style, state)
+    const resolvedStyle = resolveValue(style, state);
 
     const mergedProps = mergeProps(
-    { style: resolvedStyle },
-    { ref },
-    otherProps,
-    {
-      accessibilityLiveRegion: "polite",
-      accessible: true,
-      focusable: false,
-      importantForAccessibility: "yes",
-      role: "progressbar"
-    }
-  );
+      { style: resolvedStyle },
+      { ref },
+      otherProps,
+      {
+        accessibilityLiveRegion: 'polite' as const,
+        accessible: true,
+        focusable: false,
+        importantForAccessibility: 'yes' as const,
+        role: 'progressbar' as const,
+      },
+    );
 
     return (
-      <ProgressContext.Provider value={state}>
-        <View
-
-          {...mergedProps}
-
-          accessibilityValue={accessibilityProps}
-        >
+      <ProgressContext.Provider value={contextValue}>
+        <View {...mergedProps} accessibilityValue={accessibilityProps}>
           {resolveValue(children, state)}
         </View>
-      </ProgressContext.Provider >
+      </ProgressContext.Provider>
     );
   }),
 );

@@ -8,7 +8,7 @@ describe('Progress', () => {
     it('calculates percentage correctly for standard ranges', () => {
       render(
         <Progress.Root max={100} min={0} value={50}>
-          <Progress.Indicator testID="indicator" />
+          <Progress.Indicator testID='indicator' />
         </Progress.Root>,
       );
 
@@ -23,7 +23,7 @@ describe('Progress', () => {
     it('handles custom ranges (e.g., 200 to 400)', () => {
       render(
         <Progress.Root max={400} min={200} value={300}>
-          <Progress.Indicator testID="indicator" />
+          <Progress.Indicator testID='indicator' />
         </Progress.Root>,
       );
 
@@ -38,7 +38,7 @@ describe('Progress', () => {
     it('clamps percentage between 0 and 100', () => {
       const { rerender } = render(
         <Progress.Root max={100} min={0} value={150}>
-          <Progress.Indicator testID="indicator" />
+          <Progress.Indicator testID='indicator' />
         </Progress.Root>,
       );
 
@@ -51,7 +51,7 @@ describe('Progress', () => {
 
       rerender(
         <Progress.Root max={100} min={0} value={-50}>
-          <Progress.Indicator testID="indicator" />
+          <Progress.Indicator testID='indicator' />
         </Progress.Root>,
       );
 
@@ -66,8 +66,8 @@ describe('Progress', () => {
     it('handles indeterminate state (value=null)', () => {
       render(
         <Progress.Root value={null}>
-          <Progress.Indicator testID="indicator" />
-          <Progress.Value testID="value" />
+          <Progress.Indicator testID='indicator' />
+          <Progress.Value testID='value' />
         </Progress.Root>,
       );
 
@@ -86,7 +86,7 @@ describe('Progress', () => {
     it('handles edge case: min equals max', () => {
       render(
         <Progress.Root max={100} min={100} value={100}>
-          <Progress.Indicator testID="indicator" />
+          <Progress.Indicator testID='indicator' />
         </Progress.Root>,
       );
 
@@ -102,7 +102,7 @@ describe('Progress', () => {
   describe('Accessibility (A11y)', () => {
     it('sets correct accessibility properties on the root', () => {
       render(
-        <Progress.Root max={100} min={0} testID="root" value={30}>
+        <Progress.Root max={100} min={0} testID='root' value={30}>
           <Text>Loading</Text>
         </Progress.Root>,
       );
@@ -120,8 +120,8 @@ describe('Progress', () => {
 
     it('links Label and Root via accessibilityLabelledBy', () => {
       render(
-        <Progress.Root testID="root" value={50}>
-          <Text testID="label">Downloading...</Text>
+        <Progress.Root testID='root' value={50}>
+          <Text testID='label'>Downloading...</Text>
         </Progress.Root>,
       );
 
@@ -147,7 +147,7 @@ describe('Progress', () => {
             `${formatted} out of 10 steps`
           }
           max={10}
-          testID="root"
+          testID='root'
           value={2}
         />,
       );
@@ -159,10 +159,10 @@ describe('Progress', () => {
     it('hides visual-only components from screen readers', () => {
       render(
         <Progress.Root value={50}>
-          <Progress.Track testID="track">
-            <Progress.Indicator testID="indicator" />
+          <Progress.Track testID='track'>
+            <Progress.Indicator testID='indicator' />
           </Progress.Track>
-          <Progress.Value testID="value" />
+          <Progress.Value testID='value' />
         </Progress.Root>,
       );
 
@@ -186,12 +186,12 @@ describe('Progress', () => {
       render(
         <Progress.Root
           format={{ style: 'percent' }}
-          locale="en-US"
+          locale='en-US'
           max={1}
           min={0}
           value={0.75}
         >
-          <Progress.Value testID="value" />
+          <Progress.Value testID='value' />
         </Progress.Root>,
       );
 
@@ -206,12 +206,12 @@ describe('Progress', () => {
     it('supports functional styles based on state', () => {
       render(
         <Progress.Root
-          style={({ value, max }) => ({
+          max={100}
+          style={({ max, value }) => ({
             backgroundColor: value === max ? 'green' : 'red',
           })}
-          testID="root"
+          testID='root'
           value={100}
-          max={100}
         />,
       );
 
@@ -222,10 +222,10 @@ describe('Progress', () => {
     });
 
     it('throws error when sub-components are used outside Root', () => {
-      const spy = jest.spyOn(console, 'error').mockImplementation(() => { });
+      const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
       expect(() => render(<Progress.Indicator />)).toThrow(
-        /Progress components must be rendered within a Progress.Root component./
+        /Progress components must be rendered within a Progress.Root component./,
       );
 
       spy.mockRestore();

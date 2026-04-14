@@ -1,4 +1,9 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react-native';
 import { Text } from 'react-native';
 
 import { Accordion } from './index';
@@ -12,7 +17,7 @@ describe('Accordion', () => {
     it('renders closed by default', () => {
       render(
         <Accordion.Root>
-          <Accordion.Item value="item-1">
+          <Accordion.Item value='item-1'>
             <Accordion.Trigger>
               <Text>Trigger 1</Text>
             </Accordion.Trigger>
@@ -29,8 +34,8 @@ describe('Accordion', () => {
 
     it('renders with defaultValue open', () => {
       render(
-        <Accordion.Root defaultValue="item-1">
-          <Accordion.Item value="item-1">
+        <Accordion.Root defaultValue='item-1'>
+          <Accordion.Item value='item-1'>
             <Accordion.Trigger>
               <Text>Trigger 1</Text>
             </Accordion.Trigger>
@@ -48,7 +53,7 @@ describe('Accordion', () => {
       const onValueChange = jest.fn();
       render(
         <Accordion.Root onValueChange={onValueChange}>
-          <Accordion.Item value="item-1">
+          <Accordion.Item value='item-1'>
             <Accordion.Trigger>
               <Text>Trigger 1</Text>
             </Accordion.Trigger>
@@ -75,14 +80,22 @@ describe('Accordion', () => {
     it('respects controlled value and does not update internally', () => {
       const onValueChange = jest.fn();
       const { rerender } = render(
-        <Accordion.Root value="item-1" onValueChange={onValueChange}>
-          <Accordion.Item value="item-1">
-            <Accordion.Trigger><Text>Trigger 1</Text></Accordion.Trigger>
-            <Accordion.Panel><Text>Content 1</Text></Accordion.Panel>
+        <Accordion.Root onValueChange={onValueChange} value='item-1'>
+          <Accordion.Item value='item-1'>
+            <Accordion.Trigger>
+              <Text>Trigger 1</Text>
+            </Accordion.Trigger>
+            <Accordion.Panel>
+              <Text>Content 1</Text>
+            </Accordion.Panel>
           </Accordion.Item>
-          <Accordion.Item value="item-2">
-            <Accordion.Trigger><Text>Trigger 2</Text></Accordion.Trigger>
-            <Accordion.Panel><Text>Content 2</Text></Accordion.Panel>
+          <Accordion.Item value='item-2'>
+            <Accordion.Trigger>
+              <Text>Trigger 2</Text>
+            </Accordion.Trigger>
+            <Accordion.Panel>
+              <Text>Content 2</Text>
+            </Accordion.Panel>
           </Accordion.Item>
         </Accordion.Root>,
       );
@@ -97,14 +110,22 @@ describe('Accordion', () => {
       expect(screen.getByText('Content 1')).toBeTruthy();
 
       rerender(
-        <Accordion.Root value="item-2" onValueChange={onValueChange}>
-          <Accordion.Item value="item-1">
-            <Accordion.Trigger><Text>Trigger 1</Text></Accordion.Trigger>
-            <Accordion.Panel><Text>Content 1</Text></Accordion.Panel>
+        <Accordion.Root onValueChange={onValueChange} value='item-2'>
+          <Accordion.Item value='item-1'>
+            <Accordion.Trigger>
+              <Text>Trigger 1</Text>
+            </Accordion.Trigger>
+            <Accordion.Panel>
+              <Text>Content 1</Text>
+            </Accordion.Panel>
           </Accordion.Item>
-          <Accordion.Item value="item-2">
-            <Accordion.Trigger><Text>Trigger 2</Text></Accordion.Trigger>
-            <Accordion.Panel><Text>Content 2</Text></Accordion.Panel>
+          <Accordion.Item value='item-2'>
+            <Accordion.Trigger>
+              <Text>Trigger 2</Text>
+            </Accordion.Trigger>
+            <Accordion.Panel>
+              <Text>Content 2</Text>
+            </Accordion.Panel>
           </Accordion.Item>
         </Accordion.Root>,
       );
@@ -119,11 +140,15 @@ describe('Accordion', () => {
       const onValueChange = jest.fn();
       render(
         <Accordion.Root multiple onValueChange={onValueChange}>
-          <Accordion.Item value="item-1">
-            <Accordion.Trigger><Text>Trigger 1</Text></Accordion.Trigger>
+          <Accordion.Item value='item-1'>
+            <Accordion.Trigger>
+              <Text>Trigger 1</Text>
+            </Accordion.Trigger>
           </Accordion.Item>
-          <Accordion.Item value="item-2">
-            <Accordion.Trigger><Text>Trigger 2</Text></Accordion.Trigger>
+          <Accordion.Item value='item-2'>
+            <Accordion.Trigger>
+              <Text>Trigger 2</Text>
+            </Accordion.Trigger>
           </Accordion.Item>
         </Accordion.Root>,
       );
@@ -131,7 +156,10 @@ describe('Accordion', () => {
       fireEvent.press(screen.getByText('Trigger 1'));
       fireEvent.press(screen.getByText('Trigger 2'));
 
-      expect(onValueChange).toHaveBeenLastCalledWith(['item-1', 'item-2'], expect.any(Object));
+      expect(onValueChange).toHaveBeenLastCalledWith(
+        ['item-1', 'item-2'],
+        expect.any(Object),
+      );
     });
   });
 
@@ -140,9 +168,13 @@ describe('Accordion', () => {
       const onValueChange = jest.fn();
       render(
         <Accordion.Root onValueChange={onValueChange}>
-          <Accordion.Item value="item-1" disabled>
-            <Accordion.Trigger><Text>Trigger 1</Text></Accordion.Trigger>
-            <Accordion.Panel><Text>Content 1</Text></Accordion.Panel>
+          <Accordion.Item disabled value='item-1'>
+            <Accordion.Trigger>
+              <Text>Trigger 1</Text>
+            </Accordion.Trigger>
+            <Accordion.Panel>
+              <Text>Content 1</Text>
+            </Accordion.Panel>
           </Accordion.Item>
         </Accordion.Root>,
       );
@@ -154,9 +186,11 @@ describe('Accordion', () => {
     it('passes disabled to render props', () => {
       render(
         <Accordion.Root disabled>
-          <Accordion.Item value="item-1">
+          <Accordion.Item value='item-1'>
             <Accordion.Trigger>
-              {({ disabled }) => <Text>{disabled ? 'IS_DISABLED' : 'IS_ENABLED'}</Text>}
+              {({ disabled }) => (
+                <Text>{disabled ? 'IS_DISABLED' : 'IS_ENABLED'}</Text>
+              )}
             </Accordion.Trigger>
           </Accordion.Item>
         </Accordion.Root>,
@@ -171,25 +205,31 @@ describe('Accordion', () => {
       const onFocusChange = jest.fn();
       render(
         <Accordion.Root onFocusChange={onFocusChange}>
-          <Accordion.Item value="item-1">
-            <Accordion.Trigger testID="t1"><Text>T1</Text></Accordion.Trigger>
+          <Accordion.Item value='item-1'>
+            <Accordion.Trigger testID='t1'>
+              <Text>T1</Text>
+            </Accordion.Trigger>
           </Accordion.Item>
-          <Accordion.Item value="item-2">
-            <Accordion.Trigger testID="t2"><Text>T2</Text></Accordion.Trigger>
+          <Accordion.Item value='item-2'>
+            <Accordion.Trigger testID='t2'>
+              <Text>T2</Text>
+            </Accordion.Trigger>
           </Accordion.Item>
         </Accordion.Root>,
       );
 
-      fireEvent(screen.getByTestId('t1'), 'keyDown', { nativeEvent: { key: 'ArrowDown' } });
+      fireEvent(screen.getByTestId('t1'), 'keyDown', {
+        nativeEvent: { key: 'ArrowDown' },
+      });
       expect(onFocusChange).toHaveBeenCalledWith('item-2');
     });
   });
   describe('Accessibility', () => {
     it('sets expanded state on trigger correctly', () => {
       render(
-        <Accordion.Root defaultValue="item-1">
-          <Accordion.Item value="item-1">
-            <Accordion.Trigger testID="trigger">
+        <Accordion.Root defaultValue='item-1'>
+          <Accordion.Item value='item-1'>
+            <Accordion.Trigger testID='trigger'>
               <Text>Trigger</Text>
             </Accordion.Trigger>
           </Accordion.Item>
@@ -198,25 +238,28 @@ describe('Accordion', () => {
 
       const trigger = screen.getByTestId('trigger');
       expect(trigger.props.accessibilityState).toMatchObject({
-        expanded: true,
         disabled: false,
+        expanded: true,
       });
     });
 
     it('hides closed panels from screen readers if keepMounted is true', () => {
       render(
         <Accordion.Root>
-          <Accordion.Item value="item-1">
-            <Accordion.Trigger><Text>Trigger</Text></Accordion.Trigger>
-            <Accordion.Panel testID='panel' keepMounted>
+          <Accordion.Item value='item-1'>
+            <Accordion.Trigger>
+              <Text>Trigger</Text>
+            </Accordion.Trigger>
+            <Accordion.Panel keepMounted testID='panel'>
               <Text>Hidden Panel Content</Text>
             </Accordion.Panel>
           </Accordion.Item>
         </Accordion.Root>,
       );
 
-      const panel = screen.getByTestId('panel', { includeHiddenElements: true });
-
+      const panel = screen.getByTestId('panel', {
+        includeHiddenElements: true,
+      });
 
       expect(panel.props.accessibilityElementsHidden).toBe(true);
       expect(panel.props.importantForAccessibility).toBe('no-hide-descendants');
@@ -226,9 +269,9 @@ describe('Accordion', () => {
   describe('Panel Measurement', () => {
     it('exposes height and width in panel state after layout', async () => {
       render(
-        <Accordion.Root defaultValue="item-1">
-          <Accordion.Item value="item-1">
-            <Accordion.Panel testID="panel" >
+        <Accordion.Root defaultValue='item-1'>
+          <Accordion.Item value='item-1'>
+            <Accordion.Panel testID='panel'>
               {({ panel }) => (
                 <Text>{`H:${panel.height} W:${panel.width}`}</Text>
               )}
@@ -254,4 +297,4 @@ describe('Accordion', () => {
       });
     });
   });
-})
+});

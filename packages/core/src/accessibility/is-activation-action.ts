@@ -1,6 +1,5 @@
-import { ACTIVATION_ACTIONS } from "../constants";
-import { ActivationAction } from "../types";
-
+import { ACTIVATION_ACTIONS } from '../constants';
+import { ActivationAction } from '../types';
 
 /**
  * Checks if the given accessibility action name is a standard OS-level activation.

@@ -1,7 +1,4 @@
-import {
-  AccessibilityActionInfo,
-  AccessibilityState,
-} from 'react-native';
+import { AccessibilityActionInfo, AccessibilityState } from 'react-native';
 
 export function mergeAccessibilityActions(
   internalActions?: readonly AccessibilityActionInfo[],
@@ -24,5 +21,3 @@ export function mergeAccessibilityState(
 ) {
   return { ...internalState, ...externalState };
 }
-
-

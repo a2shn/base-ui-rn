@@ -2,8 +2,8 @@ import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View, type ViewProps } from 'react-native';
 
-import { useSliderControl } from './use-slider-control';
 import { getWebControlStyles } from './styles';
+import { useSliderControl } from './use-slider-control';
 
 /**
  * A wrapper that provides pan gesture handling for slider interaction.
@@ -25,20 +25,25 @@ export const SliderControl = React.memo(
     const { handleOnLayout, mergedRef, panHandlers, tabIndex } =
       useSliderControl({ onLayout });
 
-    const resolvedStyle = resolveValue(style, {})
+    const resolvedStyle = resolveValue(style, {});
     const mergedProps = mergeProps(
-    {
-      ...panHandlers,
-      onLayout: handleOnLayout,
-      ref: mergedRef,
-    },
-    { ref },
-    otherProps,
-    { focusable: false }
-  );
+      {
+        ...panHandlers,
+        onLayout: handleOnLayout,
+        ref: mergedRef,
+      },
+      { ref },
+      otherProps,
+      { focusable: false },
+    );
 
-    return <View {...mergedProps} tabIndex={tabIndex} style={[resolvedStyle, getWebControlStyles()]}
-    />;
+    return (
+      <View
+        {...mergedProps}
+        style={[resolvedStyle, getWebControlStyles()]}
+        tabIndex={tabIndex}
+      />
+    );
   }),
 );
 

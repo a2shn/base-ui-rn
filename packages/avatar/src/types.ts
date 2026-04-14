@@ -6,7 +6,7 @@ export interface AvatarState {
   loadingStatus: ImageLoadingStatus;
 }
 
-export interface AvatarRootProps extends ViewProps {}
+export type AvatarRootProps = ViewProps;
 
 export interface AvatarImageProps extends ImageProps {
   /**

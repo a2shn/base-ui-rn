@@ -22,10 +22,10 @@ export function useCollapsible(props: CollapsibleRootProps) {
   const isDisabled = disabled === true;
 
   const [open, setOpen] = useControllableState<boolean>({
-    prop: controlledOpen,
     defaultProp: defaultOpen,
     onChange: (nextOpen: boolean) =>
       onOpenChange?.(nextOpen, { open: nextOpen }),
+    prop: controlledOpen,
   });
 
   const toggle = React.useCallback(() => {

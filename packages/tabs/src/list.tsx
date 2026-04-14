@@ -26,14 +26,14 @@ export const TabsList = React.memo(
 
     const resolvedStyle = resolveValue(style, state);
     const mergedProps = mergeProps(
-    { style: resolvedStyle },
-    { ref },
-    otherProps,
-    {
-      focusable: false,
-      role: "tablist"
-    }
-  );
+      { style: resolvedStyle },
+      { ref },
+      otherProps,
+      {
+        focusable: false,
+        role: 'tablist',
+      },
+    );
 
     return <View {...mergedProps}>{resolveValue(children, state)}</View>;
   }),

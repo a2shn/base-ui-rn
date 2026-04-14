@@ -11,12 +11,12 @@ describe('Slider Primitive (Integration)', () => {
   describe('Basic Rendering & Uncontrolled State', () => {
     it('renders with default structure and values', () => {
       render(
-        <Slider.Root defaultValue={50} testID="slider-root">
-          <Slider.Control testID="slider-control">
-            <Slider.Track testID="slider-track">
-              <Slider.Indicator testID="slider-indicator" />
+        <Slider.Root defaultValue={50} testID='slider-root'>
+          <Slider.Control testID='slider-control'>
+            <Slider.Track testID='slider-track'>
+              <Slider.Indicator testID='slider-indicator' />
             </Slider.Track>
-            <Slider.Thumb testID="slider-thumb" />
+            <Slider.Thumb testID='slider-thumb' />
           </Slider.Control>
         </Slider.Root>,
       );
@@ -27,8 +27,8 @@ describe('Slider Primitive (Integration)', () => {
 
       const thumb = screen.getByTestId('slider-thumb');
       expect(thumb.props.accessibilityValue).toMatchObject({
-        min: 0,
         max: 100,
+        min: 0,
         now: 50,
       });
     });
@@ -37,7 +37,7 @@ describe('Slider Primitive (Integration)', () => {
       const onValueChangeMock = jest.fn();
       render(
         <Slider.Root defaultValue={20} onValueChange={onValueChangeMock}>
-          <Slider.Thumb testID="slider-thumb" />
+          <Slider.Thumb testID='slider-thumb' />
         </Slider.Root>,
       );
 
@@ -54,8 +54,8 @@ describe('Slider Primitive (Integration)', () => {
     it('respects the controlled value prop', () => {
       const onValueChangeMock = jest.fn();
       const { rerender } = render(
-        <Slider.Root value={40} onValueChange={onValueChangeMock}>
-          <Slider.Thumb testID="slider-thumb" />
+        <Slider.Root onValueChange={onValueChangeMock} value={40}>
+          <Slider.Thumb testID='slider-thumb' />
         </Slider.Root>,
       );
 
@@ -64,8 +64,8 @@ describe('Slider Primitive (Integration)', () => {
 
       // Parent updates the prop
       rerender(
-        <Slider.Root value={85} onValueChange={onValueChangeMock}>
-          <Slider.Thumb testID="slider-thumb" />
+        <Slider.Root onValueChange={onValueChangeMock} value={85}>
+          <Slider.Thumb testID='slider-thumb' />
         </Slider.Root>,
       );
 
@@ -77,33 +77,37 @@ describe('Slider Primitive (Integration)', () => {
   describe('Visuals & Dynamic Styles', () => {
     it('calculates the Indicator width and left position correctly (Horizontal)', () => {
       render(
-        <Slider.Root value={60} min={0} max={100} orientation="horizontal">
+        <Slider.Root max={100} min={0} orientation='horizontal' value={60}>
           <Slider.Track>
-            <Slider.Indicator testID="slider-indicator" />
+            <Slider.Indicator testID='slider-indicator' />
           </Slider.Track>
         </Slider.Root>,
       );
 
-      const indicator = screen.getByTestId('slider-indicator', { includeHiddenElements: true });
+      const indicator = screen.getByTestId('slider-indicator', {
+        includeHiddenElements: true,
+      });
       const style = StyleSheet.flatten(indicator.props.style);
 
       expect(style).toMatchObject({
         left: '0%',
-        width: '60%',
         position: 'absolute',
+        width: '60%',
       });
     });
 
     it('calculates the Indicator height and bottom position correctly (Vertical)', () => {
       render(
-        <Slider.Root value={30} min={0} max={100} orientation="vertical">
+        <Slider.Root max={100} min={0} orientation='vertical' value={30}>
           <Slider.Track>
-            <Slider.Indicator testID="slider-indicator" />
+            <Slider.Indicator testID='slider-indicator' />
           </Slider.Track>
         </Slider.Root>,
       );
 
-      const indicator = screen.getByTestId('slider-indicator', { includeHiddenElements: true });
+      const indicator = screen.getByTestId('slider-indicator', {
+        includeHiddenElements: true,
+      });
       const style = StyleSheet.flatten(indicator.props.style);
 
       expect(style).toMatchObject({
@@ -119,8 +123,13 @@ describe('Slider Primitive (Integration)', () => {
       const onValueChangeMock = jest.fn();
       render(
         // Use defaultValue to simulate natural uncontrolled interaction
-        <Slider.Root defaultValue={50} min={0} max={100} onValueChange={onValueChangeMock}>
-          <Slider.Thumb testID="slider-thumb" />
+        <Slider.Root
+          defaultValue={50}
+          max={100}
+          min={0}
+          onValueChange={onValueChangeMock}
+        >
+          <Slider.Thumb testID='slider-thumb' />
         </Slider.Root>,
       );
 
@@ -145,8 +154,13 @@ describe('Slider Primitive (Integration)', () => {
 
       // Test Max Bound
       const { rerender } = render(
-        <Slider.Root value={100} min={0} max={100} onValueChange={onValueChangeMock}>
-          <Slider.Thumb testID="slider-thumb" />
+        <Slider.Root
+          max={100}
+          min={0}
+          onValueChange={onValueChangeMock}
+          value={100}
+        >
+          <Slider.Thumb testID='slider-thumb' />
         </Slider.Root>,
       );
 
@@ -158,8 +172,13 @@ describe('Slider Primitive (Integration)', () => {
 
       // Test Min Bound
       rerender(
-        <Slider.Root value={0} min={0} max={100} onValueChange={onValueChangeMock}>
-          <Slider.Thumb testID="slider-thumb" />
+        <Slider.Root
+          max={100}
+          min={0}
+          onValueChange={onValueChangeMock}
+          value={0}
+        >
+          <Slider.Thumb testID='slider-thumb' />
         </Slider.Root>,
       );
 
@@ -174,7 +193,7 @@ describe('Slider Primitive (Integration)', () => {
     it('renders the raw value by default', () => {
       render(
         <Slider.Root value={42}>
-          <Slider.Value testID="slider-value" />
+          <Slider.Value testID='slider-value' />
         </Slider.Root>,
       );
 
@@ -185,7 +204,7 @@ describe('Slider Primitive (Integration)', () => {
     it('supports custom render functions for Slider.Value', () => {
       render(
         <Slider.Root value={75}>
-          <Slider.Value testID="slider-value">
+          <Slider.Value testID='slider-value'>
             {(_, rawValues) => `Volume: ${rawValues[0]}%`}
           </Slider.Value>
         </Slider.Root>,
@@ -199,7 +218,7 @@ describe('Slider Primitive (Integration)', () => {
   describe('mergeProps Overrides', () => {
     it('allows users to override default accessibility roles', () => {
       render(
-        <Slider.Root testID="slider-root" role="none">
+        <Slider.Root role='none' testID='slider-root'>
           <Slider.Thumb />
         </Slider.Root>,
       );
@@ -217,17 +236,21 @@ describe('Slider Primitive (Integration)', () => {
       render(
         // Use defaultValue here as well
         <Slider.Root defaultValue={50} onValueChange={onValueChangeMock}>
-          <Slider.Thumb testID="slider-thumb" />
+          <Slider.Thumb testID='slider-thumb' />
         </Slider.Root>,
       );
 
       const thumb = screen.getByTestId('slider-thumb');
 
-      fireEvent(thumb, 'accessibilityAction', { nativeEvent: { actionName: 'increment' } });
+      fireEvent(thumb, 'accessibilityAction', {
+        nativeEvent: { actionName: 'increment' },
+      });
       expect(onValueChangeMock).toHaveBeenLastCalledWith(51);
 
       // Decrementing from the current state of 51 brings it back to 50
-      fireEvent(thumb, 'accessibilityAction', { nativeEvent: { actionName: 'decrement' } });
+      fireEvent(thumb, 'accessibilityAction', {
+        nativeEvent: { actionName: 'decrement' },
+      });
       expect(onValueChangeMock).toHaveBeenLastCalledWith(50);
     });
   });

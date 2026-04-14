@@ -54,9 +54,9 @@ export function useAccordion(props: AccordionRootProps) {
   );
 
   const [value, setValue] = useControllableState<string | string[]>({
-    prop: controlledValue,
     defaultProp: defaultValue ?? (multiple ? [] : ''),
     onChange: (v: string | string[]) => onValueChange?.(v, { value: v }),
+    prop: controlledValue,
   });
 
   const currentValue = getValueArray(value);
@@ -131,9 +131,9 @@ export function useAccordion(props: AccordionRootProps) {
 
   return {
     baseId,
-    isDisabled,
     getItemIndex,
     getItemRef,
+    isDisabled,
     multiple,
     onTriggerKeyDown,
     openItems,

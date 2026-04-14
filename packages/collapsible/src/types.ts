@@ -18,7 +18,7 @@ export interface CollapsiblePanelState {
   panel: {
     height?: number;
     width?: number;
-  }
+  };
 }
 
 export interface CollapsibleRootOpenChangeDetails {
@@ -29,11 +29,15 @@ export type CollapsibleRootProps = Omit<ViewProps, 'children' | 'style'> & {
   /**
    * The content of the collapsible.
    */
-  children?: React.ReactNode | ((state: CollapsibleRootState) => React.ReactNode);
+  children?:
+    | React.ReactNode
+    | ((state: CollapsibleRootState) => React.ReactNode);
   /**
    * Style applied to the root view.
    */
-  style?: StyleProp<ViewStyle> | ((state: CollapsibleRootState) => StyleProp<ViewStyle>);
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: CollapsibleRootState) => StyleProp<ViewStyle>);
   /**
    * Whether the collapsible is open by default.
    * @default false
@@ -46,7 +50,10 @@ export type CollapsibleRootProps = Omit<ViewProps, 'children' | 'style'> & {
   /**
    * Fired when the open state changes.
    */
-  onOpenChange?: (open: boolean, details: CollapsibleRootOpenChangeDetails) => void;
+  onOpenChange?: (
+    open: boolean,
+    details: CollapsibleRootOpenChangeDetails,
+  ) => void;
   /**
    * Whether the collapsible is disabled.
    * @default false
@@ -54,7 +61,10 @@ export type CollapsibleRootProps = Omit<ViewProps, 'children' | 'style'> & {
   disabled?: boolean;
 };
 
-export type CollapsibleTriggerProps = Omit<React.ComponentProps<typeof PressableWithKeyDown>, 'children' | 'style'> & {
+export type CollapsibleTriggerProps = Omit<
+  React.ComponentProps<typeof PressableWithKeyDown>,
+  'children' | 'style'
+> & {
   /**
    * Whether to disable the default focus ring style.
    * @default false
@@ -68,22 +78,30 @@ export type CollapsibleTriggerProps = Omit<React.ComponentProps<typeof Pressable
   /**
    * The content of the trigger.
    */
-  children?: React.ReactNode | ((state: CollapsibleTriggerState) => React.ReactNode);
+  children?:
+    | React.ReactNode
+    | ((state: CollapsibleTriggerState) => React.ReactNode);
   /**
    * Style applied to the trigger view.
    */
-  style?: StyleProp<ViewStyle> | ((state: CollapsibleTriggerState) => StyleProp<ViewStyle>);
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: CollapsibleTriggerState) => StyleProp<ViewStyle>);
 };
 
 export type CollapsiblePanelProps = Omit<ViewProps, 'children' | 'style'> & {
   /**
    * The content of the panel.
    */
-  children?: React.ReactNode | ((state: CollapsiblePanelState) => React.ReactNode);
+  children?:
+    | React.ReactNode
+    | ((state: CollapsiblePanelState) => React.ReactNode);
   /**
    * Style applied to the panel view.
    */
-  style?: StyleProp<ViewStyle> | ((state: CollapsiblePanelState) => StyleProp<ViewStyle>);
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: CollapsiblePanelState) => StyleProp<ViewStyle>);
   /**
    * Whether the panel should be hidden until a native search (e.g., browser find) reveals it.
    * @default false

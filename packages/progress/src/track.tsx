@@ -18,26 +18,20 @@ export const ProgressTrack = React.memo(
     const { children, style, ...otherProps } = props;
     const context = useProgressContext();
 
-    const resolvedStyle = resolveValue(style, context)
+    const resolvedStyle = resolveValue(style, context);
 
     const mergedProps = mergeProps(
-    { style: resolvedStyle },
-    { ref },
-    otherProps,
-    {
-      accessibilityElementsHidden: true,
-      focusable: false,
-      importantForAccessibility: "no-hide-descendants"
-    }
-  );
-
-    return (
-      <View
-        {...mergedProps}
-      >
-        {resolveValue(children, context)}
-      </View>
+      { style: resolvedStyle },
+      { ref },
+      otherProps,
+      {
+        accessibilityElementsHidden: true,
+        focusable: false,
+        importantForAccessibility: 'no-hide-descendants',
+      },
     );
+
+    return <View {...mergedProps}>{resolveValue(children, context)}</View>;
   }),
 );
 

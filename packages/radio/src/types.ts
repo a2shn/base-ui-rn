@@ -1,8 +1,13 @@
 import { PressableWithKeyDown } from '@base-ui-rn/core';
+import type { KeyDownEventData } from '@base-ui-rn/core';
 import type { FocusRingState } from '@base-ui-rn/focus-ring';
 import type * as React from 'react';
-import type { NativeSyntheticEvent, StyleProp, ViewProps, ViewStyle } from 'react-native';
-import type { KeyDownEventData } from '@base-ui-rn/core';
+import type {
+  NativeSyntheticEvent,
+  StyleProp,
+  ViewProps,
+  ViewStyle,
+} from 'react-native';
 
 export type RadioValue = string;
 
@@ -13,8 +18,14 @@ export interface RadioGroupState {
 
 export interface RadioGroupContextValue extends RadioGroupState {
   onValueChange: (value: RadioValue) => void;
-  registerItem: (value: RadioValue, ref: React.RefObject<unknown>) => () => void;
-  onRadioKeyDown: (currentValue: RadioValue, event: NativeSyntheticEvent<KeyDownEventData>) => void;
+  registerItem: (
+    value: RadioValue,
+    ref: React.RefObject<unknown>,
+  ) => () => void;
+  onRadioKeyDown: (
+    currentValue: RadioValue,
+    event: NativeSyntheticEvent<KeyDownEventData>,
+  ) => void;
   readOnly: boolean;
 }
 
@@ -26,7 +37,9 @@ export interface RadioGroupProps extends Omit<ViewProps, 'style' | 'children'> {
   /**
    * Style applied to the group container.
    */
-  style?: StyleProp<ViewStyle> | ((state: RadioGroupState) => StyleProp<ViewStyle>);
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: RadioGroupState) => StyleProp<ViewStyle>);
   /**
    * Identifies the field when a form is submitted.
    */
@@ -71,7 +84,10 @@ export interface RadioRootState extends FocusRingState {
   readOnly: boolean;
 }
 
-export interface RadioRootProps extends Omit<React.ComponentProps<typeof PressableWithKeyDown>, 'children' | 'style'> {
+export interface RadioRootProps extends Omit<
+  React.ComponentProps<typeof PressableWithKeyDown>,
+  'children' | 'style'
+> {
   /**
    * The unique value of this radio within the group.
    */
@@ -83,7 +99,9 @@ export interface RadioRootProps extends Omit<React.ComponentProps<typeof Pressab
   /**
    * Style applied to the radio root view.
    */
-  style?: StyleProp<ViewStyle> | ((state: RadioRootState) => StyleProp<ViewStyle>);
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: RadioRootState) => StyleProp<ViewStyle>);
   /**
    * Whether the radio is disabled.
    * @default false
@@ -108,15 +126,22 @@ export interface RadioRootProps extends Omit<React.ComponentProps<typeof Pressab
 
 export type RadioIndicatorState = RadioRootState;
 
-export interface RadioIndicatorProps extends Omit<ViewProps, 'style' | 'children'> {
+export interface RadioIndicatorProps extends Omit<
+  ViewProps,
+  'style' | 'children'
+> {
   /**
    * The content of the indicator.
    */
-  children?: React.ReactNode | ((state: RadioIndicatorState) => React.ReactNode);
+  children?:
+    | React.ReactNode
+    | ((state: RadioIndicatorState) => React.ReactNode);
   /**
    * Style applied to the indicator view.
    */
-  style?: StyleProp<ViewStyle> | ((state: RadioIndicatorState) => StyleProp<ViewStyle>);
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: RadioIndicatorState) => StyleProp<ViewStyle>);
   /**
    * Whether to keep the indicator in the tree when unchecked.
    * @default false

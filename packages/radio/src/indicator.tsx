@@ -27,12 +27,12 @@ export const RadioIndicator = React.memo(
       return null;
     }
 
-    const resolvedStyle = resolveValue(style, context)
+    const resolvedStyle = resolveValue(style, context);
     const mergedProps = mergeProps(
-    { style: resolvedStyle },
-    { ref },
-    otherProps
-  );
+      { style: resolvedStyle },
+      { ref },
+      otherProps,
+    );
 
     return <View {...mergedProps}>{resolveValue(children, context)}</View>;
   }),

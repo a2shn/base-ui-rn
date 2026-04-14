@@ -21,22 +21,20 @@ export const MeterValue = React.memo(
     const context = useMeterContext();
     const { formattedValue } = context;
 
-    const resolvedStyle = resolveValue(style, context)
+    const resolvedStyle = resolveValue(style, context);
     const mergedProps = mergeProps(
-    { style: resolvedStyle },
-    { ref },
-    otherProps,
-    {
-      accessibilityElementsHidden: true,
-      focusable: false,
-      importantForAccessibility: "no-hide-descendants"
-    }
-  );
+      { style: resolvedStyle },
+      { ref },
+      otherProps,
+      {
+        accessibilityElementsHidden: true,
+        focusable: false,
+        importantForAccessibility: 'no-hide-descendants',
+      },
+    );
 
     return (
-      <Text
-        {...mergedProps}
-      >
+      <Text {...mergedProps}>
         {resolveValue(children, context) ?? formattedValue}
       </Text>
     );

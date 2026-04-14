@@ -6,7 +6,10 @@ export interface ToggleGroupState {
   orientation: 'horizontal' | 'vertical';
 }
 
-export interface ToggleGroupProps extends Omit<ViewProps, 'children' | 'style'> {
+export interface ToggleGroupProps extends Omit<
+  ViewProps,
+  'children' | 'style'
+> {
   /**
    * The controlled value of the toggle group. Use with `onValueChange`.
    */
@@ -50,5 +53,7 @@ export interface ToggleGroupProps extends Omit<ViewProps, 'children' | 'style'> 
   /**
    * Style applied to the group view.
    */
-  style?: StyleProp<ViewStyle> | ((state: ToggleGroupState) => StyleProp<ViewStyle>);
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: ToggleGroupState) => StyleProp<ViewStyle>);
 }

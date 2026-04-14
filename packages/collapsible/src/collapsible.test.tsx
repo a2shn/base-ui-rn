@@ -11,11 +11,11 @@ describe('Collapsible', () => {
   describe('Basic Rendering & Uncontrolled State', () => {
     it('renders closed by default', () => {
       render(
-        <Collapsible.Root testID="root">
-          <Collapsible.Trigger testID="trigger">
+        <Collapsible.Root testID='root'>
+          <Collapsible.Trigger testID='trigger'>
             <Text>Toggle</Text>
           </Collapsible.Trigger>
-          <Collapsible.Panel testID="panel">
+          <Collapsible.Panel testID='panel'>
             <Text>Content</Text>
           </Collapsible.Panel>
         </Collapsible.Root>,
@@ -23,8 +23,8 @@ describe('Collapsible', () => {
 
       const trigger = screen.getByTestId('trigger');
       expect(trigger.props.accessibilityState).toMatchObject({
-        expanded: false,
         disabled: false,
+        expanded: false,
       });
 
       // Panel should not be rendered when closed by default
@@ -33,11 +33,11 @@ describe('Collapsible', () => {
 
     it('renders open when defaultOpen is true', () => {
       render(
-        <Collapsible.Root defaultOpen testID="root">
-          <Collapsible.Trigger testID="trigger">
+        <Collapsible.Root defaultOpen testID='root'>
+          <Collapsible.Trigger testID='trigger'>
             <Text>Toggle</Text>
           </Collapsible.Trigger>
-          <Collapsible.Panel testID="panel">
+          <Collapsible.Panel testID='panel'>
             <Text>Content</Text>
           </Collapsible.Panel>
         </Collapsible.Root>,
@@ -51,11 +51,11 @@ describe('Collapsible', () => {
     it('toggles state on press when uncontrolled', () => {
       const onOpenChange = jest.fn();
       render(
-        <Collapsible.Root onOpenChange={onOpenChange} testID="root">
-          <Collapsible.Trigger testID="trigger">
+        <Collapsible.Root onOpenChange={onOpenChange} testID='root'>
+          <Collapsible.Trigger testID='trigger'>
             <Text>Toggle</Text>
           </Collapsible.Trigger>
-          <Collapsible.Panel testID="panel">
+          <Collapsible.Panel testID='panel'>
             <Text>Content</Text>
           </Collapsible.Panel>
         </Collapsible.Root>,
@@ -81,11 +81,11 @@ describe('Collapsible', () => {
     it('respects the open prop and does not update internal state autonomously', () => {
       const onOpenChange = jest.fn();
       const { rerender } = render(
-        <Collapsible.Root open={true} onOpenChange={onOpenChange} testID="root">
-          <Collapsible.Trigger testID="trigger">
+        <Collapsible.Root onOpenChange={onOpenChange} open={true} testID='root'>
+          <Collapsible.Trigger testID='trigger'>
             <Text>Toggle</Text>
           </Collapsible.Trigger>
-          <Collapsible.Panel testID="panel">
+          <Collapsible.Panel testID='panel'>
             <Text>Content</Text>
           </Collapsible.Panel>
         </Collapsible.Root>,
@@ -103,11 +103,15 @@ describe('Collapsible', () => {
 
       // Rerender with new prop to simulate parent component updating it
       rerender(
-        <Collapsible.Root open={false} onOpenChange={onOpenChange} testID="root">
-          <Collapsible.Trigger testID="trigger">
+        <Collapsible.Root
+          onOpenChange={onOpenChange}
+          open={false}
+          testID='root'
+        >
+          <Collapsible.Trigger testID='trigger'>
             <Text>Toggle</Text>
           </Collapsible.Trigger>
-          <Collapsible.Panel testID="panel">
+          <Collapsible.Panel testID='panel'>
             <Text>Content</Text>
           </Collapsible.Panel>
         </Collapsible.Root>,
@@ -122,11 +126,11 @@ describe('Collapsible', () => {
     it('prevents toggling and applies accessibility state when root is disabled', () => {
       const onOpenChange = jest.fn();
       render(
-        <Collapsible.Root disabled onOpenChange={onOpenChange} testID="root">
-          <Collapsible.Trigger testID="trigger">
+        <Collapsible.Root disabled onOpenChange={onOpenChange} testID='root'>
+          <Collapsible.Trigger testID='trigger'>
             <Text>Toggle</Text>
           </Collapsible.Trigger>
-          <Collapsible.Panel testID="panel">
+          <Collapsible.Panel testID='panel'>
             <Text>Content</Text>
           </Collapsible.Panel>
         </Collapsible.Root>,
@@ -143,8 +147,8 @@ describe('Collapsible', () => {
     it('prevents toggling when trigger specifically is disabled', () => {
       const onOpenChange = jest.fn();
       render(
-        <Collapsible.Root onOpenChange={onOpenChange} testID="root">
-          <Collapsible.Trigger disabled testID="trigger">
+        <Collapsible.Root onOpenChange={onOpenChange} testID='root'>
+          <Collapsible.Trigger disabled testID='trigger'>
             <Text>Toggle</Text>
           </Collapsible.Trigger>
         </Collapsible.Root>,
@@ -159,13 +163,11 @@ describe('Collapsible', () => {
   });
 
   describe('Keyboard Interaction', () => {
-
-
     it('ignores keyboard events if disabled', () => {
       const onOpenChange = jest.fn();
       render(
         <Collapsible.Root disabled onOpenChange={onOpenChange}>
-          <Collapsible.Trigger testID="trigger">
+          <Collapsible.Trigger testID='trigger'>
             <Text>Toggle</Text>
           </Collapsible.Trigger>
         </Collapsible.Root>,
@@ -179,18 +181,21 @@ describe('Collapsible', () => {
 
   describe('Accessibility & Keep Mounted', () => {
     it('hides closed panels from screen readers if keepMounted is true', () => {
-
       render(
         <Collapsible.Root>
-          <Collapsible.Trigger><Text>Toggle</Text></Collapsible.Trigger>
-          <Collapsible.Panel keepMounted testID="panel">
+          <Collapsible.Trigger>
+            <Text>Toggle</Text>
+          </Collapsible.Trigger>
+          <Collapsible.Panel keepMounted testID='panel'>
             <Text>Content</Text>
           </Collapsible.Panel>
         </Collapsible.Root>,
       );
 
       // Bypass standard query to find the actual host component in the fiber tree
-      const panel = screen.getByTestId('panel', { includeHiddenElements: true })
+      const panel = screen.getByTestId('panel', {
+        includeHiddenElements: true,
+      });
       expect(panel.props.accessibilityElementsHidden).toBe(true);
       expect(panel.props.importantForAccessibility).toBe('no-hide-descendants');
     });
@@ -200,12 +205,14 @@ describe('Collapsible', () => {
     it('evaluates style functions on the Root based on state', () => {
       render(
         <Collapsible.Root
-          testID="root"
           style={({ open }) => ({
             backgroundColor: open ? 'green' : 'red',
           })}
+          testID='root'
         >
-          <Collapsible.Trigger testID="trigger"><Text>Toggle</Text></Collapsible.Trigger>
+          <Collapsible.Trigger testID='trigger'>
+            <Text>Toggle</Text>
+          </Collapsible.Trigger>
         </Collapsible.Root>,
       );
 
@@ -226,7 +233,7 @@ describe('Collapsible', () => {
     it('exposes state to children as a function', () => {
       render(
         <Collapsible.Root>
-          <Collapsible.Trigger testID="trigger">
+          <Collapsible.Trigger testID='trigger'>
             {({ open }) => <Text>{open ? 'CLOSE_ME' : 'OPEN_ME'}</Text>}
           </Collapsible.Trigger>
         </Collapsible.Root>,

@@ -10,7 +10,6 @@ export function MeterPlaybook() {
         <View style={styles.container}>
           <Meter.Root style={styles.meterRoot} value={24}>
             <View style={styles.meterHeader}>
-
               <Meter.Value style={styles.meterValue} />
             </View>
             <Meter.Track style={styles.meterTrack}>
@@ -24,7 +23,6 @@ export function MeterPlaybook() {
         <View style={styles.container}>
           <Meter.Root max={500} min={0} style={styles.meterRoot} value={350}>
             <View style={styles.meterHeader}>
-
               <Meter.Value style={styles.meterValue}>
                 {(state) => `${state.formattedValue} / 500`}
               </Meter.Value>
@@ -47,7 +45,6 @@ export function MeterPlaybook() {
             value={750}
           >
             <View style={styles.meterHeader}>
-
               <Meter.Value style={styles.meterValue} />
             </View>
             <Meter.Track style={styles.meterTrack}>
@@ -67,7 +64,6 @@ export function MeterPlaybook() {
             value={85}
           >
             <View style={styles.meterHeader}>
-
               <Meter.Value style={styles.meterValue} />
             </View>
             <Meter.Track style={styles.meterTrack}>

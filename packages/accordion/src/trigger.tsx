@@ -1,9 +1,9 @@
-import * as React from 'react';
 import {
-  PressableWithKeyDown,
   mergeProps,
+  PressableWithKeyDown,
   resolveValue,
 } from '@base-ui-rn/core';
+import * as React from 'react';
 import { Platform, View } from 'react-native';
 
 import { useAccordionItemContext } from './context';
@@ -28,18 +28,18 @@ export const AccordionTrigger = React.memo(
     const { children, style, ...otherProps } = props;
 
     const {
-      isDisabled,
       focused,
       focusRingStyle,
+      handleAccessibilityAction,
       handleBlur,
       handleFocus,
       handleKeyDown,
       handlePress,
+      isDisabled,
+      isFocusable,
       open,
       state,
-      isFocusable,
       tabIndex,
-      handleAccessibilityAction,
     } = useAccordionTrigger(props);
 
     const itemContext = useAccordionItemContext();
@@ -47,37 +47,39 @@ export const AccordionTrigger = React.memo(
     const resolvedStyle = resolveValue(style, state);
 
     const mergedProps = mergeProps(
-    {
-      accessibilityState: {
-        disabled: isDisabled,
-        expanded: open,
+      {
+        accessibilityState: {
+          disabled: isDisabled,
+          expanded: open,
+        },
+        onAccessibilityAction: handleAccessibilityAction,
+        onBlur: handleBlur,
+        onFocus: handleFocus,
+        onKeyDown: handleKeyDown,
+        onPress: handlePress,
+        ref: itemContext.triggerRef,
+        style: [
+          focusRingStyle,
+          Platform.OS === 'web' && (open || focused)
+            ? { zIndex: 1 }
+            : undefined,
+          resolvedStyle,
+        ],
       },
-      onAccessibilityAction: handleAccessibilityAction,
-      onBlur: handleBlur,
-      onFocus: handleFocus,
-      onKeyDown: handleKeyDown,
-      onPress: handlePress,
-      ref: itemContext.triggerRef,
-      style: [
-        focusRingStyle,
-        Platform.OS === 'web' && (open || focused) ? { zIndex: 1 } : undefined,
-        resolvedStyle,
-      ],
-    },
-    { ref },
-    otherProps,
-    {
-      accessible: true,
-      role: "button"
-    }
-  );
+      { ref },
+      otherProps,
+      {
+        accessible: true,
+        role: 'button',
+      },
+    );
 
     return (
       <PressableWithKeyDown
         {...mergedProps}
-        tabIndex={tabIndex}
         disabled={isDisabled}
         focusable={isFocusable}
+        tabIndex={tabIndex}
       >
         {resolveValue(children, state)}
       </PressableWithKeyDown>

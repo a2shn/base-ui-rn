@@ -1,7 +1,4 @@
-import {
-  mergeProps,
-  resolveValue,
-} from '@base-ui-rn/core';
+import { mergeProps, resolveValue } from '@base-ui-rn/core';
 import * as React from 'react';
 import { View } from 'react-native';
 
@@ -29,17 +26,14 @@ import { useSlider } from './use-slider';
  */
 export const SliderRoot = React.memo(
   React.forwardRef<View, SliderRootProps>(function SliderRoot(props, ref) {
-    const {
-      children,
-      style,
-      ...otherProps
-    } = props;
+    const { children, style, ...otherProps } = props;
 
     const {
       commitValue,
       focusedThumbIndex,
       focusThumb,
       format,
+      isDisabled,
       largeStep,
       locale,
       setDragging,
@@ -49,11 +43,10 @@ export const SliderRoot = React.memo(
       setValueAtIndex,
       state,
       stepBy,
+      tabIndex,
       thumbAlignment,
       thumbNodeHandles,
       thumbRefs,
-      tabIndex,
-      isDisabled,
     } = useSlider(props);
 
     const contextValue = React.useMemo(
@@ -95,27 +88,23 @@ export const SliderRoot = React.memo(
       ],
     );
 
-    const resolvedStyle = resolveValue(style, state)
+    const resolvedStyle = resolveValue(style, state);
 
     const mergedProps = mergeProps(
-    {
-      accessibilityState: { disabled: isDisabled },
-    },
-    { ref },
-    otherProps,
-    {
-      accessible: true,
-      role: "adjustable"
-    }
-  );
+      {
+        accessibilityState: { disabled: isDisabled },
+      },
+      { ref },
+      otherProps,
+      {
+        accessible: true,
+        role: 'adjustable',
+      },
+    );
 
     return (
       <SliderContext.Provider value={contextValue}>
-        <View
-          {...mergedProps}
-          style={resolvedStyle}
-          tabIndex={tabIndex}
-        >
+        <View {...mergedProps} style={resolvedStyle} tabIndex={tabIndex}>
           {resolveValue(children, state)}
         </View>
       </SliderContext.Provider>

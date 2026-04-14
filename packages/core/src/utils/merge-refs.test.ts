@@ -22,9 +22,7 @@ describe('mergeRefs', () => {
     const objectRef = React.createRef<View>();
     const node = {} as View;
 
-    const { result } = renderHook(() =>
-      mergeRefs(objectRef, null, undefined),
-    );
+    const { result } = renderHook(() => mergeRefs(objectRef, null, undefined));
 
     result.current(node);
 

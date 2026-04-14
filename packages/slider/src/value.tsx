@@ -1,9 +1,9 @@
+import { useFormatter } from '@base-ui-rn/core';
 import * as React from 'react';
 import { Text } from 'react-native';
 
 import { useSliderContext } from './context';
 import type { SliderValueProps } from './types';
-import { useFormatter } from '@base-ui-rn/core';
 
 /**
  * Text output for the current slider value.

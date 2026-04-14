@@ -7,9 +7,7 @@ export { useKeyboard } from './keyboard/use-keyboard';
 
 export { isActivationAction } from './accessibility/is-activation-action';
 
-export {
-  resolveValue,
-} from './utils/resolve-value';
+export { resolveValue } from './utils/resolve-value';
 export { mergeProps } from './utils/merge-props';
 export { useControllableState } from './utils/use-controllable-state';
 export { useLabels } from './utils/use-labels';

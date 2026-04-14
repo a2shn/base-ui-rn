@@ -1,10 +1,9 @@
-import { DEFAULT_FOCUS_RING_STYLE } from './styles';
 import * as React from 'react';
 import { Platform } from 'react-native';
 
 import { getInteractionModality } from './modality';
+import { DEFAULT_FOCUS_RING_STYLE } from './styles';
 import type { UseFocusRingOptions, UseFocusRingReturn } from './types';
-
 
 /**
  * A hook that manages focus state and focus-visible logic.
@@ -46,8 +45,8 @@ export function useFocusRing(options: UseFocusRingOptions): UseFocusRingReturn {
   return React.useMemo(
     () => ({
       focused,
-      focusVisible,
       focusRingStyle,
+      focusVisible,
       isFocusable,
       onBlur,
       onFocus,

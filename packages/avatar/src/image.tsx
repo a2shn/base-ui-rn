@@ -19,38 +19,29 @@ import { useAvatarImage } from './use-avatar-image';
  */
 export const AvatarImage = React.forwardRef<Image, AvatarImageProps>(
   (props, ref) => {
-    const { style, source, ...otherProps } = props;
+    const { source, style, ...otherProps } = props;
     const { loadingStatus } = useAvatarContext();
     const { handleError, handleLoad, handleLoadStart } = useAvatarImage(props);
 
-    const resolvedStyle = resolveValue(
-      style,
-      { loadingStatus },
-
-    );
+    const resolvedStyle = resolveValue(style, { loadingStatus });
 
     const mergedProps = mergeProps(
-    {
-      onError: handleError,
-      onLoad: handleLoad,
-      onLoadStart: handleLoadStart,
-      style: resolvedStyle
-    },
-    { ref },
-    otherProps,
-    {
-      accessible: true,
-      disabled: false,
-      focusable: false
-    }
-  );
-
-    return (
-      <Image
-        {...mergedProps}
-        source={source}
-      />
+      {
+        onError: handleError,
+        onLoad: handleLoad,
+        onLoadStart: handleLoadStart,
+        style: resolvedStyle,
+      },
+      { ref },
+      otherProps,
+      {
+        accessible: true,
+        disabled: false,
+        focusable: false,
+      },
     );
+
+    return <Image {...mergedProps} source={source} />;
   },
 );
 

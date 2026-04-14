@@ -16,20 +16,15 @@ import { Text, TextProps } from 'react-native';
  */
 export const Label = React.memo(
   React.forwardRef<Text, TextProps>((props, ref) => {
-    const { children, nativeID, id, ...otherProps } = props;
+    const { children, id, nativeID, ...otherProps } = props;
 
     const reactId = React.useId();
     const resolvedNativeID = nativeID || id || reactId;
 
-    const mergedProps = mergeProps(
-    {},
-    { ref },
-    otherProps,
-    {
+    const mergedProps = mergeProps({}, { ref }, otherProps, {
       disabled: false,
-      focusable: false
-    }
-  );
+      focusable: false,
+    });
 
     return (
       <Text {...mergedProps} nativeID={resolvedNativeID}>

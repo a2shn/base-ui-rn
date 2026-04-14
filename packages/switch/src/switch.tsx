@@ -1,4 +1,8 @@
-import { PressableWithKeyDown, mergeProps, resolveValue } from '@base-ui-rn/core';
+import {
+  mergeProps,
+  PressableWithKeyDown,
+  resolveValue,
+} from '@base-ui-rn/core';
 import * as React from 'react';
 import { Platform, View } from 'react-native';
 
@@ -21,55 +25,51 @@ import { useSwitchRoot } from './use-switch';
  */
 export const SwitchRoot = React.memo(
   React.forwardRef<View, SwitchRootProps>((props, ref) => {
-    const {
-      children,
-      style,
-      ...otherProps
-    } = props;
+    const { children, style, ...otherProps } = props;
 
     const {
       checked,
-      isDisabled,
       focusRingStyle,
+      handleAccessibilityAction,
       handleBlur,
       handleFocus,
+      handleKeyDown,
       handlePress,
-      handleAccessibilityAction,
-      state,
+      isDisabled,
       isFocusable,
+      state,
       tabIndex,
-      handleKeyDown
     } = useSwitchRoot(props);
 
     const internalRef = React.useRef<View>(null);
 
-    const resolvedStyle = resolveValue(style, state)
+    const resolvedStyle = resolveValue(style, state);
 
     const mergedProps = mergeProps(
-    {
-      accessibilityState: {
-        checked,
-        disabled: isDisabled,
+      {
+        accessibilityState: {
+          checked,
+          disabled: isDisabled,
+        },
+        onAccessibilityAction: handleAccessibilityAction,
+        onBlur: handleBlur,
+        onFocus: handleFocus,
+        onKeyDown: handleKeyDown,
+        onPress: handlePress,
+        ref: internalRef,
+        style: [
+          resolvedStyle,
+          focusRingStyle,
+          Platform.OS === 'web' && state.focused ? { zIndex: 1 } : undefined,
+        ],
       },
-      onAccessibilityAction: handleAccessibilityAction,
-      onBlur: handleBlur,
-      onFocus: handleFocus,
-      onKeyDown: handleKeyDown,
-      onPress: handlePress,
-      ref: internalRef,
-      style: [
-        resolvedStyle,
-        focusRingStyle,
-        Platform.OS === 'web' && state.focused ? { zIndex: 1 } : undefined
-      ],
-    },
-    { ref },
-    otherProps,
-    {
-      accessible: true,
-      role: "switch"
-    }
-  );
+      { ref },
+      otherProps,
+      {
+        accessible: true,
+        role: 'switch',
+      },
+    );
 
     return (
       <SwitchContext.Provider value={state}>

@@ -11,19 +11,31 @@ describe('Tabs Primitive', () => {
   describe('Basic Rendering & Uncontrolled State', () => {
     it('renders the default active panel and hides others', () => {
       render(
-        <Tabs.Root defaultValue="tab-1">
-          <Tabs.List testID="list">
-            <Tabs.Tab value="tab-1" testID="tab-1"><Text>Tab 1</Text></Tabs.Tab>
-            <Tabs.Tab value="tab-2" testID="tab-2"><Text>Tab 2</Text></Tabs.Tab>
+        <Tabs.Root defaultValue='tab-1'>
+          <Tabs.List testID='list'>
+            <Tabs.Tab testID='tab-1' value='tab-1'>
+              <Text>Tab 1</Text>
+            </Tabs.Tab>
+            <Tabs.Tab testID='tab-2' value='tab-2'>
+              <Text>Tab 2</Text>
+            </Tabs.Tab>
           </Tabs.List>
-          <Tabs.Panel value="tab-1" testID="panel-1"><Text>Content 1</Text></Tabs.Panel>
-          <Tabs.Panel value="tab-2" testID="panel-2"><Text>Content 2</Text></Tabs.Panel>
+          <Tabs.Panel testID='panel-1' value='tab-1'>
+            <Text>Content 1</Text>
+          </Tabs.Panel>
+          <Tabs.Panel testID='panel-2' value='tab-2'>
+            <Text>Content 2</Text>
+          </Tabs.Panel>
         </Tabs.Root>,
       );
 
       // Check tab states
-      expect(screen.getByTestId('tab-1').props.accessibilityState.selected).toBe(true);
-      expect(screen.getByTestId('tab-2').props.accessibilityState.selected).toBe(false);
+      expect(
+        screen.getByTestId('tab-1').props.accessibilityState.selected,
+      ).toBe(true);
+      expect(
+        screen.getByTestId('tab-2').props.accessibilityState.selected,
+      ).toBe(false);
 
       // Check panel visibility
       expect(screen.getByText('Content 1')).toBeTruthy();
@@ -33,13 +45,21 @@ describe('Tabs Primitive', () => {
     it('changes the active tab on press', () => {
       const onValueChange = jest.fn();
       render(
-        <Tabs.Root defaultValue="tab-1" onValueChange={onValueChange}>
+        <Tabs.Root defaultValue='tab-1' onValueChange={onValueChange}>
           <Tabs.List>
-            <Tabs.Tab value="tab-1"><Text>Tab 1</Text></Tabs.Tab>
-            <Tabs.Tab value="tab-2" testID="tab-2"><Text>Tab 2</Text></Tabs.Tab>
+            <Tabs.Tab value='tab-1'>
+              <Text>Tab 1</Text>
+            </Tabs.Tab>
+            <Tabs.Tab testID='tab-2' value='tab-2'>
+              <Text>Tab 2</Text>
+            </Tabs.Tab>
           </Tabs.List>
-          <Tabs.Panel value="tab-1"><Text>Content 1</Text></Tabs.Panel>
-          <Tabs.Panel value="tab-2"><Text>Content 2</Text></Tabs.Panel>
+          <Tabs.Panel value='tab-1'>
+            <Text>Content 1</Text>
+          </Tabs.Panel>
+          <Tabs.Panel value='tab-2'>
+            <Text>Content 2</Text>
+          </Tabs.Panel>
         </Tabs.Root>,
       );
 
@@ -55,13 +75,21 @@ describe('Tabs Primitive', () => {
     it('respects controlled value and prevents autonomous internal updates', () => {
       const onValueChange = jest.fn();
       const { rerender } = render(
-        <Tabs.Root value="tab-1" onValueChange={onValueChange}>
+        <Tabs.Root onValueChange={onValueChange} value='tab-1'>
           <Tabs.List>
-            <Tabs.Tab value="tab-1"><Text>Tab 1</Text></Tabs.Tab>
-            <Tabs.Tab value="tab-2" testID="tab-2"><Text>Tab 2</Text></Tabs.Tab>
+            <Tabs.Tab value='tab-1'>
+              <Text>Tab 1</Text>
+            </Tabs.Tab>
+            <Tabs.Tab testID='tab-2' value='tab-2'>
+              <Text>Tab 2</Text>
+            </Tabs.Tab>
           </Tabs.List>
-          <Tabs.Panel value="tab-1"><Text>Content 1</Text></Tabs.Panel>
-          <Tabs.Panel value="tab-2"><Text>Content 2</Text></Tabs.Panel>
+          <Tabs.Panel value='tab-1'>
+            <Text>Content 1</Text>
+          </Tabs.Panel>
+          <Tabs.Panel value='tab-2'>
+            <Text>Content 2</Text>
+          </Tabs.Panel>
         </Tabs.Root>,
       );
 
@@ -75,13 +103,21 @@ describe('Tabs Primitive', () => {
 
       // Parent component updates the prop
       rerender(
-        <Tabs.Root value="tab-2" onValueChange={onValueChange}>
+        <Tabs.Root onValueChange={onValueChange} value='tab-2'>
           <Tabs.List>
-            <Tabs.Tab value="tab-1"><Text>Tab 1</Text></Tabs.Tab>
-            <Tabs.Tab value="tab-2" testID="tab-2"><Text>Tab 2</Text></Tabs.Tab>
+            <Tabs.Tab value='tab-1'>
+              <Text>Tab 1</Text>
+            </Tabs.Tab>
+            <Tabs.Tab testID='tab-2' value='tab-2'>
+              <Text>Tab 2</Text>
+            </Tabs.Tab>
           </Tabs.List>
-          <Tabs.Panel value="tab-1"><Text>Content 1</Text></Tabs.Panel>
-          <Tabs.Panel value="tab-2"><Text>Content 2</Text></Tabs.Panel>
+          <Tabs.Panel value='tab-1'>
+            <Text>Content 1</Text>
+          </Tabs.Panel>
+          <Tabs.Panel value='tab-2'>
+            <Text>Content 2</Text>
+          </Tabs.Panel>
         </Tabs.Root>,
       );
 
@@ -94,13 +130,21 @@ describe('Tabs Primitive', () => {
     it('prevents interaction on disabled tabs', () => {
       const onValueChange = jest.fn();
       render(
-        <Tabs.Root defaultValue="tab-1" onValueChange={onValueChange}>
+        <Tabs.Root defaultValue='tab-1' onValueChange={onValueChange}>
           <Tabs.List>
-            <Tabs.Tab value="tab-1"><Text>Tab 1</Text></Tabs.Tab>
-            <Tabs.Tab value="tab-2" disabled testID="tab-2"><Text>Tab 2</Text></Tabs.Tab>
+            <Tabs.Tab value='tab-1'>
+              <Text>Tab 1</Text>
+            </Tabs.Tab>
+            <Tabs.Tab disabled testID='tab-2' value='tab-2'>
+              <Text>Tab 2</Text>
+            </Tabs.Tab>
           </Tabs.List>
-          <Tabs.Panel value="tab-1"><Text>Content 1</Text></Tabs.Panel>
-          <Tabs.Panel value="tab-2"><Text>Content 2</Text></Tabs.Panel>
+          <Tabs.Panel value='tab-1'>
+            <Text>Content 1</Text>
+          </Tabs.Panel>
+          <Tabs.Panel value='tab-2'>
+            <Text>Content 2</Text>
+          </Tabs.Panel>
         </Tabs.Root>,
       );
 
@@ -114,50 +158,74 @@ describe('Tabs Primitive', () => {
   });
 
   describe('Keyboard Navigation', () => {
-
-
     it('navigates with arrow keys (Horizontal by default)', () => {
       const onFocusChange = jest.fn();
       render(
-        <Tabs.Root defaultValue="tab-1" onFocusChange={onFocusChange}>
+        <Tabs.Root defaultValue='tab-1' onFocusChange={onFocusChange}>
           <Tabs.List>
-            <Tabs.Tab value="tab-1" testID="tab-1"><Text>Tab 1</Text></Tabs.Tab>
-            <Tabs.Tab value="tab-2" testID="tab-2"><Text>Tab 2</Text></Tabs.Tab>
+            <Tabs.Tab testID='tab-1' value='tab-1'>
+              <Text>Tab 1</Text>
+            </Tabs.Tab>
+            <Tabs.Tab testID='tab-2' value='tab-2'>
+              <Text>Tab 2</Text>
+            </Tabs.Tab>
           </Tabs.List>
         </Tabs.Root>,
       );
 
-      fireEvent(screen.getByTestId('tab-1'), 'keyDown', { nativeEvent: { key: 'ArrowRight' } });
+      fireEvent(screen.getByTestId('tab-1'), 'keyDown', {
+        nativeEvent: { key: 'ArrowRight' },
+      });
       expect(onFocusChange).toHaveBeenCalledWith('tab-2');
     });
 
     it('navigates with arrow keys (Vertical)', () => {
       const onFocusChange = jest.fn();
       render(
-        <Tabs.Root defaultValue="tab-1" orientation="vertical" onFocusChange={onFocusChange}>
+        <Tabs.Root
+          defaultValue='tab-1'
+          onFocusChange={onFocusChange}
+          orientation='vertical'
+        >
           <Tabs.List>
-            <Tabs.Tab value="tab-1" testID="tab-1"><Text>Tab 1</Text></Tabs.Tab>
-            <Tabs.Tab value="tab-2" testID="tab-2"><Text>Tab 2</Text></Tabs.Tab>
+            <Tabs.Tab testID='tab-1' value='tab-1'>
+              <Text>Tab 1</Text>
+            </Tabs.Tab>
+            <Tabs.Tab testID='tab-2' value='tab-2'>
+              <Text>Tab 2</Text>
+            </Tabs.Tab>
           </Tabs.List>
         </Tabs.Root>,
       );
 
-      fireEvent(screen.getByTestId('tab-1'), 'keyDown', { nativeEvent: { key: 'ArrowDown' } });
+      fireEvent(screen.getByTestId('tab-1'), 'keyDown', {
+        nativeEvent: { key: 'ArrowDown' },
+      });
       expect(onFocusChange).toHaveBeenCalledWith('tab-2');
     });
 
     it('auto-activates tabs when activateOnFocus is true', () => {
       const onValueChange = jest.fn();
       render(
-        <Tabs.Root defaultValue="tab-1" activateOnFocus onValueChange={onValueChange}>
+        <Tabs.Root
+          activateOnFocus
+          defaultValue='tab-1'
+          onValueChange={onValueChange}
+        >
           <Tabs.List>
-            <Tabs.Tab value="tab-1" testID="tab-1"><Text>Tab 1</Text></Tabs.Tab>
-            <Tabs.Tab value="tab-2" testID="tab-2"><Text>Tab 2</Text></Tabs.Tab>
+            <Tabs.Tab testID='tab-1' value='tab-1'>
+              <Text>Tab 1</Text>
+            </Tabs.Tab>
+            <Tabs.Tab testID='tab-2' value='tab-2'>
+              <Text>Tab 2</Text>
+            </Tabs.Tab>
           </Tabs.List>
         </Tabs.Root>,
       );
 
-      fireEvent(screen.getByTestId('tab-1'), 'keyDown', { nativeEvent: { key: 'ArrowRight' } });
+      fireEvent(screen.getByTestId('tab-1'), 'keyDown', {
+        nativeEvent: { key: 'ArrowRight' },
+      });
 
       // Because activateOnFocus is true, the arrow key directly triggers a value change
       expect(onValueChange).toHaveBeenCalledWith('tab-2');
@@ -167,11 +235,15 @@ describe('Tabs Primitive', () => {
   describe('Accessibility & Keep Mounted', () => {
     it('applies correct ARIA roles', () => {
       render(
-        <Tabs.Root defaultValue="tab-1">
-          <Tabs.List testID="list">
-            <Tabs.Tab value="tab-1" testID="tab-1"><Text>Tab 1</Text></Tabs.Tab>
+        <Tabs.Root defaultValue='tab-1'>
+          <Tabs.List testID='list'>
+            <Tabs.Tab testID='tab-1' value='tab-1'>
+              <Text>Tab 1</Text>
+            </Tabs.Tab>
           </Tabs.List>
-          <Tabs.Panel value="tab-1" testID="panel-1"><Text>Content 1</Text></Tabs.Panel>
+          <Tabs.Panel testID='panel-1' value='tab-1'>
+            <Text>Content 1</Text>
+          </Tabs.Panel>
         </Tabs.Root>,
       );
 
@@ -182,46 +254,56 @@ describe('Tabs Primitive', () => {
 
     it('hides inactive panels from screen readers if keepMounted is true', () => {
       render(
-        <Tabs.Root defaultValue="tab-1">
+        <Tabs.Root defaultValue='tab-1'>
           <Tabs.List>
-            <Tabs.Tab value="tab-1"><Text>Tab 1</Text></Tabs.Tab>
-            <Tabs.Tab value="tab-2"><Text>Tab 2</Text></Tabs.Tab>
+            <Tabs.Tab value='tab-1'>
+              <Text>Tab 1</Text>
+            </Tabs.Tab>
+            <Tabs.Tab value='tab-2'>
+              <Text>Tab 2</Text>
+            </Tabs.Tab>
           </Tabs.List>
-          <Tabs.Panel value="tab-1"><Text>Content 1</Text></Tabs.Panel>
-          <Tabs.Panel value="tab-2" keepMounted testID="panel-2">
+          <Tabs.Panel value='tab-1'>
+            <Text>Content 1</Text>
+          </Tabs.Panel>
+          <Tabs.Panel keepMounted testID='panel-2' value='tab-2'>
             <Text>Hidden Content 2</Text>
           </Tabs.Panel>
         </Tabs.Root>,
       );
 
       // Now we can query the host element directly because mergeProps isn't clobbering it
-      const panelView = screen.getByTestId('panel-2', { includeHiddenElements: true });
+      const panelView = screen.getByTestId('panel-2', {
+        includeHiddenElements: true,
+      });
 
       expect(panelView.props.accessibilityElementsHidden).toBe(true);
-      expect(panelView.props.importantForAccessibility).toBe('no-hide-descendants');
+      expect(panelView.props.importantForAccessibility).toBe(
+        'no-hide-descendants',
+      );
     });
   });
 
   describe('Context & Style Resolution (Render Props)', () => {
     it('evaluates style functions on Tabs based on state', () => {
       render(
-        <Tabs.Root defaultValue="tab-1">
+        <Tabs.Root defaultValue='tab-1'>
           <Tabs.List>
             <Tabs.Tab
-              value="tab-1"
-              testID="tab-1"
               style={({ active }) => ({
                 borderBottomWidth: active ? 2 : 0,
               })}
+              testID='tab-1'
+              value='tab-1'
             >
               <Text>Tab 1</Text>
             </Tabs.Tab>
             <Tabs.Tab
-              value="tab-2"
-              testID="tab-2"
               style={({ active }) => ({
                 borderBottomWidth: active ? 2 : 0,
               })}
+              testID='tab-2'
+              value='tab-2'
             >
               <Text>Tab 2</Text>
             </Tabs.Tab>
@@ -232,24 +314,34 @@ describe('Tabs Primitive', () => {
       const tab1 = screen.getByTestId('tab-1');
       const tab2 = screen.getByTestId('tab-2');
 
-      expect(StyleSheet.flatten(tab1.props.style)).toMatchObject({ borderBottomWidth: 2 });
-      expect(StyleSheet.flatten(tab2.props.style)).toMatchObject({ borderBottomWidth: 0 });
+      expect(StyleSheet.flatten(tab1.props.style)).toMatchObject({
+        borderBottomWidth: 2,
+      });
+      expect(StyleSheet.flatten(tab2.props.style)).toMatchObject({
+        borderBottomWidth: 0,
+      });
 
       // Toggle to Tab 2
       fireEvent.press(tab2);
 
-      expect(StyleSheet.flatten(tab1.props.style)).toMatchObject({ borderBottomWidth: 0 });
-      expect(StyleSheet.flatten(tab2.props.style)).toMatchObject({ borderBottomWidth: 2 });
+      expect(StyleSheet.flatten(tab1.props.style)).toMatchObject({
+        borderBottomWidth: 0,
+      });
+      expect(StyleSheet.flatten(tab2.props.style)).toMatchObject({
+        borderBottomWidth: 2,
+      });
     });
 
     it('exposes state to children as a function', () => {
       render(
-        <Tabs.Root defaultValue="tab-1">
+        <Tabs.Root defaultValue='tab-1'>
           <Tabs.List>
-            <Tabs.Tab value="tab-1" testID="tab-1">
-              {({ active }) => <Text>{active ? 'ACTIVE_TEXT' : 'INACTIVE_TEXT'}</Text>}
+            <Tabs.Tab testID='tab-1' value='tab-1'>
+              {({ active }) => (
+                <Text>{active ? 'ACTIVE_TEXT' : 'INACTIVE_TEXT'}</Text>
+              )}
             </Tabs.Tab>
-            <Tabs.Tab value="tab-2" testID="tab-2">
+            <Tabs.Tab testID='tab-2' value='tab-2'>
               <Text>Tab 2</Text>
             </Tabs.Tab>
           </Tabs.List>

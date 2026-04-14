@@ -11,8 +11,8 @@ export function useAccordionHeader() {
   };
 
   return {
-    isDisabled: itemContext.isDisabled,
     index: itemContext.index,
+    isDisabled: itemContext.isDisabled,
     open: itemContext.open,
     state,
   };

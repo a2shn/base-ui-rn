@@ -1,6 +1,6 @@
 import {
-  PressableWithKeyDown,
   mergeProps,
+  PressableWithKeyDown,
   resolveValue,
 } from '@base-ui-rn/core';
 import * as React from 'react';
@@ -50,33 +50,33 @@ export const Button = React.memo(
     const resolvedStyle = resolveValue(style, buttonState);
 
     const mergedProps = mergeProps(
-    {
-      accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
-      accessibilityState: { disabled: isDisabled, selected: pressed },
-      onBlur: handleBlur,
-      onFocus: handleFocus,
-      onPressIn: handlePressIn,
-      onPressOut: handlePressOut,
-      ref: internalRef,
-      style: [resolvedStyle, focusRingStyle]
-    },
-    { ref },
-    otherProps,
-    {
-      accessibilityHint: "Activates the button",
-      accessible: true,
-      role: "button"
-    }
-  );
+      {
+        accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
+        accessibilityState: { disabled: isDisabled, selected: pressed },
+        onBlur: handleBlur,
+        onFocus: handleFocus,
+        onPressIn: handlePressIn,
+        onPressOut: handlePressOut,
+        ref: internalRef,
+        style: [resolvedStyle, focusRingStyle],
+      },
+      { ref },
+      otherProps,
+      {
+        accessibilityHint: 'Activates the button',
+        accessible: true,
+        role: 'button',
+      },
+    );
 
     return (
       <PressableWithKeyDown
         {...mergedProps}
-        style={[resolvedStyle, focusRingStyle]}
         disabled={isDisabled}
         focusable={isFocusable}
-        tabIndex={tabIndex}
         importantForAccessibility={isFocusable ? 'yes' : 'no'}
+        style={[resolvedStyle, focusRingStyle]}
+        tabIndex={tabIndex}
       >
         {(pressableState: PressableStateCallbackType) =>
           resolveValue(children, { ...pressableState, ...buttonState })

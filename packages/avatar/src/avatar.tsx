@@ -42,35 +42,27 @@ export const AvatarRoot = React.forwardRef<View, AvatarRootProps>(
     );
 
     const isLoading = loadingStatus === 'loading';
-    const resolvedStyle = resolveValue(
-      style,
-      { loadingStatus }
-    );
+    const resolvedStyle = resolveValue(style, { loadingStatus });
 
     const mergedProps = mergeProps(
-    {
-      accessibilityState: { busy: isLoading },
-      style: resolvedStyle
-    },
-    { ref },
-    otherProps,
-    {
-      accessible: true,
-      disabled: false,
-      focusable: false,
-      importantForAccessibility: "yes",
-      role: "img"
-    }
-  );
+      {
+        accessibilityState: { busy: isLoading },
+        style: resolvedStyle,
+      },
+      { ref },
+      otherProps,
+      {
+        accessible: true,
+        disabled: false,
+        focusable: false,
+        importantForAccessibility: 'yes',
+        role: 'img',
+      },
+    );
 
     return (
       <AvatarContext.Provider value={contextValue}>
-        <View
-
-          {...mergedProps}
-        >
-          {children}
-        </View>
+        <View {...mergedProps}>{children}</View>
       </AvatarContext.Provider>
     );
   },

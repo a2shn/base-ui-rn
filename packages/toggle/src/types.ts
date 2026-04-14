@@ -8,7 +8,10 @@ export interface ToggleState extends FocusRingState {
   disabled: boolean;
 }
 
-export interface ToggleProps extends Omit<React.ComponentProps<typeof PressableWithKeyDown>, 'children' | 'style'> {
+export interface ToggleProps extends Omit<
+  React.ComponentProps<typeof PressableWithKeyDown>,
+  'children' | 'style'
+> {
   /**
    * The role of the toggle.
    * @default 'checkbox'

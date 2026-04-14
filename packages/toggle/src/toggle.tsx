@@ -1,6 +1,6 @@
 import {
-  PressableWithKeyDown,
   mergeProps,
+  PressableWithKeyDown,
   resolveValue,
 } from '@base-ui-rn/core';
 import * as React from 'react';
@@ -24,7 +24,7 @@ import { useToggle } from './use-toggle';
  */
 export const Toggle = React.memo(
   React.forwardRef<View, ToggleProps>(function Toggle(props, ref) {
-    const { children, style, role, value, ...otherProps } = props;
+    const { children, role, style, value, ...otherProps } = props;
 
     const {
       focusRingStyle,
@@ -60,36 +60,36 @@ export const Toggle = React.memo(
     const resolvedStyle = resolveValue(style, state);
 
     const mergedProps = mergeProps(
-    {
-      accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
-      accessibilityState: {
-        checked: state.pressed,
-        disabled: isDisabled,
+      {
+        accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
+        accessibilityState: {
+          checked: state.pressed,
+          disabled: isDisabled,
+        },
+        onAccessibilityAction: handleAccessibilityAction,
+        onBlur: handleBlur,
+        onFocus: handleFocus,
+        onKeyDown: handleKeyDown,
+        onPress: handlePress,
+        ref: internalRef,
+        style: [resolvedStyle, focusRingStyle],
       },
-      onAccessibilityAction: handleAccessibilityAction,
-      onBlur: handleBlur,
-      onFocus: handleFocus,
-      onKeyDown: handleKeyDown,
-      onPress: handlePress,
-      ref: internalRef,
-      style: [resolvedStyle, focusRingStyle]
-    },
-    { ref },
-    otherProps,
-    {
-      accessibilityHint: "Toggles the state",
-      accessibilityLiveRegion: "polite",
-      accessible: true,
-      role: role ?? "checkbox"
-    }
-  );
+      { ref },
+      otherProps,
+      {
+        accessibilityHint: 'Toggles the state',
+        accessibilityLiveRegion: 'polite',
+        accessible: true,
+        role: role ?? 'checkbox',
+      },
+    );
     return (
       <PressableWithKeyDown
         {...mergedProps}
         disabled={isDisabled}
         focusable={isFocusable}
-        tabIndex={tabIndex}
         importantForAccessibility={isFocusable ? 'yes' : 'no-hide-descendants'}
+        tabIndex={tabIndex}
       >
         {(pressableState: PressableStateCallbackType) =>
           resolveValue(children, {

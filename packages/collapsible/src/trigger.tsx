@@ -1,6 +1,6 @@
 import {
-  PressableWithKeyDown,
   mergeProps,
+  PressableWithKeyDown,
   resolveValue,
 } from '@base-ui-rn/core';
 import * as React from 'react';
@@ -25,16 +25,16 @@ export const CollapsibleTrigger = React.memo(
     const { children, style, ...otherProps } = props;
 
     const {
-      isDisabled,
       focused,
       focusRingStyle,
+      handleAccessibilityAction,
       handleBlur,
       handleFocus,
       handlePress,
-      handleAccessibilityAction,
+      isDisabled,
+      isFocusable,
       open,
       state,
-      isFocusable,
       tabIndex,
     } = useCollapsibleTrigger(props);
 
@@ -43,36 +43,38 @@ export const CollapsibleTrigger = React.memo(
     const resolvedStyle = resolveValue(style, state);
 
     const mergedProps = mergeProps(
-    {
-      accessibilityState: {
-        disabled: isDisabled,
-        expanded: open,
+      {
+        accessibilityState: {
+          disabled: isDisabled,
+          expanded: open,
+        },
+        onAccessibilityAction: handleAccessibilityAction,
+        onBlur: handleBlur,
+        onFocus: handleFocus,
+        onPress: handlePress,
+        ref: internalRef,
+        style: [
+          focusRingStyle,
+          Platform.OS === 'web' && (open || focused)
+            ? { zIndex: 1 }
+            : undefined,
+          resolvedStyle,
+        ],
       },
-      onAccessibilityAction: handleAccessibilityAction,
-      onBlur: handleBlur,
-      onFocus: handleFocus,
-      onPress: handlePress,
-      ref: internalRef,
-      style: [
-        focusRingStyle,
-        Platform.OS === 'web' && (open || focused) ? { zIndex: 1 } : undefined,
-        resolvedStyle,
-      ],
-    },
-    { ref },
-    otherProps,
-    {
-      accessible: true,
-      role: "button"
-    }
-  );
+      { ref },
+      otherProps,
+      {
+        accessible: true,
+        role: 'button',
+      },
+    );
 
     return (
       <PressableWithKeyDown
         {...mergedProps}
-        tabIndex={tabIndex}
         disabled={isDisabled}
         focusable={isFocusable}
+        tabIndex={tabIndex}
       >
         {resolveValue(children, state)}
       </PressableWithKeyDown>

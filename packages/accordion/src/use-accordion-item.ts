@@ -51,11 +51,11 @@ export function useAccordionItem(props: AccordionItemProps) {
   };
 
   return {
-    isDisabled,
     index,
+    isDisabled,
     open,
+    state,
     triggerRef,
     value,
-    state,
   };
 }

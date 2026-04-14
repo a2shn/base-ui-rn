@@ -38,7 +38,6 @@ describe('Input & Label Primitive', () => {
       expect(input).toBeTruthy();
     });
   });
-
 });
 
 describe('Ref Forwarding', () => {
@@ -47,7 +46,6 @@ describe('Ref Forwarding', () => {
 
     render(
       <>
-
         <Input ref={inputRef} />
       </>,
     );

@@ -1,4 +1,8 @@
-import { isActivationAction, type KeyDownEventData, useControllableState } from '@base-ui-rn/core';
+import {
+  isActivationAction,
+  type KeyDownEventData,
+  useControllableState,
+} from '@base-ui-rn/core';
 import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import type { NativeSyntheticEvent } from 'react-native';
@@ -79,7 +83,7 @@ export function useToggle(props: ToggleProps) {
   }, [toggle]);
 
   const handleAccessibilityAction = React.useCallback(
-    (event: any) => {
+    (event: { nativeEvent: { actionName: string } }) => {
       if (isActivationAction(event.nativeEvent?.actionName) && !isDisabled) {
         toggle();
       }

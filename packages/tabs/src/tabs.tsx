@@ -45,11 +45,11 @@ export const TabsRoot = React.memo(
 
     const resolvedStyle = resolveValue(style, state);
     const mergedProps = mergeProps(
-    { style: resolvedStyle },
-    { ref },
-    otherProps,
-    { focusable: false }
-  );
+      { style: resolvedStyle },
+      { ref },
+      otherProps,
+      { focusable: false },
+    );
 
     return (
       <TabsContext.Provider value={contextValue}>

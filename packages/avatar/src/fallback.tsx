@@ -31,21 +31,18 @@ export const AvatarFallback = React.forwardRef<View, AvatarFallbackProps>(
       return undefined;
     }, [delay]);
 
-    const resolvedStyle = resolveValue(
-      style,
-      { loadingStatus },
-    );
+    const resolvedStyle = resolveValue(style, { loadingStatus });
 
     const mergedProps = mergeProps(
-    { style: resolvedStyle },
-    { ref },
-    otherProps,
-    {
-      accessible: true,
-      disabled: false,
-      focusable: false
-    }
-  );
+      { style: resolvedStyle },
+      { ref },
+      otherProps,
+      {
+        accessible: true,
+        disabled: false,
+        focusable: false,
+      },
+    );
 
     if (canRender && loadingStatus !== 'loaded') {
       return (

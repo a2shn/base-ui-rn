@@ -1,9 +1,8 @@
 import { useControllableState } from '@base-ui-rn/core';
 import { resolveTabIndex, useFocusRing } from '@base-ui-rn/focus-ring';
 import React from 'react';
-import { NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
 
-import { InputProps, InputState } from './types';
+import { InputChangeEventDetails, InputProps, InputState } from './types';
 
 export function useInput(props: InputProps) {
   const {
@@ -72,7 +71,9 @@ export function useInput(props: InputProps) {
       setValue(nextValue);
       setDirty(true);
 
-      onValueChange?.(nextValue);
+      onValueChange?.(nextValue, {
+        nativeEvent: { text },
+      } as unknown as InputChangeEventDetails);
     },
     [readOnly, isDisabled, setValue, setDirty, onValueChange],
   );

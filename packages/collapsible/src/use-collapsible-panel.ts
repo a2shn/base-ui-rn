@@ -33,8 +33,8 @@ export function useCollapsiblePanel(props: CollapsiblePanelProps) {
   };
 
   return {
-    isDisabled: context.disabled,
     handleOnLayout,
+    isDisabled: context.disabled,
     open: context.open,
     shouldRender,
     state,

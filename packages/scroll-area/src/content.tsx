@@ -22,7 +22,7 @@ import { useScrollAreaContent } from './use-scroll-area-content';
 export const Content = React.memo(
   React.forwardRef<View, ScrollAreaContentProps>((props, ref) => {
     const { children, ...otherProps } = props;
-    const { handleLayout } = useScrollAreaContent(props);
+    const { handleLayout } = useScrollAreaContent();
 
     const mergedProps = mergeProps(
       { onLayout: handleLayout },

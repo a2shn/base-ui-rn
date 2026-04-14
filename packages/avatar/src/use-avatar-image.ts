@@ -23,9 +23,14 @@ const getSourceKey = (source: AvatarImageProps['source']): string => {
   return '';
 };
 
-
 export const useAvatarImage = (props: AvatarImageProps) => {
-  const { onError, onLoad, onLoadingStatusChange: onLoadingStatusChangeProp, onLoadStart, source } = props;
+  const {
+    onError,
+    onLoad,
+    onLoadingStatusChange: onLoadingStatusChangeProp,
+    onLoadStart,
+    source,
+  } = props;
   const { onLoadingStatusChange } = useAvatarContext();
 
   const sourceKey = React.useMemo(() => getSourceKey(source), [source]);

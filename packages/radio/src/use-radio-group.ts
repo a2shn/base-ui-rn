@@ -1,4 +1,8 @@
-import { KeyDownEventData, useControllableState, useKeyboardNavigation } from '@base-ui-rn/core';
+import {
+  KeyDownEventData,
+  useControllableState,
+  useKeyboardNavigation,
+} from '@base-ui-rn/core';
 import * as React from 'react';
 import type { NativeSyntheticEvent } from 'react-native';
 
@@ -17,7 +21,9 @@ export function useRadioGroup(props: RadioGroupProps) {
 
   const [value, setValue] = useControllableState<RadioValue | undefined>({
     defaultProp: defaultValue,
-    onChange: onValueChangeProp,
+    onChange: onValueChangeProp
+      ? (val: RadioValue | undefined) => onValueChangeProp(val as RadioValue)
+      : undefined,
     prop: controlledValue,
   });
 

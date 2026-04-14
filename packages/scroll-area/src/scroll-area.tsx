@@ -21,11 +21,7 @@ import { useScrollArea } from './use-scroll-area';
  */
 export const Root = React.memo(
   React.forwardRef<View, ScrollAreaRootProps>((props, ref) => {
-    const {
-      children,
-      style,
-      ...otherProps
-    } = props;
+    const { children, style, ...otherProps } = props;
 
     const {
       contextValue,
@@ -59,13 +55,9 @@ export const Root = React.memo(
     // Overlay is shown when Viewport reports focus (state.focused is set via context onFocus/onBlur)
     const renderFocusOverlay = !isWeb && state.focused && focusRingStyle;
 
-
     return (
       <ScrollAreaContext.Provider value={contextValue}>
-        <View
-          {...mergedProps}
-          pointerEvents='box-none'
-        >
+        <View {...mergedProps} pointerEvents='box-none'>
           {resolveValue(children, state)}
           {renderFocusOverlay && (
             <View

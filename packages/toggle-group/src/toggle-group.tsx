@@ -26,7 +26,7 @@ import { useToggleGroup } from './use-toggle-group';
  */
 export const ToggleGroup = React.memo(
   React.forwardRef<View, ToggleGroupProps>((props, ref) => {
-    const { children, style, role, ...otherProps } = props;
+    const { children, role, style, ...otherProps } = props;
 
     const {
       isDisabled,
@@ -74,27 +74,25 @@ export const ToggleGroup = React.memo(
     const resolvedStyle = resolveValue(style, state);
 
     const mergedProps = mergeProps(
-    {
-      accessibilityState: { disabled: state.disabled },
-      style: resolvedStyle
-    },
-    { ref },
-    otherProps,
-    {
-      accessibilityLiveRegion: "none",
-      accessible: true,
-      focusable: false,
-      importantForAccessibility: "yes",
-      role: role ?? (multiple ? 'group' : 'radiogroup')
-    }
-  );
+      {
+        accessibilityState: { disabled: state.disabled },
+        style: resolvedStyle,
+      },
+      { ref },
+      otherProps,
+      {
+        accessibilityLiveRegion: 'none',
+        accessible: true,
+        focusable: false,
+        importantForAccessibility: 'yes',
+        role: role ?? (multiple ? 'group' : 'radiogroup'),
+      },
+    );
 
     return (
       <ToggleGroupActionContext.Provider value={actionContext}>
         <ToggleGroupValueContext.Provider value={valueContext}>
-          <View {...mergedProps}>
-            {resolveValue(children, state)}
-          </View>
+          <View {...mergedProps}>{resolveValue(children, state)}</View>
         </ToggleGroupValueContext.Provider>
       </ToggleGroupActionContext.Provider>
     );

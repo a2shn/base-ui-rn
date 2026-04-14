@@ -1,10 +1,10 @@
 import { clamp, useControllableState } from '@base-ui-rn/core';
+import { resolveTabIndex } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
 import { Platform, type View } from 'react-native';
 
 import { calculateNextValues } from './collision';
 import type { SliderRootProps, SliderState, SliderValue } from './types';
-import { resolveTabIndex } from '@base-ui-rn/focus-ring';
 
 const normalizeValue = (value: SliderValue | undefined, min: number) => {
   if (Array.isArray(value)) {
@@ -32,10 +32,10 @@ export function useSlider(props: SliderRootProps) {
     orientation = 'horizontal',
     step = 1,
     stepBetweenValues,
+    tabIndex: tabIndexProp,
     thumbAlignment = 'center',
     thumbCollisionBehavior = 'push',
     value,
-    tabIndex: tabIndexProp,
   } = props;
   const isDisabled = disabled === true;
   const tabIndex = resolveTabIndex(isDisabled, tabIndexProp);
@@ -59,8 +59,6 @@ export function useSlider(props: SliderRootProps) {
   >(null);
 
   const [dragging, setDragging] = React.useState(false);
-
-
 
   const focusThumb = React.useCallback((index: number) => {
     setFocusedThumbIndex(index);
@@ -210,6 +208,7 @@ export function useSlider(props: SliderRootProps) {
     focusedThumbIndex,
     focusThumb,
     format,
+    isDisabled,
     largeStep,
     locale,
     setDragging,
@@ -219,10 +218,9 @@ export function useSlider(props: SliderRootProps) {
     setValueAtIndex,
     state,
     stepBy,
+    tabIndex,
     thumbAlignment,
     thumbNodeHandles,
     thumbRefs,
-    tabIndex,
-    isDisabled,
   };
 }

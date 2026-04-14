@@ -1,10 +1,6 @@
 import { resolveTabIndex } from '@base-ui-rn/focus-ring';
 import * as React from 'react';
-import {
-  type LayoutChangeEvent,
-  Platform,
-  type View,
-} from 'react-native';
+import { type LayoutChangeEvent, Platform, type View } from 'react-native';
 
 import { useSliderContext } from './context';
 import { useSliderGestures } from './use-slider-gestures';

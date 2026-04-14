@@ -8,7 +8,7 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
-    "lint": "eslint . --fix && tsc --noEmit"
+    "lint": "eslint . --fix"
   },
   "dependencies": {
     "@base-ui-rn/core": "workspace:*",

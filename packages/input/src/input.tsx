@@ -8,7 +8,7 @@ import { useInput } from './use-input';
 /**
  * Headless input primitive built on top of React Native TextInput.
  *
- * Provides a high-quality, unstyled input component with enhanced 
+ * Provides a high-quality, unstyled input component with enhanced
  * accessibility state mapping.
  *
  * @example
@@ -34,30 +34,30 @@ export const Input = React.memo(
 
     const internalRef = React.useRef<TextInput>(null);
 
-    const resolvedStyle = resolveValue(style, state)
+    const resolvedStyle = resolveValue(style, state);
 
     const mergedProps = mergeProps(
-    {
-      accessibilityState: { disabled: isDisabled },
-      onBlur: handleBlur,
-      onChangeText: handleChangeText,
-      onFocus: handleFocus,
-      ref: internalRef,
-      style: [resolvedStyle, focusRingStyle]
-    },
-    { ref },
-    otherProps,
-    {
-      accessible: true,
-      submitBehavior: "blurAndSubmit"
-    }
-  );
+      {
+        accessibilityState: { disabled: isDisabled },
+        onBlur: handleBlur,
+        onChangeText: handleChangeText,
+        onFocus: handleFocus,
+        ref: internalRef,
+        style: [resolvedStyle, focusRingStyle],
+      },
+      { ref },
+      otherProps,
+      {
+        accessible: true,
+        submitBehavior: 'blurAndSubmit',
+      },
+    );
 
     return (
       <TextInput
         {...mergedProps}
-        focusable={isFocusable}
         editable={!isDisabled && !state.readOnly}
+        focusable={isFocusable}
         tabIndex={tabIndex}
         value={value}
       >

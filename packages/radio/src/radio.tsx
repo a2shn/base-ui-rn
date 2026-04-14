@@ -1,6 +1,10 @@
-import { PressableWithKeyDown, mergeProps, resolveValue } from '@base-ui-rn/core';
+import {
+  mergeProps,
+  PressableWithKeyDown,
+  resolveValue,
+} from '@base-ui-rn/core';
 import * as React from 'react';
-import { View, type PressableStateCallbackType } from 'react-native';
+import { type PressableStateCallbackType, View } from 'react-native';
 
 import { useOptionalRadioGroupContext } from './radio-group-context';
 import { RadioRootContext } from './radio-root-context';
@@ -29,13 +33,13 @@ export const RadioRoot = React.memo(
 
     const {
       checked,
-      isDisabled,
       focusRingStyle,
       handleAccessibilityAction,
       handleBlur,
       handleFocus,
       handleKeyDown,
       handlePress,
+      isDisabled,
       isFocusable,
       state,
       tabIndex,
@@ -52,28 +56,28 @@ export const RadioRoot = React.memo(
     const resolvedStyle = resolveValue(style, state);
 
     const mergedProps = mergeProps(
-    {
-      accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
-      accessibilityState: {
-        checked: checked,
-        disabled: isDisabled,
+      {
+        accessibilityActions: !isDisabled ? [{ name: 'activate' }] : [],
+        accessibilityState: {
+          checked: checked,
+          disabled: isDisabled,
+        },
+        onAccessibilityAction: handleAccessibilityAction,
+        onBlur: handleBlur,
+        onFocus: handleFocus,
+        onKeyDown: handleKeyDown,
+        onPress: handlePress,
+        ref: internalRef,
+        style: [resolvedStyle, focusRingStyle],
       },
-      onAccessibilityAction: handleAccessibilityAction,
-      onBlur: handleBlur,
-      onFocus: handleFocus,
-      onKeyDown: handleKeyDown,
-      onPress: handlePress,
-      ref: internalRef,
-      style: [resolvedStyle, focusRingStyle],
-    },
-    { ref },
-    otherProps,
-    {
-      accessibilityHint: "Selects the radio option",
-      accessible: true,
-      role: "radio"
-    }
-  );
+      { ref },
+      otherProps,
+      {
+        accessibilityHint: 'Selects the radio option',
+        accessible: true,
+        role: 'radio',
+      },
+    );
 
     return (
       <RadioRootContext.Provider value={state}>

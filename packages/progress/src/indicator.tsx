@@ -26,25 +26,20 @@ export const ProgressIndicator = React.memo(
       };
     }, [percentage]);
 
-    const resolvedStyle = resolveValue(style, context)
+    const resolvedStyle = resolveValue(style, context);
 
     const mergedProps = mergeProps(
-    { style: [indicatorStyle, resolvedStyle] },
-    { ref },
-    otherProps,
-    {
-      accessibilityElementsHidden: true,
-      focusable: false,
-      importantForAccessibility: "no-hide-descendants"
-    }
-  );
-
-    return (
-      <View
-
-        {...mergedProps}
-      />
+      { style: [indicatorStyle, resolvedStyle] },
+      { ref },
+      otherProps,
+      {
+        accessibilityElementsHidden: true,
+        focusable: false,
+        importantForAccessibility: 'no-hide-descendants',
+      },
     );
+
+    return <View {...mergedProps} />;
   }),
 );
 

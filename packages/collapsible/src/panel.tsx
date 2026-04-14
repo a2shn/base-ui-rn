@@ -22,20 +22,20 @@ export const CollapsiblePanel = React.memo(
   React.forwardRef<View, CollapsiblePanelProps>((props, ref) => {
     const { children, style, ...otherProps } = props;
 
-    const { isDisabled, handleOnLayout, open, shouldRender, state } =
+    const { handleOnLayout, open, shouldRender, state } =
       useCollapsiblePanel(props);
 
     const resolvedStyle = resolveValue(style, state);
     const mergedProps = mergeProps(
-    {
-      accessibilityState: { expanded: open },
-      onLayout: handleOnLayout,
-      style: resolvedStyle
-    },
-    { ref },
-    otherProps,
-    { focusable: false }
-  );
+      {
+        accessibilityState: { expanded: open },
+        onLayout: handleOnLayout,
+        style: resolvedStyle,
+      },
+      { ref },
+      otherProps,
+      { focusable: false },
+    );
 
     if (!shouldRender) {
       return null;

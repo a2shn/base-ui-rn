@@ -31,8 +31,8 @@ export function useTab(props: TabProps) {
 
   const {
     focused,
-    focusVisible,
     focusRingStyle,
+    focusVisible,
     isFocusable,
     onBlur,
     onFocus,
@@ -69,7 +69,7 @@ export function useTab(props: TabProps) {
   );
 
   const handleAccessibilityAction = React.useCallback(
-    (event: any) => {
+    (event: { nativeEvent: { actionName: string } }) => {
       if (isActivationAction(event.nativeEvent.actionName) && !isDisabled) {
         context.onValueChange(value);
       }
@@ -87,22 +87,22 @@ export function useTab(props: TabProps) {
   const state: TabState = {
     activationDirection: context.activationDirection,
     active,
-    isDisabled,
     focused: focused || isFocusedFromRoot,
     focusVisible,
+    isDisabled,
     orientation: context.orientation,
   };
 
   return {
-    isDisabled,
     focusRingStyle,
+    handleAccessibilityAction,
     handleBlur: onBlur,
     handleFocus,
     handleKeyDown,
-    handlePress,
-    handleAccessibilityAction,
-    isFocusable,
     handleOnLayout,
+    handlePress,
+    isDisabled,
+    isFocusable,
     ref,
     state,
     tabIndex,

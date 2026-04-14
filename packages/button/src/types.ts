@@ -8,7 +8,10 @@ export interface ButtonState extends FocusRingState {
   disabled: boolean;
 }
 
-export interface ButtonProps extends Omit<React.ComponentProps<typeof PressableWithKeyDown>, 'children' | 'style'> {
+export interface ButtonProps extends Omit<
+  React.ComponentProps<typeof PressableWithKeyDown>,
+  'children' | 'style'
+> {
   /**
    * The content of the button.
    * Can be a React node or a render function receiving the current button state.

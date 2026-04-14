@@ -24,13 +24,13 @@ export const AccordionItem = React.memo(
   React.forwardRef<View, AccordionItemProps>((props, ref) => {
     const { children, style, ...otherProps } = props;
 
-    const { isDisabled, index, open, triggerRef, state, value } =
+    const { index, isDisabled, open, state, triggerRef, value } =
       useAccordionItem(props);
 
     const itemContextValue = React.useMemo(
       () => ({
-        isDisabled,
         index,
+        isDisabled,
         open,
         triggerRef,
         value,
@@ -41,17 +41,17 @@ export const AccordionItem = React.memo(
     const resolvedStyle = resolveValue(style, state);
 
     const mergedProps = mergeProps(
-    {
-      accessibilityState: {
-        disabled: isDisabled,
-        expanded: open,
+      {
+        accessibilityState: {
+          disabled: isDisabled,
+          expanded: open,
+        },
+        style: resolvedStyle,
       },
-      style: resolvedStyle
-    },
-    { ref },
-    otherProps,
-    { focusable: false }
-  );
+      { ref },
+      otherProps,
+      { focusable: false },
+    );
 
     return (
       <AccordionItemContext.Provider value={itemContextValue}>

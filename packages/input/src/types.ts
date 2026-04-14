@@ -1,5 +1,11 @@
 import type { FocusRingState } from '@base-ui-rn/focus-ring';
-import type { NativeSyntheticEvent, StyleProp, TextInputChangeEventData, TextInputProps, ViewStyle } from 'react-native';
+import type {
+  NativeSyntheticEvent,
+  StyleProp,
+  TextInputChangeEventData,
+  TextInputProps,
+  ViewStyle,
+} from 'react-native';
 
 export interface InputChangeEventDetails {
   nativeEvent: NativeSyntheticEvent<TextInputChangeEventData>;
@@ -15,7 +21,10 @@ export interface InputState extends FocusRingState {
   filled: boolean;
 }
 
-export interface InputProps extends Omit<TextInputProps, 'style' | 'readOnly' | 'editable'> {
+export interface InputProps extends Omit<
+  TextInputProps,
+  'style' | 'readOnly' | 'editable'
+> {
   /**
    * Style applied to the input component. Accepts a standard style object
    * or a function that receives the current InputState.

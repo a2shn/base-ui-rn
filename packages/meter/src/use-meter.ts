@@ -22,7 +22,6 @@ export function useMeter(props: MeterRootProps) {
     prop: controlledValue,
   });
 
-
   const percentage = React.useMemo(() => {
     const range = max - min;
     if (range <= 0) return value >= max ? 100 : 0;

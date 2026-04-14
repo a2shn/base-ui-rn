@@ -1,6 +1,6 @@
 import {
-  PressableWithKeyDown,
   mergeProps,
+  PressableWithKeyDown,
   resolveValue,
 } from '@base-ui-rn/core';
 import * as React from 'react';
@@ -26,15 +26,15 @@ export const Tab = React.memo(
     const { children, style, ...otherProps } = props;
 
     const {
-      isDisabled,
       focusRingStyle,
+      handleAccessibilityAction,
       handleBlur,
       handleFocus,
       handleKeyDown,
-      handlePress,
-      handleAccessibilityAction,
-      isFocusable,
       handleOnLayout,
+      handlePress,
+      isDisabled,
+      isFocusable,
       ref: internalRef,
       state,
       tabIndex,
@@ -43,38 +43,40 @@ export const Tab = React.memo(
     const resolvedStyle = resolveValue(style, state);
 
     const mergedProps = mergeProps(
-    {
-      accessibilityState: {
-        disabled: isDisabled,
-        selected: state.active,
+      {
+        accessibilityState: {
+          disabled: isDisabled,
+          selected: state.active,
+        },
+        onAccessibilityAction: handleAccessibilityAction,
+        onBlur: handleBlur,
+        onFocus: handleFocus,
+        onKeyDown: handleKeyDown,
+        onLayout: handleOnLayout,
+        onPress: handlePress,
+        ref: internalRef,
+        style: [
+          resolvedStyle,
+          focusRingStyle,
+          Platform.OS === 'web' && (state.active || state.focused)
+            ? { zIndex: 1 }
+            : undefined,
+        ],
       },
-      onAccessibilityAction: handleAccessibilityAction,
-      onBlur: handleBlur,
-      onFocus: handleFocus,
-      onKeyDown: handleKeyDown,
-      onLayout: handleOnLayout,
-      onPress: handlePress,
-      ref: internalRef,
-      style: [
-        resolvedStyle,
-        focusRingStyle,
-        Platform.OS === 'web' && (state.active || state.focused) ? { zIndex: 1 } : undefined,
-      ],
-    },
-    { ref },
-    otherProps,
-    {
-      accessible: true,
-      role: "tab"
-    }
-  );
+      { ref },
+      otherProps,
+      {
+        accessible: true,
+        role: 'tab',
+      },
+    );
 
     return (
       <PressableWithKeyDown
         {...mergedProps}
-        tabIndex={tabIndex}
         disabled={isDisabled}
         focusable={isFocusable}
+        tabIndex={tabIndex}
       >
         {resolveValue(children, state)}
       </PressableWithKeyDown>

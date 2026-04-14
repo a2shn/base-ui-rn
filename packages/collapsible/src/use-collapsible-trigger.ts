@@ -18,8 +18,8 @@ export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
 
   const {
     focused,
-    focusVisible,
     focusRingStyle,
+    focusVisible,
     isFocusable,
     onBlur,
     onFocus,
@@ -37,7 +37,7 @@ export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
   }, [isDisabled, context]);
 
   const handleAccessibilityAction = React.useCallback(
-    (event: any) => {
+    (event: { nativeEvent: { actionName: string } }) => {
       if (isActivationAction(event.nativeEvent.actionName) && !isDisabled) {
         context.toggle();
       }
@@ -53,15 +53,15 @@ export function useCollapsibleTrigger(props: CollapsibleTriggerProps) {
   };
 
   return {
-    isDisabled,
     focused,
-    focusVisible,
     focusRingStyle,
+    focusVisible,
+    handleAccessibilityAction,
     handleBlur: onBlur,
     handleFocus: onFocus,
-    isFocusable,
-    handleAccessibilityAction,
     handlePress,
+    isDisabled,
+    isFocusable,
     open: context.open,
     state,
     tabIndex,

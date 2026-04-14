@@ -1,6 +1,12 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react-native';
 import * as React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { Avatar } from './index';
 
@@ -8,12 +14,12 @@ describe('Avatar Primitive (Integration)', () => {
   describe('Basic Rendering & Lifecycle', () => {
     it('renders fallback initially while image is loading', () => {
       render(
-        <Avatar.Root testID="root">
+        <Avatar.Root testID='root'>
           <Avatar.Image
             source={{ uri: 'https://example.com/avatar.jpg' }}
-            testID="image"
+            testID='image'
           />
-          <Avatar.Fallback testID="fallback">
+          <Avatar.Fallback testID='fallback'>
             <Text>JD</Text>
           </Avatar.Fallback>
         </Avatar.Root>,
@@ -24,20 +30,22 @@ describe('Avatar Primitive (Integration)', () => {
       });
 
       expect(fallback).toBeTruthy();
-      expect(screen.getByText('JD', { includeHiddenElements: true })).toBeTruthy();
+      expect(
+        screen.getByText('JD', { includeHiddenElements: true }),
+      ).toBeTruthy();
     });
 
     it('unmounts fallback when image loads successfully', async () => {
       const onLoadingStatusChangeMock = jest.fn();
 
       render(
-        <Avatar.Root testID="root">
+        <Avatar.Root testID='root'>
           <Avatar.Image
             onLoadingStatusChange={onLoadingStatusChangeMock}
             source={{ uri: 'https://example.com/avatar.jpg' }}
-            testID="image"
+            testID='image'
           />
-          <Avatar.Fallback testID="fallback">
+          <Avatar.Fallback testID='fallback'>
             <Text>JD</Text>
           </Avatar.Fallback>
         </Avatar.Root>,
@@ -55,13 +63,13 @@ describe('Avatar Primitive (Integration)', () => {
       const onLoadingStatusChangeMock = jest.fn();
 
       render(
-        <Avatar.Root testID="root">
+        <Avatar.Root testID='root'>
           <Avatar.Image
             onLoadingStatusChange={onLoadingStatusChangeMock}
             source={{ uri: 'https://example.com/avatar.jpg' }}
-            testID="image"
+            testID='image'
           />
-          <Avatar.Fallback testID="fallback">
+          <Avatar.Fallback testID='fallback'>
             <Text>JD</Text>
           </Avatar.Fallback>
         </Avatar.Root>,
@@ -88,12 +96,12 @@ describe('Avatar Primitive (Integration)', () => {
 
     it('delays rendering the fallback until the timer expires', async () => {
       render(
-        <Avatar.Root testID="root">
+        <Avatar.Root testID='root'>
           <Avatar.Image
             source={{ uri: 'https://example.com/avatar.jpg' }}
-            testID="image"
+            testID='image'
           />
-          <Avatar.Fallback delay={500} testID="fallback">
+          <Avatar.Fallback delay={500} testID='fallback'>
             <Text>JD</Text>
           </Avatar.Fallback>
         </Avatar.Root>,
@@ -111,7 +119,9 @@ describe('Avatar Primitive (Integration)', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByTestId('fallback', { includeHiddenElements: true })).toBeTruthy();
+        expect(
+          screen.getByTestId('fallback', { includeHiddenElements: true }),
+        ).toBeTruthy();
       });
     });
   });
@@ -119,10 +129,10 @@ describe('Avatar Primitive (Integration)', () => {
   describe('Accessibility (A11y)', () => {
     it('applies correct ARIA properties to the root based on loading state', () => {
       render(
-        <Avatar.Root accessibilityLabel="User Avatar" testID="root">
+        <Avatar.Root accessibilityLabel='User Avatar' testID='root'>
           <Avatar.Image
             source={{ uri: 'https://example.com/avatar.jpg' }}
-            testID="image"
+            testID='image'
           />
         </Avatar.Root>,
       );
@@ -143,12 +153,12 @@ describe('Avatar Primitive (Integration)', () => {
 
     it('hides the fallback from screen readers while the image is actively loading', () => {
       render(
-        <Avatar.Root testID="root">
+        <Avatar.Root testID='root'>
           <Avatar.Image
             source={{ uri: 'https://example.com/avatar.jpg' }}
-            testID="image"
+            testID='image'
           />
-          <Avatar.Fallback testID="fallback">
+          <Avatar.Fallback testID='fallback'>
             <Text>JD</Text>
           </Avatar.Fallback>
         </Avatar.Root>,
@@ -183,7 +193,7 @@ describe('Avatar Primitive (Integration)', () => {
       const ref = React.createRef<View>();
 
       render(
-        <Avatar.Root ref={ref} testID="ref-root">
+        <Avatar.Root ref={ref} testID='ref-root'>
           <Avatar.Fallback>
             <Text>JD</Text>
           </Avatar.Fallback>

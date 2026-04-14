@@ -23,9 +23,18 @@ export function SwitchPlaybook() {
             onCheckedChange={(value) => {
               checked.setValue(value);
             }}
-            style={getSwitchStyle({ checked: checked.value as boolean, disabled: false, focused: false })}
+            style={getSwitchStyle({
+              checked: checked.value as boolean,
+              disabled: false,
+              focused: false,
+            })}
           >
-            <Switch.Thumb style={getThumbStyle({ checked: checked.value as boolean, disabled: false })} />
+            <Switch.Thumb
+              style={getThumbStyle({
+                checked: checked.value as boolean,
+                disabled: false,
+              })}
+            />
           </Switch.Root>
           <Text style={styles.label}>Toggle Me</Text>
         </View>

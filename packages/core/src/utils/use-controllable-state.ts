@@ -1,13 +1,16 @@
-import { UseControllableStateParams } from '@/types';
 import * as React from 'react';
 
+import { UseControllableStateParams } from '../types';
 
 export function useControllableState<T>({
-  prop,
   defaultProp,
   onChange,
-}: UseControllableStateParams<T>): [T | undefined, (state: T | ((prevState: T) => T)) => void] {
-  // Track if the component is controlled. We use a ref so we can warn if 
+  prop,
+}: UseControllableStateParams<T>): [
+  T | undefined,
+  (state: T | ((prevState: T) => T)) => void,
+] {
+  // Track if the component is controlled. We use a ref so we can warn if
   // the user switches from controlled to uncontrolled (standard React behavior).
   const isControlled = prop !== undefined;
   const wasControlled = React.useRef(isControlled);
@@ -15,8 +18,9 @@ export function useControllableState<T>({
   React.useEffect(() => {
     if (wasControlled.current !== isControlled) {
       console.warn(
-        `Warning: A component changed from ${wasControlled.current ? 'controlled' : 'uncontrolled'
-        } to ${isControlled ? 'controlled' : 'uncontrolled'}.`
+        `Warning: A component changed from ${
+          wasControlled.current ? 'controlled' : 'uncontrolled'
+        } to ${isControlled ? 'controlled' : 'uncontrolled'}.`,
       );
     }
   }, [isControlled]);
@@ -25,7 +29,7 @@ export function useControllableState<T>({
 
   const value = isControlled ? prop : uncontrolledProp;
 
-  // Use a ref to keep track of the latest onChange callback 
+  // Use a ref to keep track of the latest onChange callback
   // without needing to add it to the dependency array of our setter.
   const onChangeRef = React.useRef(onChange);
   React.useLayoutEffect(() => {
@@ -37,7 +41,8 @@ export function useControllableState<T>({
     (nextValue: T | ((prevState: T) => T)) => {
       // Handle functional updates exactly like React.useState does
       const setter = nextValue as (prevState?: T) => T;
-      const resolvedValue = typeof nextValue === 'function' ? setter(value) : nextValue;
+      const resolvedValue =
+        typeof nextValue === 'function' ? setter(value) : nextValue;
 
       if (onChangeRef.current) {
         onChangeRef.current(resolvedValue);
@@ -47,7 +52,7 @@ export function useControllableState<T>({
         setUncontrolledProp(resolvedValue);
       }
     },
-    [isControlled, value]
+    [isControlled, value],
   );
 
   return [value, setValue];

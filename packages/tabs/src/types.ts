@@ -33,7 +33,9 @@ export interface TabsRootProps extends Omit<ViewProps, 'children' | 'style'> {
   /**
    * Style applied to the root view.
    */
-  style?: StyleProp<ViewStyle> | ((state: TabsRootState) => StyleProp<ViewStyle>);
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: TabsRootState) => StyleProp<ViewStyle>);
   /**
    * The default value of the active tab when uncontrolled.
    * @default 0
@@ -86,7 +88,9 @@ export interface TabsListProps extends Omit<ViewProps, 'children' | 'style'> {
   /**
    * Style applied to the list view.
    */
-  style?: StyleProp<ViewStyle> | ((state: TabsListState) => StyleProp<ViewStyle>);
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: TabsListState) => StyleProp<ViewStyle>);
   /**
    * Whether to loop keyboard focus within the tabs list.
    * @default true
@@ -101,7 +105,10 @@ export interface TabState extends FocusRingState {
   activationDirection: ActivationDirection;
 }
 
-export interface TabProps extends Omit<React.ComponentProps<typeof PressableWithKeyDown>, 'children' | 'style'> {
+export interface TabProps extends Omit<
+  React.ComponentProps<typeof PressableWithKeyDown>,
+  'children' | 'style'
+> {
   /**
    * Whether to disable the default focus ring style.
    * @default false
@@ -142,7 +149,10 @@ export interface TabsIndicatorState {
   };
 }
 
-export interface TabsIndicatorProps extends Omit<ViewProps, 'children' | 'style'> {
+export interface TabsIndicatorProps extends Omit<
+  ViewProps,
+  'children' | 'style'
+> {
   /**
    * Whether to disable the default focus ring style.
    * @default false
@@ -160,7 +170,9 @@ export interface TabsIndicatorProps extends Omit<ViewProps, 'children' | 'style'
   /**
    * Style applied to the indicator view.
    */
-  style?: StyleProp<ViewStyle> | ((state: TabsIndicatorState) => StyleProp<ViewStyle>);
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: TabsIndicatorState) => StyleProp<ViewStyle>);
 }
 
 export interface TabPanelState {
@@ -188,7 +200,9 @@ export interface TabPanelProps extends Omit<ViewProps, 'children' | 'style'> {
   /**
    * Style applied to the panel view.
    */
-  style?: StyleProp<ViewStyle> | ((state: TabPanelState) => StyleProp<ViewStyle>);
+  style?:
+    | StyleProp<ViewStyle>
+    | ((state: TabPanelState) => StyleProp<ViewStyle>);
   /**
    * The value of the tab this panel corresponds to.
    */
